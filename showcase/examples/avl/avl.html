@@ -1,0 +1,63 @@
+<style>
+    .leaflet-container {
+        height: 100%;
+    }
+    #olMap, #leafletMap {
+        flex: auto;
+        padding: 10px;
+        min-width: 450px;
+        flex-grow: 1;
+    }
+    #cesiumMap {
+        flex: auto;
+        padding: 10px;
+        width: 40%;
+        flex-grow: 1;
+    }
+    #deckMap {
+        flex: auto;
+        padding: 10px;
+        flex-grow: 1;
+    }
+    #deckMap > div.osh-view > canvas {
+        position: relative !important;
+    }
+    #mapboxMap {
+        flex: auto;
+        padding: 10px;
+        width: 40%;
+        height: 100%;
+        flex-grow: 1;
+    }
+    #container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        height: 40%;
+    }
+    button {
+        margin:  10px;
+    }
+    #popup {
+        position: absolute;
+        display: none;
+        width: 70px;
+        height: 50px;
+        z-index: 999999;
+        background: #00000091;
+        color: white;
+        padding: 5px;
+    }
+</style>
+<div id="popup"></div>
+<div id="time">2014-03-29T06:16:12Z</div>
+<button id="load" type="button">Load</button>
+<button id="removeall" type="button">RemoveAll</button>
+<div id="current-marker">Current selected marker: </div>
+<div id="container">
+    <div id="leafletMap"></div>
+    <div id="olMap"></div>
+    <div id="cesiumMap"></div>
+    <div id="deckMap"></div>
+    <div id="mapboxMap"></div>
+</div>

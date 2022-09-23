@@ -25,11 +25,6 @@ var samples = [{
         url: "cesium-location-path"
     },
     {
-        name: "Cesium + Frustum Layer",
-        description: "Display a frustum from MISB data into Cesium Viewer",
-        url: "cesium-frustum"
-    },
-    {
         name: "Moving Location (Deck.gl)",
         description: "Display a moving marker on a Deck.gl canvas, tracking the current location of a vehicle.",
         url: "deckgl-location"
@@ -88,26 +83,6 @@ var samples = [{
         url: "zIndex-location-path"
     },
     {
-        name: "DataSource Synchronized",
-        description: "Display the data of 3 differents kind of datasources(Video, Gps and Orientation) using time synchronization algorithm",
-        url: "datasources-synchronized"
-    },
-    {
-        name: "DataSource File",
-        description: "Display the data of multiple CSV files using the file datasource",
-        url: "datasource-file"
-    },
-    {
-        name: "DataSource SweApiFetch",
-        description: "Display GPS data using the SweApiFetch datasource",
-        url: "datasource-sweapifetch"
-    },
-    {
-        name: "Multiple Video DataSource Synchronized",
-        description: "Display the data of 3 differents video datasources using time synchronization algorithm",
-        url: "multi-datasources-synchronized"
-    },
-    {
         name: "Resizable H264 Video",
         description: "Display an H264 video in a simple resizable DIV using our FFMPEG-JS decoder.",
         url: "video-h264"
@@ -134,12 +109,6 @@ var samples = [{
         code: 'vue/App_examples/video-with-control-vuejs-synchronized.vue'
     },
     {
-        name: 'VueJs component: Multiple Video data with control',
-        description: 'Display multiple videos data using forward/pause/play/backward control using the same DataSynchronizer',
-        url: 'videodata-with-control-vuejs-synchronized',
-        code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
-    },
-    {
         name: 'AVL data using multiple ids',
         description: 'Display multiple markers corresponding to a unique id provided by the same DataSource',
         url: 'avl'
@@ -154,11 +123,6 @@ var samples = [{
         name: 'ISA Biological & MISB UAS sensor data using MQTT protocol',
         description: 'Display biological and GPS sensors from ISA Biological Sensor & MISB UAS using MQTT protocol',
         url: 'mqtt'
-    },
-    {
-        name: 'ISA Biological & MISB UAS sensor data using MQTT utility class',
-        description: 'Display biological and GPS sensors from ISA Biological Sensor & MISB UAS using MQTT utility class',
-        url: 'mqtt-utility'
     },
     {
         name: "Chart with Time controller (Chart.js)",

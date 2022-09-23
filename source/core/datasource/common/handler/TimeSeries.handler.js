@@ -59,14 +59,16 @@ class DelegateRealTimeHandler extends DelegateHandler {
 }
 
 class DelegateBatchHandler extends DelegateHandler {
-    async fetchData(startTimestamp, endTimestamp) {
-        console.warn(`fetching ${new Date(startTimestamp).toISOString()} -> ` +
-            `${new Date(endTimestamp).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
-        return this.context.doTemporalRequest(this.properties, startTimestamp, endTimestamp, this.status);
+    async fetchData(startTime, endTime) {
+        console.warn(`fetching ${new Date(startTime).toISOString()} -> ` +
+            `${new Date(endTime).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
+        return this.context.doTemporalRequest(this.properties, startTime, endTime, this.status);
     }
 
     connect() {
-        this.fetchData(new Date(this.properties.startTime).getTime(), new Date(this.properties.endTime).getTime()).then(data => this.handleData(data));
+        this.context.onChangeStatus(Status.FETCH_STARTED);
+        this.fetchData(this.properties.startTime, this.properties.endTime).then(data => this.handleData(data));
+        this.context.onChangeStatus(Status.FETCH_ENDED);
     }
 
     async disconnect() {
@@ -128,6 +130,7 @@ class DelegateReplayHandler extends DelegateHandler {
             }
             try {
                 let endFetchTimestamp = startTimestamp + durationToFetch;
+                console.log('ici')
                 this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
                 const data = await this.promise;
                 if (!this.status.cancel) {

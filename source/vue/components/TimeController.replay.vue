@@ -7,7 +7,7 @@
           <a :id="'replay-btn-'+id" class="control-btn clicked" @click="toggleReplay">
             <i class="fa fa-history"></i>
           </a>
-          <div class="control-speed" v-if="activateSpeedControl">
+          <div class="control-speed" v-if="activateSpeedControl && activateActions">
             <a :id="'speed-minus-btn-'+id" class="control-btn " @mouseup="stopSpeed" @mouseleave="stopSpeed"
                @click="decSpeed" @mousedown="decSpeedDown">
               <i class="fa fa-minus"></i>
@@ -20,7 +20,7 @@
               <i class="fa fa-plus"></i>
             </a>
           </div>
-          <div class="control-back-for">
+          <div class="control-back-for" v-if="activateActions">
             <a :id="'fast-back-btn-'+id" class="control-btn" @mouseup="stopBackward" @mouseleave="stopBackward"
                @mousedown="doBackward"> <i
                 class="fa fa-fast-backward"></i></a>
@@ -32,13 +32,13 @@
                @mousedown="doFastForward"> <i
                 class="fa fa-fast-forward"></i></a>
           </div>
-          <div class="control-time">
+          <div class="control-time" v-if="activateActions">
             <span :id="'current-time-'+id" v-html=parseTime(startTime)></span>
             <span style="padding:0 10px 0 10px">/</span>
             <span :id="'end-time-'+id" v-html=parseTime(endTime)></span>
           </div>
         </div>
-        <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0">
+        <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0 &&  activateActions">
           <a :id="'out-of-sync-btn-'+id" class="control-btn out-of-sync">
             <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
           </a>
@@ -110,6 +110,7 @@ export default {
       id: randomUUID(),
       speedId: randomUUID(),
       event: null,
+      activateActions: false,
       dataSourceObject: null,
       connected: true,
       startTime: null,
@@ -143,6 +144,7 @@ export default {
     console.log('REPLAY COMPONENT');
     assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     this.dataSourceObject = this.getDataSourceObject();
+    this.activateActions = (this.dataSourceObject.mode === Mode.REPLAY);
   },
   updated() {
     this.initComp();
