@@ -201,6 +201,8 @@
           if(dsToConnect.includes(currentDs.id)) {
             if(!isConnected) {
               this.dataSynchronizer.connect();
+            } else {
+              currentDs.connect();
             }
           } else if(dsToDisconnect.includes(currentDs.id)){
             currentDs.disconnect();

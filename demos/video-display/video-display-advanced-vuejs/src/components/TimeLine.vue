@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import RangeSlider from "osh-js/ext/ui/view/rangeslider/RangeSliderView.js";
+  import RangeSliderViewReplay from "osh-js/ext/ui/view/rangeslider/RangeSliderView.replay.js";
 
   export default {
     name: "TimeLine",
@@ -14,7 +14,7 @@
       }
     },
     mounted() {
-      this.rangeSlider = new RangeSlider({
+      this.rangeSlider = new RangeSliderViewReplay({
         container: "timeline-container",
         startTime: "2015-02-16T07:58:35Z",
         endTime: "2015-02-16T08:09:00Z",
