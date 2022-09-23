@@ -360,11 +360,16 @@ class TimeSeriesHandler extends DataSourceHandler {
                 console.warn(`Data array is empty for datasource ${this.dataSourceId}`);
                 return;
             }
+            let d;
             for (let i = 0; i < data.length; i++) {
-                results.push({
+                d = {
                     data: data[i],
                     version: this.context.properties.version
-                });
+                };
+                if(this.properties.timeShift !== 0) {
+                    d.data.timestamp = d.data.timestamp + this.properties.timeShift;
+                }
+                results.push(d);
             }
         } else {
             results.push({
