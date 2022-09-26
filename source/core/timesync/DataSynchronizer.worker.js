@@ -72,10 +72,10 @@ async function handleMessage(event) {
                     dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
                 }
             } else if (event.data.message === 'update-properties') {
+                reset();
                 let datasources = [];
                 if (dataSynchronizerAlgo !== null) {
                     datasources = dataSynchronizerAlgo.datasources;
-                    reset();
                 }
 
                 if (event.data.mode === Mode.REPLAY) {

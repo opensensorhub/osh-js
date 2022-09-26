@@ -24,6 +24,9 @@ import {Mode} from "../../Mode";
 class DelegateHandler {
     constructor(context) {
         this.context = context;
+        this.status = {
+            cancel: false
+        }
     }
 
     setContext(context) {
@@ -53,8 +56,32 @@ class DelegateHandler {
 class DelegateRealTimeHandler extends DelegateHandler {
 
     init(properties) {
-        super.init(properties);
-        this.context.handleData = (data) => this.handleData(data);
+        super.init({
+            ...properties,
+            startTime: 'now',
+            endTime: '2055-01-01'
+        });
+        this.status = {
+            cancel: false
+        }
+        this.context.handleData = (data) => {
+            if(!this.status.cancel) {
+                this.handleData(data);
+            }
+        }
+    }
+
+    async disconnect() {
+        this.status.cancel = true;
+        return new Promise(async (resolve, reject) => {
+            try {
+                await this.context.disconnect();
+            } catch (ex) {
+                console.error(ex);
+            } finally {
+                resolve();
+            }
+        });
     }
 }
 
@@ -67,7 +94,11 @@ class DelegateBatchHandler extends DelegateHandler {
 
     connect() {
         this.context.onChangeStatus(Status.FETCH_STARTED);
-        this.fetchData(this.properties.startTime, this.properties.endTime).then(data => this.handleData(data));
+        this.fetchData(this.properties.startTime, this.properties.endTime).then(data => {
+            if(!this.status.cancel) {
+                this.handleData(data);
+            }
+        });
         this.context.onChangeStatus(Status.FETCH_ENDED);
     }
 
@@ -81,15 +112,12 @@ class DelegateReplayHandler extends DelegateHandler {
         this.initialized = false;
         this.prefetchBatchDuration = 10000; // 10 sec
         this.prefetchNextBatchThreshold = 0.5; // 80%, fetch before the end
-        this.status = {
-            cancel: false
-        }
         this.startTime = undefined;
     }
 
     init(properties) {
         super.init(properties);
-        this.prefetchBatchDuration = properties.prefetchBatchDuration;
+        this.prefetchBatchDuration = properties.prefetchBatchDuration || this.prefetchBatchDuration;
         this.status = {
             cancel: false
         }
@@ -130,7 +158,6 @@ class DelegateReplayHandler extends DelegateHandler {
             }
             try {
                 let endFetchTimestamp = startTimestamp + durationToFetch;
-                console.log('ici')
                 this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
                 const data = await this.promise;
                 if (!this.status.cancel) {
@@ -221,20 +248,16 @@ class DelegateReplayHandler extends DelegateHandler {
             }
         });
     }
-
-
 }
 
 class TimeSeriesHandler extends DataSourceHandler {
 
-    constructor(context) {
-        super(context);
+    constructor() {
+        super();
         this.timeBroadcastChannel = null;
-        this.delegateReplayHandler = null;
-        this.delegateRealTimeHandler = null;
-        this.delegateBatchHandler = null;
         this.delegateHandler = undefined;
         this.promiseDisconnect = new Promise(resolve => {resolve()}); // default one
+        this.contexts = {};
     }
 
     async init(properties, topics, dataSourceId) {
@@ -246,11 +269,12 @@ class TimeSeriesHandler extends DataSourceHandler {
             version: this.version
         };
         this.setTopics(topics);
-        this.context = this.createContext(this.properties);
-        await this.updateDelegateHandler(properties);
+        this.contexts[this.properties.mode] = this.createContext(this.properties);
+        this.context = this.contexts[this.properties.mode];
         this.context.onChangeStatus = this.onChangeStatus.bind(this);
-        this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
         await this.context.init(this.properties);
+        await this.updateDelegateHandler(properties);
+        this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
         this.initialized = true;
     }
 
@@ -263,25 +287,13 @@ class TimeSeriesHandler extends DataSourceHandler {
             await this.delegateHandler.disconnect();
         }
         if (properties.mode === Mode.REAL_TIME) {
-            if(properties.startTime !== 'now') {
-                throw Error('The time is not correct, must be "now" for mode "Mode.REAL_TIME"');
-            }
-            if (!isDefined(this.delegateRealTimeHandler)) {
-                this.delegateRealTimeHandler = new DelegateRealTimeHandler(this.context);
-            }
+            this.delegateRealTimeHandler = new DelegateRealTimeHandler(this.context);
             this.delegateHandler = this.delegateRealTimeHandler;
         } else if (properties.mode === Mode.REPLAY) {
-            if(properties.startTime === 'now') {
-                throw Error('The time is not correct, must be "ISOdateStart/ISOdateEnd" for mode "Mode.REPLAY"');
-            }
-            if (!isDefined(this.delegateReplayHandler)) {
-                this.delegateReplayHandler = new DelegateReplayHandler(this.context);
-            }
+            this.delegateReplayHandler = new DelegateReplayHandler(this.context);
             this.delegateHandler = this.delegateReplayHandler;
         } else if(properties.mode === Mode.BATCH) {
-            if(!isDefined(this.delegateBatchHandler)) {
-                this.delegateBatchHandler = new DelegateBatchHandler(this.context);
-            }
+            this.delegateBatchHandler = new DelegateBatchHandler(this.context);
             this.delegateHandler = this.delegateBatchHandler;
         }
         this.delegateHandler.init(properties);
@@ -302,12 +314,14 @@ class TimeSeriesHandler extends DataSourceHandler {
                 ...properties,
                 version: this.version
             };
-            this.context = this.createContext(this.properties);
-            await this.updateDelegateHandler(this.properties);
-            // set the new context
-            this.delegateHandler.setContext(this.context);
+            if(!(this.properties.mode in this.contexts)) {
+                console.warn(`creating new context for mode ${this.properties.mode}`);
+                this.contexts[this.properties.mode] = this.createContext(this.properties)
+            }
+            this.context = this.contexts[this.properties.mode];
             this.context.onChangeStatus = this.onChangeStatus.bind(this);
             await this.context.init(this.properties);
+            await this.updateDelegateHandler(properties);
             this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
             this.connect();
         } catch (ex) {
@@ -369,7 +383,7 @@ class TimeSeriesHandler extends DataSourceHandler {
                     data: data[i],
                     version: this.context.properties.version
                 };
-                if(this.properties.timeShift !== 0) {
+                if(isDefined(this.properties.timeShift) && this.properties.timeShift !== 0) {
                     d.data.timestamp = d.data.timestamp + this.properties.timeShift;
                 }
                 results.push(d);
@@ -390,7 +404,7 @@ class TimeSeriesHandler extends DataSourceHandler {
             if(data.length > 0 ) {
                 this.timeBroadcastChannel.postMessage({
                     timestamp: data[data.length - 1].timestamp,
-                    type: EventType.TIME
+                    type: EventType.LAST_TIME
                 });
             }
         }

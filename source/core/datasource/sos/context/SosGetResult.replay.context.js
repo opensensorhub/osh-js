@@ -40,6 +40,7 @@ class SosGetResultReplayContext extends SosGetResultContext {
 
         // adds temporalFilter
         queryString += "&temporalFilter=phenomenonTime," + startTime + "/" + endTime;
+        // queryString += `&replaySpeed=${properties.replaySpeed}`;
 
         // TODO: server issue, waiting for fix
         // queryString += "&responseFormat=application/octet-stream";
@@ -57,6 +58,7 @@ class SosGetResultReplayContext extends SosGetResultContext {
                 const results = [];
                 await this.parser.templatePromise;
                 const data = await this.connector.doRequest('', this.getQueryString({
+                        ...this.properties,
                         ...properties,
                         startTime: startTime,
                         endTime: endTime

@@ -103,7 +103,7 @@ class DataSynchronizerAlgoRealtime extends DataSynchronizerAlgo {
     }
 
     checkVersion(datasource, dataBlock) {
-        if(!isDefined(datasource.version) && datasource.status !== Status.DISCONNECTED) {
+        if(datasource.status !== Status.DISCONNECTED) {
             return true;
         } else if(datasource.status === Status.DISCONNECTED && datasource.version !== dataBlock.version) {
             return false;

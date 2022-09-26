@@ -127,36 +127,35 @@ export default {
       init: false,
       lastSynchronizedTimestamp: -1,
       outOfSync: {},
-      waitForTimeChangedEvent: false
+      waitForTimeChangedEvent: false,
+      mode: undefined
     };
   },
   watch: {
     event(newValue) {
       this.$emit('event', {
         event: newValue,
-        replay: this.replay,
         startTime: this.startTime,
         endTime: this.endTime
       });
     }
   },
   beforeMount() {
-    console.log('REPLAY COMPONENT');
     assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     this.dataSourceObject = this.getDataSourceObject();
-    this.activateActions = (this.dataSourceObject.mode === Mode.REPLAY);
+    this.mode = this.dataSourceObject.mode;
   },
   updated() {
-    this.initComp();
+    // this.initComp();
   },
   mounted() {
     this.initComp();
   },
   methods: {
-    initComp() {
+    async initComp() {
       assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
       if (!this.init) {
-        this.dataSourceObject.isConnected().then(value => this.connected=value);
+        this.dataSourceObject.isConnected().then(value => this.connected = value);
         let stCurrentRefresh = this.getDataSourceObject().getStartTime() === 'now';
 
         let minTime = this.dataSourceObject.getMinTime();
@@ -183,8 +182,8 @@ export default {
         }
         this.maxTime = this.endTime;
 
-        if(stCurrentRefresh) {
-          this.dataSourceObject.setTimeRange(
+        if (stCurrentRefresh) {
+          await this.dataSourceObject.setTimeRange(
               new Date(this.minTime).toISOString(),
               new Date(this.maxTime).toISOString(),
               this.speed,
@@ -192,6 +191,8 @@ export default {
               Mode.REPLAY
           );
         }
+
+        this.activateActions = (this.dataSourceObject.mode === Mode.REPLAY);
 
         // compute skip time
         if ((this.skipTimeStep.endsWith('s'))) {
@@ -218,7 +219,7 @@ export default {
 
         this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
         this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
-        this.displayConsoleWarningIncompatibleVersionThrottle =  throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
+        this.displayConsoleWarningIncompatibleVersionThrottle = throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
         this.init = true;
       }
     },

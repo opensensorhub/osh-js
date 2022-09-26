@@ -4,93 +4,16 @@ const Prism = require('prismjs');
 const beautify = require('js-beautify').js;
 var Normalizer = require('prismjs/plugins/normalize-whitespace/prism-normalize-whitespace');
 
-var samples = [{
-        name: "FOI Locations (CesiumJS)",
-        description: "Display the location of several features of interest on a CesiumJS globe.",
-        url: "cesium-fois"
-    },
-    {
-        name: "Moving Location (CesiumJS)",
-        description: "Display a moving marker on a CesiumJS globe, tracking the current location of a vehicle.",
-        url: "cesium-location"
-    },
-    {
-        name: "Moving Location with custom viewer properties(CesiumJS)",
-        description: "Display a moving marker on a CesiumJS globe, tracking the current location of a vehicle and define some custom cesium viewer properties.",
-        url: "cesium-location-opts"
-    },
-    {
-        name: "Moving Location  + path (CesiumJS)",
-        description: "Display a moving marker and a polyline on a CesiumJS map, showing both the current location of a vehicle and the historical track.",
-        url: "cesium-location-path"
-    },
-    {
-        name: "Cesium + Frustum Layer",
-        description: "Display a frustum from MISB data into Cesium Viewer",
-        url: "cesium-frustum"
-    },
-    {
-        name: "Moving Location (Deck.gl)",
-        description: "Display a moving marker on a Deck.gl canvas, tracking the current location of a vehicle.",
-        url: "deckgl-location"
-    },
-    {
-        name: "Simple Chart (Chart.js)",
-        description: "Display a chart with time series of weather measurements.",
-        url: "chart"
-    },
-    {
-        name: "Moving Location (Leaflet)",
-        description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle.",
-        url: "leaflet-location"
-    },
-    {
-        name: "FOI Locations (Leaflet)",
-        description: "Display the location of several features of interest on a Leaflet map.",
-        url: "leaflet-location-fois",
-        screenshot: "images/screenshots/leaflet-fois.png"
-    },
-    {
-        name: "Moving Location + Heading (Leaflet)",
-        description: "Display a moving marker on a Leaflet map, tracking the current location and heading of a vehicle.",
-        url: "leaflet-location-heading"
-    },
-    {
-        name: "Moving Location + Path (Leaflet)",
-        description: "Display a moving marker and a polyline on a Leaflet map, showing both the current location of a vehicle and the historical track.",
-        url: "leaflet-location-path"
-    },
-    {
-        name: "Moving Location (OpenLayers)",
-        description: "Display a moving marker on an OpenLayers map, tracking the current location of a vehicle.",
-        url: "openlayers-location"
-    },
-    {
-        name: "Moving Location + Heading (OpenLayers)",
-        description: "Display a moving marker on an OpenLayers map, tracking the current location and heading of a vehicle.",
-        url: "openlayers-location-heading"
-    },
-    {
-        name: "Moving Location + Path + Heading (Mapbox)",
-        description: "Display a moving marker and a polyline on a Mapbox map, showing both the current location of a vehicle and the historical track.",
-        url: "mapbox-location-path-heading"
-    },
-    {
-        name: "Moving Location + Heading + Video (Leaflet)",
-        description: "Display a moving marker on an Leaflet map, tracking the current location of a vehicle and its corresponding" +
-            "video. Create duplicated dataSources running at different time to check there is no collision between data. The " +
-            "2 datasets are using a DataSynchronizer object. Each one should be independent.",
-        url: "video-map-multiple-datasource"
-    },
-    {
-        name: "Z-Index ordering",
-        description: "Display a moving marker on an Leaflet, DeckGl,Cesium and Openlayers map using a z-Index between markers",
-        url: "zIndex-location-path"
-    },
+var samples = [
     {
         name: "DataSource Synchronized",
         description: "Display the data of 3 differents kind of datasources(Video, Gps and Orientation) using time synchronization algorithm",
         url: "datasources-synchronized"
+    },
+    {
+        name: "DataSource Audio",
+        description: "Display the data using the audio datasource",
+        url: "datasource-audio"
     },
     {
         name: "DataSource File",
@@ -103,57 +26,24 @@ var samples = [{
         url: "datasource-sweapifetch"
     },
     {
-        name: "Multiple Video DataSource Synchronized",
-        description: "Display the data of 3 differents video datasources using time synchronization algorithm",
-        url: "multi-datasources-synchronized"
+        name: "DataSource SweApiFetch Json",
+        description: "Display data using the SweApiFetch datasource in JSON format",
+        url: "datasource-swejson"
     },
     {
-        name: "Resizable H264 Video",
-        description: "Display an H264 video in a simple resizable DIV using our FFMPEG-JS decoder.",
-        url: "video-h264"
+        name: "DataSource Video",
+        description: "Display the data using the audio datasource",
+        url: "datasource-video"
     },
     {
-        name: "H264 Video using WebCodecAPI",
-        description: "Display an H264 video in a simple DIV using Experimental Hardware WebCodecAPI decoder.",
-        url: "video-h264-webcodec-api"
+        name: "DataSource Synchronized",
+        description: "Display the data using the multiple datasources synchronized",
+        url: "datasources-synchronized"
     },
     {
-        name: "H264 Image draping Video",
-        description: "Display an H264 video in a simple DIV using our FFMPEG-JS decoder and drap the decoded frame onto the terrain.",
-        url: "video-h264-draping"
-    },
-    {
-        name: "Resizable MJPEG Video",
-        description: "Display an MJPEG video in a simple resizable DIV.",
-        url: "video-mjpeg"
-    },
-    {
-        name: 'VueJs component: Multiple Video with control',
-        description: 'Display multiple videos using forward/pause/play/backward control using the same DataSynchronizer',
-        url: 'video-with-control-vuejs-synchronized',
-        code: 'vue/App_examples/video-with-control-vuejs-synchronized.vue'
-    },
-    {
-        name: 'VueJs component: Multiple Video data with control',
-        description: 'Display multiple videos data using forward/pause/play/backward control using the same DataSynchronizer',
-        url: 'videodata-with-control-vuejs-synchronized',
-        code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
-    },
-    {
-        name: 'AVL data using multiple ids',
-        description: 'Display multiple markers corresponding to a unique id provided by the same DataSource',
-        url: 'avl'
-    },
-    {
-        name: 'AVL data using multiple ids and Time controller in VueJS',
-        description: 'Display multiple markers corresponding to a unique id provided by the same DataSource with a Time controller in VueJS',
-        url: 'avl-with-control-vuejs',
-        code: 'vue/App_examples/avl-with-control-vuejs.vue'
-    },
-    {
-        name: 'ISA Biological & MISB UAS sensor data using MQTT protocol',
-        description: 'Display biological and GPS sensors from ISA Biological Sensor & MISB UAS using MQTT protocol',
-        url: 'mqtt'
+        name: "DataSource Synchronized and dynamic actions",
+        description: "Display the data using the multiple datasources synchronized with connect/disconnect dynamic actions",
+        url: "datasources-synchronized-dynamic"
     },
     {
         name: 'ISA Biological & MISB UAS sensor data using MQTT utility class',
@@ -161,45 +51,21 @@ var samples = [{
         url: 'mqtt-utility'
     },
     {
-        name: "Chart with Time controller (Chart.js)",
-        description: "Display a chart with time series of weather measurements and time controller.",
-        url: "chart-archive-realtime",
-        code: 'vue/App_examples/chart-archive-realtime.vue'
+        name: "Multiple Video DataSource Synchronized",
+        description: "Display the data of 3 differents video datasources using time synchronization algorithm",
+        url: "multi-datasources-synchronized"
     },
     {
-        name: "Chart with Time controller (Chart.js) in batch mode",
-        description: "Display a chart using full batch mode with time series of weather measurements and time controller.",
-        url: "chart-archive-realtime-batch",
-        code: 'vue/App_examples/chart-archive-realtime-batch.vue'
+        name: 'Switch between Replay & realtime using SOS or SWEAPI service',
+        description: 'Switch between Replay & realtime using SOS or SWEAPI service',
+        url: 'switch-realtime-batch'
     },
     {
-        name: "Chart with Time controller and Synchronizer (Chart.js)",
-        description: "Display a chart with time series of weather measurements and time controller.",
-        url: "chart-archive-realtime-synchronized",
-        code: 'vue/App_examples/chart-archive-realtime-synchronized.vue'
-    },
-    {
-        name: "Audio WebCodec/FFmpeg.js decoding",
-        description: "Listen audio stream using WebCodec/FFmpeg.js",
-        url: "audio"
-    },
-    {
-        name: "Audio WebCodec/FFmpeg.js decoding with time controller",
-        description: "Listen audio stream using WebCodec/FFmpeg.js with time controller",
-        url: 'audio-with-control-vuejs',
-        code: 'vue/App_examples/audio-with-control-vuejs.vue'
-    },
-    {
-        name: "Audio & Video WebCodec/FFmpeg.js decoding with time controller",
-        description: "Listen audio stream using WebCodec/FFmpeg.js with time controller and associated Video",
-        url: 'audio-video-synchronized-with-control-vuejs',
-        code: 'vue/App_examples/audio-video-synchronized-with-control-vuejs.vue'
-    },
-    {
-        name: "Tasking simulated drone using SweApi",
-        description: "Tasking simulated drone using SweApi, display drone position and control status",
-        url: 'tasking',
-    },
+        name: 'VueJs component: Multiple Video data with control',
+        description: 'Display multiple videos data using forward/pause/play/backward control using the same DataSynchronizer',
+        url: 'videodata-with-control-vuejs-synchronized',
+        code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
+    }
 ];
 
 // load sample cards

@@ -30,6 +30,7 @@ class SensorWebApiFilter {
     toQueryString(includes= [], excludes = []) {
         let queryString = '';
         let separator = '';
+        excludes.push('replaySpeed');
         for (let queryParameter in this.props) {
             if(excludes.includes(queryParameter)) {
                 continue;

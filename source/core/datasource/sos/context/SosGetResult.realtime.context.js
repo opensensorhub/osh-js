@@ -81,6 +81,10 @@ class SosGetResultRealTimeContext extends SosGetResultContext {
     async parseData(messages) {
         return this.parser.parseDataBlock(messages);
     }
+
+    onChangeStatus(status) {
+        console.log(status)
+    }
 }
 
 export default SosGetResultRealTimeContext;

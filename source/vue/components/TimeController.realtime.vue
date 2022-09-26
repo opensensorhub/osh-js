@@ -97,22 +97,21 @@ export default {
     }
   },
   beforeMount() {
-    console.log('REAL TIME COMPONENT');
     assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     this.dataSourceObject = this.getDataSourceObject();
   },
   updated() {
-    this.initComp();
+    // this.initComp();
   },
   mounted() {
     this.initComp();
   },
   methods: {
-    initComp() {
+    async initComp() {
       if (!this.init) {
         let stCurrentRefresh = this.getDataSourceObject().getStartTime() !== 'now';
-        if(stCurrentRefresh) {
-          this.dataSourceObject.setTimeRange(
+        if (stCurrentRefresh) {
+          await this.dataSourceObject.setTimeRange(
               'now',
               new Date("2055-01-01T00:00:00Z").toISOString(),
               1.0,
@@ -123,7 +122,7 @@ export default {
 
         assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
         this.createTimeBc();
-        this.displayConsoleWarningIncompatibleVersionThrottle =  throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
+        this.displayConsoleWarningIncompatibleVersionThrottle = throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
         this.init = true;
       }
     },
@@ -198,29 +197,6 @@ export default {
     },
     async toggleReplay() {
       this.on('toggle-replay');
-      /*
-      this.resetMasterTime();
-      if (!this.replay) {
-        this.dataSourceObject.setTimeRange(
-            'now',
-            new Date("2055-01-01T00:00:00Z").toISOString(),
-            1.0,
-            true,
-            Mode.REAL_TIME
-        );
-        document.getElementById(this.id).style.display = 'none';
-      } else {
-        this.dataSourceObject.setTimeRange(
-            new Date(this.startTime).toISOString(),
-            new Date(this.endTime).toISOString(),
-            this.speed,
-            true,
-            this.initialMode
-        );
-        document.getElementById(this.id).style.display = 'block';
-      }
-      this.$emit('event', 'end');
-      this.$emit('replay', this.replay);*/
     },
     on(eventName) {
       this.$emit('event', {

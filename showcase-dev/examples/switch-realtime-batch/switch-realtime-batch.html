@@ -1,0 +1,40 @@
+<style>
+  #char-container {
+    width:100%;
+    height:90%;
+  }
+
+  .top {
+      width: 100%;
+  }
+
+  textarea {
+      resize: none;
+      height: 50%;
+      width: 100%;
+      /*overflow: scroll;*/
+      /*white-space: pre;*/
+      /*overflow-wrap: normal;*/
+  }
+
+  textarea:invalid {
+      border: 2px dashed red;
+  }
+
+  textarea:valid {
+      border: 2px solid lime;
+  }
+</style>
+<div class="top">
+    <select name="services" id="services" size="1">
+        <option value=""></option>
+        <option value="sos">sos</option>
+        <option value="sweapi">sweapi</option>
+    </select>
+    <button id="replay">Replay</button>
+    <button id="realtime">RealTime</button>
+</div>
+<div>
+    <div id="master-time"></div>
+    <pre  id="data-content"></pre>
+</div>

@@ -3,6 +3,7 @@ import SweApiResultParser from "./SweApiResult.parser";
 import SweJsonParser from "../common/SweJsonParser.parser";
 import SweBinaryParser from "../common/SweBinaryParser.parser";
 import SweCsvParser from "../common/SweCsvParser.parser";
+import {isDefined} from "../../../utils/Utils";
 
 class SweApiResultDatastreamParser extends SweApiResultParser {
     constructor(dataObject) {
@@ -10,6 +11,9 @@ class SweApiResultDatastreamParser extends SweApiResultParser {
     }
 
     init(schema, format) {
+        if(format in this.parsers && isDefined(this.parsers[format].parser)) {
+            return this.parsers[format].parser;
+        }
         if(format === 'application/om+json') {
             //resultSchema
             this.parsers[format].parser = new OmJsonParser(schema.resultSchema);

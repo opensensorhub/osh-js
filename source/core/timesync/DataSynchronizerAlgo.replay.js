@@ -16,6 +16,7 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         const ds = this.dataSourceMap[dataSourceId];
         const lastData = dataBlocks[dataBlocks.length-1];
         if (!this.checkVersion(ds, lastData)) {
+            console.warn(`[DataSynchronizer] incompatible version ${ds.version} ~ ${lastData.version}, skipping data`);
             return;
         }
 
@@ -103,11 +104,16 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
 
     checkStart() {
         if(!isDefined(this.interval)) {
-            let fetchStartOk = true;
+            let nbDatasourcesFetchedOk = 0;
+            let totalDataSources = Object.keys(this.dataSourceMap).length;
+
             for(let dataSourceID in this.dataSourceMap) {
-                fetchStartOk &= (this.dataSourceMap[dataSourceID].status === Status.FETCH_STARTED);
+                 if(this.dataSourceMap[dataSourceID].status === Status.FETCH_STARTED) nbDatasourcesFetchedOk++;
             }
-            if(fetchStartOk) {
+
+            console.warn(`[Synchronizer] Fetched ${nbDatasourcesFetchedOk}/${totalDataSources} datasources`);
+            if(nbDatasourcesFetchedOk === totalDataSources) {
+                console.warn('Starting Replay Algorithm...');
                 this.processData();
             }
         }
