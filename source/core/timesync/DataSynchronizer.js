@@ -228,7 +228,7 @@ class DataSynchronizer {
      /**
       * Adds a new DataSource object to the list of datasources to synchronize.
       * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
-      * @param {DataSourceDatasource} dataSource - the new datasource to add
+      * @param {Datasource} dataSource - the new datasource to add
       * @param [lazy=false] lazy - add to current running synchronizer
       */
     async addDataSource(dataSource, lazy = false) {

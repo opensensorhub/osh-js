@@ -45,13 +45,7 @@ For example, for the application/json:
 
 <DocumentationLoad path="/guide/api/SosGetResult.html"/>
 
-### Example
-
-<<< @/../../showcase/examples/datasource-swejson/datasource-swejson.js#snippet_datasource_swejson
-
 <hr class="demo-hr"/>
-
-<Example path="/showcase/datasource-swejson.html" style="border:none;width:100%;height: 500px" />
 
 ## Examples: Binary format
 
@@ -85,11 +79,3 @@ The next bytes are corresponding to a full NAL unit.
   }
 }  
 ```
-
-## Example
-
-<<< @/../../showcase/examples/datasource-video/datasource-video.js#snippet_datasource_video
-
-<hr class="demo-hr"/>
-
-<Example path="/showcase/datasource-video.html" style="border:none;width:100%;height: 500px" />

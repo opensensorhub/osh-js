@@ -55,7 +55,7 @@ class DataSynchronizerAlgo {
 
     /**
      * Add dataSource to be synchronized
-     * @param {DataSourceDatasource} dataSource - the dataSource to synchronize
+     * @param {Datasource} dataSource - the dataSource to synchronize
      */
     addDataSource(dataSource) {
         throw Error('Should be overridden');

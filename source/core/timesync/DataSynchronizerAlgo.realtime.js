@@ -86,7 +86,7 @@ class DataSynchronizerAlgoRealtime extends DataSynchronizerAlgo {
 
     /**
      * Add dataSource to be synchronized
-     * @param {DataSourceDatasource} dataSource - the dataSource to synchronize
+     * @param {Datasource} dataSource - the dataSource to synchronize
      */
     addDataSource(dataSource) {
         this.dataSourceMap[dataSource.id] = {

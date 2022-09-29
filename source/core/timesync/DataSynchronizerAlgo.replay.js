@@ -15,6 +15,7 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
 
         const ds = this.dataSourceMap[dataSourceId];
         const lastData = dataBlocks[dataBlocks.length-1];
+        const firstData = dataBlocks[0];
         if (!this.checkVersion(ds, lastData)) {
             console.warn(`[DataSynchronizer] incompatible version ${ds.version} ~ ${lastData.version}, skipping data`);
             return;

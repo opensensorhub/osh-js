@@ -12,7 +12,7 @@ osh-js can be integrated with plain JavaScript or with different module loaders.
 
 <script src="path/to/osh-js/dist/osh-js.js"></script>
 <script>
-    const dataSource = new DataSourceDatasource({...});
+    const dataSource = new Datasource({...});
 </script>
 ```
 

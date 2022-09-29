@@ -17,12 +17,13 @@ let gpsDataSource = new SosGetResult("android-GPS", {
   mode: Mode.REPLAY
   // responseFormat: 'application/octet-stream',
 });
-// #endregion snippet_leaflet_location_datasource
 
 const dataSynchronizer = new DataSynchronizer({
     replaySpeed: 2,
     dataSources: [gpsDataSource]
 });
+
+// #endregion snippet_leaflet_location_datasource
 
 // #region snippet_leaflet_location_marker
 // style it with a moving point marker

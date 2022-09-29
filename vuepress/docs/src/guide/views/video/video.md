@@ -96,7 +96,7 @@ By default, the following profiles are used for the codecs:
 - 'vp8': 'vp08.00.41.08',
 - 'h264': 'avc1.42e01e'
 
-The codec string can be passed in parameter but the the profile cannot be overrided yet.
+The codec string can be passed in parameter but the the profile cannot be overridden yet.
 
 By default, the h264 codec is used.
 
@@ -104,11 +104,3 @@ By default, the h264 codec is used.
 
 The WebCodec API is used to decode frame using the VideoDecoder. In addition, the VideoDecoder is used within a webWorker to optimize performance.
 
-### Example
-
-<<< @/../../showcase/examples/video-h264-webcodec-api/video-h264-webcodec-api.js
-
-<hr class="demo-hr"/>
-<br/><br/>
-
-<Example path="/showcase/video-h264-webcodec-api.html" style="border:none;width:100%;height: 500px" />
