@@ -129,6 +129,7 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
         }
         this.checkStart();
+        this.checkEnd();
     }
 
     checkStart() {
@@ -148,6 +149,21 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         }
     }
 
+    checkEnd() {
+        let nbDatasourcesFetchedOk = 0;
+        let totalDataSources = Object.keys(this.dataSourceMap).length;
+
+        for(let dataSourceID in this.dataSourceMap) {
+            if(this.dataSourceMap[dataSourceID].status === Status.DISCONNECTED) nbDatasourcesFetchedOk++;
+        }
+
+        console.warn(`[Synchronizer] Ended ${nbDatasourcesFetchedOk}/${totalDataSources} datasources`);
+        if(nbDatasourcesFetchedOk === totalDataSources) {
+            console.warn('Stopping Replay Algorithm...');
+            this.onEnd();
+        }
+    }
+
     reset() {
         this.tsRun = undefined;
         console.log('reset synchronizer algo')
@@ -163,6 +179,8 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         currentDs.status= Status.DISCONNECTED;
         currentDs.version = undefined;
     }
+
+    onEnd() {}
 }
 
 export default DataSynchronizerAlgoReplay;

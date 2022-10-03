@@ -1,15 +1,105 @@
-/******/ (function() { // webpackBootstrap
-/******/ 	"use strict";
-var __webpack_exports__ = {};
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-;// CONCATENATED MODULE: ../../../source/core/Constants.js
+"use strict";
+// ESM COMPAT FLAG
+__webpack_require__.r(__webpack_exports__);
+
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/Constants.js
 const DATA_SYNCHRONIZER_TOPIC = 'data-synchronizer-';
 const TIME_SYNCHRONIZER_TOPIC = 'data-synchronizer-time-';
 const DATASOURCE_DATA_TOPIC = 'datasource-data-';
 const DATASOURCE_TIME_TOPIC = 'datasource-time-';
 const FFMPEG_VIEW_DECODE_TOPIC = 'ffmpeg-decode-';
 const MAGIC_END_PACKET = 'magic-packet';
-;// CONCATENATED MODULE: ../../../source/core/event/EventType.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/event/EventType.js
 const EventType = {
   DATA: 'data',
   LAST_TIME: 'last-time',
@@ -17,7 +107,7 @@ const EventType = {
   STATUS: 'status',
   TIME_CHANGED: 'time-changed'
 };
-;// CONCATENATED MODULE: ../../../source/core/utils/Utils.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/utils/Utils.js
 /***************************** BEGIN LICENSE BLOCK ***************************
 
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
@@ -581,7 +671,7 @@ function rgbaToArray(str) {
   let values = str.substr(startIdxValue, endIdxValue - startIdxValue);
   return values.split(',').map(Number);
 }
-;// CONCATENATED MODULE: ../../../source/core/datasource/Mode.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/datasource/Mode.js
 /**
  * Enum for datasource mode.
  * @readonly
@@ -592,7 +682,7 @@ const Mode = {
   BATCH: "batch",
   REAL_TIME: "realTime"
 };
-;// CONCATENATED MODULE: ../../../source/core/connector/Status.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/connector/Status.js
 /**
  * Enum for connection status.
  * @readonly
@@ -607,11 +697,11 @@ const Status = {
   CLOSED: "closed",
   CLOSED_ERROR: "closed-error"
 };
-;// CONCATENATED MODULE: ../../../source/core/timesync/DataSynchronizerAlgo.js
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/timesync/DataSynchronizerAlgo.js
 
 
 
-class DataSynchronizerAlgo {
+class DataSynchronizerAlgo_DataSynchronizerAlgo {
   constructor(dataSources, timerResolution = 5) {
     this.dataSourceMap = {};
     this.tsRun = undefined;
@@ -699,13 +789,13 @@ class DataSynchronizerAlgo {
 
 }
 
-/* harmony default export */ var timesync_DataSynchronizerAlgo = (DataSynchronizerAlgo);
-;// CONCATENATED MODULE: ../../../source/core/timesync/DataSynchronizerAlgo.replay.js
+/* harmony default export */ var timesync_DataSynchronizerAlgo = (DataSynchronizerAlgo_DataSynchronizerAlgo);
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/timesync/DataSynchronizerAlgo.replay.js
 
 
 
 
-class DataSynchronizerAlgoReplay extends timesync_DataSynchronizerAlgo {
+class DataSynchronizerAlgo_replay_DataSynchronizerAlgoReplay extends timesync_DataSynchronizerAlgo {
   constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
     super(dataSources, replaySpeed, timerResolution);
     this.replaySpeed = replaySpeed;
@@ -812,6 +902,7 @@ class DataSynchronizerAlgoReplay extends timesync_DataSynchronizerAlgo {
     }
 
     this.checkStart();
+    this.checkEnd();
   }
 
   checkStart() {
@@ -832,6 +923,22 @@ class DataSynchronizerAlgoReplay extends timesync_DataSynchronizerAlgo {
     }
   }
 
+  checkEnd() {
+    let nbDatasourcesFetchedOk = 0;
+    let totalDataSources = Object.keys(this.dataSourceMap).length;
+
+    for (let dataSourceID in this.dataSourceMap) {
+      if (this.dataSourceMap[dataSourceID].status === Status.DISCONNECTED) nbDatasourcesFetchedOk++;
+    }
+
+    console.warn(`[Synchronizer] Ended ${nbDatasourcesFetchedOk}/${totalDataSources} datasources`);
+
+    if (nbDatasourcesFetchedOk === totalDataSources) {
+      console.warn('Stopping Replay Algorithm...');
+      this.onEnd();
+    }
+  }
+
   reset() {
     this.tsRun = undefined;
     console.log('reset synchronizer algo');
@@ -849,15 +956,17 @@ class DataSynchronizerAlgoReplay extends timesync_DataSynchronizerAlgo {
     currentDs.version = undefined;
   }
 
+  onEnd() {}
+
 }
 
-/* harmony default export */ var DataSynchronizerAlgo_replay = (DataSynchronizerAlgoReplay);
-;// CONCATENATED MODULE: ../../../source/core/timesync/DataSynchronizerAlgo.realtime.js
+/* harmony default export */ var DataSynchronizerAlgo_replay = (DataSynchronizerAlgo_replay_DataSynchronizerAlgoReplay);
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/timesync/DataSynchronizerAlgo.realtime.js
 
 
 
 
-class DataSynchronizerAlgoRealtime extends timesync_DataSynchronizerAlgo {
+class DataSynchronizerAlgo_realtime_DataSynchronizerAlgoRealtime extends timesync_DataSynchronizerAlgo {
   push(dataSourceId, dataBlocks) {
     if (dataBlocks.length === 0) {
       return;
@@ -1007,8 +1116,8 @@ class DataSynchronizerAlgoRealtime extends timesync_DataSynchronizerAlgo {
 
 }
 
-/* harmony default export */ var DataSynchronizerAlgo_realtime = (DataSynchronizerAlgoRealtime);
-;// CONCATENATED MODULE: ../../../source/core/timesync/DataSynchronizer.worker.js
+/* harmony default export */ var DataSynchronizerAlgo_realtime = (DataSynchronizerAlgo_realtime_DataSynchronizerAlgoRealtime);
+// CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH/osh-js/source/core/timesync/DataSynchronizer.worker.js
 
 
 
@@ -1021,7 +1130,7 @@ let dataSynchronizerAlgo;
 
 let init = false;
 let dataSourceBroadCastChannel = null;
-let lastData = undefined;
+let DataSynchronizer_worker_lastData = undefined;
 const dataSources = {};
 let timeBroadcastChannel = null;
 let topicTime;
@@ -1033,6 +1142,7 @@ let cId;
 let lastTime = -1;
 let version = -1;
 let promise;
+let DataSynchronizer_worker_masterTimeRefreshRate;
 
 self.onmessage = async (event) => {
     if(isDefined(promise)) {
@@ -1054,6 +1164,7 @@ async function handleMessage(event) {
                         event.data.replaySpeed,
                         event.data.timerResolution
                     );
+                    dataSynchronizerAlgo.onEnd = onEnd;
                 } else {
                     dataSynchronizerAlgo = new DataSynchronizerAlgo_realtime(
                         event.data.dataSources,
@@ -1067,7 +1178,8 @@ async function handleMessage(event) {
                 topicData = event.data.topics.data;
                 topicTime = event.data.topics.time;
                 initBroadcastChannel(topicData, topicTime);
-                startMasterTimeInterval(event.data.masterTimeRefreshRate);
+                DataSynchronizer_worker_masterTimeRefreshRate = event.data.masterTimeRefreshRate;
+                startMasterTimeInterval(DataSynchronizer_worker_masterTimeRefreshRate);
             } else if (event.data.message === 'add' && event.data.dataSources) {
                 addDataSources(event.data.dataSources);
             } else if (event.data.message === 'current-time') {
@@ -1095,6 +1207,7 @@ async function handleMessage(event) {
                         event.data.replaySpeed,
                         dataSynchronizerAlgo.timerResolution
                     );
+                    dataSynchronizerAlgo.onEnd = onEnd;
                 } else {
                     dataSynchronizerAlgo = new DataSynchronizerAlgo_realtime(
                         datasources,
@@ -1104,6 +1217,7 @@ async function handleMessage(event) {
 
                 dataSynchronizerAlgo.onData = onData;
             } else if (event.data.message === 'data') {
+                checkMasterTime();
                 if (dataSynchronizerAlgo !== null) {
                     dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
                 }
@@ -1141,6 +1255,7 @@ function initBroadcastChannel(dataTopic, timeTopic) {
 
     dataSourceBroadCastChannel = new BroadcastChannel(dataTopic);
     dataSourceBroadCastChannel.onmessage = async (event) => {
+        checkMasterTime();
         if(event.data.type === EventType.DATA) {
             dataSynchronizerAlgo.push(event.data.dataSourceId,event.data.values);
         } else if(event.data.type === EventType.STATUS) {
@@ -1176,13 +1291,22 @@ function addDataSource(dataSource) {
     }
 }
 
+function checkMasterTime() {
+    if(!isDefined(masterTimeInterval)) {
+        startMasterTimeInterval(DataSynchronizer_worker_masterTimeRefreshRate);
+    }
+}
+async function onEnd() {
+    clearInterval(masterTimeInterval);
+    masterTimeInterval = undefined;
+}
 async function onData(dataSourceId, dataBlock) {
-    if((version === -1 && (isDefined(lastData) ) && dataBlock.version === lastData.dataBlock.version)){
+    if((version === -1 && (isDefined(DataSynchronizer_worker_lastData) ) && dataBlock.version === DataSynchronizer_worker_lastData.dataBlock.version)){
         return;
     }
 
     version = dataBlock.version;
-    lastData = {
+    DataSynchronizer_worker_lastData = {
         dataSourceId: dataSourceId,
         dataBlock: dataBlock
     };
@@ -1200,32 +1324,35 @@ self.onclose = function() {
 
 let masterTime;
 function startMasterTimeInterval(masterTimeRefreshRate) {
-    setInterval(() => {
-        // check version
-        if (!isDefined(lastData) || version !== lastData.dataBlock.version || version === -1) {
-            return;
-        }
-        cTime = lastData.dataBlock.data.timestamp;
-        cId = lastData.dataSourceId;
+    if (!isDefined(masterTimeInterval)) {
+        masterTimeInterval = setInterval(() => {
+            // check version
+            if (!isDefined(DataSynchronizer_worker_lastData) || version !== DataSynchronizer_worker_lastData.dataBlock.version || version === -1) {
+                return;
+            }
+            cTime = DataSynchronizer_worker_lastData.dataBlock.data.timestamp;
+            cId = DataSynchronizer_worker_lastData.dataSourceId;
 
-        if ((cTime !== -1 && lastTime === -1) || (lastTime !== -1 && cTime !== lastTime)) { // does not send the same data twice
-            timeBroadcastChannel.postMessage({
-                timestamp: cTime,
-                dataSourceId: cId,
-                type: EventType.LAST_TIME
-            });
-        }
-        lastTime = cTime;
+            if ((cTime !== -1 && lastTime === -1) || (lastTime !== -1 && cTime !== lastTime)) { // does not send the same data twice
+                timeBroadcastChannel.postMessage({
+                    timestamp: cTime,
+                    dataSourceId: cId,
+                    type: EventType.LAST_TIME
+                });
+            }
+            lastTime = cTime;
 
-        masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
-        if(isDefined(masterTime)) {
-            timeBroadcastChannel.postMessage({
-                timestamp: masterTime,
-                type: EventType.MASTER_TIME
-            });
-        }
-    }, masterTimeRefreshRate);
+            masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
+            if (isDefined(masterTime)) {
+                timeBroadcastChannel.postMessage({
+                    timestamp: masterTime,
+                    type: EventType.MASTER_TIME
+                });
+            }
+        }, masterTimeRefreshRate);
+    }
 }
 
-/******/ })()
-;
+
+/***/ })
+/******/ ]);
