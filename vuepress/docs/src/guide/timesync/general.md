@@ -47,3 +47,6 @@ It also returns a time synchronization data defined by `TIME_SYNCHRONIZER_TOPIC`
 
 The `TIME_SYNCHRONIZER_TOPIC` constant is defined from the constant package `'osh-js/core/Constants'`
 
+### Example
+
+<<< @/../../showcase-dev/examples/datasource-swejson/datasource-swejson.js#snippet_datasource_swejson

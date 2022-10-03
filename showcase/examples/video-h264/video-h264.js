@@ -4,7 +4,7 @@ import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import {Mode} from "osh-js/core/datasource/Mode";
 
-const REPLAY_SPEED = 10;
+const REPLAY_SPEED = 2.5;
 
 // create data source for UAV camera
 let videoDataSource = new SosGetResult("drone-Video", {

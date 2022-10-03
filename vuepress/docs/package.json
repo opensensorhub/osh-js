@@ -9,8 +9,9 @@
   },
   "repository": "/vuepress",
   "scripts": {
-    "init-deps": "NODE_OPTIONS='--max-old-space-size=8192' yarn install && yarn build-showcase && yarn doc",
+    "init-deps": "NODE_OPTIONS='--max-old-space-size=8192' yarn install && yarn build-showcase && yarn build-showcase-dev && yarn doc",
     "build-showcase": "yarn install --cwd ../../showcase/ && rm -fr ../../showcase/dist && yarn --cwd ../../showcase/ prod",
+    "build-showcase-dev": "yarn install --cwd ../../showcase-dev/ && rm -fr ../../showcase-dev/dist && yarn --cwd ../../showcase-dev/ prod",
     "dev": "vuepress dev src",
     "prod": "NODE_OPTIONS='--max-old-space-size=8192' yarn init-deps && vuepress build src",
     "doc": "yarn  --cwd ../../ documentation"

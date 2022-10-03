@@ -85,3 +85,10 @@ Result =  /api/datastreams/gal7w6j6v7n9/observations
   ]
 }
 ```
+## Example
+
+<<< @/../../showcase-dev/examples/datasource-sweapifetch/datasource-sweapifetch.js#snippet_datasource_sweapifetch
+
+<hr class="demo-hr"/>
+
+<Example path="/showcase-dev/datasource-sweapifetch.html" style="border:none;width:100%;height: 200px" />
