@@ -150,121 +150,6 @@
 
         <tr>
             
-                <td class="name"><code>timeShift</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">fix some problem with some android devices with some timestamp shift to 16 sec</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>bufferingTime</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-
-            <td class="description last">defines the time during the data has to be buffered. Useful only when used with DataSynchronizer</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>timeOut</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-
-            <td class="description last">defines the limit time before data has to be skipped. Useful only when used with DataSynchronizer</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>protocol</code></td>
             
 
@@ -293,7 +178,7 @@
                 </td>
             
 
-            <td class="description last">defines the protocol of the datasource. @see <a href="DataConnector.html">DataConnector</a></td>
+            <td class="description last">defines the protocol of the datasource. @see <a href="DataConnector.html">DataConnector</a>, 'http', 'ws', 'mqtt', 'file', 'topic'</td>
         </tr>
 
     
@@ -328,14 +213,14 @@
                 </td>
             
 
-            <td class="description last">the endpoint url</td>
+            <td class="description last">the endpoint url, this property is ignored in case of using 'mqtt' protocol, the properties.mqttOpts.endpointUrl will be used instead</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>service</code></td>
+                <td class="name"><code>collection</code></td>
             
 
             <td class="type">
@@ -363,20 +248,20 @@
                 </td>
             
 
-            <td class="description last">the service</td>
+            <td class="description last">the collection, /procedures, /fois, /observations, /tasks, /datastreams/4778/obs</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>offeringID</code></td>
+                <td class="name"><code>tls</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Boolean</span>
 
 
             
@@ -398,151 +283,7 @@
                 </td>
             
 
-            <td class="description last">the offeringID</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>observedProperty</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the observed property</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>startTime</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the start time (ISO format)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>endTime</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the end time (ISO format)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>replaySpeed</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    1
-                
-                </td>
-            
-
-            <td class="description last">the replay factor</td>
+            <td class="description last">defines if use secure TLS connection</td>
         </tr>
 
     
@@ -576,23 +317,64 @@
             
                 <td class="default">
                 
+                    application/om+json
+                
                 </td>
             
 
-            <td class="description last">the response format (e.g video/mp4)</td>
+            <td class="description last">the response format (e.g application/om+json)</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>reconnectTimeout</code></td>
+                <td class="name"><code>prefetchBatchSize</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Number</span>
+<span class="param-type">Array.&lt;String></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1000000
+                
+                </td>
+            
+
+            <td class="description last">Number of elements to prefetch at a time</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>prefetchBatchDuration</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;String></span>
 
 
             
@@ -618,7 +400,7 @@
                 </td>
             
 
-            <td class="description last">the time before reconnecting (in milliseconds)</td>
+            <td class="description last">Duration before prefetching the next batch. N.b the next batch will be prefetched at 80% of this duration</td>
         </tr>
 
     
@@ -666,7 +448,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_sos_SosGetResult.js.html">core/datasource/sos/SosGetResult.js</a>, <a href="core_datasource_sos_SosGetResult.js.html#line39">line 39</a>
+        <a href="core_datasource_sos_SosGetResult.datasource.js.html">core/datasource/sos/SosGetResult.datasource.js</a>, <a href="core_datasource_sos_SosGetResult.datasource.js.html#line33">line 33</a>
     </li></ul></dd>
     
 

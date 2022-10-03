@@ -1,18 +1,23 @@
 // create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
+import {Mode} from "osh-js/core/datasource/Mode";
+import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
 
 let gpsDataSource = new SosGetResult("android-GPS", {
-    protocol: "ws",
-    service: "SOS",
     endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
     offeringID: "urn:android:device:060693280a28e015-sos",
     observedProperty: "http://sensorml.com/ont/swe/property/Location",
     startTime: "2015-02-16T07:58:32Z",
     endTime: "2015-02-16T08:09:00Z",
-    replaySpeed: 2
+    mode: Mode.REPLAY
+});
+
+const dataSynchronizer = new DataSynchronizer({
+    replaySpeed: 2,
+    dataSources: [gpsDataSource]
 });
 
 // style it with a moving point marker
@@ -56,4 +61,4 @@ let leafletMapView = new LeafletView({
 });
 
 // start streaming
-gpsDataSource.connect();
+dataSynchronizer.connect();

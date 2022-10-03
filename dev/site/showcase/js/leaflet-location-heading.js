@@ -1,34 +1,35 @@
 //@ sourceURL=leaflet-location.html.js
 
 // create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
-
-let replaySpeed = 2;
+import {Mode} from "../../../source/core/datasource/Mode";
+import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
 
 // create data source for Android phone GPS
 let gpsDataSource = new SosGetResult("android-GPS", {
-  protocol: "ws",
-  service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
   offeringID: "urn:android:device:060693280a28e015-sos",
   observedProperty: "http://sensorml.com/ont/swe/property/Location",
   startTime: "2015-02-16T07:58:32Z",
   endTime: "2015-02-16T08:09:00Z",
-  replaySpeed: replaySpeed
+  mode: Mode.REPLAY
 });
 
 // create data source for Android phone orientation
 let attitudeDataSource = new SosGetResult("android-Att", {
-  protocol: "ws",
-  service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
   offeringID: "urn:android:device:060693280a28e015-sos",
   observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
   startTime: "2015-02-16T07:58:35Z",
   endTime: "2015-02-16T08:09:00Z",
-  replaySpeed: replaySpeed
+  mode: Mode.REPLAY
+});
+
+const dataSynchronizer = new DataSynchronizer({
+  replaySpeed: 2,
+  dataSources: [gpsDataSource, attitudeDataSource]
 });
 
 // style it with a moving point marker
@@ -88,5 +89,4 @@ let leafletMapView = new LeafletView({
 });
 
 // start streaming
-attitudeDataSource.connect();
-gpsDataSource.connect();
+dataSynchronizer.connect();

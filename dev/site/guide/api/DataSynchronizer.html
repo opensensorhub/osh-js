@@ -209,13 +209,91 @@
 
         <tr>
             
+                <td class="name"><code>masterTimeRefreshRate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    250
+                
+                </td>
+            
+
+            <td class="description last">interval in which time value is send through broadcast channel (in milliseconds)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    Mode.REPLAY
+                
+                </td>
+            
+
+            <td class="description last">mode of the data synchronizer</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>dataSources</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;<a href="DataSource.html">DataSource</a>></span>
+<span class="param-type">Array.&lt;Datasource></span>
 
 
             
@@ -285,7 +363,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line29">line 29</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -341,7 +419,7 @@
     
 
     
-    <h4 class="name" id="addDataSource"><span class="type-signature">(async) </span>addDataSource<span class="signature">(dataSource)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="addDataSource"><span class="type-signature">(async) </span>addDataSource<span class="signature">(dataSource, lazy<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -374,7 +452,11 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -392,17 +474,63 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
             <td class="type">
             
                 
-<span class="param-type"><a href="DataSource.html">DataSource</a></span>
+<span class="param-type">Datasource</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">the new datasource to add</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lazy</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">lazy - add to current running synchronizer</td>
         </tr>
 
     
@@ -443,7 +571,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line210">line 210</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line234">line 234</a>
     </li></ul></dd>
     
 
@@ -531,7 +659,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line240">line 240</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line268">line 268</a>
     </li></ul></dd>
     
 
@@ -619,7 +747,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line265">line 265</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line293">line 293</a>
     </li></ul></dd>
     
 
@@ -707,7 +835,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line91">line 91</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -817,7 +945,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line113">line 113</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line119">line 119</a>
     </li></ul></dd>
     
 
@@ -927,7 +1055,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line102">line 102</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -1037,7 +1165,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line124">line 124</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line142">line 142</a>
     </li></ul></dd>
     
 
@@ -1147,7 +1275,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line80">line 80</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line86">line 86</a>
     </li></ul></dd>
     
 
@@ -1257,7 +1385,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line326">line 326</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line370">line 370</a>
     </li></ul></dd>
     
 
@@ -1413,7 +1541,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line225">line 225</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line253">line 253</a>
     </li></ul></dd>
     
 
@@ -1501,7 +1629,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line306">line 306</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line350">line 350</a>
     </li></ul></dd>
     
 
@@ -1589,7 +1717,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line275">line 275</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line303">line 303</a>
     </li></ul></dd>
     
 
@@ -1625,7 +1753,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
 
     
-    <h4 class="name" id="setTimeRange"><span class="type-signature">(async) </span>setTimeRange<span class="signature">(startTime, endTime, replaySpeed, reconnect)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setTimeRange"><span class="type-signature">(async) </span>setTimeRange<span class="signature">(startTime, endTime, replaySpeed, reconnect, mode)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1778,6 +1906,33 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>mode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Mode">Mode</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">default dataSource mode</td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -1815,7 +1970,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line293">line 293</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line322">line 322</a>
     </li></ul></dd>
     
 
@@ -1903,7 +2058,7 @@ note: don't forget to call reset() to be sure to re-init the synchronizer intern
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line131">line 131</a>
+        <a href="core_timesync_DataSynchronizer.js.html">core/timesync/DataSynchronizer.js</a>, <a href="core_timesync_DataSynchronizer.js.html#line149">line 149</a>
     </li></ul></dd>
     
 

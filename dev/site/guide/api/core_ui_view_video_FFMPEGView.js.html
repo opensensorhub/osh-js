@@ -112,12 +112,12 @@ class FFMPEGView extends CanvasView {
         }
     }
 
-    updateVideo(props) {
+    async updateVideo(props) {
         if (!this.skipFrame) {
             if (this.decodeWorker == null) {
                 this.initFFMPEG_DECODER_WORKER(props.frameData.compression);
             }
-            this.decode(
+            return this.decode(
                 props.frameData.data.length,
                 props.frameData.data,
                 props.timestamp,
@@ -131,11 +131,14 @@ class FFMPEGView extends CanvasView {
      * @override
      */
     reset() {
-        if(isDefined(this.decodeWorker)) {
-            this.decodeWorker.terminate();
-            this.decodeWorker = null;
-        }
-        this.resetCalled = true;
+        this.skipFrame = true;
+        // if(isDefined(this.decodeWorker)) {
+        //     this.decodeWorker.terminate();
+        //     this.decodeWorker = null;
+        // }
+        this. decodeWorker.postMessage({
+            message: 'release'
+        });
         let nodata = new Uint8Array(1);
         nodata[0] = 128;
         this.yuvCanvas.drawNextOuptutPictureGL({
@@ -149,6 +152,7 @@ class FFMPEGView extends CanvasView {
             vDataPerRow: 1,
             vRowCnt: 1
         });
+        this.skipFrame = false;
     }
 
 //-- FFMPEG DECODING PART
@@ -254,10 +258,12 @@ class FFMPEGView extends CanvasView {
         if(isDefined(this.interval)) {
             clearInterval(this.interval);
         }
-        this. decodeWorker.postMessage({
-            message: 'release'
-        });
-        this.decodeWorker.terminate();
+        if(isDefined(this.decodeWorker)) {
+            this.decodeWorker.postMessage({
+                message: 'release'
+            });
+            this.decodeWorker.terminate();
+        }
     }
 
     async getCanvas() {

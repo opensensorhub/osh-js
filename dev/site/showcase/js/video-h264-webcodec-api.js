@@ -1,17 +1,17 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 import VideoView from "osh-js/core/ui/view/video/VideoView";
+import {Mode} from "osh-js/core/datasource/Mode";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
 // create data source for UAV camera
 let videoDataSource = new SosGetResult("drone-Video", {
-  protocol: "ws",
-  service: "SOS",
   endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
   offeringID: "urn:mysos:solo:video2",
   observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
   startTime: "2015-12-19T21:04:30Z",
   endTime: "2015-12-19T21:09:19Z",
-  replaySpeed: 1
+  mode: Mode.REPLAY
 });
 
 // show it in video view using FFMPEG JS decoder
@@ -32,4 +32,11 @@ let videoView = new VideoView({
 });
 
 // start streaming
-videoDataSource.connect();
+const dataSynchronizer = new DataSynchronizer({
+  masterTimeRefreshRate: 250,
+  replaySpeed: 1.0,
+  dataSources: [
+    videoDataSource
+  ]
+});
+dataSynchronizer.connect()
