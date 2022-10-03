@@ -33,6 +33,9 @@ using the ***timerResolution*** property.
 
 **Note For further details about how the algorithm works, see [Advanced section](../advanced/datasynchronizer.md)*
 
+The **masterTimeRefreshRate** defines the time to refresh and send the masterTime through the BroadcastChannel. Depending 
+on the data frequency, it can be useful to change the default value.
+
 ## Channels
 
 The *DataSynchronizer* will receive the data through
@@ -44,14 +47,6 @@ It also returns a time synchronization data defined by `TIME_SYNCHRONIZER_TOPIC`
 
 The `TIME_SYNCHRONIZER_TOPIC` constant is defined from the constant package `'osh-js/core/Constants'`
 
-## Example
+### Example
 
-This example defines multiple DataSources object to synchronize:
-
-<<< @/../../showcase/examples/datasources-synchronized/datasources-synchronized.js#snippet_datasource_synchronized
-
-<hr class="demo-hr"/>
-<br/>
-<br/>
-<Example path="/showcase/datasources-synchronized.html" style="border:none;width:100%;height: 500px" />
-
+<<< @/../../showcase-dev/examples/datasource-swejson/datasource-swejson.js#snippet_datasource_swejson

@@ -35,12 +35,6 @@ var samples = [{
         url: "chart"
     },
     {
-        name: "Simple Batch Chart (Chart.js)",
-        description: "Display a chart with time series of weather measurements and using different datasource parameters " +
-            "to get data in batch",
-        url: "chart-batch"
-    },
-    {
         name: "Moving Location (Leaflet)",
         description: "Display a moving marker on a Leaflet map, tracking the current location of a vehicle.",
         url: "leaflet-location"
@@ -77,47 +71,16 @@ var samples = [{
         url: "mapbox-location-path-heading"
     },
     {
-        name: "Range slider (noUiSlider)",
-        description: "Display a time bar to change dynamically the time period.",
-        url: "range-slider"
-    },
-    {
         name: "Moving Location + Heading + Video (Leaflet)",
         description: "Display a moving marker on an Leaflet map, tracking the current location of a vehicle and its corresponding" +
-            "video. Create duplicated dataSources running at different time to check there is no collision between data",
+            "video. Create duplicated dataSources running at different time to check there is no collision between data. The " +
+            "2 datasets are using a DataSynchronizer object. Each one should be independent.",
         url: "video-map-multiple-datasource"
     },
     {
         name: "Z-Index ordering",
         description: "Display a moving marker on an Leaflet, DeckGl,Cesium and Openlayers map using a z-Index between markers",
         url: "zIndex-location-path"
-    },
-    {
-        name: "DataSource Synchronized",
-        description: "Display the data of 3 differents kind of datasources(Video, Gps and Orientation) using time synchronization algorithm",
-        url: "datasources-synchronized"
-    },
-    {
-        name: "DataSource File",
-        description: "Display the data of multiple CSV files using the file datasource",
-        url: "datasource-file"
-    },
-    {
-        name: "DataSource SweApiFetch",
-        description: "Display GPS data using the SweApiFetch datasource",
-        url: "datasource-sweapifetch"
-    },
-    {
-        name: "Multiple Video DataSource Synchronized",
-        description: "Display the data of 3 differents video datasources using time synchronization algorithm",
-        url: "multi-datasources-synchronized"
-    },
-    {
-        name: "Moving Location + Heading + Video (Leaflet)",
-        description: "Display a moving marker on an Leaflet map, tracking the current location of a vehicle and its corresponding" +
-            "video. Create duplicated dataSources running at different time to check there is no collision between data. The " +
-            "2 datasets are using a DataSynchronizer object. Each one should be independent.",
-        url: "video-map-multiple-datasource-synchronizer"
     },
     {
         name: "Resizable H264 Video",
@@ -135,33 +98,15 @@ var samples = [{
         url: "video-h264-draping"
     },
     {
-        name: "Resizable Transferable H264 Video",
-        description: "Display an H264 video in a simple resizable DIV using our FFMPEG-JS decoder and a button to " +
-            "destroy/re-create the view.",
-        url: "video-h264-transferable"
-    },
-    {
         name: "Resizable MJPEG Video",
         description: "Display an MJPEG video in a simple resizable DIV.",
         url: "video-mjpeg"
-    },
-    {
-        name: 'VueJs component: Video with control',
-        description: 'Display a video using forward/pause/play/backward control',
-        url: 'video-with-control-vuejs',
-        code: 'vue/App_examples/video-with-control-vuejs.vue'
     },
     {
         name: 'VueJs component: Multiple Video with control',
         description: 'Display multiple videos using forward/pause/play/backward control using the same DataSynchronizer',
         url: 'video-with-control-vuejs-synchronized',
         code: 'vue/App_examples/video-with-control-vuejs-synchronized.vue'
-    },
-    {
-        name: 'VueJs component: Multiple Video data with control',
-        description: 'Display multiple videos data using forward/pause/play/backward control using the same DataSynchronizer',
-        url: 'videodata-with-control-vuejs-synchronized',
-        code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
     },
     {
         name: 'AVL data using multiple ids',
@@ -178,11 +123,6 @@ var samples = [{
         name: 'ISA Biological & MISB UAS sensor data using MQTT protocol',
         description: 'Display biological and GPS sensors from ISA Biological Sensor & MISB UAS using MQTT protocol',
         url: 'mqtt'
-    },
-    {
-        name: 'ISA Biological & MISB UAS sensor data using MQTT utility class',
-        description: 'Display biological and GPS sensors from ISA Biological Sensor & MISB UAS using MQTT utility class',
-        url: 'mqtt-utility'
     },
     {
         name: "Chart with Time controller (Chart.js)",

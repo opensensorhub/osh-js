@@ -7,7 +7,6 @@
 <script>
     // @ is an alias to /src
 import LeafletView from "osh-js/core/ui/view/map/LeafletView.js";
-import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.js";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
 
 export default {
@@ -16,24 +15,13 @@ export default {
   mounted() {
     this.init();
   },
-
+  props: ['locationDataSource'],
   methods: {
     init() {
-      let gpsDataSource = new SosGetResult("android-GPS", {
-        protocol: "ws",
-        service: "SOS",
-        endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-        offeringID: "urn:android:device:060693280a28e015-sos",
-        observedProperty: "http://sensorml.com/ont/swe/property/Location",
-        startTime: "2015-02-16T07:58:32Z",
-        endTime: "2015-02-16T08:09:00Z",
-        replaySpeed: 3
-      });
-
       // style it with a moving point marker
       let pointMarkerLayer = new PointMarkerLayer({
         getLocation: {
-          dataSourceIds: [gpsDataSource.getId()],
+          dataSourceIds: [this.locationDataSource.getId()],
           handler: function (rec) {
             return {
               x: rec.location.lon,
@@ -54,9 +42,6 @@ export default {
         layers: [pointMarkerLayer],
         autoZoomOnFirstMarker: true
       });
-
-      // start streaming
-      gpsDataSource.connect();
     }
   }
 };

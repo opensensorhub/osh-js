@@ -75,7 +75,7 @@ class VideoView extends View {
                 if(!isDefined(this.videoView)) {
                     this.createVideoView(values[i].frameData.compression.toLowerCase());
                 }
-                this.videoView.updateVideo(values[i]);
+                await this.videoView.updateVideo(values[i]);
             }
         }
     }
@@ -92,11 +92,15 @@ class VideoView extends View {
     }
 
     reset() {
-        this.videoView.reset();
+        if(isDefined(this.videoView)) {
+            this.videoView.reset();
+        }
     }
 
     destroy() {
-        this.videoView.destroy();
+        if(isDefined(this.videoView)) {
+            this.videoView.destroy();
+        }
     }
 }
 

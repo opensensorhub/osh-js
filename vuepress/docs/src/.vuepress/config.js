@@ -29,6 +29,12 @@ module.exports = (env) => {
                 ]),
                 new CopyWebpackPlugin([
                     {
+                        from: path.resolve(__dirname, '../../../../showcase-dev/dist'),
+                        to: 'showcase-dev'
+                    }
+                ]),
+                new CopyWebpackPlugin([
+                    {
                         from: path.resolve(__dirname, '../../../../jsdoc/dist-iframe'),
                         to: 'guide/api'
                     }

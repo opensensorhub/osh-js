@@ -116,10 +116,11 @@ myDataSource.subscribe((message) =>  ..., [EventType.DATA, EventType.TIME]);
 
 Several types of events can be listened:
 - DATA: data parsed result
-- TIME: last data timestamp
+- LAST_TIME: last data timestamp
 - STATUS: connexion status,
 - TIME_CHANGED: when the time of a dataSource changed
-
+- MASTER_TIME: current executing time of the corresponding DataSynchronizer 
+ 
 ### Global configuration
 
 There are global properties common to every datasource owned by the DataSource Object.
@@ -191,6 +192,22 @@ The structure of such a message is:
 
 ```
 
+### Modes
+
+Several modes are possible:
+- REAL_TIME: allows you to read a stream in real time
+- REPLAY: allows you to read a stream in replay
+- BATCH: allows you to read a stream at once
+
+Some options are available depending on the chosen mode.
+
+In REAL_TIME mode, to overcome a spontaneous latency problem, it is possible to define a **timeout** property.
+In REPLAY mode, it is possible to define the temporal size of the FETCH to be executed and also the size of the maximum number of data to be recovered in this temporal range.
+
+::: warning
+The use of REPLAY mode must be associated with the use of a DataSynchronizer. So, for all datasources declared in REPLAY
+mode, they must be added and driven by a DataSynchronizer
+:::
 ### Global configuration
 
 There are global properties common to every datasource owned by the TimeSeriesDataSource Object.
@@ -203,18 +220,15 @@ Example:
 
 const timeSeriesDataSource = {
     ...,
-    timeShift: {
-        'someParams': 'value1'
-    },
+    timeShift: -16000,
     timeOut: 100,
-    bufferingTime: 100,
     replaySpeed: 1.5
 };
 ```
-The **timeOut** and **bufferingTime** are useful only for [data synchronization](../../timesync/general.md).
+The **timeOut** is useful only for [data synchronization](../../timesync/general.md) in REAL_TIME mode.
 
 The **replaySpeed** property allows to modify the same frequency of reception of archive data compared to their
-original frequency.
+original frequency in REPLAY mode.
 
 ### Properties configuration
 

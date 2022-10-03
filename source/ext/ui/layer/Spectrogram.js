@@ -13,8 +13,9 @@
  Author: Ian Patterson <cr31.dev@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
-import {isDefined} from "../../utils/Utils";
-import Layer from "./Layer";
+
+import Layer from "../../../core/ui/layer/Layer";
+import {isDefined} from "../../../core/utils/Utils";
 
 class Spectrogram extends Layer {
     constructor(properties) {

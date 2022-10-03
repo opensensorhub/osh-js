@@ -23,14 +23,19 @@ class SensorWebApiFilter {
 
     /**
      *
-     * @param {string[]} [parameters=[]] list of parameters to include
+     * @param {string[]} [includes=[]] list of parameters to include - all if omitted
+     * @param  {string[]} [excludes=[]] list of parameters to exclude - none if omitted
      * @return {string}
      */
-    toQueryString(parameters= []) {
+    toQueryString(includes= [], excludes = []) {
         let queryString = '';
         let separator = '';
+        excludes.push('replaySpeed');
         for (let queryParameter in this.props) {
-            if((parameters.length === 0 || parameters.includes(queryParameter)) && isDefined(this.props[queryParameter])) {
+            if(excludes.includes(queryParameter)) {
+                continue;
+            }
+            if((includes.length === 0 || includes.includes(queryParameter)) && isDefined(this.props[queryParameter])) {
                 // if(Array.isArray(this.props[queryParameter])) {
                 //     queryString += separator + queryParameter + '=' + encodeURIComponent(this.props[queryParameter].join());
                 /*} else*/ if(queryParameter === 'f'

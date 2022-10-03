@@ -1,7 +1,7 @@
 import Systems from "osh-js/core/sweapi/system/Systems";
 import {EventType} from "osh-js/core/event/EventType";
 import ControlFilter from "osh-js/core/sweapi/control/ControlFilter";
-import SweApiFetch from "osh-js/core/datasource/sweapi/SweApiFetch";
+import SweApiFetch from "osh-js/core/datasource/sweapi/SweApi.datasource";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
 import LeafletView from "osh-js/core/ui/view/map/LeafletView";
 import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer";
@@ -13,7 +13,7 @@ var posDsId = "1eots41v6kody";
 var cmdStreamId = "1rl2xoslsdldj";
 
 let gpsDataSource = new SweApiFetch("supersonic drone GPS", {
-    collection: `/api/datastreams/${posDsId}/observations`,
+    resource: `/api/datastreams/${posDsId}/observations`,
     endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
     protocol: 'mqtt',
     mqttOpts: {

@@ -35,7 +35,7 @@ class AudioView extends View {
      * @param {number} [properties.gain=1.0] - set the gain to be applied to the input  before its propagation to the output
      * @param {string} [properties.codec='aac'] - the audio codec
      * @param {boolean} [properties.playSound=true] - define if the sound is playing on the output
-     * @param {DataSource} properties.dataSource - the dataSource object
+     * @param {Datasource} properties.dataSource - the dataSource object
      * @param {Object[]}  [properties.layers=[]] - The initial layers to add
      */
     constructor(properties) {
