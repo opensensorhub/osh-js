@@ -101,6 +101,7 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
         }
         this.checkStart();
+        this.checkEnd();
     }
 
     checkStart() {
@@ -109,7 +110,7 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             let totalDataSources = Object.keys(this.dataSourceMap).length;
 
             for(let dataSourceID in this.dataSourceMap) {
-                 if(this.dataSourceMap[dataSourceID].status === Status.FETCH_STARTED) nbDatasourcesFetchedOk++;
+                if(this.dataSourceMap[dataSourceID].status === Status.FETCH_STARTED) nbDatasourcesFetchedOk++;
             }
 
             console.warn(`[Synchronizer] Fetched ${nbDatasourcesFetchedOk}/${totalDataSources} datasources`);
@@ -117,6 +118,21 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
                 console.warn('Starting Replay Algorithm...');
                 this.processData();
             }
+        }
+    }
+
+    checkEnd() {
+        let nbDatasourcesFetchedOk = 0;
+        let totalDataSources = Object.keys(this.dataSourceMap).length;
+
+        for(let dataSourceID in this.dataSourceMap) {
+            if(this.dataSourceMap[dataSourceID].status === Status.DISCONNECTED) nbDatasourcesFetchedOk++;
+        }
+
+        console.warn(`[Synchronizer] Ended ${nbDatasourcesFetchedOk}/${totalDataSources} datasources`);
+        if(nbDatasourcesFetchedOk === totalDataSources) {
+            console.warn('Stopping Replay Algorithm...');
+            this.onEnd();
         }
     }
 
@@ -135,6 +151,8 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         currentDs.status= Status.DISCONNECTED;
         currentDs.version = undefined;
     }
+
+    onEnd() {}
 }
 
 export default DataSynchronizerAlgoReplay;
