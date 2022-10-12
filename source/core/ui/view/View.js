@@ -46,6 +46,7 @@ class View {
         this.layers = [];
         this.lastRec = {};
         this.dataSources = [];
+        this.broadcastChannels = [];
 
         //this.divId = divId;
         this.id = "view-" + randomUUID();
@@ -205,6 +206,10 @@ class View {
     }
 
     destroy()  {
+        for(let bc of this.broadcastChannels) {
+            bc.close();
+        }
+        this.broadcastChannels = [];
     }
     /**
      * Adds a layer to the view. A broadcastChannel is going to listen the new dataSources
@@ -245,6 +250,9 @@ class View {
                     self.reset(); // on time changed
                 }
             };
+
+            this.broadcastChannels.push(broadcastChannel);
+            this.broadcastChannels.push(timeBroadcastChannel);
         }
     }
 
@@ -293,7 +301,6 @@ class View {
     reset() {
         this.removeAllFromLayers();
     }
-
 }
 
 export default View;
