@@ -85,11 +85,11 @@ export default {
     const dsReplaySpeed = 2.6;
 
     const commonDatasourceOpts = {
-      endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
+      endpointUrl:  'api.georobotix.io/ogc/t18/api',
       protocol: 'mqtt',
       mqttOpts: {
         prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8483'
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
       startTime: START_TIME,
@@ -104,7 +104,7 @@ export default {
 
     const droneVideoDataSource = new SweApiDatasource('MISB Drone - Video', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/uxzna8pldpiv/observations',
+      resource: '/datastreams/8ni90dbu4uf0g/observations',
       responseFormat: 'application/swe+binary',
     });
 
@@ -113,43 +113,43 @@ export default {
 
     const droneLocationDataSource = new SweApiDatasource('MISB UAS - Platform Location', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/gal7w6j6v7n9/observations',
+      resource: '/datastreams/fled6eics1cl4/observations',
       responseFormat: 'application/swe+json',
     });
 
     const droneOrientationDataSource = new SweApiDatasource('MISB UAS - Platform Attitude', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/ei5nsp8guy5y/observations',
+      resource: '/datastreams/adheadf9nghts/observations',
       responseFormat: 'application/swe+json',
     });
 
     const droneCameraOrientationDataSource = new SweApiDatasource('MISB UAS - Gimbal Attitude', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/7rsjo1e6pq45/observations',
+      resource: '/datastreams/hrpo1u6r5096i/observations',
       responseFormat: 'application/swe+binary',
     });
 
     const droneHFovDataSource = new SweApiDatasource('MISB UAS - Horizontal FoV', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/1fle3d5b29shh/observations',
+      resource: '/datastreams/d962edate9okm/observations',
       responseFormat: 'application/swe+binary',
     });
 
     const droneVFovDataSource = new SweApiDatasource('MISB UAS - Vertical FoV', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/1fle3d5b29shh/observations',
+      resource: '/datastreams/d962edate9okm/observations',
       responseFormat: 'application/swe+binary',
     });
 
     const geoRefImageFrameDataSource = new SweApiDatasource('MISB UAS - GeoReferenced Image Frame', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/1b6j89nistu9h/observations',
+      resource: '/datastreams/p3mp2peibksl4/observations',
       responseFormat: 'application/swe+csv',
     });
 
     const targetLocationDataSource = new SweApiDatasource('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/tmi5mitvl8c7/observations',
+      resource: '/datastreams/p3mp2peibksl4/observations',
       responseFormat: 'application/swe+binary',
     });
 
