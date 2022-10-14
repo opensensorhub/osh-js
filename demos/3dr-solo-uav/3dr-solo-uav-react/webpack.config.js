@@ -51,6 +51,12 @@ const config = {
   node: {
     fs: 'empty'
   },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    hot: true,
+    https:true
+  },
   module: {
     unknownContextCritical: false,
     rules: [

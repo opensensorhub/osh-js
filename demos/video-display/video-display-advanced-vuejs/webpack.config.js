@@ -51,6 +51,7 @@ module.exports = env => {
       compress: true,
       port: 9000,
       hot: true,
+      https: true
     },
     devtool:  'eval-source-map',
     node: {

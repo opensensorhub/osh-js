@@ -7,7 +7,7 @@ const textAreaElement1 =  document.getElementById("data-container1");
 const textAreaElement2 =  document.getElementById("data-container2");
 
 const mqttProvider = new MqttProvider({
-   endpointUrl: 'api.georobotix.io:443/ogc/t18',
+   endpoint: 'mqtts://api.georobotix.io:443/ogc/t18',
    prefix: '/api',
    clientId: randomUUID()
 });

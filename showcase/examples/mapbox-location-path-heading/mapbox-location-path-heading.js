@@ -10,22 +10,24 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FrZXdhMzk0MCIsImEiOiJja2I4ZDZkdDAwMzc5MzFwazZubmFhNzVvIn0.i4O5Cls0aaVSVREIzK151w';
 
 let gpsDataSource = new SosGetResult("android-GPS", {
-    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    endpointUrl: "sensiasoft.net/sensorhub/sos",
     offeringID: "urn:android:device:060693280a28e015-sos",
     observedProperty: "http://sensorml.com/ont/swe/property/Location",
     startTime: "2015-02-16T07:58:32Z",
     endTime: "2015-02-16T08:09:00Z",
-    mode: Mode.REPLAY
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 // create data source for Android phone orientation
 let attitudeDataSource = new SosGetResult("android-Att", {
-    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    endpointUrl: "sensiasoft.net/sensorhub/sos",
     offeringID: "urn:android:device:060693280a28e015-sos",
     observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
     startTime: "2015-02-16T07:58:35Z",
     endTime: "2015-02-16T08:09:00Z",
-    mode: Mode.REPLAY
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 const dataSynchronizer = new DataSynchronizer({

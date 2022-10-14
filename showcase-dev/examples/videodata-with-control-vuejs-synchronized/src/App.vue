@@ -61,34 +61,35 @@ export default {
     const START_TIME = '2015-12-19T21:04:29.231Z';
     const END_TIME = '2015-12-19T21:09:19.675Z';
     const REPLAY_SPEED = 6.2;
-    const BUFFERING_TIME = 1000;
-    const TIMEOUT = 500;
 
     const videoDataSource0 = new SosGetResult("Video 0", {
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      endpointUrl: 'sensiasoft.net/sensorhub/sos',
       offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
-      mode: Mode.REPLAY
+      mode: Mode.REPLAY,
+      tls: true
     });
 
     const videoDataSource1 = new SosGetResult("Video 1", {
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      endpointUrl: 'sensiasoft.net/sensorhub/sos',
       offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
-      mode: Mode.REPLAY
+      mode: Mode.REPLAY,
+      tls: true
     });
 
     const videoDataSource2 = new SosGetResult("Video 2", {
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      endpointUrl: 'sensiasoft.net/sensorhub/sos',
       offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: START_TIME,
       endTime: END_TIME,
-      mode: Mode.REPLAY
+      mode: Mode.REPLAY,
+      tls: true
     });
 
     this.dataSynchronizer = new DataSynchronizer({

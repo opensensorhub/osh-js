@@ -52,7 +52,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'datasource-audio.html'
+        index: 'datasource-audio.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

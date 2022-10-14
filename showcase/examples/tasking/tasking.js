@@ -12,11 +12,14 @@ const systemId = "jrc2e0kaj1m5a";
 const posDsId = "rbnag2hrc04mm";
 const cmdStreamId = "hf62t0dotfd5k";
 
+const username = 'uxs-team';
+const password = 'WR6zlso9h#';
+
 const mqttProps = {
     prefix: '/api',
     endpointUrl: 'api.georobotix.io:443/ogc/t18',
-    username: 'uxs-team',
-    password: 'WR6zlso9h#'
+    username: username,
+    password: password
 };
 
 let gpsDataSource = new SweApiFetch("supersonic drone GPS", {
@@ -25,14 +28,22 @@ let gpsDataSource = new SweApiFetch("supersonic drone GPS", {
     protocol: 'mqtt',
     mqttOpts: mqttProps,
     tls: true,
-    responseFormat: 'application/om+json'
+    responseFormat: 'application/om+json',
+    connectorOpts: {
+        username: username,
+        password: password
+    }
 });
 
 const systems = new Systems({
     endpointUrl: 'api.georobotix.io/ogc/t18/api',
     streamProtocol: 'mqtt',
     mqttOpts: mqttProps,
-    tls: true
+    tls: true,
+    connectorOpts: {
+        username: username,
+        password: password
+    }
 });
 
 

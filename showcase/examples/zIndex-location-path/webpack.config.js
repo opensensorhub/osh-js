@@ -56,7 +56,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'zIndex-location-path.html'
+        index: 'zIndex-location-path.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

@@ -53,7 +53,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'datasource-file.html'
+        index: 'datasource-file.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

@@ -12,8 +12,9 @@ window.CESIUM_BASE_URL = './';
 
 // create data source for Fois
 let sosGetFois = new SosGetFois('fois', {
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-    procedureId: 'urn:usgs:water:network'
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
+    procedureId: 'urn:usgs:water:network',
+    tls: true
 });
 
 // create Cesium view
@@ -60,6 +61,3 @@ cesiumView.viewer.camera.flyTo({
 sosGetFois.connect();
 
 // #endregion snippet_cesium_fois
-
-const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[7];

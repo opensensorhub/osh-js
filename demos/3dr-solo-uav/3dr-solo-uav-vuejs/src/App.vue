@@ -16,7 +16,7 @@ import Globe from './components/Globe.vue';
 import Video from './components/Video.vue';
 import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.datasource.js";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
-  import {Mode} from "osh-js/core/datasource/Mode";
+import {Mode} from 'osh-js/core/datasource/Mode';
 
   export default {
   components: {
@@ -26,36 +26,40 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
     data: function () {
       return {
         videoDataSource: new SosGetResult("drone-Video", {
-          endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+          endpointUrl: 'sensiasoft.net/sensorhub/sos',
           offeringID: 'urn:mysos:solo:video2',
           observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
           startTime: '2015-12-19T21:04:29.231Z',
           endTime: '2015-12-19T21:09:19.675Z',
-          mode: Mode.REPLAY
+          mode: Mode.REPLAY,
+          tls: true
         }),
         platformLocationDataSource: new SosGetResult('android-GPS', {
-          endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+          endpointUrl: 'sensiasoft.net/sensorhub/sos',
           offeringID: 'urn:mysos:solo:nav2',
           observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
           startTime: '2015-12-19T21:04:29.231Z',
           endTime: '2015-12-19T21:09:19.675Z',
-          mode: Mode.REPLAY
+          mode: Mode.REPLAY,
+          tls: true
         }),
         platformOrientationDataSource: new SosGetResult('android-Heading', {
-          endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+          endpointUrl: 'sensiasoft.net/sensorhub/sos',
           offeringID: 'urn:mysos:solo:nav2',
           observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
           startTime: '2015-12-19T21:04:29.231Z',
           endTime: '2015-12-19T21:09:19.675Z',
-          mode: Mode.REPLAY
+          mode: Mode.REPLAY,
+          tls: true
         }),
         gimbalOrientationDataSource: new SosGetResult('android-Heading', {
-          endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+          endpointUrl: 'sensiasoft.net/sensorhub/sos',
           offeringID: 'urn:mysos:solo:nav2',
           observedProperty: 'http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation',
           startTime: '2015-12-19T21:04:29.231Z',
           endTime: '2015-12-19T21:09:19.675Z',
-          mode: Mode.REPLAY
+          mode: Mode.REPLAY,
+          tls: true
         })
       }
     },

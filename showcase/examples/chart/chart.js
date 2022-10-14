@@ -9,12 +9,13 @@ function getRandomArbitrary(min, max) {
 }
 
 let chartDataSource = new SosGetResult("weather", {
-    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    endpointUrl: "sensiasoft.net/sensorhub/sos",
     offeringID: "urn:mysos:offering03",
     observedProperty: "http://sensorml.com/ont/swe/property/Weather",
     startTime: "now",
     endTime: "2055-01-01Z",
-    mode: Mode.REAL_TIME
+    mode: Mode.REAL_TIME,
+    tls: true
 });
 
 // #region snippet_curve_layer
