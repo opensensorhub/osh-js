@@ -82,6 +82,7 @@ class WebSocketFetchConnector extends WebSocketConnector {
                 this.queryString = queryString;
                 let fullUrl = this.getUrl() + extraUrl;
 
+                console.log(fullUrl)
                 if (isDefined(queryString)) {
                     fullUrl += '?' + queryString;
                 }

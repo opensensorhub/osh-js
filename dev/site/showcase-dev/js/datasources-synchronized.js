@@ -12,30 +12,33 @@ const END_TIME = '2015-12-19T21:09:19.675Z';
 const REPLAY_SPEED = 5.0;
 
 const videoDataSource = new SosGetResult("drone-Video", {
-  endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+  endpointUrl: 'sensiasoft.net/sensorhub/sos',
   offeringID: 'urn:mysos:solo:video2',
   observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
   startTime: START_TIME,
   endTime: END_TIME,
-  mode: Mode.REPLAY
+  mode: Mode.REPLAY,
+  tls: true
 });
 
 const platformLocationDataSource = new SosGetResult('android-GPS', {
-  endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+  endpointUrl: 'sensiasoft.net/sensorhub/sos',
   offeringID: 'urn:mysos:solo:nav2',
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
   startTime: START_TIME,
   endTime: END_TIME,
   responseFormat: 'application/json',
-  mode: Mode.REPLAY
+  mode: Mode.REPLAY,
+  tls: true
 });
 const platformOrientationDataSource = new SosGetResult('android-Heading', {
-  endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+  endpointUrl: 'sensiasoft.net/sensorhub/sos',
   offeringID: 'urn:mysos:solo:nav2',
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
   startTime: START_TIME,
   endTime: END_TIME,
-  mode: Mode.REPLAY
+  mode: Mode.REPLAY,
+  tls: true
 });
 
 const dataSynchronizer = new DataSynchronizer({

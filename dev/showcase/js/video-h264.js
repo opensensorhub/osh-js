@@ -8,12 +8,13 @@ const REPLAY_SPEED = 2.5;
 
 // create data source for UAV camera
 let videoDataSource = new SosGetResult("drone-Video", {
-  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+  endpointUrl: "sensiasoft.net/sensorhub/sos",
   offeringID: "urn:mysos:solo:video2",
   observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
   startTime: "2015-12-19T21:04:30Z",
   endTime: "2015-12-19T21:09:19Z",
-  mode: Mode.REPLAY
+  mode: Mode.REPLAY,
+  tls: true
 });
 
 // show it in video view using FFMPEG JS decoder

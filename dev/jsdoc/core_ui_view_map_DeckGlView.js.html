@@ -52,6 +52,9 @@ import {hex2rgb, isDefined, randomUUID, rgbaToArray} from "../../../utils/Utils"
 import {BitmapLayer, PathLayer, PolygonLayer} from '@deck.gl/layers';
 import {TileLayer} from '@deck.gl/geo-layers';
 import '../../../resources/css/deck.css';
+import {ScenegraphLayer} from '@deck.gl/mesh-layers';
+import { registerLoaders } from "@loaders.gl/core";
+import { GLTFLoader } from "@loaders.gl/gltf";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Deck.gl Map object.
@@ -73,6 +76,7 @@ class DeckGlView extends MapView {
             ...properties,
         });
 
+        registerLoaders(GLTFLoader);
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 
@@ -178,37 +182,58 @@ class DeckGlView extends MapView {
         } else {
             iconColor = "#000000";
         }
-        // in deck we create a new layer everytime => reactive programming
-        const iconLayer = new IconLayer({
-            id: id,
-            data: [{
-                position: [props.location.x, props.location.y, 1]
-            }],
-            pickable: true,
-            // iconAtlas and iconMapping are required
-            // getIcon: return a string
-            iconAtlas: props.icon,
-            iconMapping: {
-                marker: {
-                    x:0,
-                    y:0,
-                    anchorX:  props.iconAnchor[0],
-                    anchorY:  props.iconAnchor[1],
-                    width: props.iconSize[0],
-                    height: props.iconSize[1],
-                    mask: isDefined(props.iconColor) &amp;&amp; props.iconColor !== '#000000'
-                }
-            },
-            getIcon: d => 'marker',
-            sizeScale: props.iconScale,
-            getPosition: d => d.position,
-            getSize: d => props.iconScale,
-            getColor: d =>  iconColor,
-            onHover: (info, event) => this.onMarkerHover(mId,info, props, event),
-            onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, props, event) :
-                this.onMarkerRightClick(mId,info, props, event),
-            zIndex: props.zIndex
-        });
+
+        let iconLayer;
+
+        if(props.icon.endsWith('glb')) {
+            iconLayer = new ScenegraphLayer({
+                id: id,
+                data: [{
+                    position: [props.location.x, props.location.y, props.location.z]
+                }],
+                pickable: true,
+                scenegraph: props.icon,
+                getPosition: d =>  d.position,
+                getOrientation: d => [0,  props.orientation.yaw, 90],
+                _animations: {
+                    '*': {speed: 5}
+                },
+                sizeScale: props.iconScale,
+                _lighting: 'pbr'
+            });
+        } else {
+            // in deck we create a new layer everytime => reactive programming
+            iconLayer = new IconLayer({
+                id: id,
+                data: [{
+                    position: [props.location.x, props.location.y, 1]
+                }],
+                pickable: true,
+                // iconAtlas and iconMapping are required
+                // getIcon: return a string
+                iconAtlas: props.icon,
+                iconMapping: {
+                    marker: {
+                        x: 0,
+                        y: 0,
+                        anchorX: props.iconAnchor[0],
+                        anchorY: props.iconAnchor[1],
+                        width: props.iconSize[0],
+                        height: props.iconSize[1],
+                        mask: isDefined(props.iconColor) &amp;&amp; props.iconColor !== '#000000'
+                    }
+                },
+                getIcon: d => 'marker',
+                sizeScale: props.iconScale,
+                getPosition: d => d.position,
+                getSize: d => props.iconScale,
+                getColor: d => iconColor,
+                onHover: (info, event) => this.onMarkerHover(mId, info, props, event),
+                onClick: (info, event) => event.leftButton ? this.onMarkerLeftClick(mId, info, props, event) :
+                    this.onMarkerRightClick(mId, info, props, event),
+                zIndex: props.zIndex
+            });
+        }
 
         // is going to create or update the current entry into the layer map
         this.addMarkerToLayer(props, iconLayer);
@@ -236,7 +261,7 @@ class DeckGlView extends MapView {
     async updatePolyline(layer) {
         const id = layer.id+'$'+layer.polylineId;
         const path = layer.locations[layer.polylineId].map((coordinate) => {
-            return [coordinate.x, coordinate.y, 1]
+            return [coordinate.x, coordinate.y, coordinate.z || 1]
         });
 
         const PATH_DATA =[

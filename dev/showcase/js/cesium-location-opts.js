@@ -11,12 +11,13 @@ window.CESIUM_BASE_URL = './';
 
 // create data source for Android phone GPS
 let gpsDataSource = new SosGetResult('android-GPS', {
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:android:device:060693280a28e015-sos',
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',
     startTime: '2015-02-16T07:58:30Z',
     endTime: '2015-02-16T08:09:00Z',
-    mode: Mode.REPLAY
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 const dataSynchronizer = new DataSynchronizer({

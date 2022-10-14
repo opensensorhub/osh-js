@@ -18,12 +18,13 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0N
 window.CESIUM_BASE_URL = './';
 
 let videoDataSource = new SosGetResult("drone-Video", {
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:video2',
     observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    mode: Mode.REPLAY
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 // show it in video view using FFMPEG JS decoder
@@ -45,30 +46,33 @@ let videoView = new VideoView({
 
 // create data source for Android phone GPS
 let platformLocationDataSource = new SosGetResult('android-GPS', {
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    mode: Mode.REPLAY
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 let platformOrientationDataSource = new SosGetResult('android-Heading', {
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    mode: Mode.REPLAY
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 let gimbalOrientationDataSource = new SosGetResult('android-Heading', {
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    mode: Mode.REPLAY
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 // add 3D model marker to Cesium view

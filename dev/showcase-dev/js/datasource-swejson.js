@@ -6,12 +6,13 @@ import {Mode} from "osh-js/core/datasource/Mode";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
 const platformLocationDataSource = new SosGetResult('android-GPS', {
-  endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+  endpointUrl: 'sensiasoft.net/sensorhub/sos',
   offeringID: 'urn:mysos:solo:nav2',
   observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
   startTime: '2015-12-19T21:04:29.231Z',
   endTime: '2015-12-19T21:09:19.675Z',
-  mode: Mode.REPLAY
+  mode: Mode.REPLAY,
+  tls: true
 });
 
 const dataSynchronizer = new DataSynchronizer({

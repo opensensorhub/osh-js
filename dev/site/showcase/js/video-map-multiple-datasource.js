@@ -10,28 +10,31 @@ const REPLAY_SPEED = 1.0;
 
 function createView(videoDivId, mapDivId, startTime,endTime ) {
     const videoDataSource = new SosGetResult("drone-Video", {
-        endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+        endpointUrl: 'sensiasoft.net/sensorhub/sos',
         offeringID: 'urn:mysos:solo:video2',
         observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
         startTime: startTime,
         endTime: endTime,
-        mode: Mode.REPLAY
+        mode: Mode.REPLAY,
+        tls: true
     });
     const platformLocationDataSource = new SosGetResult('android-GPS', {
-        endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+        endpointUrl: 'sensiasoft.net/sensorhub/sos',
         offeringID: 'urn:mysos:solo:nav2',
         observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
         startTime: startTime,
         endTime: endTime,
-        mode: Mode.REPLAY
+        mode: Mode.REPLAY,
+        tls: true
     });
     const platformOrientationDataSource = new SosGetResult('android-Heading', {
-        endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+        endpointUrl: 'sensiasoft.net/sensorhub/sos',
         offeringID: 'urn:mysos:solo:nav2',
         observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
         startTime: startTime,
         endTime: endTime,
-        mode: Mode.REPLAY
+        mode: Mode.REPLAY,
+        tls: true
     });
 
     // show it in video view using FFMPEG JS decoder

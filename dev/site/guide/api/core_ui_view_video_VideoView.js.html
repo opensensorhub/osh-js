@@ -120,12 +120,14 @@ class VideoView extends View {
     }
 
     reset() {
+        super.reset();
         if(isDefined(this.videoView)) {
             this.videoView.reset();
         }
     }
 
     destroy() {
+        super.destroy();
         if(isDefined(this.videoView)) {
             this.videoView.destroy();
         }

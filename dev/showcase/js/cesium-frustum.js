@@ -14,7 +14,7 @@ const START_TIME = '2012-06-29T14:32:34.099333251Z';
 const END_TIME = '2012-06-29T14:37:44.033333251Z';
 
 const tls = true;
-const sosEndpoint = 'ogct17.georobotix.io:8443/sensorhub/sos';
+const sosEndpoint = 'api.georobotix.io/ogc/t18/sos';
 const dsReplaySpeed = 1.0;
 
 const droneLocationDataSource = new SosGetResult('MISB UAS - Platform Location', {

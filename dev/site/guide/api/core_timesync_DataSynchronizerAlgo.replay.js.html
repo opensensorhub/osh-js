@@ -138,7 +138,7 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             let totalDataSources = Object.keys(this.dataSourceMap).length;
 
             for(let dataSourceID in this.dataSourceMap) {
-                 if(this.dataSourceMap[dataSourceID].status === Status.FETCH_STARTED) nbDatasourcesFetchedOk++;
+                if(this.dataSourceMap[dataSourceID].status === Status.FETCH_STARTED) nbDatasourcesFetchedOk++;
             }
 
             console.warn(`[Synchronizer] Fetched ${nbDatasourcesFetchedOk}/${totalDataSources} datasources`);

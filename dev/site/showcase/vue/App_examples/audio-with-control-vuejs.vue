@@ -43,12 +43,13 @@
         // setup video
         // create data source for UAV camera
         let audioDataSource = new SosGetResult("alex-audio", {
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
           startTime: "2021-04-12T10:48:45Z",
           endTime: "2021-04-12T10:49:45Z",
-          mode: Mode.REPLAY
+          mode: Mode.REPLAY,
+          tls: true
         });
 
         this.dataSynchronizer = new DataSynchronizer({

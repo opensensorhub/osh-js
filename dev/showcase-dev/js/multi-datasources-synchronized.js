@@ -10,30 +10,33 @@ const END_TIME = '2015-12-19T21:09:19.675Z';
 const REPLAY_SPEED = 1.2;
 
 const videoDataSource0 = new SosGetResult("drone-Video", {
-  endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+  endpointUrl: 'sensiasoft.net/sensorhub/sos',
   offeringID: 'urn:mysos:solo:video2',
   observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
   startTime: START_TIME,
   endTime: END_TIME,
-  mode: Mode.REPLAY
+  mode: Mode.REPLAY,
+  tls: true
 });
 
 const videoDataSource1 = new SosGetResult("drone-Video", {
-  endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+  endpointUrl: 'sensiasoft.net/sensorhub/sos',
   offeringID: 'urn:mysos:solo:video2',
   observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
   startTime: START_TIME,
   endTime: END_TIME,
-  mode: Mode.REPLAY
+  mode: Mode.REPLAY,
+  tls: true
 });
 
 const videoDataSource2 = new SosGetResult("drone-Video", {
-  endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+  endpointUrl: 'sensiasoft.net/sensorhub/sos',
   offeringID: 'urn:mysos:solo:video2',
   observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
   startTime: START_TIME,
   endTime: END_TIME,
-  mode: Mode.REPLAY
+  mode: Mode.REPLAY,
+  tls: true
 });
 
 const dataSynchronizer = new DataSynchronizer({

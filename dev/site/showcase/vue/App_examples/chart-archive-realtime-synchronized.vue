@@ -34,7 +34,7 @@ export default {
   mounted() {
 
     const opts = {
-      endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+      endpointUrl: "sensiasoft.net/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
       startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
@@ -42,7 +42,8 @@ export default {
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
       timeOut: 100,
-      mode: Mode.REPLAY
+      mode: Mode.REPLAY,
+      tls: true
     };
 
     let chartDataSource1 = new SosGetResult("weather", {
