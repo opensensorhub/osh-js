@@ -81,13 +81,17 @@ const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
 const MAX_TIME = '2012-06-29T14:36:54.033333251Z';
 const tls = true;
 
+const mqttProps = {
+    prefix: '/api',
+    endpointUrl: 'api.georobotix.io:443/ogc/t18',
+    username: 'uxs-team',
+    password: 'WR6zlso9h#'
+};
+
 const commonDatasourceOpts = {
-    endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
     protocol: 'mqtt',
-    mqttOpts: {
-        prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8483'
-    },
+    mqttOpts: mqttProps,
     tls: tls,
     startTime: START_TIME,
     endTime: END_TIME,
@@ -100,13 +104,13 @@ const commonDatasourceOpts = {
 
 const droneLocationDataSource = new SweApiDatasource('MISB UAS - Platform Location', {
     ...commonDatasourceOpts,
-    resource: '/datastreams/gal7w6j6v7n9/observations',
+    resource: '/datastreams/fled6eics1cl4/observations',
     responseFormat: 'application/swe+json',
 });
 
 const droneOrientationDataSource = new SweApiDatasource('MISB UAS - Platform Attitude', {
     ...commonDatasourceOpts,
-    resource: '/datastreams/ei5nsp8guy5y/observations',
+    resource: '/datastreams/adheadf9nghts/observations',
     responseFormat: 'application/swe+json',
 });
 

@@ -103,7 +103,7 @@ class SensorWebApi {
         if('connectorOpts' in this.networkProperties){
             if('username' in this.networkProperties.connectorOpts && 'password' in this.networkProperties.connectorOpts) {
                 headers['Authorization'] = 'Basic ' +
-                    window.btoa(this.networkProperties.connectorOpts.username + ":" + this.networkProperties.connectorOpts.password);
+                    btoa(this.networkProperties.connectorOpts.username + ":" + this.networkProperties.connectorOpts.password);
             } else {
                 for(let key in this.networkProperties.connectorOpts) {
                     headers[key] = this.networkProperties.connectorOpts[key];
@@ -139,13 +139,15 @@ class SensorWebApi {
 
         headers['Accept'] = 'application/json';
         headers['Content-Type'] = 'application/json';
+
         fetch(fullUrl, {
             method: 'POST',
             headers: headers,
+            credentials: 'include',
             body: jsonPayload
         }).then(function (response) {
             if (!response.ok) {
-                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+                const err = new Error(`Got ${response.status} response from ${fullUrl}`);
                 err.response = response;
                 throw err;
             }

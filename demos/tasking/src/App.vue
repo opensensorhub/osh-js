@@ -7,11 +7,11 @@
         app>
 
       <v-card dark raised elevation="4" class="time-card">
-      <v-card-title>Commands Ack</v-card-title>
-      <TimeLine
-          v-if="isInit"
-          :control="control"
-      ></TimeLine>
+        <v-card-title>Commands Ack</v-card-title>
+        <TimeLine
+            v-if="isInit"
+            :control="control"
+        ></TimeLine>
       </v-card>
     </v-navigation-drawer>
 
@@ -82,7 +82,9 @@ export default {
 
     const mqttProps = {
       prefix: '/api',
-      endpointUrl: 'api.georobotix.io:443/ogc/t18'
+      endpointUrl: 'api.georobotix.io:443/ogc/t18',
+      username: 'uxs-team',
+      password: 'WR6zlso9h#'
     };
 
     this.droneLocationDataSource = new SweApiDatasource("supersonic drone GPS", {
@@ -104,19 +106,19 @@ export default {
     const password = 'WR6zlso9h#';
 
     this.control = new Control({
-      id: cmdStreamId,
-      'system@id': systemId
-    },
-    {
-      endpointUrl: 'api.georobotix.io/ogc/t18/api',
-      streamProtocol: 'mqtt',
-      mqttOpts: mqttProps,
-      tls: true,
-      connectorOpts: {
-        username: username,
-        password: password
-      }
-    });
+          id: cmdStreamId,
+          'system@id': systemId
+        },
+        {
+          endpointUrl: 'api.georobotix.io/ogc/t18/api',
+          streamProtocol: 'mqtt',
+          mqttOpts: mqttProps,
+          tls: true,
+          connectorOpts: {
+            username: username,
+            password: password
+          }
+        });
 
     // https://api.georobotix.io/ogc/t18/api/systems/1ghd3h0dea3xy/controls/1rl2xoslsdldj/commands
 

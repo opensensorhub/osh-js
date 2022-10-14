@@ -8,29 +8,30 @@ import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer";
 
 var prevTime = 0;
 
-var systemId = "1ghd3h0dea3xy";
-var posDsId = "1eots41v6kody";
-var cmdStreamId = "1rl2xoslsdldj";
+const systemId = "jrc2e0kaj1m5a";
+const posDsId = "rbnag2hrc04mm";
+const cmdStreamId = "hf62t0dotfd5k";
+
+const mqttProps = {
+    prefix: '/api',
+    endpointUrl: 'api.georobotix.io:443/ogc/t18',
+    username: 'uxs-team',
+    password: 'WR6zlso9h#'
+};
 
 let gpsDataSource = new SweApiFetch("supersonic drone GPS", {
     resource: `/api/datastreams/${posDsId}/observations`,
-    endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
     protocol: 'mqtt',
-    mqttOpts: {
-        prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8483'
-    },
+    mqttOpts: mqttProps,
     tls: true,
     responseFormat: 'application/om+json'
 });
 
 const systems = new Systems({
-    endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
     streamProtocol: 'mqtt',
-    mqttOpts: {
-        prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8483'
-    },
+    mqttOpts: mqttProps,
     tls: true
 });
 
