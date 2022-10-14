@@ -46,11 +46,12 @@
       mounted() {
 
         const opts = {
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
           startTime: "2021-04-12T10:48:45Z",
           endTime: "2021-04-12T10:49:45Z",
-          mode: Mode.REPLAY
+          mode: Mode.REPLAY,
+          tls: true
         };
 
         // setup video

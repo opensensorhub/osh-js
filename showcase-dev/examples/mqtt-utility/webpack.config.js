@@ -53,7 +53,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'mqtt-utility.html'
+        index: 'mqtt-utility.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

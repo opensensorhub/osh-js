@@ -29,12 +29,13 @@ const currentSelectedElt = document.getElementById("current-marker");
 
 // setup DataSource. The datasource contains multiple ids.
 let avlDataSource = new SosGetResult("AVL", {
-    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    endpointUrl: "sensiasoft.net/sensorhub/sos",
     offeringID: "urn:mysos:avl",
     observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
     startTime: "2014-03-29T07:00:12Z",
     endTime: "2014-04-29T14:26:12Z",
-    mode: Mode.REPLAY
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 const dataSynchronizer = new DataSynchronizer({

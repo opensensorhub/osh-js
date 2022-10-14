@@ -60,7 +60,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'video-map-multiple-datasource.html'
+        index: 'video-map-multiple-datasource.html',
+        https:true
     },
     devtool: 'eval-source-map',
     plugins: [

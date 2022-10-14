@@ -8,27 +8,28 @@ import {Mode} from "osh-js/core/datasource/Mode";
 
 // #region snippet_datasource_mqttswejson
 
+const mqttProps = {
+    prefix: '/api',
+    endpointUrl: 'api.georobotix.io:443/ogc/t18',
+    username: 'uxs-team',
+    password: 'WR6zlso9h#'
+};
+
 let gpsDataSource = new SweApiFetch("android-GPS", {
-    endpointUrl:  'ogct17.georobotix.io:8080/sensorhub/api',
-    resource: '/datastreams/gal7w6j6v7n9/observations',
-    tls: false,
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    resource: '/datastreams/fled6eics1cl4/observations',
+    tls: true,
     protocol: 'mqtt',
-    mqttOpts: {
-        prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8083'
-    },
+    mqttOpts: mqttProps,
     mode: Mode.REAL_TIME
 });
 
 const isaDataSource = new SweApiFetch("ISA-bio-sensor", {
-    endpointUrl:  'ogct17.georobotix.io:8080/sensorhub/api',
-    resource: '/datastreams/1lppw59ger1py/observations',
-    tls: false,
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    resource: '/datastreams/b4runsn23q66o/observations',
+    tls: true,
     protocol: 'mqtt',
-    mqttOpts: {
-        prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8083'
-    },
+    mqttOpts: mqttProps,
     mode: Mode.REAL_TIME
 });
 

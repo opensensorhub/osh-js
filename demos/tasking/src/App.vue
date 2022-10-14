@@ -7,11 +7,11 @@
         app>
 
       <v-card dark raised elevation="4" class="time-card">
-      <v-card-title>Commands Ack</v-card-title>
-      <TimeLine
-          v-if="isInit"
-          :control="control"
-      ></TimeLine>
+        <v-card-title>Commands Ack</v-card-title>
+        <TimeLine
+            v-if="isInit"
+            :control="control"
+        ></TimeLine>
       </v-card>
     </v-navigation-drawer>
 
@@ -60,9 +60,7 @@ import TimeLine from "./components/TimeLine.vue";
 import Systems from "osh-js/core/sweapi/system/Systems";
 import Control from "osh-js/core/sweapi/control/Control";
 import SweApiDatasource from "osh-js/core/datasource/sweapi/SweApi.datasource";
-import {EventType} from "../../../source/core/event/EventType";
 
-//https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
 export default {
   components: {
     Map,
@@ -78,17 +76,19 @@ export default {
     }
   },
   async beforeMount() {
-    const systemId = "1ghd3h0dea3xy";
-    const posDsId = "1eots41v6kody";
-    const cmdStreamId = "1rl2xoslsdldj";
+    const systemId = "jrc2e0kaj1m5a";
+    const posDsId = "rbnag2hrc04mm";
+    const cmdStreamId = "hf62t0dotfd5k";
 
     const mqttProps = {
       prefix: '/api',
-      endpointUrl: 'ogct17.georobotix.io:8483'
+      endpointUrl: 'api.georobotix.io:443/ogc/t18',
+      username: 'uxs-team',
+      password: 'WR6zlso9h#'
     };
 
     this.droneLocationDataSource = new SweApiDatasource("supersonic drone GPS", {
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+      endpointUrl: 'api.georobotix.io/ogc/t18/api',
       resource: `/datastreams/${posDsId}/observations`,
       protocol: 'mqtt',
       mqttOpts: mqttProps,
@@ -96,26 +96,34 @@ export default {
     });
 
     this.systems = new Systems({
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
-      streamProtocol: 'mqtt',
-      mqttOpts: mqttProps,
-      tls: true
-    });
-    this.control = new Control({
-      id: cmdStreamId,
-      'system@id': systemId
-    },
-    {
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+      endpointUrl: 'api.georobotix.io/ogc/t18/api',
       streamProtocol: 'mqtt',
       mqttOpts: mqttProps,
       tls: true
     });
 
-    // https://ogct17.georobotix.io:8443/sensorhub/api/systems/1ghd3h0dea3xy/controls/1rl2xoslsdldj/commands
+    const username = 'uxs-team';
+    const password = 'WR6zlso9h#';
+
+    this.control = new Control({
+          id: cmdStreamId,
+          'system@id': systemId
+        },
+        {
+          endpointUrl: 'api.georobotix.io/ogc/t18/api',
+          streamProtocol: 'mqtt',
+          mqttOpts: mqttProps,
+          tls: true,
+          connectorOpts: {
+            username: username,
+            password: password
+          }
+        });
+
+    // https://api.georobotix.io/ogc/t18/api/systems/1ghd3h0dea3xy/controls/1rl2xoslsdldj/commands
 
     this.controlDataSource = new SweApiDatasource("Control Status", {
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
+      endpointUrl: 'api.georobotix.io/ogc/t18/api',
       resource: `/systems/${systemId}/controls/${cmdStreamId}/status`,
       protocol: 'mqtt',
       mqttOpts: mqttProps,

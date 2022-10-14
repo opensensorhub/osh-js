@@ -26,6 +26,7 @@ class SweApi extends TimeSeriesDatasource {
      * @param {String} properties.endpointUrl the endpoint url, this property is ignored in case of using 'mqtt' protocol, the properties.mqttOpts.endpointUrl will be used instead
      * @param {String} properties.resource the resource, /procedures, /fois, /observations, /tasks, /datastreams/4778/obs
      * @param {Boolean} properties.tls - defines if use secure TLS connection
+     * @param {Boolean} properties.connectorOpts - connector specific Opts
      * @param {Object} [properties.mqttOpts={}] - the Mqtt options if protocol is 'mqtt'
      * @param {String} properties.mqttOpts.prefix - the Mqtt prefix value
      * @param {String} properties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
@@ -53,6 +54,7 @@ class SweApi extends TimeSeriesDatasource {
             mode: Mode.REAL_TIME,
             prefetchBatchSize: 1000000,
             prefetchBatchDuration: 10000,
+            connectorOpts: {},
             ...properties,
         });
     }

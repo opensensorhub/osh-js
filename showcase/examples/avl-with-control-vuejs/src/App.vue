@@ -65,12 +65,13 @@ export default {
 
 // setup DataSource. The datasource contains multiple ids.
     let avlDataSource = new SosGetResult("AVL", {
-      endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+      endpointUrl: "sensiasoft.net/sensorhub/sos",
       offeringID: "urn:mysos:avl",
       observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
       startTime: "2014-03-29T05:00:03Z",
       endTime: "2014-03-30T07:00:53Z",
-      mode: Mode.REPLAY
+      mode: Mode.REPLAY,
+      tls: true
     });
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 200,

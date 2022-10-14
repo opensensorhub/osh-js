@@ -52,7 +52,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'openlayers-location-heading.html'
+        index: 'openlayers-location-heading.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

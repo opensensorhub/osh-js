@@ -5,8 +5,9 @@ import SosGetFois from 'osh-js/core/datasource/sos/SosGetFois.datasource.js';
 
 // create data source for Fois
 let sosGetFois = new SosGetFois('fois', {
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-    procedureId: 'urn:usgs:water:network'
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
+    procedureId: 'urn:usgs:water:network',
+    tls: true
 });
 
 // create Leaflet view

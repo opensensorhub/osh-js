@@ -33,14 +33,15 @@ export default {
   mounted() {
 
     let chartDataSource = new SosGetResult("weather", {
-      endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+      endpointUrl: "sensiasoft.net/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
       startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       endTime: (new Date(Date.now()).toISOString()),
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
-      mode: Mode.REPLAY
+      mode: Mode.REPLAY,
+      tls: true
     });
 
     const dataSynchronizer = new DataSynchronizer({

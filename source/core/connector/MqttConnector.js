@@ -50,7 +50,7 @@ class MqttConnector extends DataConnector {
      */
     constructor(url, properties) {
         super(url, {
-            mqttPrefix: (properties.mqtt && properties.mqtt.prefix) || '/api',
+            mqttPrefix: (properties.mqttOpts && properties.mqttOpts.prefix) || '/api',
             ...properties
         });
         this.interval = -1;
@@ -66,10 +66,10 @@ class MqttConnector extends DataConnector {
                 connectTimeout: 30 * 1000
             };
 
-            if(isDefined(this.properties.options)) {
+            if(isDefined(this.properties.mqttOpts)) {
                 options = {
                     ...options,
-                    ...this.properties.options
+                    ...this.properties.mqttOpts
                 };
             }
 

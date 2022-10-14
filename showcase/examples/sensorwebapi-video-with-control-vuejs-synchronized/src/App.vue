@@ -39,8 +39,8 @@ export default {
     // setup video
     // create data source for UAV camera
     const opts = {
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub/api',
-      resource: '/datastreams/uxzna8pldpiv/observations',
+      endpointUrl: 'api.georobotix.io/ogc/t18/api',
+      resource: '/datastreams/8ni90dbu4uf0g/observations',
       tls: true,
       startTime: '2012-06-29T14:32:34.099333251Z',
       endTime: '2012-06-29T14:37:44.033333251Z',

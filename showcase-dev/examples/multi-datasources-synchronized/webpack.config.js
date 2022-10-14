@@ -52,7 +52,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'multi-datasources-synchronized.html'
+        index: 'multi-datasources-synchronized.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

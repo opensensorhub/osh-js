@@ -63,7 +63,8 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
-    index: 'videodata-with-control-vuejs-synchronized.html'
+    index: 'videodata-with-control-vuejs-synchronized.html',
+    https:true
   },
   optimization: {
     splitChunks: {
