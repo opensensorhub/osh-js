@@ -152,14 +152,26 @@ class DelegateReplayHandler extends DelegateHandler {
             let batchSizeInMillis = this.prefetchBatchDuration * replaySpeed;
             let prefetchNextBatchThresholdInMillis = this.prefetchNextBatchThreshold * batchSizeInMillis;
 
-            let durationToFetch = batchSizeInMillis;
-            if ((durationToFetch + startTimestamp) > endTimestamp) {
-                durationToFetch = endTimestamp - startTimestamp;
-            }
             try {
-                let endFetchTimestamp = startTimestamp + durationToFetch;
-                this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
-                const data = await this.promise;
+                let durationToFetch, endFetchTimestamp, data;
+                do {
+                    durationToFetch = batchSizeInMillis;
+                    if ((durationToFetch + startTimestamp) > endTimestamp) {
+                        durationToFetch = endTimestamp - startTimestamp;
+                    }
+                    endFetchTimestamp = startTimestamp + durationToFetch;
+                    this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
+                    data = await this.promise;
+                    if(data.length === 0) {
+                        startTimestamp = endFetchTimestamp;
+                        this.startTime = new Date(startTimestamp).toISOString();
+                    }
+                    if(startTimestamp >= endTimestamp) {
+                        await this.disconnect();
+                        return;
+                    }
+                } while (data.length === 0);
+
                 if (!this.status.cancel) {
                     this.handleData(data);
                 }
@@ -168,7 +180,7 @@ class DelegateReplayHandler extends DelegateHandler {
                 this.timeBc = new BroadcastChannel(this.timeTopic);
 
                 this.timeBc.onmessage = async (event) => {
-                    if(event.data.type === EventType.MASTER_TIME) {
+                    if (event.data.type === EventType.MASTER_TIME) {
                         const masterTimestamp = event.data.timestamp;
 
                         if (masterTimestamp >= endTimestamp) {
@@ -176,30 +188,32 @@ class DelegateReplayHandler extends DelegateHandler {
                             return;
                         }
                         // compare masterTime to endFetch
-                        if((masterTimestamp - startTimestamp) >= prefetchNextBatchThresholdInMillis) {
+                        if ((masterTimestamp - startTimestamp) >= prefetchNextBatchThresholdInMillis) {
                             startTimestamp = endFetchTimestamp;
                         } else {
                             return;
                         }
 
-                        endFetchTimestamp += durationToFetch;
-                        if(endFetchTimestamp > endTimestamp) {
-                            endFetchTimestamp = endTimestamp; //reach the end
-                        }
-                        this.startTime = new Date(startTimestamp).toISOString();
-                        try{
-                            this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
-                            const data = await this.promise;
-                            if (!this.status.cancel) {
-                                this.handleData(data);
+                        do {
+                            endFetchTimestamp += durationToFetch;
+                            if (endFetchTimestamp > endTimestamp) {
+                                endFetchTimestamp = endTimestamp; //reach the end
                             }
-                        } catch (ex) {
-                            if (this.status.cancel) {
-                                console.warn(ex);
-                            } else {
-                                throw Error(ex);
+                            this.startTime = new Date(startTimestamp).toISOString();
+                            try {
+                                this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
+                                const data = await this.promise;
+                                if (!this.status.cancel) {
+                                    this.handleData(data);
+                                }
+                            } catch (ex) {
+                                if (this.status.cancel) {
+                                    console.warn(ex);
+                                } else {
+                                    throw Error(ex);
+                                }
                             }
-                        }
+                        } while (data.length === 0 && !this.status.cancel && startTimestamp < endTimestamp);
                     }
                 }
             } catch (ex) {
