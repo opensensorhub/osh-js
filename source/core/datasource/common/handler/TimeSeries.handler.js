@@ -203,7 +203,7 @@ class DelegateReplayHandler extends DelegateHandler {
                             try {
                                 this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
                                 const data = await this.promise;
-                                if (!this.status.cancel) {
+                                if (!this.status.cancel && data.length > 0) {
                                     this.handleData(data);
                                 }
                             } catch (ex) {
