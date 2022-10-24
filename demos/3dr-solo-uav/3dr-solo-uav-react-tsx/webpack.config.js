@@ -72,6 +72,12 @@ const config = {
       }
     ],
   },
+  devServer: {
+    compress: true,
+    port: 9000,
+    hot: true,
+    https:true
+  },
   stats: {
     children: true,
   },
