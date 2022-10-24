@@ -1,9 +1,12 @@
+import {randomUUID} from "../../../utils/Utils";
+
 class YUVCanvas {
     constructor(parOptions) {
 
         parOptions = parOptions || {};
 
         this.canvasElement = parOptions.canvas || document.createElement("canvas");
+        this.canvasElement.setAttribute('id', randomUUID());
         this.contextOptions = parOptions.contextOptions;
 
         this.type = parOptions.type || "yuv420";
@@ -108,7 +111,6 @@ class YUVCanvas {
 
                 gl.bindBuffer(gl.ARRAY_BUFFER, vTexturePosBuffer);
                 gl.bufferData(gl.ARRAY_BUFFER, vTexturePosValues, gl.DYNAMIC_DRAW);
-
 
                 gl.activeTexture(gl.TEXTURE0);
                 gl.bindTexture(gl.TEXTURE_2D, yTextureRef);

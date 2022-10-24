@@ -14,6 +14,7 @@ import '../../../resources/css/ffmpegview.css';
 import CanvasView from "./CanvasView";
 import DecodeWorker from './workers/webapi.decode.worker.js';
 import YUVCanvas from "./YUVCanvas";
+import {FrameType} from "./FrameType";
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
@@ -177,6 +178,7 @@ class WebCodecView extends CanvasView {
             this.gl.transferFromImageBitmap(bitmap);
 
             // update stats
+            this.onAfterDecoded(bitmap, FrameType.ARRAY);
             this.updateStatistics(event.data.pktSize);
             if(this.showTime) {
                 this.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
@@ -220,6 +222,10 @@ class WebCodecView extends CanvasView {
 
     async getCanvas() {
         return this.canvasElt;
+    }
+
+    drawFrame(decodedFrame) {
+        throw Error('Not supported operation');
     }
 }
 

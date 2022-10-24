@@ -126,7 +126,8 @@ class FfmpegDecoder {
             frameUData: new Uint8Array(this.instance.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
             frameVData: new Uint8Array(this.instance.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
             timestamp: timestamp,
-            pktSize: pktSize
+            pktSize: pktSize,
+            codec: this.codec
         }
     }
 }
