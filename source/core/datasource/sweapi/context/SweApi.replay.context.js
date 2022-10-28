@@ -17,9 +17,12 @@
 import SweApiContext from "./SweApi.context";
 import Control from "../../../sweapi/control/Control";
 import DataStream from "../../../sweapi/datastream/DataStream";
+import {isDefined} from "../../../utils/Utils";
 
 class SweApiReplayContext extends SweApiContext {
     init(properties) {
+        this.collection = undefined;
+        this.relativeStartTimestamp = undefined;
         this.properties = properties;
         this.replayFunction = undefined;
 
@@ -73,35 +76,60 @@ class SweApiReplayContext extends SweApiContext {
     }
 
     async disconnect() {
+        this.collection = undefined;
+        this.relativeStartTimestamp = undefined;
     }
 
-    async doTemporalRequest(properties, startTime, endTime, status = {cancel:false}) {
+    async nextBatch(properties, masterTimestamp, status = {cancel:false}) {
         return new Promise(async (resolve, reject) => {
-            const collection = await this.replayFunction(properties, startTime, endTime);
-            let data;
-            let results = [];
-            while (collection.hasNext() && !status.cancel) {
-                data = await collection.nextPage();
-                if(status.cancel) {
-                    break;
-                }
-                if (data.length > 0) {
-                    if (this.properties.responseFormat === 'application/om+json') {
-                        for (let d of data) {
-                            results.push({
-                                timestamp: d.timestamp,
-                                ...d.result
-                            })
-                        }
+            try {
+                let data;
+                let results = [];
+
+                const moveTimeCursor = async () => {
+                    let relativeStartTime;
+                    if(isDefined(this.relativeStartTimestamp)) {
+                        relativeStartTime = new Date(this.relativeStartTimestamp + 1).toISOString();
                     } else {
-                        results = data;
+                        relativeStartTime = new Date(this.properties.startTime).toISOString();
+                    }
+
+                    console.warn(`fetching ${relativeStartTime} -> ` +
+                        `${this.properties.endTime} for datasource ${this.properties.dataSourceId}`);
+                    this.collection = await this.replayFunction(properties, relativeStartTime, this.properties.endTime);
+                }
+
+                const fetchNext = async () => {
+                    data = await this.collection.nextPage();
+                    if (status.cancel) {
+                        reject('Status has been cancelled');
+                    }
+                    if (data.length > 0) {
+                        if (this.properties.responseFormat === 'application/om+json') {
+                            for (let d of data) {
+                                results.push({
+                                    timestamp: d.timestamp,
+                                    ...d.result
+                                })
+                            }
+                        } else {
+                            results = data;
+                        }
+
+                        if(status.cancel) {
+                            reject('Status has been cancelled');
+                        } else {
+                            // start startTime cursor
+                            this.relativeStartTimestamp = results[results.length-1].timestamp;
+                            resolve(results);
+                        }
                     }
                 }
-            }
-            if(status.cancel) {
-                reject('Status has been cancelled');
-            } else {
-                resolve(results);
+
+                await moveTimeCursor();
+                await fetchNext();
+            } catch (ex) {
+                reject(ex);
             }
         });
     }

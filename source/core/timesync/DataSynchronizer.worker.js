@@ -23,6 +23,8 @@ let lastTime = -1;
 let version = -1;
 let promise;
 let masterTimeRefreshRate;
+let startTimestamp;
+let endTimestamp;
 
 self.onmessage = async (event) => {
     if(isDefined(promise)) {
@@ -38,13 +40,19 @@ async function handleMessage(event) {
             let data = undefined;
             if (event.data.message === 'init') {
                 replaySpeed = event.data.replaySpeed;
+                startTimestamp = new Date(event.data.startTime).getTime();
+                endTimestamp = new Date(event.data.endTime).getTime();
+
                 if (event.data.mode === Mode.REPLAY) {
                     dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
                         event.data.dataSources,
                         event.data.replaySpeed,
+                        startTimestamp,
+                        endTimestamp,
                         event.data.timerResolution
                     );
                     dataSynchronizerAlgo.onEnd = onEnd;
+                    dataSynchronizerAlgo.onStart = onStart;
                 } else {
                     dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
                         event.data.dataSources,
@@ -81,13 +89,19 @@ async function handleMessage(event) {
                     datasources = dataSynchronizerAlgo.datasources;
                 }
 
+                startTimestamp = new Date(event.data.startTime).getTime();
+                endTimestamp = new Date(event.data.endTime).getTime();
+
                 if (event.data.mode === Mode.REPLAY) {
                     dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
                         datasources,
                         event.data.replaySpeed,
+                        startTimestamp,
+                        endTimestamp,
                         dataSynchronizerAlgo.timerResolution
                     );
                     dataSynchronizerAlgo.onEnd = onEnd;
+                    dataSynchronizerAlgo.onStart = onStart;
                 } else {
                     dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
                         datasources,
@@ -100,9 +114,6 @@ async function handleMessage(event) {
                 checkMasterTime();
                 if (dataSynchronizerAlgo !== null) {
                     dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
-                }
-                if (!isDefined(masterTimeInterval)) {
-                    startMasterTimeInterval();
                 }
             } else {
                 // skip response
@@ -122,6 +133,8 @@ async function handleMessage(event) {
     });
 }
 function reset() {
+    clearInterval(masterTimeInterval);
+    masterTimeInterval = undefined;
     version = -1;
     if(dataSynchronizerAlgo !== null) {
         dataSynchronizerAlgo.reset();
@@ -177,9 +190,20 @@ function checkMasterTime() {
     }
 }
 async function onEnd() {
+    const masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
     clearInterval(masterTimeInterval);
     masterTimeInterval = undefined;
+    // end at this time
+    timeBroadcastChannel.postMessage({
+        timestamp: masterTime,
+        type: EventType.MASTER_TIME
+    });
 }
+
+async function onStart() {
+    // checkMasterTime();
+}
+
 async function onData(dataSourceId, dataBlock) {
     if((version === -1 && (isDefined(lastData) ) && dataBlock.version === lastData.dataBlock.version)){
         return;
@@ -206,6 +230,14 @@ let masterTime;
 function startMasterTimeInterval(masterTimeRefreshRate) {
     if (!isDefined(masterTimeInterval)) {
         masterTimeInterval = setInterval(() => {
+            masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
+            if (isDefined(masterTime)) {
+                timeBroadcastChannel.postMessage({
+                    timestamp: masterTime,
+                    type: EventType.MASTER_TIME
+                });
+            }
+
             // check version
             if (!isDefined(lastData) || version !== lastData.dataBlock.version || version === -1) {
                 return;
@@ -221,14 +253,6 @@ function startMasterTimeInterval(masterTimeRefreshRate) {
                 });
             }
             lastTime = cTime;
-
-            masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
-            if (isDefined(masterTime)) {
-                timeBroadcastChannel.postMessage({
-                    timestamp: masterTime,
-                    type: EventType.MASTER_TIME
-                });
-            }
         }, masterTimeRefreshRate);
     }
 }

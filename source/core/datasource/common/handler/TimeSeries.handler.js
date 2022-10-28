@@ -112,6 +112,7 @@ class DelegateReplayHandler extends DelegateHandler {
         this.initialized = false;
         this.prefetchBatchDuration = 10000; // 10 sec
         this.prefetchNextBatchThreshold = 0.5; // 80%, fetch before the end
+        this.prefetchBatchDurationLimit = 5000;
         this.startTime = undefined;
     }
 
@@ -126,34 +127,85 @@ class DelegateReplayHandler extends DelegateHandler {
         }
     }
 
-    async fetchData(startTime, endTime) {
-        console.warn(`fetching ${startTime} -> ` +
-            `${endTime} for datasource ${this.context.properties.dataSourceId}`);
-        return this.context.doTemporalRequest(this.properties, startTime, endTime, this.status);
-    }
-
     async startLoop() {
         let startTimestamp = new Date(this.startTime).getTime();
         let endTimestamp = new Date(this.properties.endTime).getTime();
 
         if(startTimestamp >= endTimestamp) {
             console.warn(`Did not connect DataSource ${this.context.properties.dataSourceId}` +
-                                            ` because startTime=${this.startTime} >= endTime=${this.properties.endTime}`);
+                ` because startTime=${this.startTime} >= endTime=${this.properties.endTime}`);
             return;
         }
-
         if (!this.initialized) {
             this.initialized = true;
             this.status = {
                 cancel: false
             };
+        }
+        let replaySpeed = this.properties.replaySpeed || 1;
+        let prefetchBatchDurationLimit = this.properties.prefetchBatchDurationLimit * replaySpeed;
 
-            let replaySpeed = this.properties.replaySpeed || 1;
+        let lastTimestamp;
+        try {
+            let data = await this.context.nextBatch();
+            this.context.onChangeStatus(Status.FETCH_STARTED);
+            if (this.status.cancel) {
+                return;
+            } else if (data.length > 0) {
+                this.handleData(data);
+                lastTimestamp = data[data.length-1].timestamp;
+            }
+
+            if(lastTimestamp < endTimestamp) {
+                let masterTimestamp;
+                let fetching = false;
+
+                this.timeBc = new BroadcastChannel(this.timeTopic);
+                this.timeBc.onmessage = async (event) => {
+                    if (event.data.type === EventType.MASTER_TIME) {
+
+                        masterTimestamp = event.data.timestamp;
+                        if (masterTimestamp >= endTimestamp) {
+                            await this.disconnect();
+                            return;
+                        }
+
+                        if(lastTimestamp < endTimestamp && !fetching) {
+                            fetching = true;
+                            let dTimestamp = lastTimestamp - masterTimestamp;
+                            // less than 5 sec
+                            if (dTimestamp <= prefetchBatchDurationLimit) {
+                                // request next batch
+                                data = await this.context.nextBatch();
+                                if (!this.status.cancel && data.length > 0) {
+                                    this.handleData(data);
+                                    lastTimestamp = data[data.length - 1].timestamp;
+                                }
+                            }
+                            fetching = false;
+                        }
+                    }
+                }
+            }
+        } catch (ex) {
+            if(this.status.cancel) {
+                console.warn(ex);
+            } else {
+                console.error(ex);
+                throw Error(ex);
+            }
+        }
+        assertDefined(this.timeTopic, 'TimeTopic');
+        /*
+
+
+
             let batchSizeInMillis = this.prefetchBatchDuration * replaySpeed;
             let prefetchNextBatchThresholdInMillis = this.prefetchNextBatchThreshold * batchSizeInMillis;
 
             try {
                 let durationToFetch, endFetchTimestamp, data;
+                this.context.onChangeStatus(Status.FETCH_STARTED);
                 do {
                     durationToFetch = batchSizeInMillis;
                     if ((durationToFetch + startTimestamp) > endTimestamp) {
@@ -176,9 +228,7 @@ class DelegateReplayHandler extends DelegateHandler {
                     this.handleData(data);
                 }
 
-                this.context.onChangeStatus(Status.FETCH_STARTED);
                 this.timeBc = new BroadcastChannel(this.timeTopic);
-
                 this.timeBc.onmessage = async (event) => {
                     if (event.data.type === EventType.MASTER_TIME) {
                         const masterTimestamp = event.data.timestamp;
@@ -224,7 +274,7 @@ class DelegateReplayHandler extends DelegateHandler {
                 }
             }
             assertDefined(this.timeTopic, 'TimeTopic');
-        }
+        }*/
     }
 
     connect(startTime) {
@@ -335,7 +385,7 @@ class TimeSeriesHandler extends DataSourceHandler {
             this.context = this.contexts[this.properties.mode];
             this.context.onChangeStatus = this.onChangeStatus.bind(this);
             await this.context.init(this.properties);
-            await this.updateDelegateHandler(properties);
+            await this.updateDelegateHandler(this.properties);
             this.delegateHandler.handleData = this.handleData.bind(this); // bind context to handler
             this.connect();
         } catch (ex) {

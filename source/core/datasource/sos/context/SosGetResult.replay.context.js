@@ -52,30 +52,63 @@ class SosGetResultReplayContext extends SosGetResultContext {
         return this.parser.checkInit();
     }
 
-    async doTemporalRequest(properties, startTime, endTime,  status = {cancel:false}) {
+    async init(properties) {
+        this.startTimestamp = new Date(properties.startTime).getTime();
+        this.endTimestamp = new Date(properties.endTime).getTime();
+        this.relativeStartTimestamp = undefined;
+        return super.init(properties);
+    }
+
+    async disconnect() {
+        this.relativeStartTimestamp = undefined;
+    }
+
+    async nextBatch(properties, masterTimestamp, status = {cancel:false}) {
         return new Promise(async (resolve, reject) => {
             try {
-                const results = [];
-                await this.parser.templatePromise;
-                const data = await this.connector.doRequest('', this.getQueryString({
+                const fetchNext = async (startTimestamp, endTimestamp) => {
+                    const results = [];
+                    await this.parser.templatePromise;
+
+                    let startTime = new Date(startTimestamp).toISOString();
+                    let endTime = new Date(endTimestamp).toISOString();
+
+                    console.warn(`fetching ${startTime} -> ` +
+                        `${endTime} for datasource ${this.properties.dataSourceId}`);
+                    const data = await this.connector.doRequest('', this.getQueryString({
                         ...this.properties,
                         ...properties,
                         startTime: startTime,
                         endTime: endTime
                     }));
-                if(status.cancel) {
-                    reject();
-                } else {
-                    // this is because binary < 1.4 issue and the use of WS. In case in using WS, the data are provided in a array
-                    if(Array.isArray(data)) {
-                        for(let d of data) {
-                            results.push(...await this.parseData(d));
-                        }
+                    if(status.cancel) {
+                        reject();
                     } else {
-                        results.push(...await this.parseData(data));
+                        // this is because binary < 1.4 issue and the use of WS. In case in using WS, the data are provided in a array
+                        if(Array.isArray(data)) {
+                            for(let d of data) {
+                                results.push(...await this.parseData(d));
+                            }
+                        } else {
+                            results.push(...await this.parseData(data));
+                        }
+                        resolve(results);
                     }
-                    resolve(results);
                 }
+
+                await this.parser.templatePromise;
+                console.log(new Date(this.startTimestamp).toISOString(), new Date(this.endTimestamp).toISOString())
+
+                let stTimestamp = (isDefined(this.relativeStartTimestamp)) ? this.relativeStartTimestamp : this.startTimestamp;
+
+                let fetchDuration = this.properties.prefetchBatchDuration;
+
+                this.relativeStartTimestamp = stTimestamp + fetchDuration;
+                console.log(new Date(stTimestamp).toISOString(), new Date(this.relativeStartTimestamp).toISOString())
+                if(this.relativeStartTimestamp <=  this.endTimestamp) {
+                    await fetchNext(stTimestamp, this.relativeStartTimestamp);
+                }
+
             } catch (ex) {
                 reject(ex);
             }

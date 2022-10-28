@@ -84,6 +84,8 @@ class DataSynchronizerAlgo {
         }
         console.log("Data synchronizer terminated successfully");
     }
+
+    onStart()  {}
 }
 
 export default DataSynchronizerAlgo;

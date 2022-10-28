@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined, randomUUID} from "../utils/Utils.js";
+import {assertDefined, isDefined, randomUUID} from "../utils/Utils.js";
 import DataSynchronizerWorker from './DataSynchronizer.worker.js';
 import {DATA_SYNCHRONIZER_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../Constants.js";
 import {Mode} from "../datasource/Mode";
@@ -27,9 +27,13 @@ class DataSynchronizer {
      * @param {Number} [properties.timerResolution=5] - interval in which data is played (in milliseconds)
      * @param {Number} [properties.masterTimeRefreshRate=250] - interval in which time value is send through broadcast channel (in milliseconds)
      * @param {Number} [properties.mode=Mode.REPLAY] - mode of the data synchronizer
+     * @param {String} properties.startTime - start time of the temporal run
+     * @param {String} properties.endTime - end time of the temporal run
      * @param {Datasource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
+        assertDefined(properties.startTime, 'startTime');
+        assertDefined(properties.startTime, 'endTime');
         this.bufferingTime = 1000; // default
         this.currentTime = Date.now();
         this.id = randomUUID();
@@ -41,6 +45,8 @@ class DataSynchronizer {
         this.initialized = false;
         this.properties = {};
         this.properties.replaySpeed = this.replaySpeed;
+        this.properties.startTime = properties.startTime;
+        this.properties.endTime = properties.endTime;
 
         this.eventSubscriptionMap = {};
         this.messagesMap = {};
@@ -186,6 +192,8 @@ class DataSynchronizer {
                     replaySpeed: this.replaySpeed,
                     timerResolution: this.timerResolution,
                     masterTimeRefreshRate: this.masterTimeRefreshRate,
+                    startTime: this.properties.startTime,
+                    endTime: this.properties.endTime,
                     mode: mode,
                     topics:  {
                         data: this.getTopicId(),
@@ -325,10 +333,15 @@ class DataSynchronizer {
                        reconnect= false,
                        mode= this.mode) {
         return new Promise(async resolve => {
+            this.properties.startTime = startTime;
+            this.properties.endTime = endTime;
+
             await this.postMessage({
                 message: 'update-properties',
                 mode: mode,
-                replaySpeed: replaySpeed
+                replaySpeed: replaySpeed,
+                startTime: startTime,
+                endTime: endTime
             }, () => {
                 for (let ds of this.dataSources) {
                     ds.setTimeRange(startTime, endTime, replaySpeed, reconnect, mode);
