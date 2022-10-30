@@ -89,7 +89,7 @@ class DelegateBatchHandler extends DelegateHandler {
     async fetchData(startTime, endTime) {
         console.warn(`fetching ${new Date(startTime).toISOString()} -> ` +
             `${new Date(endTime).toISOString()} for datasource ${this.context.properties.dataSourceId}`);
-        return this.context.doTemporalRequest(this.properties, startTime, endTime, this.status);
+        return this.context.nextBatch(this.properties, startTime, endTime, this.status);
     }
 
     connect() {
@@ -112,7 +112,7 @@ class DelegateReplayHandler extends DelegateHandler {
         this.initialized = false;
         this.prefetchBatchDuration = 10000; // 10 sec
         this.prefetchNextBatchThreshold = 0.5; // 80%, fetch before the end
-        this.prefetchBatchDurationLimit = 5000;
+        this.prefetchBatchDuration = 5000;
         this.startTime = undefined;
     }
 
@@ -143,7 +143,7 @@ class DelegateReplayHandler extends DelegateHandler {
             };
         }
         let replaySpeed = this.properties.replaySpeed || 1;
-        let prefetchBatchDurationLimit = this.properties.prefetchBatchDurationLimit * replaySpeed;
+        let prefetchBatchDuration = this.properties.prefetchBatchDuration * replaySpeed;
 
         let lastTimestamp;
         try {
@@ -174,7 +174,7 @@ class DelegateReplayHandler extends DelegateHandler {
                             fetching = true;
                             let dTimestamp = lastTimestamp - masterTimestamp;
                             // less than 5 sec
-                            if (dTimestamp <= prefetchBatchDurationLimit) {
+                            if (dTimestamp <= prefetchBatchDuration) {
                                 // request next batch
                                 data = await this.context.nextBatch();
                                 if (!this.status.cancel && data.length > 0) {
@@ -196,85 +196,6 @@ class DelegateReplayHandler extends DelegateHandler {
             }
         }
         assertDefined(this.timeTopic, 'TimeTopic');
-        /*
-
-
-
-            let batchSizeInMillis = this.prefetchBatchDuration * replaySpeed;
-            let prefetchNextBatchThresholdInMillis = this.prefetchNextBatchThreshold * batchSizeInMillis;
-
-            try {
-                let durationToFetch, endFetchTimestamp, data;
-                this.context.onChangeStatus(Status.FETCH_STARTED);
-                do {
-                    durationToFetch = batchSizeInMillis;
-                    if ((durationToFetch + startTimestamp) > endTimestamp) {
-                        durationToFetch = endTimestamp - startTimestamp;
-                    }
-                    endFetchTimestamp = startTimestamp + durationToFetch;
-                    this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
-                    data = await this.promise;
-                    if(data.length === 0) {
-                        startTimestamp = endFetchTimestamp;
-                        this.startTime = new Date(startTimestamp).toISOString();
-                    }
-                    if(startTimestamp >= endTimestamp) {
-                        await this.disconnect();
-                        return;
-                    }
-                } while (data.length === 0);
-
-                if (!this.status.cancel) {
-                    this.handleData(data);
-                }
-
-                this.timeBc = new BroadcastChannel(this.timeTopic);
-                this.timeBc.onmessage = async (event) => {
-                    if (event.data.type === EventType.MASTER_TIME) {
-                        const masterTimestamp = event.data.timestamp;
-
-                        if (masterTimestamp >= endTimestamp) {
-                            await this.disconnect();
-                            return;
-                        }
-                        // compare masterTime to endFetch
-                        if ((masterTimestamp - startTimestamp) >= prefetchNextBatchThresholdInMillis) {
-                            startTimestamp = endFetchTimestamp;
-                        } else {
-                            return;
-                        }
-
-                        do {
-                            endFetchTimestamp += durationToFetch;
-                            if (endFetchTimestamp > endTimestamp) {
-                                endFetchTimestamp = endTimestamp; //reach the end
-                            }
-                            this.startTime = new Date(startTimestamp).toISOString();
-                            try {
-                                this.promise = this.fetchData(this.startTime, new Date(endFetchTimestamp).toISOString());
-                                const data = await this.promise;
-                                if (!this.status.cancel && data.length > 0) {
-                                    this.handleData(data);
-                                }
-                            } catch (ex) {
-                                if (this.status.cancel) {
-                                    console.warn(ex);
-                                } else {
-                                    throw Error(ex);
-                                }
-                            }
-                        } while (data.length === 0 && !this.status.cancel && startTimestamp < endTimestamp);
-                    }
-                }
-            } catch (ex) {
-                if(this.status.cancel) {
-                    console.warn(ex);
-                } else {
-                    throw Error(ex);
-                }
-            }
-            assertDefined(this.timeTopic, 'TimeTopic');
-        }*/
     }
 
     connect(startTime) {
@@ -447,9 +368,6 @@ class TimeSeriesHandler extends DataSourceHandler {
                     data: data[i],
                     version: this.context.properties.version
                 };
-                if(isDefined(this.properties.timeShift) && this.properties.timeShift !== 0) {
-                    d.data.timestamp = d.data.timestamp + this.properties.timeShift;
-                }
                 results.push(d);
             }
         } else {

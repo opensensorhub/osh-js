@@ -44,6 +44,8 @@ const platformOrientationDataSource = new SosGetResult('android-Heading', {
 const dataSynchronizer = new DataSynchronizer({
   replaySpeed: REPLAY_SPEED,
   timerResolution: 5,
+  startTime: START_TIME,
+  endTime: END_TIME,
   dataSources: [videoDataSource, platformLocationDataSource, platformOrientationDataSource]
 })
 

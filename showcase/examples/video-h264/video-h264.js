@@ -37,6 +37,8 @@ let videoView = new VideoView({
 // start streaming
 const dataSynchronizer = new DataSynchronizer({
   masterTimeRefreshRate: 250,
+  startTime: "2015-12-19T21:04:30Z",
+  endTime: "2015-12-19T21:09:19Z",
   replaySpeed: REPLAY_SPEED,
   dataSources: [
     videoDataSource

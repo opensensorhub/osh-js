@@ -9,12 +9,13 @@ import TextDataTypeDecoder from "./text/TextDataTypeDecoder";
 
 class TextDataParser extends GenericParser {
 
-    constructor(rootElement, encoding) {
+    constructor(rootElement, encoding, properties = {timeShift : 0}) {
         super(rootElement, {
             nodesId: {},
             nodesIdValue: {},
             registeredParser: {},
             refs: {},
+            ...properties
         });
         this.resultEncoding = encoding;
         this.textDataTypeDecoder = new TextDataTypeDecoder(this.resultEncoding);
@@ -42,7 +43,7 @@ class TextDataParser extends GenericParser {
         while(this.textDataTypeDecoder.hasNextBlock()) {
             const res = {};
             this.parser.parse(this.textDataTypeDecoder, {}, res);
-            res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime();
+            res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime() + this.props.timeShift;
             results.push(res);
         }
         return results;

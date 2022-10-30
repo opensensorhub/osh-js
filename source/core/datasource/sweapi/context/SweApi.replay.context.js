@@ -91,6 +91,7 @@ class SweApiReplayContext extends SweApiContext {
                     if(isDefined(this.relativeStartTimestamp)) {
                         relativeStartTime = new Date(this.relativeStartTimestamp + 1).toISOString();
                     } else {
+                        //TOCHECK: ISO or timestamp
                         relativeStartTime = new Date(this.properties.startTime).toISOString();
                     }
 

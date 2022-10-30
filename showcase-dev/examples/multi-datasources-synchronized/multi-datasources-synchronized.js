@@ -42,6 +42,8 @@ const videoDataSource2 = new SosGetResult("drone-Video", {
 const dataSynchronizer = new DataSynchronizer({
   replaySpeed: REPLAY_SPEED,
   masterTimeRefreshRate: 150,
+  startTime: START_TIME,
+  endTime: END_TIME,
   dataSources: [videoDataSource0, videoDataSource1, videoDataSource2]
 })
 

@@ -40,6 +40,8 @@ let avlDataSource = new SosGetResult("AVL", {
 
 const dataSynchronizer = new DataSynchronizer({
     replaySpeed: 200,
+    startTime: "2014-03-29T07:00:12Z",
+    endTime: "2014-04-29T14:26:12Z",
     dataSources: [avlDataSource]
 });
 
