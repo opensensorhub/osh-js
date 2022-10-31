@@ -55,6 +55,8 @@ function App() {
     const dataSynchronizer = new DataSynchronizer({
         masterTimeRefreshRate: 250,
         replaySpeed: 1.0,
+        startTime: START_TIME,
+        endTime: END_TIME,
         dataSources: [platformLocationDataSource, platformOrientationDataSource, gimbalOrientationDataSource, videoDataSource]
     });
   const component = (

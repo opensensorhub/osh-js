@@ -164,6 +164,8 @@ export default {
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: dsReplaySpeed,
       masterTimeRefreshRate: 250,
+      startTime: START_TIME,
+      endTime: END_TIME,
       dataSources: [
         droneLocationDataSource,
         droneVideoDataSource,

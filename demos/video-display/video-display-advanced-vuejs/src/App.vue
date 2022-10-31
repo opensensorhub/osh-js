@@ -97,7 +97,10 @@
   import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer.js";
   import {isDefined} from "osh-js/core/utils/Utils";
   import {Mode} from "osh-js/core/datasource/Mode";
+  import {EventType} from "../../../../source/core/event/EventType";
 
+  const startTime= "2015-02-16T07:59:00Z";
+  const endTime = "2015-02-16T08:09:00Z";
   export default {
     components: {
       Map,
@@ -120,19 +123,20 @@
           endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/Location",
-          startTime: "2015-02-16T07:58:32Z",
-          endTime: "2015-02-16T08:09:00Z",
-          timeShift: -16000,
+          startTime: startTime,
+          endTime: endTime,
           mode: Mode.REPLAY,
+          timeShift: -16000,
           tls: true
         }),
         headingDataSource: new SosGetResult("android-Att", {
           endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-          startTime: "2015-02-16T07:58:35Z",
-          endTime: "2015-02-16T08:09:00Z",
+          startTime: startTime,
+          endTime: endTime,
           mode: Mode.REPLAY,
+          timeShift: -6000,
           tls: true
         }),
         videoDataSource: new SosGetResult("android-Video", {
@@ -141,8 +145,8 @@
           endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-          startTime: "2015-02-16T07:58:35Z",
-          endTime: "2015-02-16T08:09:00Z",
+          startTime: startTime,
+          endTime: endTime,
           mode: Mode.REPLAY,
           tls: true
         }),
@@ -153,7 +157,7 @@
           startTime: "now",
           endTime: "2055-01-01Z",
           timeOut: 100,
-          tls: true
+          tls: true,
         }),
         dataSynchronizer:null
       }
@@ -180,6 +184,8 @@
 
       this.dataSynchronizer = new DataSynchronizer({
         replaySpeed: 2,
+        startTime: startTime,
+        endTime: endTime,
         dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
       });
     },
