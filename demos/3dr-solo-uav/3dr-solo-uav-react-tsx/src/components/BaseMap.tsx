@@ -166,6 +166,8 @@ class BaseMap extends React.PureComponent {
     const dataSynchronizer = new DataSynchronizer({
       masterTimeRefreshRate: 250,
       replaySpeed: 1.0,
+      startTime: '2015-12-19T21:04:29.231Z',
+      endTime: '2015-12-19T21:09:19.675Z',
       dataSources: [
         platformLocationDataSource,platformOrientationDataSource,gimbalOrientationDataSource
       ]
