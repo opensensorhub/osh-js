@@ -32,6 +32,8 @@ let chartDataSource = new SosGetResult("weather", {
 const sosDataSynchronizer = new DataSynchronizer({
     replaySpeed: 2,
     masterTimeRefreshRate: 250,
+    startTime: new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString(),
+    endTime: new Date(Date.now()).toISOString(),
     dataSources: [chartDataSource]
 });
 
@@ -118,6 +120,8 @@ const droneOrientationDataSource = new SweApiDatasource('MISB UAS - Platform Att
 const sweapiDataSynchronizer = new DataSynchronizer({
     replaySpeed: 2,
     masterTimeRefreshRate: 250,
+    startTime: START_TIME,
+    endTime: END_TIME,
     dataSources: [droneOrientationDataSource, droneLocationDataSource]
 });
 

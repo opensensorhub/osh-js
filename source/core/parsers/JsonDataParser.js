@@ -4,7 +4,7 @@ import TimeParser from "./common/TimeParser";
 
 class JsonDataParser extends GenericParser {
 
-    constructor(rootElement) {
+    constructor(rootElement,properties = {timeShift : 0}) {
         super(rootElement,{
             nodesId: {},
             nodesIdValue: {},
@@ -17,6 +17,7 @@ class JsonDataParser extends GenericParser {
                 'DataChoice': () => new TraverseParser(),
             },
             refs: {},
+            ...properties
         });
         this.parser.init(rootElement, this.props);
     }
@@ -39,11 +40,11 @@ class JsonDataParser extends GenericParser {
 
         if(Array.isArray(jsonData)) {
             for(let d of jsonData) {
-                d['timestamp'] = new Date(d[this.getTimeField()]).getTime();
+                d['timestamp'] = new Date(d[this.getTimeField()]).getTime() + this.props.timeShift;
             }
             return jsonData;
         } else {
-            jsonData['timestamp'] = new Date(jsonData[this.getTimeField()]).getTime();
+            jsonData['timestamp'] = new Date(jsonData[this.getTimeField()]).getTime() + this.props.timeShift;
             return [jsonData];
         }
     }

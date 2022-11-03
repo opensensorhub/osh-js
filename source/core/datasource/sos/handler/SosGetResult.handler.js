@@ -19,14 +19,18 @@ import TimeSeriesHandler from "../../common/handler/TimeSeries.handler";
 import SosGetResultRealTimeContext from "../context/SosGetResult.realtime.context";
 import SosGetResultReplayContext from "../context/SosGetResult.replay.context";
 import {Mode} from "../../Mode";
+import SosGetResultBatchContext from "../context/SosGetResult.batch.context";
 
 class SosGetResultHandler extends TimeSeriesHandler {
     createContext(properties) {
         if(properties.mode === Mode.REAL_TIME) {
             return new SosGetResultRealTimeContext();
-        } else {
+        } else if(properties.mode === Mode.REPLAY){
             return new SosGetResultReplayContext();
+        } else if(properties.mode === Mode.BATCH){
+            return new SosGetResultBatchContext();
         }
+        throw Error(`Not supported mode=${properties.mode}`);
     }
 }
 

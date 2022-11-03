@@ -75,6 +75,8 @@ export default {
     });
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 200,
+      startTime: "2014-03-29T05:00:03Z",
+      endTime: "2014-03-30T07:00:53Z",
       dataSources: [avlDataSource]
     });
     /**************************************************************/

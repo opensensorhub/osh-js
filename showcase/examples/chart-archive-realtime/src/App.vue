@@ -32,12 +32,15 @@ export default {
   },
   mounted() {
 
+    let startTime = (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString());
+    let endTime = (new Date(Date.now()).toISOString());
+
     let chartDataSource = new SosGetResult("weather", {
       endpointUrl: "sensiasoft.net/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      endTime: (new Date(Date.now()).toISOString()),
+      startTime: startTime,
+      endTime: endTime,
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
       mode: Mode.REPLAY,
@@ -46,6 +49,8 @@ export default {
 
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.5,
+      startTime: startTime,
+      endTime: endTime,
       dataSources: [chartDataSource],
       masterTimeRefreshRate: 250
     });

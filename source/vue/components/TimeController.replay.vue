@@ -188,7 +188,7 @@ export default {
               new Date(this.maxTime).toISOString(),
               this.speed,
               true,
-              Mode.REPLAY
+              this.mode
           );
         }
 

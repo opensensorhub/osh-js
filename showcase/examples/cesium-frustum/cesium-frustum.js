@@ -73,6 +73,8 @@ const droneHFovDataSource = new SosGetResult('MISB UAS - Horizontal FoV', {
 
 const dataSynchronizer = new DataSynchronizer({
     replaySpeed: dsReplaySpeed,
+    startTime: START_TIME,
+    endTime: END_TIME,
     dataSources: [droneLocationDataSource, droneOrientationDataSource, droneCameraOrientationDataSource, droneHFovDataSource]
 });
 

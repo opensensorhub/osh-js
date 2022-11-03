@@ -67,6 +67,8 @@ import {Mode} from 'osh-js/core/datasource/Mode';
 
       const dataSynchronizer = new DataSynchronizer({
         replaySpeed: 1.5,
+        startTime: '2015-12-19T21:04:29.231Z',
+        endTime: '2015-12-19T21:09:19.675Z',
         dataSources: [this.videoDataSource, this.platformLocationDataSource, this.platformOrientationDataSource,
           this.gimbalOrientationDataSource]
       });

@@ -15,12 +15,13 @@ import RootParser from "./common/RootParser";
 
 class BinaryDataParser extends GenericParser {
 
-    constructor(rootElement, encoding) {
+    constructor(rootElement, encoding, properties = {timeShift : 0}) {
         super(rootElement, {
             nodesId: {},
             nodesIdValue: {},
             registeredParser: {},
             refs: {},
+            ...properties
         });
         this.resultEncoding = encoding;
         this.binaryDataTypeDecoder = new BinaryDataTypeDecoder({
@@ -66,7 +67,7 @@ class BinaryDataParser extends GenericParser {
         while(this.binaryDataTypeDecoder.hasNextBlock()) {
             const res = {};
             this.parser.parse(this.binaryDataTypeDecoder, {}, res);
-            res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime();
+            res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime() + this.props.timeShift;
             results.push(res);
         }
         return results;
