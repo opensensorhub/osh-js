@@ -38,11 +38,6 @@
             <span :id="'end-time-'+id" v-html=parseTime(endTime)></span>
           </div>
         </div>
-        <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0 &&  activateActions">
-          <a :id="'out-of-sync-btn-'+id" class="control-btn out-of-sync">
-            <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
-          </a>
-        </div>
       </div>
     </div>
   </div>
@@ -188,7 +183,7 @@ export default {
               new Date(this.maxTime).toISOString(),
               this.speed,
               true,
-              this.mode
+              Mode.REPLAY
           );
         }
 
@@ -255,26 +250,6 @@ export default {
 
         if(message.type === EventType.MASTER_TIME) {
           // consider here datasynchronizer sends data in time order
-          if (isDefined(this.dataSynchronizer)) {
-            const contains = message.dataSourceId in this.outOfSync;
-            if (message.timestamp < this.lastSynchronizedTimestamp) {
-              if (!contains) {
-                if (isDefined(this.dataSynchronizer)) {
-                  this.dataSynchronizer.dataSources.forEach(datasource => {
-                    if (datasource.id === message.dataSourceId) {
-                      this.outOfSync[datasource.id] = datasource;
-                    }
-                  });
-                } else {
-                  this.outOfSync[message.dataSourceId] = this.dataSourceObject;
-                }
-              }
-              return;
-            } else if (contains) {
-              // check that the datasource is not out of sync anymore
-              delete this.outOfSync[message.dataSourceId];
-            }
-          }
           this.lastSynchronizedTimestamp = message.timestamp;
           if (!this.interval && this.speed > 0.0 && !this.update) {
             // }
@@ -354,7 +329,6 @@ export default {
     resetMasterTime() {
       // reset master time
       this.lastSynchronizedTimestamp = -1;
-      this.outOfSync = {};
       this.waitForTimeChangedEvent = true;
       this.on('time-changed');
       this.update = false;
@@ -504,13 +478,6 @@ export default {
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
     },
-    renderOutOfSync() {
-      let content = '';
-      for(let key in this.outOfSync) {
-        content += this.outOfSync[key].name + ' is out of sync\n';
-      }
-      return content;
-    }
   }
 }
 </script>
