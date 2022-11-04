@@ -31,9 +31,11 @@ import {Status} from "../connector/Status.js";
 import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
 
 class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
-    constructor(dataSources, replaySpeed = 1, timerResolution = 5) {
+    constructor(dataSources, replaySpeed = 1, startTimestamp, endTimestamp, timerResolution = 5) {
         super(dataSources,replaySpeed,timerResolution);
         this.replaySpeed = replaySpeed;
+        this.startTimestamp = startTimestamp;
+        this.endTimestamp = endTimestamp;
     }
 
     push(dataSourceId, dataBlocks) {
@@ -43,13 +45,22 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
 
         const ds = this.dataSourceMap[dataSourceId];
         const lastData = dataBlocks[dataBlocks.length-1];
-        const firstData = dataBlocks[0];
         if (!this.checkVersion(ds, lastData)) {
             console.warn(`[DataSynchronizer] incompatible version ${ds.version} ~ ${lastData.version}, skipping data`);
             return;
         }
-
         ds.dataBuffer.push(...dataBlocks);
+    }
+
+    processData() {
+        let clockTimeRef = performance.now();
+
+        this.interval = setInterval(() => {
+            // 1) return the oldest data if any
+            while (this.computeNextData(this.startTimestamp, clockTimeRef)) {}
+            this.checkEnd();
+        }, this.timerResolution);
+        console.warn(`Started Replay Algorithm with tsRef=${new Date(this.startTimestamp).toISOString()}`);
     }
 
     /**
@@ -123,13 +134,9 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
     setStatus(dataSourceId, status) {
         if (dataSourceId in this.dataSourceMap) {
             this.dataSourceMap[dataSourceId].status = status;
-            if(status === Status.DISCONNECTED) {
-                this.resetDataSource(dataSourceId);
-            }
             console.warn(status+' DataSource ' + dataSourceId + ' from the synchronizer ');
         }
         this.checkStart();
-        this.checkEnd();
     }
 
     checkStart() {
@@ -145,22 +152,15 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             if(nbDatasourcesFetchedOk === totalDataSources) {
                 console.warn('Starting Replay Algorithm...');
                 this.processData();
+                this.onStart();
             }
         }
     }
 
     checkEnd() {
-        let nbDatasourcesFetchedOk = 0;
-        let totalDataSources = Object.keys(this.dataSourceMap).length;
-
-        for(let dataSourceID in this.dataSourceMap) {
-            if(this.dataSourceMap[dataSourceID].status === Status.DISCONNECTED) nbDatasourcesFetchedOk++;
-        }
-
-        console.warn(`[Synchronizer] Ended ${nbDatasourcesFetchedOk}/${totalDataSources} datasources`);
-        if(nbDatasourcesFetchedOk === totalDataSources) {
-            console.warn('Stopping Replay Algorithm...');
+        if(this.getCurrentTimestamp() >= this.endTimestamp) {
             this.onEnd();
+            this.reset();
         }
     }
 
@@ -181,6 +181,7 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
     }
 
     onEnd() {}
+    onStart() {}
 }
 
 export default DataSynchronizerAlgoReplay;

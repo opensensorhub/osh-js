@@ -42,7 +42,7 @@ export default {
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: '2015-12-19T21:04:29.231Z',
       endTime: '2015-12-19T21:09:19.675Z',
-      prefetchBatchDuration: 5000,
+      prefetchBatchDuration: 10000,
       mode: Mode.REPLAY,
       tls: true
     };
@@ -128,8 +128,10 @@ export default {
     }));
 
     this.dataSynchronizer = new DataSynchronizer({
-      replaySpeed: 2.6,
+      replaySpeed: 1.0,
       masterTimeRefreshRate: 250, // millis
+      startTime: '2015-12-19T21:04:29.231Z',
+      endTime: '2015-12-19T21:09:19.675Z',
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();

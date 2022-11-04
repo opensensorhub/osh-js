@@ -94,6 +94,8 @@ export default {
 
     this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: REPLAY_SPEED,
+      startTime: START_TIME,
+      endTime: END_TIME,
       dataSources: [videoDataSource0, videoDataSource1, videoDataSource2]
     })
 

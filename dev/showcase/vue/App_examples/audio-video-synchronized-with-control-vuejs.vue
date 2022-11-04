@@ -130,6 +130,8 @@
 
         this.dataSynchronizer = new DataSynchronizer({
           replaySpeed: 1,
+          startTime: "2021-04-12T10:48:45Z",
+          endTime: "2021-04-12T10:49:45Z",
           dataSources: [videoDataSource, audioDataSource]
         });
 

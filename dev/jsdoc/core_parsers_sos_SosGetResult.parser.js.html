@@ -51,9 +51,10 @@ class SosGetResultParser {
         const response = await fetch(getResultTemplateUrl);
         const template = await response.text();
 
+
         //
         if('responseFormat' in properties &amp;&amp; properties.responseFormat === 'application/json'){
-            this.parser = new JsonDataParser(JSON.parse(template));
+            this.parser = new JsonDataParser(JSON.parse(template), {timeShift: this.properties.timeShift || 0});
         } else {
             let sweXmlParser = new SWEXmlStreamParser(template);
             const json = sweXmlParser.toJson();
@@ -68,14 +69,13 @@ class SosGetResultParser {
             let resultEncoding = respSchema.resultEncoding;
             let rootElement = respSchema.resultStructure
             if(resultEncoding &amp;&amp; resultEncoding.type === 'TextEncoding') {
-                this.parser = new TextDataParser(rootElement, resultEncoding);
+                this.parser = new TextDataParser(rootElement, resultEncoding, {timeShift: this.properties.timeShift || 0});
             } else if(resultEncoding &amp;&amp; resultEncoding.type === 'BinaryEncoding') {
-                this.parser = new BinaryDataParser(rootElement, resultEncoding);
+                this.parser = new BinaryDataParser(rootElement, resultEncoding, {timeShift: this.properties.timeShift || 0});
             } else {
                 throw Error('Not supported parser format');
             }
         }
-
     }
 
     async checkInit() {

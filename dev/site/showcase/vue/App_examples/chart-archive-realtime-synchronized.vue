@@ -33,12 +33,15 @@ export default {
   },
   mounted() {
 
+    let startTime = (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString());
+    let endTime = (new Date(Date.now()).toISOString());
+
     const opts = {
       endpointUrl: "sensiasoft.net/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
-      endTime: (new Date(Date.now()).toISOString()),
+      startTime: startTime,
+      endTime: endTime,
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
       timeOut: 100,
@@ -96,6 +99,8 @@ export default {
 // start streaming
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.0,
+      startTime: startTime,
+      endTime: endTime,
       dataSources: [chartDataSource1, chartDataSource2]
     })
 

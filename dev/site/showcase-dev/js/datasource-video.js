@@ -17,6 +17,8 @@ const videoDataSource = new SosGetResult("drone-Video", {
 
 const dataSynchronizer = new DataSynchronizer({
   replaySpeed: 2,
+  startTime: '2015-12-19T21:04:29.231Z',
+  endTime: '2015-12-19T21:09:19.675Z',
   dataSources: [videoDataSource]
 });
 
