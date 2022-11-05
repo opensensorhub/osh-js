@@ -1,25 +1,33 @@
 <template>
   <div style='width:100%'>
-    <slot v-if="isRealTime">
+    <slot v-if="realTime">
       <TimeControllerRealtime
-                              :dataSource="dataSource"
-                              :dataSynchronizer="dataSynchronizer"
-                              :debounce="debounce"
-                              :parseTime="parseTime"
-                              :supportReplay="supportReplay"
-                              @event='onControlEvent'
+          :dataSource="dataSource"
+          :dataSynchronizer="dataSynchronizer"
+          :debounce="debounce"
+          :parseTime="parseTime"
+          :support-history="historyProps !== undefined"
+          @event='onControlEvent'
       ></TimeControllerRealtime>
     </slot>
-    <slot v-else>
+    <slot v-else-if="historyProps && historyProps.mode === 'replay'">
       <TimeControllerReplay
-                            :dataSource="dataSource"
-                            :dataSynchronizer="dataSynchronizer"
-                            :debounce="debounce"
-                            :parseTime="parseTime"
-                            :skipTimeStep="skipTimeStep"
-                            :replaySpeedStep="replaySpeedStep"
-                            @event='onControlEvent'
+          :dataSource="dataSource"
+          :dataSynchronizer="dataSynchronizer"
+          :debounce="debounce"
+          :parseTime="parseTime"
+          :skipTimeStep="skipTimeStep"
+          :replaySpeedStep="replaySpeedStep"
+          @event='onControlEvent'
       ></TimeControllerReplay>
+    </slot>
+    <slot v-else-if="historyProps && historyProps.mode === 'batch'">
+      <TimeControllerBatch
+          :dataSource="dataSource"
+          :debounce="debounce"
+          :parseTime="parseTime"
+          @event='onControlEvent'
+      ></TimeControllerBatch>
     </slot>
   </div>
 </template>
@@ -28,7 +36,8 @@ import {isDefined, randomUUID} from '../../core/utils/Utils.js';
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
 import TimeControllerReplay from "./TimeController.replay.vue";
 import TimeControllerRealtime from "./TimeController.realtime.vue";
-
+import {Mode} from '../../core/datasource/Mode';
+import TimeControllerBatch from "./TimeController.batch.vue";
 
 /**
  * @module osh-vue/TimeController
@@ -44,6 +53,7 @@ import TimeControllerRealtime from "./TimeController.realtime.vue";
 export default {
   name: "TimeController",
   components: {
+    TimeControllerBatch,
     TimeControllerReplay,
     TimeControllerRealtime,
   },
@@ -83,13 +93,15 @@ export default {
     return {
       id: randomUUID(),
       init: false,
-      isRealTime: undefined,
       supportReplay: false,
-      replayProps: {}
+      replayProps: {},
+      replay: false,
+      batch: false,
+      realTime: false,
+      historyProps: undefined // type: 'batch' | 'replay', startTime: , endTime, replaySpeed
     };
   },
   beforeMount() {
-    assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     this.dataSourceObject = this.getDataSourceObject();
   },
   mounted() {
@@ -97,33 +109,74 @@ export default {
   },
   methods: {
     initComp() {
-      assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
-      this.isRealTime = (this.dataSourceObject.getStartTime() === 'now');
-      if(isDefined(this.dataSourceObject.getMinTime())) {
-        this.supportReplay = true; // activate icon to switch between REPLAY & REAL TIME mode
+      if (this.dataSourceObject.mode === Mode.REPLAY) {
+        this.replay = true;
+        this.historyProps = {
+          mode: 'replay',
+          startTime: this.dataSourceObject.getStartTime(),
+          endTime: this.dataSourceObject.getEndTime(),
+          replaySpeed: this.dataSourceObject.getReplaySpeed()
+        }
+      } else if (this.dataSourceObject.mode === Mode.BATCH) {
+        this.batch = true;
+        this.historyProps = {
+          mode: 'batch',
+          startTime: this.dataSourceObject.getStartTime(),
+          endTime: this.dataSourceObject.getEndTime()
+        }
+      } else if (this.dataSourceObject.mode === Mode.REAL_TIME) {
+        this.realTime = true;
       }
     },
     getDataSourceObject() {
       return (isDefined(this.dataSynchronizer)) ? this.dataSynchronizer : this.dataSource;
     },
     onControlEvent(event) {
-      if(event.name === 'toggle-replay') {
-        if(event.replay) {
-          this.toggleReplay();
-        } else {
+      if (event.name === 'toggle-history') {
+        if(!this.realTime) {
           this.toggleRealtime();
+        } else {
+          if(this.historyProps.mode === Mode.REPLAY) {
+            this.toggleReplay();
+          } else if(this.historyProps.mode === Mode.BATCH) {
+            this.toggleBatch();
+          }
         }
-      } else if(event.name === 'end') {
+      } else if (event.name === 'end') {
         // this.dataSourceObject.setMinTime(new Date(event.startTime).toISOString());
         // this.dataSourceObject.setMaxTime(new Date(event.endTime).toISOString());
         // this.dataSourceObject.setReplaySpeed(event.replaySpeed);
       }
     },
-    toggleReplay() {
-      this.isRealTime = false;
+    async toggleReplay() {
+      await this.dataSourceObject.setTimeRange(
+          this.historyProps.startTime,
+          this.historyProps.endTime,
+          this.historyProps.replaySpeed,
+          true,
+          Mode.REPLAY
+      );
+      this.realTime = false;
     },
-    toggleRealtime() {
-      this.isRealTime = true;
+    async toggleBatch() {
+      await this.dataSourceObject.setTimeRange(
+          this.historyProps.startTime,
+          this.historyProps.endTime,
+          1.0,
+          true,
+          Mode.BATCH
+      );
+      this.realTime = false;
+    },
+    async toggleRealtime() {
+      await this.dataSourceObject.setTimeRange(
+          'now',
+          new Date("2055-01-01T00:00:00Z").toISOString(),
+          1.0,
+          true,
+          Mode.REAL_TIME
+      );
+      this.realTime = true;
     }
 
   }

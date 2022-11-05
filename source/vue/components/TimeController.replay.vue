@@ -7,7 +7,7 @@
           <a :id="'replay-btn-'+id" class="control-btn clicked" @click="toggleReplay">
             <i class="fa fa-history"></i>
           </a>
-          <div class="control-speed" v-if="activateSpeedControl && activateActions">
+          <div class="control-speed" >
             <a :id="'speed-minus-btn-'+id" class="control-btn " @mouseup="stopSpeed" @mouseleave="stopSpeed"
                @click="decSpeed" @mousedown="decSpeedDown">
               <i class="fa fa-minus"></i>
@@ -20,7 +20,7 @@
               <i class="fa fa-plus"></i>
             </a>
           </div>
-          <div class="control-back-for" v-if="activateActions">
+          <div class="control-back-for">
             <a :id="'fast-back-btn-'+id" class="control-btn" @mouseup="stopBackward" @mouseleave="stopBackward"
                @mousedown="doBackward"> <i
                 class="fa fa-fast-backward"></i></a>
@@ -32,16 +32,11 @@
                @mousedown="doFastForward"> <i
                 class="fa fa-fast-forward"></i></a>
           </div>
-          <div class="control-time" v-if="activateActions">
+          <div class="control-time">
             <span :id="'current-time-'+id" v-html=parseTime(startTime)></span>
             <span style="padding:0 10px 0 10px">/</span>
             <span :id="'end-time-'+id" v-html=parseTime(endTime)></span>
           </div>
-        </div>
-        <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0 &&  activateActions">
-          <a :id="'out-of-sync-btn-'+id" class="control-btn out-of-sync">
-            <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
-          </a>
         </div>
       </div>
     </div>
@@ -110,15 +105,12 @@ export default {
       id: randomUUID(),
       speedId: randomUUID(),
       event: null,
-      activateActions: false,
       dataSourceObject: null,
       connected: true,
       startTime: null,
       endTime: null,
-      realtime: null,
       minTime: null,
       maxTime: null,
-      activateSpeedControl: true,
       speed: 1.0,
       interval: false,
       rangeSlider: null,
@@ -126,9 +118,7 @@ export default {
       skipTime: 0,
       init: false,
       lastSynchronizedTimestamp: -1,
-      outOfSync: {},
-      waitForTimeChangedEvent: false,
-      mode: undefined
+      waitForTimeChangedEvent: false
     };
   },
   watch: {
@@ -143,7 +133,6 @@ export default {
   beforeMount() {
     assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
     this.dataSourceObject = this.getDataSourceObject();
-    this.mode = this.dataSourceObject.mode;
   },
   updated() {
     // this.initComp();
@@ -156,8 +145,6 @@ export default {
       assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
       if (!this.init) {
         this.dataSourceObject.isConnected().then(value => this.connected = value);
-        let stCurrentRefresh = this.getDataSourceObject().getStartTime() === 'now';
-
         let minTime = this.dataSourceObject.getMinTime();
         let maxTime = this.dataSourceObject.getMaxTime();
 
@@ -165,7 +152,6 @@ export default {
           this.speed = this.dataSourceObject.properties.replaySpeed;
         } else {
           this.speed = 0.0;
-          this.activateSpeedControl = false;
         }
 
         if (isDefined(minTime)) {
@@ -182,17 +168,14 @@ export default {
         }
         this.maxTime = this.endTime;
 
-        if (stCurrentRefresh) {
-          await this.dataSourceObject.setTimeRange(
-              new Date(this.minTime).toISOString(),
-              new Date(this.maxTime).toISOString(),
-              this.speed,
-              true,
-              this.mode
-          );
-        }
+        // await this.dataSourceObject.setTimeRange(
+        //     new Date(this.minTime).toISOString(),
+        //     new Date(this.maxTime).toISOString(),
+        //     this.speed,
+        //     true,
+        //     Mode.REPLAY
+        // );
 
-        this.activateActions = (this.dataSourceObject.mode === Mode.REPLAY);
 
         // compute skip time
         if ((this.skipTimeStep.endsWith('s'))) {
@@ -255,26 +238,6 @@ export default {
 
         if(message.type === EventType.MASTER_TIME) {
           // consider here datasynchronizer sends data in time order
-          if (isDefined(this.dataSynchronizer)) {
-            const contains = message.dataSourceId in this.outOfSync;
-            if (message.timestamp < this.lastSynchronizedTimestamp) {
-              if (!contains) {
-                if (isDefined(this.dataSynchronizer)) {
-                  this.dataSynchronizer.dataSources.forEach(datasource => {
-                    if (datasource.id === message.dataSourceId) {
-                      this.outOfSync[datasource.id] = datasource;
-                    }
-                  });
-                } else {
-                  this.outOfSync[message.dataSourceId] = this.dataSourceObject;
-                }
-              }
-              return;
-            } else if (contains) {
-              // check that the datasource is not out of sync anymore
-              delete this.outOfSync[message.dataSourceId];
-            }
-          }
           this.lastSynchronizedTimestamp = message.timestamp;
           if (!this.interval && this.speed > 0.0 && !this.update) {
             // }
@@ -354,7 +317,6 @@ export default {
     resetMasterTime() {
       // reset master time
       this.lastSynchronizedTimestamp = -1;
-      this.outOfSync = {};
       this.waitForTimeChangedEvent = true;
       this.on('time-changed');
       this.update = false;
@@ -433,7 +395,7 @@ export default {
     }
     ,
     async toggleReplay() {
-      this.on('toggle-replay', {
+      this.on('toggle-history', {
         replay: false,
         startTime: this.startTime,
         endTime: this.endTime,
@@ -504,13 +466,6 @@ export default {
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
     },
-    renderOutOfSync() {
-      let content = '';
-      for(let key in this.outOfSync) {
-        content += this.outOfSync[key].name + ' is out of sync\n';
-      }
-      return content;
-    }
   }
 }
 </script>
