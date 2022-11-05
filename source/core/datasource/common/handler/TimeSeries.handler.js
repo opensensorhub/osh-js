@@ -111,7 +111,7 @@ class DelegateReplayHandler extends DelegateHandler {
         super(context);
         this.initialized = false;
         this.prefetchBatchDuration = 10000; // 10 sec
-        this.prefetchNextBatchThreshold = 0.5; // 80%, fetch before the end
+        this.prefetchNextBatchThreshold = 0.5; // 50%, fetch before the end
         this.prefetchBatchDuration = 5000;
         this.startTime = undefined;
     }

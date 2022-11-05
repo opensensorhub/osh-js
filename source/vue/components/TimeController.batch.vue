@@ -3,24 +3,15 @@
     <div :id="id" class="range"></div>
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
-        <div class="datasource-actions live">
-          <a :id="'replay-btn-'+id" class="control-btn replay" @click="toggleReplay" v-if="supportHistory">
+        <div class="datasource-actions replay">
+          <a :id="'replay-btn-'+id" class="control-btn clicked" @click="toggleReplay">
             <i class="fa fa-history"></i>
           </a>
-        </div>
-        <span :id="'current-time-'+id" v-if="masterTime" v-html=parseTime(masterTime)></span>
-        <v-chip
-            x-small
-            class="ma-2 live"
-            color="red"
-            text-color="white"
-        >
-          LIVE
-        </v-chip>
-        <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0">
-          <a :id="'out-of-sync-btn-'+id" class="control-btn out-of-sync">
-            <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
-          </a>
+          <div class="control-time">
+            <span :id="'current-time-'+id" v-html=parseTime(startTime)></span>
+            <span style="padding:0 10px 0 10px">/</span>
+            <span :id="'end-time-'+id" v-html=parseTime(endTime)></span>
+          </div>
         </div>
       </div>
     </div>
@@ -28,40 +19,36 @@
 </template>
 
 <script>
-import RangeSliderViewRealtime from '../../ext/ui/view/rangeslider/RangeSliderView.realtime.js';
+import RangeSliderReplay from '../../ext/ui/view/rangeslider/RangeSliderView.replay.js';
 import {randomUUID} from '../../core/utils/Utils.js';
 import {isDefined} from '../../core/utils/Utils';
+import {Status as STATUS} from "../../core/connector/Status";
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
 import {EventType} from "../../core/event/EventType";
 import {Mode} from "../../core/datasource/Mode";
+
 
 /**
  * @module osh-vue/TimeController
  * @desc TimeController component to control timeline of the datasources
  * @vue-prop {DataSource}  [dataSource] - DataSource object
  * @vue-prop {DataSynchronizer} [dataSynchronizer] - DataSynchronizer object
+ * @vue-prop {String} [skipTimeStep='5s'] Time to skip backward/forward. In seconds or percent of the total time
+ * @vue-prop {Number} [replaySpeedStep=0.1] Time to decrease/increase replay speed value
  * @vue-prop {Number} [debounce=800] Debounce time before executing refresh while clicking on backward/forward/replaySpeed action. In millis
  * @vue-prop {Function} [parseTime] - Function used to parse the time and display next to the actions buttons. Return value can be text or HTML.
- * @vue-event {String} [event='toggle-replay'] - Emit event's name after time change
- * @vue-event {Boolean} [supportReplay=false] - Defines if the timeController support replay mode (and display corresponding button)
+ * @vue-event {String} [event='change'/'slide'/'end'/'replaySpeed'/'toggle-replay'] - Emit event's name after time change
  */
 export default {
-  name: "TimeControllerRealtime",
+  name: "TimeControllerBatch",
   components: {},
   props: {
     dataSource: {
       type: Object
     },
-    dataSynchronizer: {
-      type: Object
-    },
     debounce: {
       type: Number,
       default: () => 800 // 800ms
-    },
-    supportHistory: {
-      type: Boolean,
-      default: () => false // 800ms
     },
     parseTime: {
       type: Function,
@@ -79,29 +66,28 @@ export default {
   data() {
     return {
       id: randomUUID(),
+      speedId: randomUUID(),
       event: null,
-      dataSourceObject: null,
-      rangeSlider: undefined,
+      connected: true,
+      startTime: null,
+      endTime: null,
+      minTime: null,
+      maxTime: null,
+      interval: false,
+      rangeSlider: null,
       bcTime: null,
       init: false,
-      lastSynchronizedTimestamp: -1,
-      outOfSync: {},
-      masterTime: undefined
+      waitForTimeChangedEvent: false
     };
   },
   watch: {
     event(newValue) {
       this.$emit('event', {
-        event: newValue
+        event: newValue,
+        startTime: this.startTime,
+        endTime: this.endTime
       });
     }
-  },
-  beforeMount() {
-    assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
-    this.dataSourceObject = this.getDataSourceObject();
-  },
-  updated() {
-    // this.initComp();
   },
   mounted() {
     this.initComp();
@@ -109,20 +95,50 @@ export default {
   methods: {
     async initComp() {
       if (!this.init) {
-        let stCurrentRefresh = this.getDataSourceObject().getStartTime() !== 'now';
+        this.dataSource.isConnected().then(value => this.connected = value);
+        let stCurrentRefresh = this.dataSource.getStartTime() === 'now';
+
+        let minTime = this.dataSource.getMinTime();
+        let maxTime = this.dataSource.getMaxTime();
+
+        if (isDefined(minTime)) {
+          this.startTime = new Date(minTime).getTime();
+        } else {
+          this.startTime = new Date(this.dataSource.getStartTime()).getTime();
+        }
+        this.minTime = this.startTime;
+
+        if (isDefined(maxTime)) {
+          this.endTime = new Date(maxTime).getTime();
+        } else {
+          this.endTime = new Date(this.dataSource.getEndTime()).getTime();
+        }
+        this.maxTime = this.endTime;
+
         if (stCurrentRefresh) {
-          await this.dataSourceObject.setTimeRange(
-              'now',
-              new Date("2055-01-01T00:00:00Z").toISOString(),
-              1.0,
+          await this.dataSource.setTimeRange(
+              new Date(this.minTime).toISOString(),
+              new Date(this.maxTime).toISOString(),
+              this.speed,
               true,
-              Mode.REAL_TIME
+              Mode.BATCH
           );
         }
 
-        assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
         this.createTimeBc();
-        this.displayConsoleWarningIncompatibleVersionThrottle = throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
+        // listen for datasource status
+        this.dataSource.subscribe(message => {
+          if (message.status === STATUS.DISCONNECTED || message.status === STATUS.FETCH_ENDED) {
+            this.connected = false;
+          } else if (message.status === STATUS.FETCH_STARTED) {
+            this.connected = true;
+          }
+        }, [EventType.STATUS]);
+
+        this.createRangeSlider();
+
+        this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
+        this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
         this.init = true;
       }
     },
@@ -134,89 +150,116 @@ export default {
     destroyTimeBc() {
       this.bcTime.close();
     },
-    displayConsoleWarningIncompatibleVersionThrottle() {
-
-    },
-    displayConsoleWarningIncompatibleVersion() {
-      console.warn('Incompatible data version');
-    },
     createTimeBc() {
       // listen for BC
-      this.dataSourceObject.subscribe(message => {
-        if(message.type === EventType.MASTER_TIME) {
-          if(!isDefined(this.rangeSlider)) {
-            this.createRangeSlider(message.timestamp);
+      this.dataSource.subscribe(message => {
+        if (this.waitForTimeChangedEvent) {
+          console.log('Waiting for TIME CHANGED EVENT');
+        }
+
+        if (this.waitForTimeChangedEvent) {
+          if (message.type === EventType.MASTER_TIME) {
+            this.displayConsoleWarningIncompatibleVersionThrottle();
+          } else if (message.type === EventType.TIME_CHANGED) {
+            this.waitForTimeChangedEvent = false;
           }
+          return;
+        }
+
+        if (message.type === EventType.MASTER_TIME) {
           // consider here datasynchronizer sends data in time order
-          if (isDefined(this.dataSynchronizer)) {
-            const contains = message.dataSourceId in this.outOfSync;
-            if (message.timestamp < this.lastSynchronizedTimestamp) {
-              if (!contains) {
-                if (isDefined(this.dataSynchronizer)) {
-                  this.dataSynchronizer.dataSources.forEach(datasource => {
-                    if (datasource.id === message.dataSourceId) {
-                      this.outOfSync[datasource.id] = datasource;
-                    }
-                  });
-                } else {
-                  this.outOfSync[message.dataSourceId] = this.dataSourceObject;
-                }
-              }
-              return;
-            } else if (contains) {
-              // check that the datasource is not out of sync anymore
-              delete this.outOfSync[message.dataSourceId];
-            }
-          }
           this.lastSynchronizedTimestamp = message.timestamp;
-          this.masterTime = message.timestamp;
+          if (!this.interval && this.speed > 0.0 && !this.update) {
+            // }
+            this.setStartTime(message.timestamp);
+          }
         }
       }, [EventType.TIME_CHANGED, EventType.MASTER_TIME]);
     },
-
-    createRangeSlider(startTimestamp) {
+    setStartTime(timestamp) {
+      this.startTime = timestamp;
+      this.rangeSlider.setStartTime(this.startTime, this.endTime);
+    },
+    createRangeSlider() {
       if (!this.rangeSlider) {
-        this.rangeSlider = new  RangeSliderViewRealtime({
+        this.rangeSlider = new RangeSliderReplay({
           container: this.id,
+          startTime: this.minTime,
+          endTime: this.maxTime,
           debounce: 200,
-          dataSynchronizer: this.dataSynchronizer,
-          startTimestamp: startTimestamp,
           options: {}
         });
+
+        this.update = false;
+        this.rangeSlider.onChange = (startTime, endTime, event) => {
+          if (event === 'slide') {
+            this.waitForTimeChanged = true;
+            this.update = true;
+          } else if (event === 'end') {
+            this.update = false;
+          }
+
+          if (!this.interval) {
+            this.startTime = startTime;
+            this.endTime = endTime;
+
+            this.on(event);
+          }
+          if (event === 'end') {
+            this.doPlay();
+          }
+        }
       }
-    }
-    ,
+    },
+    doPlay() {
+      this.updateTime('play');
+      this.connected = true;
+    },
     resetMasterTime() {
       // reset master time
       this.lastSynchronizedTimestamp = -1;
-      this.outOfSync = {};
+      this.waitForTimeChangedEvent = true;
+      this.on('time-changed');
+      this.update = false;
     },
 
-    getDataSourceObject() {
-      return (isDefined(this.dataSynchronizer)) ? this.dataSynchronizer : this.dataSource;
+    async updateTime(event) {
+      this.resetMasterTime();
+      this.dataSource.setTimeRange(
+          new Date(this.startTime).toISOString(),
+          new Date(this.endTime).toISOString(),
+          this.speed,
+          true
+      );
+
+      this.on(event, {
+        replaySpeed: this.speed,
+        startTime: this.startTime,
+        endTime: this.endTime
+      });
+    }
+    ,
+    updateTimeDebounce() {},
+
+    setRangeSliderStartTime(timestamp) {
+      this.rangeSlider.setStartTime(timestamp);
     },
+
+    setRangeSliderStartTimeThrottle() {},
+
     async toggleReplay() {
-      this.on();
+      this.on('toggle-history');
     },
-    on() {
-      if(this.supportHistory) {
-        this.$emit('event', {
-          name: 'toggle-history',
-          active: true
-        });
-      }
+    on(eventName, props = {}) {
+      this.$emit('event', {
+        name: eventName,
+        ...props
+      });
     }
     ,
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
     },
-    renderOutOfSync() {
-      let content = '';
-      for(let key in this.outOfSync) {
-        content += this.outOfSync[key].name + ' is out of sync\n';
-      }
-      return content;
-    }
   }
 }
 </script>
@@ -239,10 +282,9 @@ export default {
 
 .control .datasource-actions {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-left: 10px;
-  width: 450px;
+  width: 100%;
 }
 
 .control .control-btn {
@@ -256,10 +298,6 @@ export default {
   height: 3px;
 }
 
-.control .control-back-for {
-  width: 80px;
-}
-
 .control .box-time small {
   font-size: 60%;
 }
@@ -271,10 +309,6 @@ export default {
   line-height: 12px;
   min-width: 65px;
   margin-bottom: 5px;
-}
-
-.control .control-back-for {
-  display: flex;
 }
 
 .control .control-time {
@@ -331,11 +365,6 @@ export default {
   color: #00B5B8;
 }
 
-.control-btn.out-of-sync {
-  cursor: pointer;
-  color: #d97100;
-}
-
 .control-btn:hover {
   cursor: pointer;
   color: #00B5B8;
@@ -349,23 +378,6 @@ export default {
 
 .control-btn:active {
   color: #00B5B8;
-}
-
-.control .live {
-  margin-left: 10px;
-  top: -1px;
-}
-
-.control .live > span {
-  font-size: 12px;
-  font-weight: 700;
-  color: #00B5B8;
-}
-
-.control .buttons .actions {
-  display: flex;
-  align-items: center;
-  padding: 45px 5px 5px 0px;
 }
 
 .control .noUi-pips-horizontal {
@@ -437,12 +449,6 @@ export default {
 
 .control .control-time {
   width: 150px;
-}
-
-.control .datasource-actions.live {
-  justify-content: unset;
-  align-items: unset;
-  width: unset;
 }
 
 </style>
