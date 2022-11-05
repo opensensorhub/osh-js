@@ -123,7 +123,7 @@ class SosGetResultReplayContext extends SosGetResultContext {
 
                         let results = [];
 
-                        // this is because binary &lt; 1.4 issue and the use of WS. In case in using WS, the data are provided in a array
+                        // this is because binary &lt; 1.4 issue and the use of WS. In case in using WS, the data are provided in an array
                         if(Array.isArray(data)) {
                             for(let d of data) {
                                 results.push(...await this.parseData(d));
