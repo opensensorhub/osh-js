@@ -68,7 +68,7 @@ class SosGetResult extends TimeSeriesDatasource {
             tls: false,
             type: 'SosGetResult',
             mode: Mode.REAL_TIME,
-            prefetchBatchSize: 5000,
+            prefetchBatchSize: 250,
             prefetchBatchDuration: 5000,
             ...properties
         });
