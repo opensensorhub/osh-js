@@ -17,9 +17,9 @@ const originalState = {
     },
     maxHeight: 800,
     server: {
-        url : 'ogct17.georobotix.io:8443/sensorhub/api',
+        url : 'api.georobotix.io/ogc/t18/api',
         mqtt: {
-            url: 'ogct17.georobotix.io:8483',
+            url: 'api.georobotix.io:443/ogc/t18',
             prefix: '/api'
         },
         tls: true

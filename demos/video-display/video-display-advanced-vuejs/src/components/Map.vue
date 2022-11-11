@@ -9,7 +9,7 @@
 import LeafletView from "osh-js/core/ui/view/map/LeafletView.js";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
 import {EventType} from "osh-js/core/event/EventType";
-import {Status} from "osh-js/core/protocol/Status";
+    import {Status} from "../../../../../source/core/connector/Status";
 
 export default {
   name: "Map",

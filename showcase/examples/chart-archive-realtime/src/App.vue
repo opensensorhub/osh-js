@@ -3,11 +3,11 @@
     <div id="container">
     </div>
     <TimeController
-        :dataSource="dataSource"
+        :dataSynchronizer="dataSynchronizer"
         @event='onControlEvent'
         :skipTimeStep="'60s'"
         :replaySpeedStep=0.1
-        v-if="dataSource"
+        v-if="dataSynchronizer"
     ></TimeController>
   </div>
 </template>
@@ -15,8 +15,10 @@
 // @ is an alias to /src
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 export default {
   components: {
@@ -24,23 +26,33 @@ export default {
   },
   data: function () {
     return {
-      dataSource: null,
+      dataSynchronizer: null,
       view: null
     }
   },
   mounted() {
 
+    let startTime = (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString());
+    let endTime = (new Date(Date.now()).toISOString());
+
     let chartDataSource = new SosGetResult("weather", {
-      protocol: "ws",
-      service: "SOS",
-      endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+      endpointUrl: "sensiasoft.net/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      endTime: (new Date(Date.now()).toISOString()),
+      startTime: startTime,
+      endTime: endTime,
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
-      replaySpeed: 1.5
+      mode: Mode.REPLAY,
+      tls: true
+    });
+
+    const dataSynchronizer = new DataSynchronizer({
+      replaySpeed: 1.5,
+      startTime: startTime,
+      endTime: endTime,
+      dataSources: [chartDataSource],
+      masterTimeRefreshRate: 250
     });
 
     function getRandomArbitrary(min, max) {
@@ -102,9 +114,9 @@ export default {
     });
 
     // start streaming
-    chartDataSource.connect();
+    dataSynchronizer.connect();
 
-    this.dataSource = chartDataSource;
+    this.dataSynchronizer = dataSynchronizer;
   },
   methods: {
     onControlEvent(eventName) {

@@ -7,10 +7,10 @@
     </div>
     <div class="footer">
       <TimeController
-          :dataSource="dataSource"
+          :dataSynchronizer="dataSynchronizer"
           @event='onControlEvent'
           :skipTimeStep="'10s'"
-          v-if="dataSource "
+          v-if="dataSynchronizer "
       ></TimeController>
     </div>
   </div>
@@ -18,13 +18,15 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
     import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
+    import {Mode} from "osh-js/core/datasource/Mode";
+    import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
     export default {
         components: {
@@ -32,7 +34,7 @@
         },
         data: function () {
             return {
-                dataSource: null
+              dataSynchronizer: null
             }
         },
         beforeMount() {
@@ -41,15 +43,20 @@
         // setup video
         // create data source for UAV camera
         let audioDataSource = new SosGetResult("alex-audio", {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
           startTime: "2021-04-12T10:48:45Z",
           endTime: "2021-04-12T10:49:45Z",
-          replaySpeed: 1.0,
-          bufferingTime: 1000
+          mode: Mode.REPLAY,
+          tls: true
+        });
+
+        this.dataSynchronizer = new DataSynchronizer({
+          replaySpeed: 1,
+          startTime: "2021-04-12T10:48:45Z",
+          endTime: "2021-04-12T10:49:45Z",
+          dataSources: [audioDataSource]
         });
 
         this.view = new AudioView({
@@ -100,8 +107,6 @@
         this.view.addVisualizer(audioChartFrequencyVisualizer);
         this.view.addVisualizer(audioChartTimeVisualizer);
         this.view.addVisualizer(audioSpectrogramVisualizer);
-
-        this.dataSource = audioDataSource;
       },
 
       methods: {

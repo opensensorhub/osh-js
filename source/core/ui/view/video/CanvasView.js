@@ -112,7 +112,6 @@ class CanvasView extends View {
     }
 
     /**
-     * @private
      */
     updateStatistics(pktSize) {
         this.statistics.frames++;
@@ -146,7 +145,7 @@ class CanvasView extends View {
      * Called after each decoded frame.
      * @event
      */
-    onAfterDecoded() {
+    onAfterDecoded(decodedFrame, frameType) {
     }
 }
 

@@ -15,7 +15,6 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import Collection from "./Collection";
-import {isDefined} from "../utils/Utils";
 
 class ObservationsCollection extends Collection {
     /**

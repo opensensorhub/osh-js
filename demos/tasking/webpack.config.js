@@ -58,7 +58,11 @@ const config = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: 'esbuild-loader',
+          options: {
+            loader: 'js',  // Remove this if you're not using JSX
+            target: 'es2015'  // Syntax to compile to (see options below for possible values)
+          }
         }
       },
       {

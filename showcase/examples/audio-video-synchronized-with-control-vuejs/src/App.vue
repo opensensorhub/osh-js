@@ -26,10 +26,10 @@
     import AudioFrequencyChartJsVisualizer
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
-    import SosGetResult from "osh-js/core/datasource/sos/SosGetResult";
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
     import AudioDataLayer from "osh-js/core/ui/layer/AudioDataLayer";
     import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
-    import {EventType} from "../../../../source/core/event/EventType";
+    import {Mode} from "osh-js/core/datasource/Mode";
 
     export default {
         components: {
@@ -46,14 +46,12 @@
       mounted() {
 
         const opts = {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
           startTime: "2021-04-12T10:48:45Z",
           endTime: "2021-04-12T10:49:45Z",
-          replaySpeed: 1.0,
-          bufferingTime: 1000
+          mode: Mode.REPLAY,
+          tls: true
         };
 
         // setup video
@@ -132,7 +130,8 @@
 
         this.dataSynchronizer = new DataSynchronizer({
           replaySpeed: 1,
-          timerResolution: 5,
+          startTime: "2021-04-12T10:48:45Z",
+          endTime: "2021-04-12T10:49:45Z",
           dataSources: [videoDataSource, audioDataSource]
         });
 

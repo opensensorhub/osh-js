@@ -13,9 +13,11 @@
 // @ is an alias to /src
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {isDefined} from 'osh-js/core/utils/Utils';
+import {Mode} from "osh-js/core/datasource/Mode";
+import DataSynchronizer from "../../../../source/core/timesync/DataSynchronizer";
 
 export default {
   components: {
@@ -30,15 +32,15 @@ export default {
   mounted() {
 
     let chartDataSource = new SosGetResult("weather", {
-      protocol: "ws",
-      service: "SOS",
-      endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+      endpointUrl: "sensiasoft.net/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
       startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
       endTime: (new Date(Date.now()).toISOString()),
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      maxTime: (new Date(Date.now()).toISOString())
+      maxTime: (new Date(Date.now()).toISOString()),
+      mode: Mode.BATCH,
+      tls: true
     });
 
 // #region snippet_curve_layer
@@ -69,8 +71,8 @@ export default {
 
 // start streaming
     chartDataSource.connect();
-
     this.dataSource = chartDataSource;
+
   },
   methods: {
     onControlEvent(eventName) {

@@ -1,4 +1,4 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {
     EllipsoidTerrainProvider,
@@ -10,20 +10,21 @@ import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
 import ImageDrapingLayer from 'osh-js/core/ui/layer/ImageDrapingLayer.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
 let videoDataSource = new SosGetResult("drone-Video", {
-    protocol: 'ws',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:video2',
     observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    replaySpeed: 1
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 // show it in video view using FFMPEG JS decoder
@@ -45,36 +46,33 @@ let videoView = new VideoView({
 
 // create data source for Android phone GPS
 let platformLocationDataSource = new SosGetResult('android-GPS', {
-    protocol: 'ws',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    replaySpeed: 1
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 let platformOrientationDataSource = new SosGetResult('android-Heading', {
-    protocol: 'ws',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    replaySpeed: 1
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 let gimbalOrientationDataSource = new SosGetResult('android-Heading', {
-    protocol: 'ws',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    replaySpeed: 1
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 // add 3D model marker to Cesium view
@@ -178,7 +176,17 @@ const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
 // baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
 
 // start streaming
-videoDataSource.connect();
-platformLocationDataSource.connect();
-platformOrientationDataSource.connect();
-gimbalOrientationDataSource.connect();
+const dataSynchronizer = new DataSynchronizer({
+    masterTimeRefreshRate: 250,
+    replaySpeed: 1.0,
+    startTime: '2015-12-19T21:04:29.231Z',
+    endTime: '2015-12-19T21:09:19.675Z',
+    dataSources: [
+        videoDataSource,
+        platformLocationDataSource,
+        platformOrientationDataSource,
+        gimbalOrientationDataSource
+    ]
+});
+dataSynchronizer.connect()
+

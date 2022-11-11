@@ -85,6 +85,12 @@ const config = {
       }
     ],
   },
+  devServer: {
+    compress: true,
+    port: 9000,
+    hot: true,
+    https:true
+  },
   optimization: {
     splitChunks: {
       chunks: 'async',

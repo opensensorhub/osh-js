@@ -141,8 +141,8 @@ import ControlFilter from "osh-js/core/sweapi/control/ControlFilter";
 import EventFilter from "osh-js/core/sweapi/event/EventFilter";
 import SystemHistoryFilter from "osh-js/core/sweapi/history/SystemHistoryFilter";
 import { mapActions } from 'vuex'
-import SweCollectionDataParser from "../../../source/core/datasource/sweapi/SweCollectionDataParser";
-import {randomUUID} from "../../../source/core/utils/Utils";
+import {randomUUID} from "osh-js/core/utils/Utils";
+import SweCollectionDataParser from "osh-js/core/parsers/sweapi/collection/SweCollectionDataParser";
 
 export default {
   components: {

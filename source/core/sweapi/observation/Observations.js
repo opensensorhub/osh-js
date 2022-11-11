@@ -16,7 +16,7 @@
 
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
-import SensorWebApiFetchObservation from "../../datasource/sweapi/parser/collection/SweApiFetchObservation.parser";
+import SensorWebApiFetchObservation from "../../parsers/sweapi/collection/SweApiFetchObservation.parser";
 import ObservationFilter from "./ObservationFilter";
 
 class Observations extends SensorWebApi {

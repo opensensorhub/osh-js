@@ -1,37 +1,49 @@
 import Systems from "osh-js/core/sweapi/system/Systems";
 import {EventType} from "osh-js/core/event/EventType";
 import ControlFilter from "osh-js/core/sweapi/control/ControlFilter";
-import SweApiFetch from "osh-js/core/datasource/sweapi/SweApiFetch";
+import SweApiFetch from "osh-js/core/datasource/sweapi/SweApi.datasource";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
 import LeafletView from "osh-js/core/ui/view/map/LeafletView";
 import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer";
 
 var prevTime = 0;
 
-var systemId = "1ghd3h0dea3xy";
-var posDsId = "1eots41v6kody";
-var cmdStreamId = "1rl2xoslsdldj";
+const systemId = "jrc2e0kaj1m5a";
+const posDsId = "rbnag2hrc04mm";
+const cmdStreamId = "hf62t0dotfd5k";
+
+const username = 'uxs-team';
+const password = 'WR6zlso9h#';
+
+const mqttProps = {
+    prefix: '/api',
+    endpointUrl: 'api.georobotix.io:443/ogc/t18',
+    username: username,
+    password: password
+};
 
 let gpsDataSource = new SweApiFetch("supersonic drone GPS", {
-    collection: `/api/datastreams/${posDsId}/observations`,
-    endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
+    resource: `/api/datastreams/${posDsId}/observations`,
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
     protocol: 'mqtt',
-    mqttOpts: {
-        prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8483'
-    },
+    mqttOpts: mqttProps,
     tls: true,
-    responseFormat: 'application/om+json'
+    responseFormat: 'application/om+json',
+    connectorOpts: {
+        username: username,
+        password: password
+    }
 });
 
 const systems = new Systems({
-    endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
     streamProtocol: 'mqtt',
-    mqttOpts: {
-        prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8483'
-    },
-    tls: true
+    mqttOpts: mqttProps,
+    tls: true,
+    connectorOpts: {
+        username: username,
+        password: password
+    }
 });
 
 

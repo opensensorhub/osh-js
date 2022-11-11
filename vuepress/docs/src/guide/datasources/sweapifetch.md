@@ -7,7 +7,7 @@ The class inherits directly from [TimeSeriesDataSource](general.md).
 There are not specific properties for this DataSource.
 
 <br/>
-<DocumentationLoad path="/guide/api/SweApiFetch.html"/>
+<DocumentationLoad path="/guide/api/SweApi.html"/>
 
 ## Parser
 
@@ -39,7 +39,7 @@ The general **endpointUrl** is still use for fetching resources only.
 The **prefix** is a collection route prefix such as:
 
 - prefix='/api'
-- collection='/datastreams/gal7w6j6v7n9/observations'
+- resource='/datastreams/gal7w6j6v7n9/observations'
  
 Result =  /api/datastreams/gal7w6j6v7n9/observations
 
@@ -85,11 +85,10 @@ Result =  /api/datastreams/gal7w6j6v7n9/observations
   ]
 }
 ```
-
 ## Example
 
-<<< @/../../showcase/examples/datasource-sweapifetch/datasource-sweapifetch.js#snippet_datasource_sweapifetch
+<<< @/../../showcase-dev/examples/datasource-sweapifetch/datasource-sweapifetch.js#snippet_datasource_sweapifetch
 
 <hr class="demo-hr"/>
 
-<Example path="/showcase/datasource-sweapifetch.html" style="border:none;width:100%;height: 200px" />
+<Example path="/showcase-dev/datasource-sweapifetch.html" style="border:none;width:100%;height: 200px" />

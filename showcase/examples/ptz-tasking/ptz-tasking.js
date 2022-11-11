@@ -1,4 +1,4 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
 import FoscamPtzTasking from 'osh-js/core/datapush/FoscamPtzTasking.js';
 import PtzTaskingView from 'osh-js/ext/ui/view/tasking/PtzTaskingView.js';
@@ -6,7 +6,7 @@ import PtzTaskingView from 'osh-js/ext/ui/view/tasking/PtzTaskingView.js';
 // create data source for UAV camera
 let videoDataSource = new SosGetResult("drone-Video", {
     protocol: "ws",
-    service: "SOS",
+    ,
     endpointUrl: "localhost:8282/sensorhub/sos",
     offeringID: "foscam",
     observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",

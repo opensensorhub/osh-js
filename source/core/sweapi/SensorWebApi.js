@@ -14,9 +14,9 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import WebSocketConnector from "../protocol/WebSocketConnector";
+import WebSocketConnector from "../connector/WebSocketConnector";
 import {assertDefined, isDefined} from "../utils/Utils";
-import MqttConnector from "../protocol/MqttConnector";
+import MqttConnector from "../connector/MqttConnector";
 
 class SensorWebApi {
 
@@ -28,6 +28,7 @@ class SensorWebApi {
      * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
      * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
      * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
+     * @param {Object} networkProperties.connectorOpts - Specific connector options
      */
     constructor(networkProperties) {
         assertDefined(networkProperties.endpointUrl, 'endpointUrl');
@@ -95,13 +96,33 @@ class SensorWebApi {
         this._network.stream.connector.connect();
     }
 
+    getHeaders() {
+        const headers = {
+        };
+
+        if('connectorOpts' in this.networkProperties){
+            if('username' in this.networkProperties.connectorOpts && 'password' in this.networkProperties.connectorOpts) {
+                headers['Authorization'] = 'Basic ' +
+                    btoa(this.networkProperties.connectorOpts.username + ":" + this.networkProperties.connectorOpts.password);
+            } else {
+                for(let key in this.networkProperties.connectorOpts) {
+                    headers[key] = this.networkProperties.connectorOpts[key];
+                }
+            }
+        }
+        return headers;
+    }
+
     fetchAsJson(apiUrl, queryString) {
         const fullUrl = this.baseUrl() +  apiUrl + '?' +queryString;
 
+        const headers = this.getHeaders();
+
         return fetch(fullUrl, {
-            method: 'GET',
-            headers: {}
-        }).then(function (response) {
+                method: 'GET',
+                headers: headers
+            }
+        ).then(function (response) {
             if (!response.ok) {
                 const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
                 err.response = response;
@@ -110,19 +131,23 @@ class SensorWebApi {
             return response.json();
         });
     }
+
     postAsJson(apiUrl, jsonPayload) {
         const fullUrl = this.baseUrl() +  apiUrl;
 
+        const headers = this.getHeaders();
+
+        headers['Accept'] = 'application/json';
+        headers['Content-Type'] = 'application/json';
+
         fetch(fullUrl, {
             method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
+            credentials: 'include',
             body: jsonPayload
         }).then(function (response) {
             if (!response.ok) {
-                const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+                const err = new Error(`Got ${response.status} response from ${fullUrl}`);
                 err.response = response;
                 throw err;
             }

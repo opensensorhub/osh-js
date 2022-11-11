@@ -17,10 +17,11 @@
 <script>
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 export default {
   components: {
@@ -36,16 +37,14 @@ export default {
     // setup video
     // create data source for UAV camera
     const opts = {
-      protocol: 'ws',
-      service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      endpointUrl: 'sensiasoft.net/sensorhub/sos',
       offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: '2015-12-19T21:04:29.231Z',
       endTime: '2015-12-19T21:09:19.675Z',
-      replaySpeed: 2.6,
-      timeOut: 1500,
-      bufferingTime: 1500
+      prefetchBatchDuration: 10000,
+      mode: Mode.REPLAY,
+      tls: true
     };
 
     const dataSource0 = new SosGetResult("drone-Video", {
@@ -129,8 +128,10 @@ export default {
     }));
 
     this.dataSynchronizer = new DataSynchronizer({
-      replaySpeed: 2.6,
-      timerResolution: 5,
+      replaySpeed: 1.0,
+      masterTimeRefreshRate: 250, // millis
+      startTime: '2015-12-19T21:04:29.231Z',
+      endTime: '2015-12-19T21:09:19.675Z',
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();

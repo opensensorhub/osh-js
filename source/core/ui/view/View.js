@@ -28,9 +28,8 @@ import {
 } from '../../utils/Utils.js';
 import '../../resources/css/view.css';
 import {DATASOURCE_DATA_TOPIC, DATASOURCE_TIME_TOPIC} from "../../Constants.js";
-import {Status} from "../../protocol/Status.js";
+import {Status} from "../../connector/Status.js";
 import {EventType} from "../../event/EventType.js";
-import DataLayer from "../layer/DataLayer";
 
 class View {
     /**
@@ -47,6 +46,7 @@ class View {
         this.layers = [];
         this.lastRec = {};
         this.dataSources = [];
+        this.broadcastChannels = [];
 
         //this.divId = divId;
         this.id = "view-" + randomUUID();
@@ -195,7 +195,7 @@ class View {
      * @param {String} dataSourceId - The dataSource id of the source providing the data
      * @param {any[]} data - The data array to set
      */
-    setData(dataSourceId, data) {
+    async setData(dataSourceId, data) {
     }
 
     /**
@@ -206,6 +206,10 @@ class View {
     }
 
     destroy()  {
+        for(let bc of this.broadcastChannels) {
+            bc.close();
+        }
+        this.broadcastChannels = [];
     }
     /**
      * Adds a layer to the view. A broadcastChannel is going to listen the new dataSources
@@ -230,14 +234,12 @@ class View {
                     const that = this;
 
                     // transform the data
-                    layer.setData(dataSourceId, event.data.values).then(() => {
-
+                    await layer.setData(dataSourceId, event.data.values);
                         // set the transformed data to the view
-                        that.setData(dataSourceId, layer.getProps());
+                    await that.setData(dataSourceId, layer.getProps());
 
-                        // store as last record
-                        self.lastRec[dataSourceId] = event.data;
-                    });
+                    // store as last record
+                    self.lastRec[dataSourceId] = event.data;
                 }
             };
 
@@ -248,6 +250,9 @@ class View {
                     self.reset(); // on time changed
                 }
             };
+
+            this.broadcastChannels.push(broadcastChannel);
+            this.broadcastChannels.push(timeBroadcastChannel);
         }
     }
 
@@ -296,7 +301,6 @@ class View {
     reset() {
         this.removeAllFromLayers();
     }
-
 }
 
 export default View;

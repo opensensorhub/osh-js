@@ -19,8 +19,9 @@ import ObservationFilter from "../observation/ObservationFilter";
 import API from "../routes.conf";
 import DataStreamFilter from "./DataStreamFilter";
 import ObservationsCollection from "../ObservationsCollection";
-import SweApiResultParser from "../../datasource/sweapi/parser/observations/SweApiResult.datastream.parser";
-import SweApiResultCollectionDatastreamParser from "../../datasource/sweapi/parser/observations/SweApiResult.collection.datastream.parser";
+import SweApiResultParser from "../../parsers/sweapi/observations/SweApiResult.datastream.parser";
+import SweApiResultCollectionDatastreamParser
+    from "../../parsers/sweapi/observations/SweApiResult.collection.datastream.parser";
 
 class DataStream extends SensorWebApi {
     /**
@@ -52,9 +53,9 @@ class DataStream extends SensorWebApi {
             callback(dataBlock);
         }
 
-        this.stream().doRequest(
+        return this.stream().doRequest(
             API.datastreams.observations.replace('{id}',this.properties.id),
-            observationFilter.toQueryString(),
+            observationFilter.toQueryString([], ['phenomenonTime']),
             'arraybuffer'
         );
     }

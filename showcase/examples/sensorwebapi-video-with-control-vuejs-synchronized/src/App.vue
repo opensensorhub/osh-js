@@ -19,7 +19,10 @@
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import SweApiFetch from 'osh-js/core/datasource/sweapi/SweApiFetch.js';
+import SweApiFetch from 'osh-js/core/datasource/sweapi/SweApi.datasource.js';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import VideoView from 'osh-js/core/ui/view/video/VideoView';
+import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 
 export default {
   components: {
@@ -32,19 +35,18 @@ export default {
     }
   },
   mounted() {
-    const REPLAY_SPEED = 1.2;
+    const REPLAY_SPEED = 2.6;
     // setup video
     // create data source for UAV camera
     const opts = {
-      protocol: 'ws',
-      endpointUrl: 'ogct17.georobotix.io:8443/sensorhub',
-      collection: '/datastreams/uxzna8pldpiv/observations',
+      endpointUrl: 'api.georobotix.io/ogc/t18/api',
+      resource: '/datastreams/8ni90dbu4uf0g/observations',
       tls: true,
-      startTime: '2012-06-29T14:32:34.099333251Z',
+      startTime: '2012-06-29T14:22:00.099333251Z',
       endTime: '2012-06-29T14:37:44.033333251Z',
-      replaySpeed: REPLAY_SPEED,
-      timeOut: 3000,
-      bufferingTime: 800
+      mode: Mode.REPLAY,
+      responseFormat: 'application/swe+binary',
+      prefetchBatchSize: 5000
     };
 
     const dataSource0 = new SweApiFetch("drone-Video", {
@@ -63,49 +65,74 @@ export default {
       ...opts
     });
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container0',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource0.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource0.id,
+          getFrameData: (rec) => rec.img,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container1',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource1.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource1.id,
+          getFrameData: (rec) => rec.img,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container2',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource2.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource2.id,
+          getFrameData: (rec) => rec.img,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container3',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource3.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource3.id,
+          getFrameData: (rec) => rec.img,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
     this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: REPLAY_SPEED,
-      timerResolution: 5,
+      startTime: '2012-06-29T14:22:00.099333251Z',
+      endTime: '2012-06-29T14:37:44.033333251Z',
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();

@@ -1,20 +1,29 @@
 // create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
 import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView.js';
 import {TileLayer} from '@deck.gl/geo-layers';
 import {BitmapLayer} from '@deck.gl/layers';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 let gpsDataSource = new SosGetResult("android-GPS", {
-  protocol: "ws",
-  service: "SOS",
-  endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-  offeringID: "urn:android:device:060693280a28e015-sos",
-  observedProperty: "http://sensorml.com/ont/swe/property/Location",
-  startTime: "2015-02-16T07:58:32Z",
-  endTime: "2015-02-16T08:09:00Z",
-  replaySpeed: 2
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
+    offeringID: 'urn:android:device:060693280a28e015-sos',
+    observedProperty: 'http://sensorml.com/ont/swe/property/Location',
+    startTime: '2015-02-16T07:58:15.447Z',
+    endTime: '2015-02-16T08:09:00Z',
+    mode: Mode.REPLAY,
+    tls: true,
+    timeShift: -16000
+});
+
+const dataSynchronizer = new DataSynchronizer({
+    replaySpeed: 3.0,
+    startTime: '2015-02-16T07:58:22.00Z',
+    endTime: "2015-02-16T08:09:00Z",
+    dataSources: [gpsDataSource]
 });
 
 let pointMarker = new PointMarkerLayer({
@@ -85,5 +94,5 @@ let deckglMapView = new DeckGlView({
 );
 
 // start streaming
-gpsDataSource.connect();
+dataSynchronizer.connect();
 

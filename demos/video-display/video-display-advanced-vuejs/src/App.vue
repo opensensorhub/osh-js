@@ -93,10 +93,14 @@
   import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
-  import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.js";
+  import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.datasource.js";
   import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer.js";
   import {isDefined} from "osh-js/core/utils/Utils";
+  import {Mode} from "osh-js/core/datasource/Mode";
+  import {EventType} from "../../../../source/core/event/EventType";
 
+  const startTime= "2015-02-16T07:59:00Z";
+  const endTime = "2015-02-16T08:09:00Z";
   export default {
     components: {
       Map,
@@ -115,52 +119,45 @@
         dataSources: {},
         items: [],
         locationDataSource: new SosGetResult("android-GPS", {
-          protocol: "ws",
           service: "SOS",
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/Location",
-          startTime: "2015-02-16T07:58:32Z",
-          endTime: "2015-02-16T08:09:00Z",
-          timeOut: 100,
-          bufferingTime: 200,
+          startTime: startTime,
+          endTime: endTime,
+          mode: Mode.REPLAY,
           timeShift: -16000,
-          replaySpeed: 2
+          tls: true
         }),
         headingDataSource: new SosGetResult("android-Att", {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-          startTime: "2015-02-16T07:58:35Z",
-          endTime: "2015-02-16T08:09:00Z",
-          timeOut: 100,
-          bufferingTime: 100,
-          replaySpeed: 2
+          startTime: startTime,
+          endTime: endTime,
+          mode: Mode.REPLAY,
+          timeShift: -6000,
+          tls: true
         }),
         videoDataSource: new SosGetResult("android-Video", {
           protocol: "ws",
           service: "SOS",
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:060693280a28e015-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-          startTime: "2015-02-16T07:58:35Z",
-          endTime: "2015-02-16T08:09:00Z",
-          timeOut: 100,
-          bufferingTime: 100,
-          replaySpeed: 2
+          startTime: startTime,
+          endTime: endTime,
+          mode: Mode.REPLAY,
+          tls: true
         }),
         weatherDataSource: new SosGetResult("weather", {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:mysos:offering03",
           observedProperty: "http://sensorml.com/ont/swe/property/Weather",
           startTime: "now",
           endTime: "2055-01-01Z",
           timeOut: 100,
-          bufferingTime: 100
+          tls: true,
         }),
         dataSynchronizer:null
       }
@@ -186,16 +183,16 @@
       this.dataSources = [this.locationDataSource, this.videoDataSource, this.headingDataSource, this.weatherDataSource];
 
       this.dataSynchronizer = new DataSynchronizer({
-        replayFactor: 2,
+        replaySpeed: 2,
+        startTime: startTime,
+        endTime: endTime,
         dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
       });
-
     },
     methods: {
-      onSelect(nodes) {
+      async onSelect(nodes) {
         let bIds = [];
         if (Array.isArray(nodes)) {
-          console.log(nodes)
           for (let i = 0; i < nodes.length; i++) {
             bIds.push(nodes[i].dataSource.id);
           }
@@ -203,21 +200,21 @@
           bIds.push(nodes.dataSource.id);
         }
 
+        const isConnected = await this.dataSynchronizer.isConnected();
+
         const dsToConnect = bIds.filter(x => !this.selectionIds.includes(x));
         const dsToDisconnect = this.selectionIds.filter(x => !bIds.includes(x));
 
-        let reset = false;
         for(let dsId in this.dataSources) {
           const currentDs = this.dataSources[dsId];
           if(dsToConnect.includes(currentDs.id)) {
-            currentDs.connect();
+            if(!isConnected) {
+              this.dataSynchronizer.connect();
+            } else {
+              currentDs.connect();
+            }
           } else if(dsToDisconnect.includes(currentDs.id)){
             currentDs.disconnect();
-            // check if this is owned by synchronizer
-            if(isDefined(currentDs.dataSynchronizer) && !reset) {
-              currentDs.dataSynchronizer.reset();
-              reset = true;
-            }
           }
         }
         this.selectionIds = bIds;

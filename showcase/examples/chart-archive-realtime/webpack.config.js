@@ -85,7 +85,8 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
-    index: 'chart-archive-realtime.html'
+    index: 'chart-archive-realtime.html',
+    https:true
   },
   plugins: [
     new VueLoaderPlugin(),

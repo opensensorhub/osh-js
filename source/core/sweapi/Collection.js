@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import SweCollectionDataParser from "../datasource/sweapi/SweCollectionDataParser";
+import SweCollectionDataParser from "../parsers/sweapi/collection/SweCollectionDataParser";
 
 class Collection {
     /**

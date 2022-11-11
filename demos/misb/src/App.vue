@@ -46,10 +46,11 @@ import CollapseTimeController from "./components/CollapseTimeController.vue";
 
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import {EventType} from "osh-js/core/event/EventType";
-import {Status} from "osh-js/core/protocol/Status";
+import {Status} from "osh-js/core/connector/Status";
 
 import VideoPanel from "./components/VideoPanel.vue";
-import SweApiFetch from "osh-js/core/datasource/sweapi/SweApiFetch";
+import SweApiDatasource from "osh-js/core/datasource/sweapi/SweApi.datasource";
+import {Mode} from "osh-js/core/datasource/Mode";
 
 
 //https://ogct17.georobotix.io:8443/sensorhub/sos?service=SOS&version=2.0&request=GetCapabilities
@@ -69,79 +70,86 @@ export default {
   },
   beforeMount() {
     const START_TIME = '2012-06-29T14:32:34.099333251Z';
-    const END_TIME = '2012-06-29T14:37:44.033333251Z';
-    // const END_TIME = '2012-06-29T14:32:37.099333251Z'
+    const END_TIME = '2012-06-29T14:36:54.033333251Z';
+    const MODE = Mode.REPLAY;
+    //
+
+    // const START_TIME = 'now';
+    // const END_TIME = '2055-01-01'
+    // const MODE = Mode.REAL_TIME;
+
+    const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
+    const MAX_TIME = '2012-06-29T14:36:54.033333251Z';
     const tls = true;
 
-    const dsReplaySpeed = 1.0;
-    const timeOut = 3000;
-    const bufferingTime = 800;
+    const dsReplaySpeed = 2.6;
 
     const commonDatasourceOpts = {
-      endpointUrl:  'ogct17.georobotix.io:8443/sensorhub/api',
+      endpointUrl:  'api.georobotix.io/ogc/t18/api',
       protocol: 'mqtt',
       mqttOpts: {
         prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8483'
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
       startTime: START_TIME,
       endTime: END_TIME,
-      minTime: START_TIME,
-      maxTime: END_TIME,
+      minTime: MIN_TIME,
+      maxTime: MAX_TIME,
+      mode: MODE,
       replaySpeed: dsReplaySpeed,
-      timeOut: timeOut,
-      bufferingTime: bufferingTime,
+      prefetchBatchDuration: 10000,
+      prefetchBatchSize: 1000000
     };
 
-    const droneVideoDataSource = new SweApiFetch('MISB Drone - Video', {
+    const droneVideoDataSource = new SweApiDatasource('MISB Drone - Video', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/uxzna8pldpiv/observations',
+      resource: '/datastreams/8ni90dbu4uf0g/observations',
       responseFormat: 'application/swe+binary',
     });
 
     /*Not working, waiting for the correct sign to pass instead of swe+binary into MQTT protocol
     */
 
-    const droneLocationDataSource = new SweApiFetch('MISB UAS - Platform Location', {
+    const droneLocationDataSource = new SweApiDatasource('MISB UAS - Platform Location', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/gal7w6j6v7n9/observations',
+      resource: '/datastreams/fled6eics1cl4/observations',
       responseFormat: 'application/swe+json',
     });
 
-    const droneOrientationDataSource = new SweApiFetch('MISB UAS - Platform Attitude', {
+    const droneOrientationDataSource = new SweApiDatasource('MISB UAS - Platform Attitude', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/ei5nsp8guy5y/observations',
-      responseFormat: 'application/om+json',
+      resource: '/datastreams/adheadf9nghts/observations',
+      responseFormat: 'application/swe+json',
     });
 
-    const droneCameraOrientationDataSource = new SweApiFetch('MISB UAS - Gimbal Attitude', {
+    const droneCameraOrientationDataSource = new SweApiDatasource('MISB UAS - Gimbal Attitude', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/7rsjo1e6pq45/observations',
+      resource: '/datastreams/hrpo1u6r5096i/observations',
       responseFormat: 'application/swe+binary',
     });
 
-    const droneHFovDataSource = new SweApiFetch('MISB UAS - Horizontal FoV', {
+    const droneHFovDataSource = new SweApiDatasource('MISB UAS - Horizontal FoV', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/1fle3d5b29shh/observations',
+      resource: '/datastreams/d962edate9okm/observations',
       responseFormat: 'application/swe+binary',
     });
 
-    const droneVFovDataSource = new SweApiFetch('MISB UAS - Vertical FoV', {
+    const droneVFovDataSource = new SweApiDatasource('MISB UAS - Vertical FoV', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/1fle3d5b29shh/observations',
+      resource: '/datastreams/d962edate9okm/observations',
       responseFormat: 'application/swe+binary',
     });
 
-    const geoRefImageFrameDataSource = new SweApiFetch('MISB UAS - GeoReferenced Image Frame', {
+    const geoRefImageFrameDataSource = new SweApiDatasource('MISB UAS - GeoReferenced Image Frame', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/1b6j89nistu9h/observations',
+      resource: '/datastreams/p3mp2peibksl4/observations',
       responseFormat: 'application/swe+csv',
     });
 
-    const targetLocationDataSource = new SweApiFetch('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
+    const targetLocationDataSource = new SweApiDatasource('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
       ...commonDatasourceOpts,
-      collection: '/datastreams/tmi5mitvl8c7/observations',
+      resource: '/datastreams/p3mp2peibksl4/observations',
       responseFormat: 'application/swe+binary',
     });
 
@@ -155,6 +163,9 @@ export default {
 
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: dsReplaySpeed,
+      masterTimeRefreshRate: 250,
+      startTime: START_TIME,
+      endTime: END_TIME,
       dataSources: [
         droneLocationDataSource,
         droneVideoDataSource,
@@ -201,50 +212,50 @@ export default {
       // Link DataSources connected/disconnected Status to state
       // update drone status
       this.droneLocationDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             platformLocation: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneVideoDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             video: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneOrientationDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             platformOrientation: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneCameraOrientationDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED ) {
           this.$store.dispatch('updateDroneStatus', {
             cameraOrientation: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
       }, [EventType.STATUS]);
 
       this.droneHFovDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             hFov: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
@@ -252,10 +263,10 @@ export default {
 
 
       this.droneVFovDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
             vFov: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }
@@ -263,19 +274,19 @@ export default {
 
       // Update GeoRef status
       this.geoRefImageFrameDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateGeoRefStatus', {
-            connected: (message.status === Status.CONNECTED)
+            connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
           });
         }
       }, [EventType.STATUS]);
 
       // Update Target status
       this.targetLocationDataSource.subscribe((message) => {
-        if (message.status === Status.CONNECTED || message.status === Status.DISCONNECTED) {
+        if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateTargetStatus', {
             location: {
-              connected: (message.status === Status.CONNECTED)
+              connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });
         }

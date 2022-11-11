@@ -69,7 +69,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'cesium-location.html'
+        index: 'cesium-location.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

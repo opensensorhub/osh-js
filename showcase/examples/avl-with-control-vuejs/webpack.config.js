@@ -72,7 +72,8 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
-    index: 'avl-with-control-vuejs.html'
+    index: 'avl-with-control-vuejs.html',
+    https:true
   },
   optimization: {
     splitChunks: {

@@ -1,9 +1,11 @@
 import * as React from "react";
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 
-import SosGetResultVideo from "osh-js/core/datasource/sos/SosGetResultVideo.js";
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView.js";
-import DataLayer from "osh-js/core/ui/layer/DataLayer.js";
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
 export class SoloVideoComponent extends React.PureComponent<any, any> {
   divId: string;
@@ -16,16 +18,16 @@ export class SoloVideoComponent extends React.PureComponent<any, any> {
   componentDidMount() {
     // setup video
     // create data source for UAV camera
-    let videoDataSource = new SosGetResultVideo("drone-Video", {
-      protocol: 'ws',
+    let videoDataSource = new SosGetResult("drone-Video", {
       // @ts-ignore
       service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      endpointUrl: 'sensiasoft.net/sensorhub/sos',
       offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: '2015-12-19T21:04:29.231Z',
       endTime: '2015-12-19T21:09:19.675Z',
-      replaySpeed: 1
+      mode: Mode.REPLAY,
+      tls: true
     });
 
     // show it in video view using FFMPEG JS decoder
@@ -38,12 +40,27 @@ export class SoloVideoComponent extends React.PureComponent<any, any> {
       showTime: true,
       showStats: true,
       // @ts-ignore
-      dataSourceId: videoDataSource.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: videoDataSource.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     });
 
-    // start streaming
     // @ts-ignore
-    videoDataSource.connect();
+    // start streaming
+    const dataSynchronizer = new DataSynchronizer({
+      masterTimeRefreshRate: 250,
+      replaySpeed: 1.0,
+      startTime: '2015-12-19T21:04:29.231Z',
+      endTime: '2015-12-19T21:09:19.675Z',
+      dataSources: [
+        videoDataSource
+      ]
+    });
+    dataSynchronizer.connect()
   }
 
   render() {

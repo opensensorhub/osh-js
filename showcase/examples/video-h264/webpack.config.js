@@ -54,7 +54,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'video-h264.html'
+        index: 'video-h264.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

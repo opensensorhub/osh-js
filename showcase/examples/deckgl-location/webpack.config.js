@@ -54,6 +54,7 @@ module.exports = {
         port: 9000,
         hot: true,
         index: 'deckgl-location.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

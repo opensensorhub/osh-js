@@ -29,6 +29,12 @@ module.exports = (env) => {
                 ]),
                 new CopyWebpackPlugin([
                     {
+                        from: path.resolve(__dirname, '../../../../showcase-dev/dist'),
+                        to: 'showcase-dev'
+                    }
+                ]),
+                new CopyWebpackPlugin([
+                    {
                         from: path.resolve(__dirname, '../../../../jsdoc/dist-iframe'),
                         to: 'guide/api'
                     }
@@ -81,39 +87,39 @@ module.exports = (env) => {
                         {text: 'Showcase', link: `http://opensensorhub.github.io/osh-js/${target}/showcase/`},
                         {
                             text: 'Vue.js Video',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/video-display-vuejs/`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/video-display-vuejs/`
                         },
                         {
                             text: 'Vue.js  advanced',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/video-display-advanced-vuejs/`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/video-display-advanced-vuejs/`
                         },
-                        {text: 'React UAV', link: `http://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-react`},
-                        {text: 'Typescript React UAV', link: `http://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-react-tsx`},
+                        {text: 'React UAV', link: `https://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-react`},
+                        {text: 'Typescript React UAV', link: `https://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-react-tsx`},
                         {
                             text: 'Vue.js UAV',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-vuejs`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-vuejs`
                         },
                         {
                             text: 'Earthquakes Deck.gl',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/earthquake`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/earthquake`
                         },
                         {
                             text: 'SensorWeb API Browser',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/sweapi`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/sweapi`
                         },
                         {
                             text: 'SensorWeb API - UAV Video Draping',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/misb`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/misb`
                         },
                         {
                             text: 'SensorWeb API - UAV Tasking',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/tasking`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/tasking`
                         }
                     ]
                 },
                 {
                     text: 'API',
-                    link: `http://opensensorhub.github.io/osh-js/${target}/jsdoc/`
+                    link: `https://opensensorhub.github.io/osh-js/${target}/jsdoc/`
                 },
                 {
                     text: 'Blog',

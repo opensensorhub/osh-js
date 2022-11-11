@@ -1,32 +1,36 @@
 // create data source for Android phone GPS
-import SweApiFetch from 'osh-js/core/datasource/sweapi/SweApiFetch.js';
+import SweApiFetch from 'osh-js/core/datasource/sweapi/SweApi.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView';
 import CurveLayer from "osh-js/core/ui/layer/CurveLayer";
+import {Mode} from "osh-js/core/datasource/Mode";
 
 // #region snippet_datasource_mqttswejson
 
+const mqttProps = {
+    prefix: '/api',
+    endpointUrl: 'api.georobotix.io:443/ogc/t18',
+    username: 'uxs-team',
+    password: 'WR6zlso9h#'
+};
+
 let gpsDataSource = new SweApiFetch("android-GPS", {
-    endpointUrl:  'ogct17.georobotix.io:8080/sensorhub/api',
-    collection: '/datastreams/gal7w6j6v7n9/observations',
-    tls: false,
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    resource: '/datastreams/fled6eics1cl4/observations',
+    tls: true,
     protocol: 'mqtt',
-    mqttOpts: {
-        prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8083'
-    },
+    mqttOpts: mqttProps,
+    mode: Mode.REAL_TIME
 });
 
 const isaDataSource = new SweApiFetch("ISA-bio-sensor", {
-    endpointUrl:  'ogct17.georobotix.io:8080/sensorhub/api',
-    collection: '/datastreams/1lppw59ger1py/observations',
-    tls: false,
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    resource: '/datastreams/b4runsn23q66o/observations',
+    tls: true,
     protocol: 'mqtt',
-    mqttOpts: {
-        prefix: '/api',
-        endpointUrl: 'ogct17.georobotix.io:8083'
-    },
+    mqttOpts: mqttProps,
+    mode: Mode.REAL_TIME
 });
 
 // #endregion snippet_datasource_mqttswejson

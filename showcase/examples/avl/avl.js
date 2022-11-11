@@ -1,4 +1,4 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import Polyline from 'osh-js/core/ui/layer/PolylineLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
@@ -13,6 +13,8 @@ import {
 } from "cesium";
 import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
 import mapboxgl from "mapbox-gl/dist/mapbox-gl";
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
@@ -27,14 +29,20 @@ const currentSelectedElt = document.getElementById("current-marker");
 
 // setup DataSource. The datasource contains multiple ids.
 let avlDataSource = new SosGetResult("AVL", {
-    protocol: "ws",
-    service: "SOS",
-    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+    endpointUrl: "sensiasoft.net/sensorhub/sos",
     offeringID: "urn:mysos:avl",
     observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
     startTime: "2014-03-29T07:00:12Z",
     endTime: "2014-04-29T14:26:12Z",
-    replaySpeed: 200
+    mode: Mode.REPLAY,
+    tls: true
+});
+
+const dataSynchronizer = new DataSynchronizer({
+    replaySpeed: 200,
+    startTime: "2014-03-29T07:00:12Z",
+    endTime: "2014-04-29T14:26:12Z",
+    dataSources: [avlDataSource]
 });
 
 /**************************************************************/
@@ -289,20 +297,20 @@ const timeElt = document.getElementById("time");
 const loadElt = document.getElementById("load");
 const removeAllElt = document.getElementById("removeall");
 
-avlDataSource.subscribe((message) =>  timeElt.innerText = new Date(message.timestamp).toISOString(), [EventType.TIME]);
+dataSynchronizer.subscribe((message) =>  timeElt.innerText = new Date(message.timestamp).toISOString(), [EventType.TIME]);
 
 removeAllElt.setAttribute("disabled", "");
 
 // connect AVL datasource manually
 loadElt.onclick = () => {
-    avlDataSource.connect();
+    dataSynchronizer.connect();
     removeAllElt.removeAttribute("disabled");
     loadElt.setAttribute("disabled", "");
 };
 
 // disconnect AVL datasource manually and remove Markers/polylines from the View
 removeAllElt.onclick = async () => {
-    avlDataSource.disconnect();
+    dataSynchronizer.disconnect();
     removeAllElt.setAttribute("disabled", "");
     loadElt.removeAttribute("disabled");
 

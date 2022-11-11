@@ -18,7 +18,7 @@ import FeatureOfInterestFilter from "./FeatureOfInterestFilter";
 import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
 import API from "../routes.conf";
-import SweCollectionDataParser from "../../datasource/sweapi/SweCollectionDataParser";
+import SweCollectionDataParser from "../../parsers/sweapi/collection/SweCollectionDataParser";
 
 class FeaturesOfInterest extends SensorWebApi {
     /**

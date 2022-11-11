@@ -1,6 +1,6 @@
 // #region snippet_cesium_fois
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import SosGetFois from 'osh-js/core/datasource/sos/SosGetFois';
+import SosGetFois from 'osh-js/core/datasource/sos/SosGetFois.datasource';
 import {
     Cartesian3, Ion
 } from 'cesium';
@@ -12,11 +12,9 @@ window.CESIUM_BASE_URL = './';
 
 // create data source for Fois
 let sosGetFois = new SosGetFois('fois', {
-    protocol: 'http',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-    batchSize: 50,
-    procedureId: 'urn:usgs:water:network'
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
+    procedureId: 'urn:usgs:water:network',
+    tls: true
 });
 
 // create Cesium view
@@ -63,6 +61,3 @@ cesiumView.viewer.camera.flyTo({
 sosGetFois.connect();
 
 // #endregion snippet_cesium_fois
-
-const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[7];
