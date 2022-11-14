@@ -997,10 +997,13 @@ class CesiumView extends MapView {
                     Matrix3.multiply(camRot, Matrix3.fromRotationX(props.platformOrientation.roll*DTR, rotM), camRot);
                 }
                 if (props.gimbalOrientation) {
+                    // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
                     Matrix3.multiply(camRot, Matrix3.fromRotationZ(props.gimbalOrientation.heading*DTR, rotM), camRot);
-                    Matrix3.multiply(camRot, Matrix3.fromRotationY(props.gimbalOrientation.pitch*DTR, rotM), camRot);
                     Matrix3.multiply(camRot, Matrix3.fromRotationX(props.gimbalOrientation.roll*DTR, rotM), camRot);
+                    Matrix3.multiply(camRot, Matrix3.fromRotationY((props.gimbalOrientation.pitch+90)*DTR, rotM), camRot);
                 }
+                Matrix3.fromRotationZ(90 * DTR, rotM);
+                Matrix3.multiply(camRot, rotM, camRot);
                 break;
             }
 
