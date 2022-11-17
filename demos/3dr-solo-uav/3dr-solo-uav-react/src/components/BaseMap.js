@@ -115,7 +115,7 @@ class BaseMap extends React.Component {
         dataSourceIds: [this.gimbalOrientationDataSource.getId()],
         handler: function (rec) {
           return {
-            heading : rec.attitude.yaw,
+            yaw: rec.attitude.yaw,
             pitch: rec.attitude.pitch,
             roll: rec.attitude.roll
           };

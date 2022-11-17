@@ -47,6 +47,17 @@ import Layer from "./Layer.js";
   ECEF_WITH_QUATERNIONS: 3,
 });
 
+/**
+ * When gimbal orientation is applied, which order do we apply the rotations?
+ */
+const GimbalEulerAngleOrder = Object.freeze({
+  YAW_PITCH_ROLL: 1,
+  YAW_ROLL_PITCH: 2,
+  PITCH_YAW_ROLL: 3,
+  PITCH_ROLL_YAW: 4,
+  ROLL_YAW_PITCH: 5,
+  ROLL_PITCH_YAW: 6
+});
 
 /**
  * @extends Layer
@@ -138,6 +149,7 @@ class ImageDrapingLayer extends Layer {
 
         // Default position mode is LONLATALT_WITH_EULER_ANGLES, if not specified.
         this.props.positionMode = this.properties.positionMode || ImageDrapingPositionMode.LONLATALT_WITH_EULER_ANGLES;
+        this.props.gimbalEulerAngleOrder = this.properties.gimbalEulerAngleOrder || GimbalEulerAngleOrder.YAW_ROLL_PITCH;
 
         this.initDynamicProp("platformLocation", null);
         this.initDynamicProp("platformOrientation", null);
@@ -151,4 +163,4 @@ class ImageDrapingLayer extends Layer {
 }
 
 export default ImageDrapingLayer;
-export { ImageDrapingPositionMode };
+export { ImageDrapingPositionMode, GimbalEulerAngleOrder };
