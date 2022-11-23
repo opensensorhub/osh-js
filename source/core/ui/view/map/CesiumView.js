@@ -389,6 +389,7 @@ class CesiumView extends MapView {
         const id = properties.id + "$" + properties.markerId;
         const isModel = properties.icon && properties.icon.endsWith(".glb") || false;
         const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : '';
+        console.log('addMarker with id; ' + properties.markerId);
         const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
         const color =  isDefined(properties.color) ? Color.fromCssColorString(properties.color) : Color.YELLOW;
 
@@ -555,10 +556,11 @@ class CesiumView extends MapView {
     }
 
     async updateMarker(props) {
-        if (!isDefined(props.location)) {
+        // console.log(props.location);
+        if (!isDefined(props.location) || !isDefined(props.orientation.heading)) {
             return;
         }
-
+        console.log('loc: ' + props.markerId + ',' + props.location.y + "," + props.location.x  + "... " + props.orientation.heading);
         let marker = this.getMarker(props);
 
         // create one collection for marker entities

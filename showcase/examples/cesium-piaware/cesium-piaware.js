@@ -1,79 +1,76 @@
+import {
+    Ion,
+    Cartesian3,
+    Color,
+    HeightReference,
+    HorizontalOrigin,
+} from 'cesium';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import {
-    Cartesian3,
-    Ion
-} from 'cesium';
-// import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import { EllipsoidTerrainProvider } from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import {Mode} from 'osh-js/core/datasource/Mode';
-
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
-// create piAware dataSIyrce
-let gpsDataSource = new SosGetResult('piaware-GPS', {
+// create piAware data sources
+let locationDataSource = new SosGetResult('piaware-location', {
     protocol: 'ws',
     service: 'SOS',
-    endpointUrl: '76.187.247.4:8181/sensorhub/sos',
+    // endpointUrl: '76.187.247.4:8181/sensorhub/sos',
+    endpointUrl: 'localhost:8181/sensorhub/sos',
     offeringID: 'urn:osh:sensor:aviation:PiAware',
-    // observedProperty: 'http://sensorml.com/ont/swe/property/Location',
-    observedProperty: 'http://sensorml.com/ont/swe/property/sbsOutput',
+    observedProperty: 'http://sensorml.com/ont/swe/property/Location',
     startTime: 'now',
     endTime: '2022-12-31T00:00:00Z',
     responseFormat: 'application/json',
     replaySpeed: 1
 });
 
+let trackDataSource = new SosGetResult('piaware-track', {
+    protocol: 'ws',
+    service: 'SOS',
+    // endpointUrl: '76.187.247.4:8181/sensorhub/sos',
+    endpointUrl: 'localhost:8181/sensorhub/sos',
+    offeringID: 'urn:osh:sensor:aviation:PiAware',
+    observedProperty: 'http://sensorml.com/ont/swe/property/Track',
+    startTime: 'now',
+    endTime: '2022-12-31T00:00:00Z',
+    responseFormat: 'application/json',
+    replaySpeed: 1
+});
+
+function hover(markerId, billboard, event) {
+    console.log(markerId + ',' + billboard + ',' + event);
+}
+
 // style it with a moving point marker
 const locs = new Map();
 const headings = new Map();
+const planes = new Map();
 // const flights = new Map();
 let pointMarker = new PointMarkerLayer({
-    dataSourceId: gpsDataSource.id,
-    getMarkerId: (rec) => rec['hexIdent'],
+    dataSourceId: locationDataSource.id,
+    getMarkerId: (rec) => rec.hexIdent,
     allowBillboardRotation: true,
+    onHover: (markerId, billboard, event) => hover(markerId, billboard, event) ,
     getLocation: {
-        dataSourceIds: [gpsDataSource.getId()],
+        dataSourceIds: [locationDataSource.getId()],
         handler: function(rec) {
-            if(isNaN(rec.location.lon)) {
-                if(!locs.get(rec.hexIdent))
-                    return undefined;
-                let loc = locs.get(rec.hexIdent);         
-                return {
-                    x: loc[0],
-                    y: loc[1],
-                    z: loc[2]
-                }
-            }
-            let loc = [rec.location.lon, rec.location.lat, rec.location.alt];
-            if(!locs.get(rec.hexIdent)) {
-                console.log('locs size is ' + (locs.size + 1));
-            }
-            locs.set(rec['hexIdent'], loc);
+            console.log(rec.hexIdent + ' , ' + rec.location.lat + "," + rec.location.lon);
             return {
-                 x: rec.location.lon,
-                 y: rec.location.lat,
-                 z: rec.location.alt
-            };
+                x: rec.location.lon,
+                y: rec.location.lat,
+                z: rec.location.alt
+           };
         }
     },
     getOrientation: {
-        dataSourceIds: [gpsDataSource.getId()],
+        dataSourceIds: [trackDataSource.getId()],
         handler: function(rec) {
-            if (isNaN(rec.track)) {
-                if(!headings.get(rec.hexIdent)) {
-                    return undefined;
-                }
-                return headings.get(rec.hexIdent);
-            }
-            if(!headings.get(rec.hexIdent)) {
-                console.log('headings size is ' + (headings.size + 1));
-            }
-            headings.set(rec.hexIdent, rec.track);
+            console.log(rec.hexIdent + ' , ' + rec.track);
+
             return {
                 heading: 360 - rec.track
             };
@@ -90,17 +87,19 @@ let cesiumView = new CesiumView({
     layers: [pointMarker]
 });
 
-cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
+// ABIA Airport icon
+cesiumView.viewer.entities.add({
+    position: Cartesian3.fromDegrees(-97.6664, 30.1975),
+    billboard: {
+      image: "images/icons8-airport-50.png",
+      heightReference: HeightReference.CLAMP_TO_GROUND,
+      disableDepthTestDistance: Number.POSITIVE_INFINITY,
+    },
+  });
 
-//create Leaflet view
-// let leafletMapView = new LeafletView({
-//     container: 'leafletMap',
-//     layers: [pointMarker],
-//     autoZoomOnFirstMarker: true
-// });
 
-
-console.log('connecting to datasource');
+console.log('connecting to datasources');
 
 // start streaming
-gpsDataSource.connect();
+ locationDataSource.connect();
+ trackDataSource.connect();
