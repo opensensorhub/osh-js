@@ -245,7 +245,7 @@ class PointMarkerLayer extends Layer {
             let fn = async (rec, timestamp, options) => {
                 that.props.markerId = await that.getFunc('getMarkerId')(rec, timestamp, options);
                 if(that.props.markerId in initialStates) {
-                    that.props = initialStates[that.props.markerId];
+                    that.props = {...initialStates[that.props.markerId]};
                 }
             };
             this.addFn(that.getDataSourcesIdsByProperty('getMarkerId'), fn);
@@ -338,7 +338,7 @@ class PointMarkerLayer extends Layer {
 
     async setData(dataSourceId, records, options={}) {
         await super.setData(dataSourceId, records, options);
-        initialStates[this.props.markerId] = this.props;
+        initialStates[this.props.markerId] = {...this.props};
     }
 }
 
