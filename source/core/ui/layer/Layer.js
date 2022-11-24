@@ -46,7 +46,7 @@ class Layer {
         this.props.id = "layer-" + randomUUID();
         this.props.name = '';
         this.props.description = '';
-        this.props.dataSourceId = '';
+        this.props.dataSourceIds = undefined;
         this.props.visible = true;
         this.props.filter = true;
         this.props.timestamp = 0;
@@ -59,7 +59,11 @@ class Layer {
         }
 
         if(isDefined(properties.dataSourceId)) {
-            this.props.dataSourceId = properties.dataSourceId;
+            this.props.dataSourceIds = [properties.dataSourceId];
+        }
+
+        if(isDefined(properties.dataSourceIds)) {
+            this.props.dataSourceIds = properties.dataSourceIds;
         }
 
         if(isDefined(properties.visible)) {
@@ -125,7 +129,7 @@ class Layer {
     checkFn(funcName) {
         let func = this.properties[funcName];
         if(isFunction(func)) {
-            assertDefined(this.properties.dataSourceId, 'dataSourceId');
+            assertDefined(this.properties.dataSourceIds, 'dataSourceIds');
             return true;
         } else {
             let isSet = hasValue(func);
@@ -197,7 +201,7 @@ class Layer {
                 let fnArr = this.dataSourcesToFn[dataSourceId];
                 for (let j = 0; j < records.length; j++) {
                     for (let i = 0; i < fnArr.length; i++) {
-                        await fnArr[i](records[j].data, records[j].data.timestamp, options);
+                        await fnArr[i](records[j].data, records[j].data.timestamp, options, this);
                         if (!this.props.filter) {
                             break;
                         }
@@ -224,13 +228,13 @@ class Layer {
             }
             return res;
         } else {
-            assertDefined(this.properties.dataSourceId, 'dataSourceId must be defined');
-            return [this.properties.dataSourceId];
+            assertDefined(this.properties.dataSourceIds, 'dataSourceId must be defined');
+            return this.properties.dataSourceIds;
         }
     }
 
     getDataSourcesIdsByProperty(name) {
-        return this.properties[name].dataSourceIds ||  [this.properties.dataSourceId];
+        return this.properties[name].dataSourceIds || this.properties.dataSourceIds;
     }
 
     /**

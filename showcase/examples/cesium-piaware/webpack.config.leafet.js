@@ -8,17 +8,13 @@ var path = require('path');
 
 const PROCESS_BASE_PATH = process.cwd();
 
-// Cesium deps
-const cesiumSource = 'node_modules/cesium/Source';
-const cesiumWorkers = '../Build/Cesium/Workers';
-//
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: path.resolve(__dirname,'cesium-piaware.js'),
+    entry: path.resolve(__dirname,'leaflet-piaware.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.cesium.piaware.js',
+        filename: 'bundle.leaflet.piaware.js',
         path: path.resolve(__dirname, 'dist'),
         // Needed to compile multiline strings in Cesium
         sourcePrefix: ''
@@ -69,7 +65,7 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'cesium-piaware.html',
+        index: 'leaflet-piaware.html',
         https: false
     },
     devtool: 'source-map',
@@ -90,17 +86,14 @@ module.exports = {
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.
         new HtmlWebpackPlugin({
-            filename: "cesium-piaware.html",
-            template: path.resolve(__dirname, 'cesium-piaware.html')
+            filename: "leaflet-piaware.html",
+            template: path.resolve(__dirname, 'leaflet-piaware.html')
         }),
         // This plugin will copy files over to ‘./dist’ without transforming them.
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
             { from: path.resolve(__dirname,'images'), to: 'images'},
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, cesiumWorkers), to: 'Workers', force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: 'Assets', force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: 'Widgets', force:true }
         ])
     ]
 };

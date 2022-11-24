@@ -69,6 +69,9 @@ import Layer from "./Layer.js";
         }
     });
  */
+
+const initialStates = {};
+
 class PointMarkerLayer extends Layer {
     /**
      * Create the PointMarker
@@ -241,20 +244,23 @@ class PointMarkerLayer extends Layer {
         if (this.checkFn("getMarkerId")) {
             let fn = async (rec, timestamp, options) => {
                 that.props.markerId = await that.getFunc('getMarkerId')(rec, timestamp, options);
+                if(that.props.markerId in initialStates) {
+                    that.props = initialStates[that.props.markerId];
+                }
             };
             this.addFn(that.getDataSourcesIdsByProperty('getMarkerId'), fn);
         }
 
         if (this.checkFn("getLocation")) {
-            let fn = async (rec, timestamp, options) => {
-                that.props.location = await that.getFunc('getLocation')(rec, timestamp, options);
+            let fn = async (rec, timestamp, options, instance) => {
+                that.props.location = await that.getFunc('getLocation')(rec, timestamp, options, instance);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getLocation'), fn);
         }
 
         if (this.checkFn("getOrientation")) {
-            let fn = async (rec, timestamp, options) => {
-                that.props.orientation = await that.getFunc('getOrientation')(rec, timestamp, options);
+            let fn = async (rec, timestamp, options, instance) => {
+                that.props.orientation = await that.getFunc('getOrientation')(rec, timestamp, options, instance);
             };
             this.addFn(that.getDataSourcesIdsByProperty('getOrientation'), fn);
         }
@@ -328,6 +334,11 @@ class PointMarkerLayer extends Layer {
         }
 
         this.saveState();
+    }
+
+    async setData(dataSourceId, records, options={}) {
+        await super.setData(dataSourceId, records, options);
+        initialStates[this.props.markerId] = this.props;
     }
 }
 

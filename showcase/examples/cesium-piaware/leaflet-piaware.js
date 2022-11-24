@@ -1,19 +1,9 @@
-import {
-    Ion,
-    Cartesian3,
-    Color,
-    HeightReference,
-    HorizontalOrigin,
-} from 'cesium';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import { EllipsoidTerrainProvider } from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import {EventType} from "../../../source/core/event/EventType";
-
-Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
-    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
-window.CESIUM_BASE_URL = './';
+import LeafletView from "../../../source/core/ui/view/map/LeafletView";
 
 // create piAware data sources
 let locationDataSource = new SosGetResult('piaware-location', {
@@ -54,27 +44,24 @@ const planes = new Map();
 let pointMarker = new PointMarkerLayer({
     dataSourceIds: [locationDataSource.id, trackDataSource.id],
     getMarkerId: (rec) => rec.hexIdent,
-    // filter: (rec) => rec.hexIdent === 'urn:osh:sensor:aviation:ADD2B6' || rec.hexIdent === 'urn:osh:sensor:aviation:AA56DA',
     allowBillboardRotation: true,
-    // onHover: (markerId, billboard, event) => hover(markerId, billboard, event) ,
     getLocation: {
         dataSourceIds: [locationDataSource.getId()],
         handler: function(rec, timestamp, options, instance) {
-            // console.log(rec.hexIdent + ' , ' + rec.location.lat + "," + rec.location.lon);
-            console.log(`${rec.hexIdent} => ${rec.location.lat} ,  ${rec.location.lon}`);
-
+            console.log(rec.hexIdent + ' , ' + rec.location.lat + "," + rec.location.lon);
+            instance.id = rec.hexIdent;
             return {
                 x: rec.location.lon,
                 y: rec.location.lat,
                 z: rec.location.alt
-            };
+           };
         }
     },
     getOrientation: {
         dataSourceIds: [trackDataSource.getId()],
         handler: function(rec, timestamp, options, instance) {
-            console.log(`${rec.hexIdent} => ${360 - rec.track}`);
-
+            console.log(rec.hexIdent + ' , ' + rec.track);
+            instance.id = rec.hexIdent;
             return {
                 heading: 360 - rec.track
             };
@@ -85,24 +72,10 @@ let pointMarker = new PointMarkerLayer({
 });
 
 // create Cesium view
-let cesiumView = new CesiumView({
-    container: 'cesium-container',
-    allowBillboardRotation: true,
+let view = new LeafletView({
+    container: 'leafletMap',
     layers: [pointMarker]
 });
-
-// ABIA Airport icon
-cesiumView.viewer.entities.add({
-    position: Cartesian3.fromDegrees(-97.6664, 30.1975),
-    billboard: {
-      image: "images/icons8-airport-50.png",
-      heightReference: HeightReference.CLAMP_TO_GROUND,
-      disableDepthTestDistance: Number.POSITIVE_INFINITY,
-    },
-  });
-
-
-console.log('connecting to datasources');
 
 // start streaming
  locationDataSource.connect();
