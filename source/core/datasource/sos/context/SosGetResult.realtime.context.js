@@ -39,7 +39,7 @@ class SosGetResultRealTimeContext extends SosGetResultContext {
         let queryString     = super.getQueryString(properties);
 
         // adds temporalFilter
-        queryString += "&temporalFilter=phenomenonTime,now/2055-01-01";
+        queryString += "&temporalFilter=phenomenonTime,now/2055-01-01Z";
 
         return queryString;
     }
