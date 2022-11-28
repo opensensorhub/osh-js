@@ -38,7 +38,7 @@ class SweApi extends TimeSeriesDatasource {
      * @param {string} [properties.roi=undefined] - WKT geometry and operator to filter resources on their location or geometry
      * @param {String[]} [properties.featureOfInterest=undefined] Comma separated list of feature of interest IDs to get observations for.
      * @param {String[]} [properties.observedProperty=undefined] Comma separated list of observed property URIs to get observations for.
-     * @param {String[]} [properties.prefetchBatchSize=5000] Number of elements to prefetch at a time
+     * @param {String[]} [properties.prefetchBatchSize=250] Number of elements to prefetch at a time
      * @param {String[]} [properties.prefetchBatchDuration=5000] Duration before prefetching the next batch. N.b the next batch will be prefetched at 80% of this duration
      */
     constructor(name, properties) {
@@ -52,7 +52,7 @@ class SweApi extends TimeSeriesDatasource {
             protocol: 'http',
             type: 'SweApiStream',
             mode: Mode.REAL_TIME,
-            prefetchBatchSize: 5000,
+            prefetchBatchSize: 250,
             prefetchBatchDuration: 5000,
             connectorOpts: {},
             ...properties,
