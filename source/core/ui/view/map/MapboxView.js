@@ -136,7 +136,7 @@ class MapboxView extends MapView {
 
             const locationsPts = [];
             // update locations
-            const locations = props.locations[props.polylineId];
+            const locations = props.locations;
             for(let i=0;i < locations.length;i++) {
                 locationsPts.push([locations[i].x, locations[i].y]);
             }
@@ -332,7 +332,7 @@ class MapboxView extends MapView {
 
             // update locations
             let polygonPoints = [];
-            const vertices = props.vertices[props.polygonId];
+            const vertices = props.vertices;
             if(isDefined(vertices) && vertices.length > 0) {
                 for (let i = 0; i < vertices.length - 1; i = i + 2) {
                     polygonPoints.push([vertices[i], vertices[i + 1]]);
@@ -370,7 +370,7 @@ class MapboxView extends MapView {
 
         // update locations
         let polygonPoints = [];
-        const vertices = properties.vertices[properties.polygonId];
+        const vertices = properties.vertices;
         if(isDefined(vertices) && vertices.length > 0) {
             for (let i = 0; i < vertices.length - 1; i = i + 2) {
                 polygonPoints.push([vertices[i], vertices[i + 1]]);

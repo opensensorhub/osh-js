@@ -205,13 +205,14 @@ export default {
           },
           onHover: (markerId, markerObject, event) => updateInfos(markerId, event.latlng, event.containerPoint)
         }),
-        new Polyline({...commonPolylineConf}),
-        new PolygonLayer({
-          ...commonPolygonConf
-        })
+        // new Polyline({...commonPolylineConf}),
+        // new PolygonLayer({
+        //   ...commonPolygonConf
+        // })
       ]
     });
 
+    /*
     // create OL view
     const olMapView = new OpenLayerView({
       container: 'olMap',
@@ -301,7 +302,7 @@ export default {
           ...commonPolygonConf
         })
       ]
-    });
+    });*/
 
     /**************************************************************/
     /********************* Update UI  ****************************/
@@ -314,6 +315,9 @@ export default {
     this.dataSynchronizer = dataSynchronizer;
   },
   methods: {
+    onControlEvent(event) {
+      console.log('IDI')
+    }
   }
 };
 </script>

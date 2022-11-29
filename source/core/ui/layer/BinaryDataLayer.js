@@ -29,23 +29,23 @@ class BinaryDataLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'binaryData';
-        this.props.dataId = randomUUID();
-        this.props.frameData = undefined;
+
+        const props = {
+            frameData: undefined
+        };
 
         if (isDefined(properties.frameData)){
             this.props.frameData = properties.frameData;
         }
 
-        let that = this;
+        this.definedId('dataId', props);
 
         if (isDefined(properties.getFrameData)){
-            let fn = async (rec) => {
-                that.props.frameData = await that.getFunc('getFrameData')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('frameData',await this.getFunc('getFrameData')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getFrameData'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getFrameData'), fn);
         }
-
-        this.saveState();
     }
 }
 export default BinaryDataLayer;
