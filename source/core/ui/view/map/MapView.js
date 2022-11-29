@@ -221,7 +221,7 @@ class MapView extends View {
         if(!(props.id in  this.layerIdToEllipsoids)) {
             return null;
         }
-        return this.layerIdToEllipsoids[props.id][props.ellipseId];
+        return this.layerIdToPolylines[props.id][props.polylineId];
     }
 
     /**
@@ -314,17 +314,18 @@ class MapView extends View {
     }
 
     removePolygons(layer) {
-        if(isDefined(layer.props.polygonId)) {
-            const polygonMap = this.layerIdToPolygon[layer.props.id];
-            if(isDefined(polygonMap)) {
-                for(let polygonId in polygonMap) {
+        const ids = layer.getIds() || [];
+        for(let id of ids) {
+            const polygonMap = this.layerIdToPolygon[id];
+            if (isDefined(polygonMap)) {
+                for (let polygonId in polygonMap) {
                     const polygon = polygonMap[polygonId];
                     this.removePolygonFromLayer(polygon);
                 }
             }
 
             // remove markers ids from Layer map
-            delete this.layerIdToPolygon[layer.props.id];
+            delete this.layerIdToPolygon[id];
         }
     }
 
@@ -353,8 +354,9 @@ class MapView extends View {
      * @param {Ellipse} ellipse - the layer to remove the ellipsoids from
      */
     removeEllipsoids(ellipse) {
-        if(isDefined(ellipse.props.ellipseId)) {
-            const ellipseMap = this.layerIdToEllipsoids[ellipse.props.id];
+        const ids = ellipse.getIds() || [];
+        for(let id of ids) {
+            const ellipseMap = this.layerIdToEllipsoids[id];
             if(isDefined(ellipseMap)) {
                 for(let ellipseId in ellipseMap) {
                     const ellipse = ellipseMap[ellipseId];
@@ -363,7 +365,7 @@ class MapView extends View {
             }
 
             // remove polylines ids from Layer map
-            delete this.layerIdToEllipsoids[ellipse.props.id];
+            delete this.layerIdToEllipsoids[id];
         }
     }
 
@@ -372,8 +374,9 @@ class MapView extends View {
      * @param {Polyline} polyline - the layer to remove the polylines from
      */
     removePolylines(polyline) {
-        if(isDefined(polyline.props.polylineId)) {
-            const polylinesMap = this.layerIdToPolylines[polyline.props.id];
+        const ids = polyline.getIds() || [];
+        for(let id of ids) {
+            const polylinesMap = this.layerIdToPolylines[id];
             if(isDefined(polylinesMap)) {
                 for(let polylineId in polylinesMap) {
                     const polyline = polylinesMap[polylineId];
@@ -382,7 +385,7 @@ class MapView extends View {
             }
 
             // remove polylines ids from Layer map
-            delete this.layerIdToPolylines[polyline.props.id];
+            delete this.layerIdToPolylines[id];
         }
     }
 
@@ -391,8 +394,9 @@ class MapView extends View {
      * @param {ImageDraping} imageDraping - the layer to remove the drapedImage from
      */
     removeDrapedImages(drapedImage) {
-        if(isDefined(drapedImage.props.drapedImageId)) {
-            const drapedImageMap = this.layerIdToDrapedImage[drapedImage.props.id];
+        const ids = drapedImage.getIds() || [];
+        for(let id of ids) {
+            const drapedImageMap = this.layerIdToDrapedImage[id];
             if(isDefined(drapedImageMap)) {
                 for(let drapedImageId in drapedImageMap) {
                     const drapedImage = drapedImageMap[drapedImageId];
@@ -401,7 +405,7 @@ class MapView extends View {
             }
 
             // remove drapedImage ids from Layer map
-            delete this.layerIdToDrapedImage[drapedImage.props.id];
+            delete this.layerIdToDrapedImage[id];
         }
     }
 
@@ -410,8 +414,9 @@ class MapView extends View {
      * @param {FrustumLayer} polyline - the layer to remove the Frustum from
      */
     removeFrustums(layer) {
-        if(isDefined(layer.props.frustumId)) {
-            const frustumMap = this.layerIdToFrustum[layer.props.id];
+        const ids = layer.getIds() || [];
+        for(let id of ids) {
+            const frustumMap = this.layerIdToFrustum[id];
             if(isDefined(frustumMap)) {
                 for(let frustumId in frustumMap) {
                     const frustum = frustumMap[frustumId];
@@ -420,7 +425,7 @@ class MapView extends View {
             }
 
             // remove markers ids from Layer map
-            delete this.layerIdToFrustum[layer.props.id];
+            delete this.layerIdToFrustum[id];
         }
     }
     /**
