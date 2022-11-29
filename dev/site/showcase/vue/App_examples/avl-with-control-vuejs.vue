@@ -212,6 +212,7 @@ export default {
       ]
     });
 
+
     // create OL view
     const olMapView = new OpenLayerView({
       container: 'olMap',
@@ -234,6 +235,7 @@ export default {
         })
       ]
     });
+
 
     const cesiumMapView = new CesiumView({
       container: 'cesiumMap',
