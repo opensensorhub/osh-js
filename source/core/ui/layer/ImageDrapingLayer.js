@@ -90,7 +90,10 @@ class ImageDrapingLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'drapedImage';
-
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
         const props = {
             cameraModel : null,
             imageSrc : null,

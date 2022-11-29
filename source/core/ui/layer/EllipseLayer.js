@@ -53,8 +53,10 @@ class EllipseLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'ellipse';
-        this.properties = properties;
-
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
         const props = {
             position : {},
             semiMajorAxis : null,

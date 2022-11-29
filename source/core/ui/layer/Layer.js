@@ -80,7 +80,10 @@ class Layer {
             this.dataSourceIds = properties.dataSourceIds;
         }
 
-        assertDefined(this.dataSourceIds, '[Layer] dataSourceIds[] or dataSourceId');
+        if(!this.dataSourceIds) {
+            this.dataSourceIds = [];
+        }
+        // assertDefined(this.dataSourceIds, '[Layer] dataSourceIds[] or dataSourceId');
 
         if(isDefined(properties.visible)) {
             this.props.visible = properties.visible;

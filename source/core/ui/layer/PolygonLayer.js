@@ -64,9 +64,14 @@ class PolygonLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'polygon';
+    }
+    
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
 
         const props = {
-            vertices : [],
+            vertices : null,
             color : 'rgb(255,0,0)',
             outlineColor : 'rgb(0,0,0)',
             outlineWidth : 1,
@@ -102,9 +107,7 @@ class PolygonLayer extends Layer {
 
         if (isDefined(properties.getVertices)) {
             let fn = async (rec, timestamp, options) => {
-                const v = await this.getFunc('getVertices')(rec, timestamp, options);
-                console.log(v)
-                this.updateProperty('vertices',v);
+                this.updateProperty('vertices',await this.getFunc('getVertices')(rec, timestamp, options));
             };
             this.addFn(this.getDataSourcesIdsByProperty('getVertices'), fn);
         }

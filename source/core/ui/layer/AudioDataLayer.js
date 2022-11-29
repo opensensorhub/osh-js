@@ -29,6 +29,11 @@ class AudioDataLayer extends BinaryDataLayer {
     constructor(properties) {
         super(properties);
         this.type = 'audioData';
+    }
+
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
 
         const props = {
             sampleRate: 0

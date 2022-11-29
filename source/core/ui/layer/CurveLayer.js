@@ -42,7 +42,10 @@ class CurveLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'curve';
-
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
         const props = {
             xLabel : "",
             yLabel : "",

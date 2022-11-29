@@ -62,8 +62,10 @@ class PolylineLayer extends Layer {
 	constructor(properties) {
 		super(properties);
 		this.type = 'polyline';
-		this.properties = properties;
-
+	}
+	// call by super class
+	init(properties=this.properties) {
+		super.init(properties);
 		const props = {
 			polylineId: () => this.getId(),
 			locations: undefined,

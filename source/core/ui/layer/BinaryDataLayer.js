@@ -29,7 +29,10 @@ class BinaryDataLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'binaryData';
-
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
         const props = {
             frameData: undefined
         };

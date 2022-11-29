@@ -29,7 +29,10 @@ class VideoDataLayer extends BinaryDataLayer {
     constructor(properties) {
         super(properties);
         this.type = 'videoData';
-
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
         const props = {
           roll: 0
         };

@@ -7,7 +7,10 @@ class frustumLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'frustum';
-
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
         const props = {
             color : 'rgb(255,0,0)',
             opacity : 0.5,
