@@ -297,7 +297,6 @@ class MapView extends View {
      * @param {Layer} layer - The layer object
      */
     removeAllFromLayer(layer) {
-        super.removeAllFromLayer(layer);
         // check for marker
         this.removeMarkers(layer);
 
@@ -309,6 +308,9 @@ class MapView extends View {
         this.removePolygons(layer);
 
         this.removeFrustums(layer);
+
+        super.removeAllFromLayer(layer);
+
     }
 
     removePolygons(layer) {
@@ -331,17 +333,18 @@ class MapView extends View {
      * @param {PointMarkerLayer} layer - the layer to remove the markers from
      */
     removeMarkers(layer) {
-        if(isDefined(layer.props.markerId)) {
-            const markersMap = this.layerIdToMarkers[layer.props.id];
-            if(isDefined(markersMap)) {
-                for(let markerId in markersMap) {
+        const ids = layer.getIds() || [];
+        for(let id of ids) {
+            const markersMap = this.layerIdToMarkers[id];
+            if (isDefined(markersMap)) {
+                for (let markerId in markersMap) {
                     const marker = markersMap[markerId];
                     this.removeMarkerFromLayer(marker);
                 }
             }
 
             // remove markers ids from Layer map
-            delete this.layerIdToMarkers[layer.props.id];
+            delete this.layerIdToMarkers[id];
         }
     }
 

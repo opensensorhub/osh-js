@@ -292,7 +292,6 @@ class Layer {
      * Reset to default Layer values
      */
     reset() {
-        console.log('ici')
         this.init(this.properties);
     }
 
@@ -329,6 +328,10 @@ class Layer {
 
     getCurrentProps() {
         return  this.propsById[this.getId()];
+    }
+
+    getIds() {
+        return Object.keys(this.propsById);
     }
 }
 
