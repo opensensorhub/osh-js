@@ -4,6 +4,7 @@ import {
     Color,
     HeightReference,
     HorizontalOrigin,
+    SceneMode
 } from 'cesium';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
@@ -19,7 +20,7 @@ window.CESIUM_BASE_URL = './';
 let locationDataSource = new SosGetResult('piaware-location', {
     protocol: 'ws',
     service: 'SOS',
-    endpointUrl: '76.187.247.4:8686/sensorhub/sos',
+    endpointUrl: '76.187.247.4:8181/sensorhub/sos',
     // endpointUrl: 'localhost:8181/sensorhub/sos',
     offeringID: 'urn:osh:sensor:aviation:PiAware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',
@@ -32,7 +33,7 @@ let locationDataSource = new SosGetResult('piaware-location', {
 let trackDataSource = new SosGetResult('piaware-track', {
     protocol: 'ws',
     service: 'SOS',
-    endpointUrl: '76.187.247.4:8686/sensorhub/sos',
+    endpointUrl: '76.187.247.4:8181/sensorhub/sos',
     // endpointUrl: 'localhost:8181/sensorhub/sos',
     offeringID: 'urn:osh:sensor:aviation:PiAware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Track',
@@ -42,26 +43,73 @@ let trackDataSource = new SosGetResult('piaware-track', {
     replaySpeed: 1
 });
 
-function hover(markerId, billboard, event) {
-    console.log(markerId + ',' + billboard + ',' + event);
+function hover(markerId, flightId, billboard, event) {
+    console.log(markerId + ',' + flightId + ',' + billboard + ',' + event);
 }
 
+const popupElt = document.getElementById("popup");
+
+function showPopup(x, y, content) {
+    console.log('in showPopup');
+    const padding = 10;
+    popupElt.setAttribute("style", "left:" + (x + padding) + ";top:" + (y + padding) + "; display:block !important; width:100px; height:50px");
+    popupElt.innerText = content;
+}
+
+function hidePopup(x, y, content) {
+    popupElt.setAttribute('style', 'display:none;');
+    popupElt.innerText = '';
+}
+
+// hide popup if anywhere we click
+document.body.onclick = () => {
+    hidePopup();
+};
+
+
 // style it with a moving point marker
-const locs = new Map();
-const headings = new Map();
-const planes = new Map();
-// const flights = new Map();
+const aircrafts = new Map();
+const ageoff = 60000;
 let pointMarker = new PointMarkerLayer({
     dataSourceIds: [locationDataSource.id, trackDataSource.id],
-    getMarkerId: (rec) => rec.hexIdent,
-    // filter: (rec) => rec.hexIdent === 'urn:osh:sensor:aviation:ADD2B6' || rec.hexIdent === 'urn:osh:sensor:aviation:AA56DA',
+    getMarkerId: (rec) =>  {
+        aircrafts.set(rec.hexIdent, rec.timestamp);
+        aircrafts.forEach((timestamp, hexIdent) => {
+           // console.log('airfraft,ts: ' + keys + "," + values + '\n');
+             console.log('Aircrafts.size ' + aircrafts.size);
+
+            if(Date.now() - timestamp > ageoff) {
+                console.log('Removing ' + hexIdent);
+                cesiumView.removeMarkerFromLayer(hexIdent);
+                aircrafts.delete(hexIdent);
+                return null;
+            }
+        })
+        
+        return rec.hexIdent;
+    },
+    getLabel: (rec) => rec.flightId != null ? rec.flightId : rec.hexIdent,
+    filter: (rec, timestamp, options) => {
+        if ((Date.now() - 60000) > rec.timestamp) {//? false : true;
+            console.log('Aging off ') + rec.hexIdent;
+            return false;
+        };
+        return true;
+    },
     allowBillboardRotation: true,
-    // onHover: (markerId, billboard, event) => hover(markerId, billboard, event) ,
+    onHover: (markerId, billboard, event) =>  {
+        hover(markerId, billboard, event);
+    },
+    onLeftClick: (markerId, billboard, event) => {
+        console.log('onLeftClick');
+        const rect = document.getElementById('cesium-container').getBoundingClientRect();
+        showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content ' + markerId);
+    },
     getLocation: {
         dataSourceIds: [locationDataSource.getId()],
         handler: function(rec, timestamp, options, instance) {
             // console.log(rec.hexIdent + ' , ' + rec.location.lat + "," + rec.location.lon);
-            console.log(`${rec.hexIdent} => ${rec.location.lat} ,  ${rec.location.lon}`);
+            //console.log(`${rec.hexIdent} => ${rec.location.lat} ,  ${rec.location.lon}`);
 
             return {
                 x: rec.location.lon,
@@ -73,7 +121,7 @@ let pointMarker = new PointMarkerLayer({
     getOrientation: {
         dataSourceIds: [trackDataSource.getId()],
         handler: function(rec, timestamp, options, instance) {
-            console.log(`${rec.hexIdent} => ${360 - rec.track}`);
+            //console.log(`${rec.hexIdent} => ${360 - rec.track}`);
 
             return {
                 heading: 360 - rec.track
@@ -88,6 +136,7 @@ let pointMarker = new PointMarkerLayer({
 let cesiumView = new CesiumView({
     container: 'cesium-container',
     allowBillboardRotation: true,
+    sceneMode : SceneMode.SCENE2D,
     layers: [pointMarker]
 });
 
