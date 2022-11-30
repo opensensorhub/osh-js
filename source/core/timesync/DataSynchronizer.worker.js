@@ -34,7 +34,7 @@ self.onmessage = async (event) => {
 }
 
 async function handleMessage(event) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let sendResponse = true;
             let data = undefined;
@@ -73,9 +73,9 @@ async function handleMessage(event) {
             } else if (event.data.message === 'add' && event.data.dataSources) {
                 console.log('Add datasource to synchronizer..')
                 addDataSources(event.data.dataSources);
-                for(let ds of event.data.dataSources) {
-                    dataSynchronizerAlgo.addDataSource(ds);
-                }
+            } else if (event.data.message === 'remove' && event.data.dataSources) {
+                console.log('Remove datasource from synchronizer..')
+                await removeDataSources(event.data.dataSources);
             } else if (event.data.message === 'current-time') {
                 data = {
                     message: 'current-time',
@@ -133,7 +133,7 @@ async function handleMessage(event) {
                 });
             }
             resolve();
-        }catch (ex) {
+        } catch (ex) {
             reject(ex);
         }
     });
@@ -188,6 +188,23 @@ function addDataSource(dataSource) {
     if(!(dataSource.id in dataSources)) {
         dataSources[dataSource.id] = dataSource;
     }
+}
+
+/**
+ *
+ * @param dataSources
+ */
+async function removeDataSources(dataSources) {
+    for(let dataSource of dataSources) {
+        await removeDataSource(dataSource);
+    }
+}
+
+async function removeDataSource(dataSource) {
+    await dataSynchronizerAlgo.removeDataSource(dataSource);
+    // create a BC to push back the synchronized data into the DATA Stream.
+    delete bcChannels[dataSource.id];
+    delete dataSources[dataSource.id];
 }
 
 function checkMasterTime() {

@@ -62,17 +62,23 @@ ds2.subscribe(async (message) => ds2Elt.innerText = new Date(message.values[0].d
 const timeSyncButtonStart = document.getElementById('timeSync-button-start');
 const timeSyncButtonStop = document.getElementById('timeSync-button-stop');
 
-timeSyncButtonStart.onclick = () => dataSynchronizer.connect();
-timeSyncButtonStop.onclick = () => dataSynchronizer.disconnect();
+timeSyncButtonStart.onclick = () => { dataSynchronizer.connect(); timeSyncButtonStart.disabled = true;  timeSyncButtonStop.disabled = false};
+timeSyncButtonStop.onclick = () => { dataSynchronizer.disconnect(); timeSyncButtonStart.disabled = false;  timeSyncButtonStop.disabled = true};
 
 // ACTIONS DS
 
 const ds0ButtonAdd = document.getElementById('ds0-button-add');
 const ds0ButtonRemove = document.getElementById('ds0-button-remove');
 
-ds0ButtonAdd.onclick = () => addButton(ds0, ds0ButtonAdd);
+ds0ButtonAdd.onclick = async () => {
+  ds0ButtonAdd.disabled = true;
+  ds0ButtonRemove.disabled = false;
+  await dataSynchronizer.addDataSource(ds0, true)
+};
 
-async function addButton(ds, elt) {
-  elt.disabled = true;
-  await dataSynchronizer.addDataSource(ds, true);
-}
+ds0ButtonRemove.onclick = async () => {
+  ds0ButtonAdd.disabled = false;
+  ds0ButtonRemove.disabled = true;
+  await dataSynchronizer.removeDataSource(ds0, true)
+};
+
