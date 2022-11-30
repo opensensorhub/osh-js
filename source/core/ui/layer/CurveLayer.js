@@ -42,93 +42,84 @@ class CurveLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'curve';
-        this.props.xLabel = "";
-        this.props.yLabel = "";
-        this.props.lineColor = "#399ca5";
-        this.props.backgroundColor = "#399ca5";
-        this.props.fill = false;
-        this.props.stroke = 1;
-        this.props.curveId = randomUUID();
-        this.props.x = 0;
-        this.props.y = 0;
-        this.props.maxValues = 10;
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
+        const props = {
+            xLabel : "",
+            yLabel : "",
+            lineColor : "#399ca5",
+            backgroundColor : "#399ca5",
+            fill : false,
+            stroke : 1,
+            curveId : randomUUID(),
+            x : 0,
+            y : 0,
+            maxValues : 10
+        };
+
 
         if (isDefined(properties.stroke)) {
-            this.props.stroke = properties.stroke;
+            props.stroke = properties.stroke;
         }
 
         if (isDefined(properties.maxValues)) {
-            this.props.maxValues = properties.maxValues;
+            props.maxValues = properties.maxValues;
         }
 
         if (isDefined(properties.lineColor)) {
-            this.props.lineColor = properties.lineColor;
+            props.lineColor = properties.lineColor;
         }
 
         if (isDefined(properties.backgroundColor)) {
-            this.props.backgroundColor = properties.backgroundColor;
+            props.backgroundColor = properties.backgroundColor;
         }
 
         if (isDefined(properties.fill)) {
-            this.props.fill = properties.fill;
+            props.fill = properties.fill;
         }
 
         if (isDefined(properties.x)) {
-            this.props.x = properties.x;
+            props.x = properties.x;
         }
 
         if (isDefined(properties.y)) {
-            this.props.y = properties.y;
+            props.y = properties.y;
         }
 
-        const that = this;
 
-        // must be first to assign correctly the first location to the right id if it is defined
-        if (this.checkFn("getCurveId")) {
-            let fn = async (rec,timestamp,options) => {
-                that.props.curveId = await that.getFunc('getCurveId')(rec,timestamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getCurveId'),fn);
-        }
-
-        if (this.checkFn("getName")) {
-            let fn = async (rec,timestamp,options) => {
-                that.props.name = await that.getFunc('getName')(rec,timestamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getName'),fn);
-        }
+        this.definedId('curveId', props);
 
         if (isDefined(properties.getStroke)) {
             let fn = async (rec, timestamp, options) => {
-                that.props.stroke = await that.getFunc('getStroke')(rec,timestamp,options);
+                this.updateProperty('stroke',await this.getFunc('getStroke')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getStroke'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getStroke'), fn);
         }
 
         if (isDefined(properties.getLineColor)) {
             let fn = async (rec, timestamp, options) => {
-                that.props.lineColor = await that.getFunc('getLineColor')(rec,timestamp,options);
+                this.updateProperty('lineColor',await this.getFunc('getLineColor')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getLineColor'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getLineColor'), fn);
         }
 
         if (isDefined(properties.getBackgroundColor)) {
             let fn = async (rec, timestamp, options) => {
-                that.props.backgroundColor = await that.getFunc('getBackgroundColor')(rec,timestamp,options);
+                this.updateProperty('backgroundColor',await this.getFunc('getBackgroundColor')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getLineColor'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getLineColor'), fn);
         }
 
         if (isDefined(properties.getValues)) {
             let fn = async (rec, timestamp, options) => {
-                const value = await that.getFunc('getValues')(rec,timestamp,options);
-                that.props.x = value.x;
-                that.props.y = value.y;
+                const value = await this.getFunc('getValues')(rec,timestamp,options);
+                this.updateProperty('x',value.x);
+                this.updateProperty('y',value.y);
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getValues'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getValues'), fn);
         }
-
-        this.saveState();
     }
 }
 export default CurveLayer;

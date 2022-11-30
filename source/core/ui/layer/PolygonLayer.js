@@ -64,90 +64,81 @@ class PolygonLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'polygon';
+    }
+    
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
 
-        this.properties = properties;
-        this.props.vertices = {};
-        this.props.polygonId = randomUUID();
-        this.props.color = 'rgb(255,0,0)';
-        this.props.outlineColor = 'rgb(0,0,0)';
-        this.props.outlineWidth = 1;
-        this.props.opacity = 1;
-        this.props.clampToGround = false;
-
-        const that = this;
+        const props = {
+            vertices : null,
+            color : 'rgb(255,0,0)',
+            outlineColor : 'rgb(0,0,0)',
+            outlineWidth : 1,
+            opacity : 1,
+            clampToGround : false
+        };
 
         if(isDefined(properties.vertices)){
-            this.props.vertices = properties.vertices;
+            props.vertices = properties.vertices;
         }
 
         if(isDefined(properties.color)){
-            this.props.color = properties.color;
+            props.color = properties.color;
         }
 
         if(isDefined(properties.outlineWidth)){
-            this.props.outlineWidth = properties.outlineWidth;
+            props.outlineWidth = properties.outlineWidth;
         }
 
         if(isDefined(properties.outlineColor)){
-            this.props.outlineColor = properties.outlineColor;
+            props.outlineColor = properties.outlineColor;
         }
 
         if(isDefined(properties.opacity)){
-            this.props.opacity = properties.opacity;
+            props.opacity = properties.opacity;
         }
 
         if(isDefined(properties.clampToGround)){
-            this.props.clampToGround = properties.clampToGround;
+            props.clampToGround = properties.clampToGround;
         }
 
-        // must be first to assign correctly the first location to the right id if it is defined
-        if(isDefined(properties.getPolygonId)) {
-            let fn = async (rec) => {
-                that.props.polygonId = await that.getFunc('getPolygonId')(rec);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getPolygonId'),fn);
-        }
+        this.definedId('polygonId', props);
 
         if (isDefined(properties.getVertices)) {
             let fn = async (rec, timestamp, options) => {
-                let vertices = await that.getFunc('getVertices')(rec, timestamp, options);
-                if (!(that.props.polygonId in that.props.vertices)) {
-                    that.props.vertices[that.props.polygonId] = [];
-                }
-                that.props.vertices[that.props.polygonId] = vertices;
+                this.updateProperty('vertices',await this.getFunc('getVertices')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getVertices'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getVertices'), fn);
         }
 
         if(isDefined(properties.getColor)) {
-            let fn = async (rec) => {
-                that.props.color = await that.getFunc('getColor')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('color',await this.getFunc('getColor')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getColor'),fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getColor'),fn);
         }
 
         if(isDefined(properties.getOutlineWidth)) {
-            let fn = async (rec) => {
-                that.props.outlineWidth = await that.getFunc('getOutlineWidth')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('outlineWidth',await this.getFunc('getOutlineWidth')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getOutlineWidth'),fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getOutlineWidth'),fn);
         }
 
         if(isDefined(properties.getOutlineColor)) {
-            let fn = async (rec) => {
-                that.props.outlineColor = await that.getFunc('getOutlineColor')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('outlineColor',await this.getFunc('getOutlineColor')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getOutlineColor'),fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getOutlineColor'),fn);
         }
 
         if(isDefined(properties.getOpacity)) {
-            let fn = async (rec) => {
-                that.props.opacity = await that.getFunc('getOpacity')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('opacity',await this.getFunc('getOpacity')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getOpacity'),fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getOpacity'),fn);
         }
-
-        this.saveState();
     }
 }
 

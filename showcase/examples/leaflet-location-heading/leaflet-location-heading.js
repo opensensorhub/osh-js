@@ -41,6 +41,7 @@ const dataSynchronizer = new DataSynchronizer({
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
   name: "Android Phone GPS",
+  dataSourceIds: [gpsDataSource.id, attitudeDataSource.id],
   getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
     handler: function (rec) {

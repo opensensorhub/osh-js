@@ -57,6 +57,7 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
     // #region snippet_multiple_layer_datasources
     // add 3D model marker to Cesium view
     let pointMarker = new PointMarkerLayer({
+        dataSourceIds: [platformLocationDataSource.id, platformOrientationDataSource.id],
         name: "3DR Drone",
         label: "3DR Solo",
         getLocation: {

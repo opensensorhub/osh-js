@@ -21,7 +21,8 @@ import {
     hasValue,
     isDefined,
     isFunction,
-    randomUUID
+    randomUUID,
+    capitalizeFirstLetter
 } from "../../utils/Utils.js";
 
 /**
@@ -37,19 +38,32 @@ class Layer {
      * @param {boolean} properties.visible - defines if the layer is visible
      * @param {Number} properties.timestamp - defines the timestamp of the data
      * @param {Function} properties.getTimestamp - function which defines the timestamp of the data
+     * @param {Function} properties.onLeftClick - trigger onLeftClick marker event
+     * @param {Function} properties.onRightClick - trigger onRightClick marker event
+     * @param {Function} properties.onHover - trigger onHover marker event
      */
     constructor(properties) {
         this.properties = properties;
-        this.dataSourcesToFn = undefined;
+        this.init(properties);
+    }
+
+    /**
+     * Inits the layer.
+     */
+    init(properties=this.properties) {
         this.data = [];
-        this.props = {};
-        this.props.id = "layer-" + randomUUID();
-        this.props.name = '';
-        this.props.description = '';
-        this.props.dataSourceId = '';
-        this.props.visible = true;
-        this.props.filter = true;
-        this.props.timestamp = 0;
+        this.propsById = {};
+        this.dataSourcesToFn = undefined;
+
+        this.props = {
+            id: "layer-" + randomUUID(),
+            filter: true,
+            name: '',
+            description: '',
+            visible: true,
+            timestamp: true
+        }
+        this.dataSourceIds = undefined;
 
         if(isDefined(properties.name)) {
             this.props.name = properties.name;
@@ -59,8 +73,17 @@ class Layer {
         }
 
         if(isDefined(properties.dataSourceId)) {
-            this.props.dataSourceId = properties.dataSourceId;
+            this.dataSourceIds = [properties.dataSourceId];
         }
+
+        if(isDefined(properties.dataSourceIds)) {
+            this.dataSourceIds = properties.dataSourceIds;
+        }
+
+        if(!this.dataSourceIds) {
+            this.dataSourceIds = [];
+        }
+        // assertDefined(this.dataSourceIds, '[Layer] dataSourceIds[] or dataSourceId');
 
         if(isDefined(properties.visible)) {
             this.props.visible = properties.visible;
@@ -70,49 +93,66 @@ class Layer {
             this.props.timestamp = properties.timestamp;
         }
 
+        if (isDefined(properties.onLeftClick) && assertFunction(properties.onLeftClick)) {
+            this.props.onLeftClick = properties.onLeftClick;
+        }
+
+        if (isDefined(properties.onRightClick) && assertFunction(properties.onRightClick)) {
+            this.props.onRightClick = properties.onRightClick;
+        }
+
+        if (isDefined(properties.onHover) && assertFunction(properties.onHover)) {
+            this.props.onHover = properties.onHover;
+        }
+
         this.initEvents();
 
-        const that = this;
-
         if (this.checkFn("filter")) {
-            let fn = function(rec,timestamp,options) {
-                that.props.filter = that.getFunc('filter')(rec,timestamp,options);
+            let fn = (rec,timestamp,options) => {
+                this.props.filter = this.getFunc('filter')(rec,timestamp,options);
             };
-            this.addFn(that.getDataSourcesIdsByProperty('filter'),fn);
+            this.addFn(this.getDataSourcesIdsByProperty('filter'),fn);
         } else {
             this.properties.filter = function(rec,timestamp,options) {
                 return true;
             };
 
-            let fn = async function (rec, timestamp, options) {
-                that.props.filter = await that.getFunc('filter')(rec, timestamp, options);
+            let fn = async (rec, timestamp, options) => {
+                this.props.filter = await this.getFunc('filter')(rec, timestamp, options);
             };
 
-            this.addFn(that.getDataSourcesIdsByProperty('filter'),fn);
+            this.addFn(this.getDataSourcesIdsByProperty('filter'),fn);
         }
 
         if (this.checkFn("getVisible")) {
-            let fn = async function (rec, timestamp, options) {
-                that.props.visible = await that.getFunc('getVisible')(rec, timestamp, options);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('visible',await this.getFunc('getVisible')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getVisible'),fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getVisible'),fn);
         }
 
         if (this.checkFn("getTimestamp")) {
-            let fn = async (rec) => {
-                that.props.timestamp = await that.getFunc('getTimestamp')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('timestamp',await this.getFunc('getTimestamp')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getTimestamp'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getTimestamp'), fn);
+        }
+
+        if (this.checkFn("getName")) {
+            let fn = async (rec,timestamp,options) => {
+                this.updateProperty('name',await this.getFunc('getName')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getName'),fn);
+        }
+
+        if (this.checkFn("getDescription")) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('description',await this.getFunc('getDescription')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getDescription'), fn);
         }
     }
 
-    saveState() {
-        this.initialState = {...this.props};
-    }
-
-    restoreState() {
-        this.props = {...this.initialState};
-    }
     getFunc(funcName) {
         return this.properties[funcName].handler || this.properties[funcName];
     }
@@ -125,7 +165,7 @@ class Layer {
     checkFn(funcName) {
         let func = this.properties[funcName];
         if(isFunction(func)) {
-            assertDefined(this.properties.dataSourceId, 'dataSourceId');
+            assertDefined(this.dataSourceIds, 'dataSourceIds');
             return true;
         } else {
             let isSet = hasValue(func);
@@ -154,7 +194,7 @@ class Layer {
      * @return {String} the layer id
      */
     getId() {
-        return this.id;
+        return this.props.id;
     }
 
     /**
@@ -168,8 +208,9 @@ class Layer {
      * Adds a function associated to a list of dataSource ids
      * @param {String[]} dataSourceIds - the list of datasources
      * @param {Function} fn - the function to add
+     * @param {Boolean} [first=false] - set at the first position
      */
-    addFn(dataSourceIds, fn) {
+    addFn(dataSourceIds, fn, first = false) {
         if (!isDefined(this.dataSourcesToFn)) {
             this.dataSourcesToFn = {};
         }
@@ -178,7 +219,11 @@ class Layer {
             if (!isDefined(this.dataSourcesToFn[dataSourceId])) {
                 this.dataSourcesToFn[dataSourceId] = [];
             }
-            this.dataSourcesToFn[dataSourceId].push(fn);
+            if(first) {
+                this.dataSourcesToFn[dataSourceId].unshift(fn);
+            } else {
+                this.dataSourcesToFn[dataSourceId].push(fn);
+            }
         }
     }
 
@@ -195,6 +240,7 @@ class Layer {
         if (isDefined(this.dataSourcesToFn)) {
             if (dataSourceId in this.dataSourcesToFn) {
                 let fnArr = this.dataSourcesToFn[dataSourceId];
+                this.props.filter = true;
                 for (let j = 0; j < records.length; j++) {
                     for (let i = 0; i < fnArr.length; i++) {
                         await fnArr[i](records[j].data, records[j].data.timestamp, options);
@@ -204,7 +250,8 @@ class Layer {
                     }
                     if(this.props.filter) {
                         this.data.push({
-                            ...this.props
+                            ...this.props,
+                            ...this.propsById[this.getId()]
                         });
                     }
                 }
@@ -224,19 +271,13 @@ class Layer {
             }
             return res;
         } else {
-            assertDefined(this.properties.dataSourceId, 'dataSourceId must be defined');
-            return [this.properties.dataSourceId];
+            assertDefined(this.dataSourceIds, 'dataSourceId must be defined');
+            return this.dataSourceIds;
         }
     }
 
     getDataSourcesIdsByProperty(name) {
-        return this.properties[name].dataSourceIds ||  [this.properties.dataSourceId];
-    }
-
-    /**
-     * Inits the layer.
-     */
-    init() {
+        return this.properties[name].dataSourceIds || this.dataSourceIds;
     }
 
     /**
@@ -254,7 +295,46 @@ class Layer {
      * Reset to default Layer values
      */
     reset() {
-        this.restoreState();
+        this.init(this.properties);
+    }
+
+    updateProperty(propertyName, value) {
+        this.propsById[this.getId()][propertyName] = value;
+    }
+
+    checkExistingProps(id) {
+        return (id in this.propsById);
+    }
+    setProps(id, props) {
+        this.propsById[id] = props;
+    }
+
+    setId(id, defaultProps) {
+        this.props.id = id;
+        if(!this.checkExistingProps(id)) {
+            this.setProps(id, defaultProps());
+        }
+    }
+
+    definedId(idName, props) {
+        if (this.checkFn(`get${capitalizeFirstLetter(idName)}`)) {
+            let fn = async (rec, timestamp, options) => {
+                const id = await this.getFunc(`get${capitalizeFirstLetter(idName)}`)(rec, timestamp, options);
+                this.setId(id, () => ({...props, [idName]: id}));
+            };
+            // must be first to assign correctly the first location to the right id if it is defined
+            this.addFn(this.getDataSourcesIdsByProperty(`get${capitalizeFirstLetter(idName)}`), fn, true);
+        } else {
+            this.setId(this.getId(), () => ({...props, [idName]: this.getId()}));
+        }
+    }
+
+    getCurrentProps() {
+        return  this.propsById[this.getId()];
+    }
+
+    getIds() {
+        return Object.keys(this.propsById);
     }
 }
 

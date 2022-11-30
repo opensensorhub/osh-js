@@ -90,78 +90,79 @@ class ImageDrapingLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'drapedImage';
-
-        this.properties = properties;
-        this.props.cameraModel = null;
-        this.props.imageSrc = null;
-        this.props.getSnapshot = null;
-        this.props.platformLocation = null;
-        this.props.platformOrientation = null;
-        this.props.gimbalOrientation = null;
-        this.props.drapedImageId = 'drapedImageId';
-
-        const that = this;
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
+        const props = {
+            cameraModel : null,
+            imageSrc : null,
+            getSnapshot : null,
+            platformLocation : null,
+            platformOrientation : null,
+            gimbalOrientation : null
+        };
 
         if (isDefined(properties.platformLocation)) {
-            this.props.platformLocation = properties.platformLocation;
+            props.platformLocation = properties.platformLocation;
         }
 
         if (isDefined(properties.platformOrientation)) {
-            this.props.platformOrientation = properties.platformOrientation;
+            props.platformOrientation = properties.platformOrientation;
         }
 
         if (isDefined(properties.gimbalOrientation)) {
-            this.props.gimbalOrientation = properties.gimbalOrientation;
+            props.gimbalOrientation = properties.gimbalOrientation;
         }
 
         if (isDefined(properties.cameraModel)) {
-            this.props.cameraModel = properties.cameraModel;
+            props.cameraModel = properties.cameraModel;
         }
 
         if (isDefined(properties.imageSrc)) {
-            this.props.imageSrc = properties.imageSrc;
+            props.imageSrc = properties.imageSrc;
         }
+
+        if (isDefined(properties.getSnapshot)) {
+            props.getSnapshot = properties.getSnapshot;
+        }
+
+        this.definedId('drapedImageId', props);
 
         if (isDefined(properties.getPlatformLocation)) {
             let fn = async (rec, timestamp, options) => {
-                that.props.platformLocation = await that.getFunc('getPlatformLocation')(rec,timestamp,options);
+                this.updateProperty('platformLocation',await this.getFunc('getPlatformLocation')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getPlatformLocation'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getPlatformLocation'), fn);
         }
 
         if (isDefined(properties.getPlatformOrientation)) {
             let fn = async (rec, timestamp, options) => {
-                that.props.platformOrientation = await that.getFunc('getPlatformOrientation')(rec,timestamp,options);
+                this.updateProperty('platformOrientation',await this.getFunc('getPlatformOrientation')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getPlatformOrientation'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getPlatformOrientation'), fn);
         }
 
         if (isDefined(properties.getGimbalOrientation)) {
             let fn = async (rec, timestamp, options) => {
-                that.props.gimbalOrientation = await that.getFunc('getGimbalOrientation')(rec,timestamp,options);
+                this.updateProperty('gimbalOrientation',await this.getFunc('getGimbalOrientation')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getGimbalOrientation'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getGimbalOrientation'), fn);
         }
 
         if (isDefined(properties.getCameraModel)) {
             let fn = async (rec, timestamp, options) => {
-                that.props.cameraModel = await  that.getFunc('getCameraModel')(rec,timestamp,options);
+                this.updateProperty('cameraModel',await this.getFunc('getCameraModel')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getCameraModel'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getCameraModel'), fn);
         }
 
         if (this.checkFn("getImageSrc")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.imageSrc = await that.getFunc('getImageSrc')(rec, timestamp, options);
+                this.updateProperty('imageSrc',await this.getFunc('getImageSrc')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getImageSrc'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getImageSrc'), fn);
         }
-
-        if (isDefined(properties.getSnapshot)) {
-            this.props.getSnapshot = properties.getSnapshot;
-        }
-
-        this.saveState();
     }
 }
 

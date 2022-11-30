@@ -247,7 +247,7 @@ class LeafletView extends MapView {
      * @param {Object} properties
      */
     addPolyline(properties) {
-        const locations = properties.locations[properties.polylineId];
+        const locations = properties.locations;
         let polylinePoints = [];
 
         if(isDefined(locations) && locations.length > 0) {
@@ -351,7 +351,7 @@ class LeafletView extends MapView {
             this.addPolylineToLayer(props, polylineObj);
         } else {
             let polylinePoints = [];
-            const locations = props.locations[props.polylineId];
+            const locations = props.locations;
 
             if(isDefined(locations) && locations.length > 0) {
                 for (let i = 0; i < locations.length; i++) {
@@ -384,7 +384,7 @@ class LeafletView extends MapView {
             this.addPolygonToLayer(props, polygonObj);
         } else {
             // update location
-            const vertices = props.vertices[props.polygonId];
+            const vertices = props.vertices;
 
             let polygonPoints = [];
 
@@ -421,7 +421,7 @@ class LeafletView extends MapView {
      * @param {Object} properties
      */
     addPolygon(properties) {
-        const vertices = properties.vertices[properties.polygonId];
+        const vertices = properties.vertices;
 
         let polygonPoints = [];
 
