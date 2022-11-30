@@ -29,22 +29,26 @@ class VideoDataLayer extends BinaryDataLayer {
     constructor(properties) {
         super(properties);
         this.type = 'videoData';
-        this.props.roll = 0;
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
+        const props = {
+          roll: 0
+        };
 
         if (isDefined(properties.roll)){
-            this.props.roll = properties.roll;
+            props.roll = properties.roll;
         }
 
-        let that = this;
+        this.definedId('videoDataId', props);
 
         if (isDefined(properties.getRoll)){
-            let fn = async (rec) => {
-                that.props.roll = await that.getFunc('getRoll')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('roll',await this.getFunc('getRoll')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getRoll'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getRoll'), fn);
         }
-
-        this.saveState();
     }
 }
 export default VideoDataLayer;

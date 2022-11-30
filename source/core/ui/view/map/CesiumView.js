@@ -386,6 +386,7 @@ class CesiumView extends MapView {
 
     // ----- MARKER
     addMarker(properties, entity= undefined) {
+        // console.log(properties);
         const id = properties.id + "$" + properties.markerId;
         const isModel = properties.icon && properties.icon.endsWith(".glb") || false;
         const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : '';
@@ -692,7 +693,7 @@ class CesiumView extends MapView {
      */
     addPolyline(properties) {
         const id = properties.id + "$" + properties.polylineId;
-        const locations = properties.locations[properties.polylineId];
+        const locations = properties.locations;
 
         const flatPositions = locations.map(element => Cartesian3.fromDegrees(element.x, element.y, element.z)).flat();
 
@@ -759,7 +760,7 @@ class CesiumView extends MapView {
      * @param props The properties containing the updated data
      */
     async updatePolyline(props) {
-        if (!isDefined(props.locations) || props.locations[props.polylineId].length < 2) {
+        if (!isDefined(props.locations) || props.locations.length < 2) {
             return;
         }
         const polyline = this.getPolyline(props);
@@ -806,7 +807,7 @@ class CesiumView extends MapView {
         // return this.viewer.entities.add(polygonObj);
         const polygonInstance = new GeometryInstance({
             geometry: new PolygonGeometry({
-                polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId])),
+                polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArray(properties.vertices)),
                 attributes : {
                     color : ColorGeometryInstanceAttribute.fromColor(Color.fromRandom({alpha : 0.5}))
                 },
@@ -833,7 +834,7 @@ class CesiumView extends MapView {
         // according to this example: https://sandcastle.cesium.com/?#c=pVRNj9MwEP0rVi9JpeIulAWU7VZULVrQLlq0IC6EgzeZthaOHY2dVAH1v2MncZq05YQPbebjzbw38aRkSEoOe0BySyTsyQo0LzL6vfaFQVKbKyUN4xIwGN/EMpalRSVKYaot6kcsiT0v3r6iVxPy+sr+eo97JrPrnue69pzn9Dxv3vk6sfx5bMfQWC5M2o4tx5V3zegGVbaGLQLoJSKrwoZdn61Q2IM6k66XT/dPH9Y3TYoqjLAaV5cy7x4f1l2tXIlqq+QX5Bk3vITh5Dp3+KcRtAWVgcHqk9SGSTvQqJ9+dxL1KHd4GpGg7RZMjn5fMep6Njm+Fk0QmAFvhkekO32uQ1y/tz9t+48ckGGyq6IL+C4Ydm9pPKx06Nnt42HcKmJ5Dgyd9kHtz1YBciaWXbhPL2ujFyH1dfhW5RAG9esLJuREWX0doubvGDmcUdOVTHaopCrsW9swoSGWh/HgJrg786+r0IYtCQGJ4UqGDnuGoixNvbhcae4ybb9umC2bPU/NLiKzblWEUnlEDBbQOv5jKu1E+kvghzGU7Em71W++HFQnIIEeI05jZ9TiTldmfDllMBWXM5qM5tpUAhYNmfc8yxUaUqAIKZ0ayHJh5enpc5H8AkMTXe/8fOpB85SXdo9u49HJlywekUQwrW1kUwjxlf+GeLSYT23+ACYUS7ncPpaAglUuZfdy8dA4KaXzqTXPUUYp8cywV/Ev
         var polygonOutlinePrimitive = new PolylineCollection();
         polygonOutlinePrimitive.add({
-            positions: Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId]),
+            positions: Cartesian3.fromDegreesArray(properties.vertices),
             width: properties.outlineWidth,
             loop: true,
             material: new Material({
@@ -896,7 +897,7 @@ class CesiumView extends MapView {
             geometry : new CoplanarPolygonGeometry({
                 polygonHierarchy: new PolygonHierarchy(
                     Cartesian3.fromDegreesArrayHeights(
-                        properties.vertices[properties.polygonId]
+                        properties.vertices
                     )),
             }),
             id: id,

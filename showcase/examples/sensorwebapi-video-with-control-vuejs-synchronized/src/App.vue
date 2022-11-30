@@ -46,7 +46,7 @@ export default {
       endTime: '2012-06-29T14:37:44.033333251Z',
       mode: Mode.REPLAY,
       responseFormat: 'application/swe+binary',
-      prefetchBatchSize: 5000
+      prefetchBatchSize: 250
     };
 
     const dataSource0 = new SweApiFetch("drone-Video", {
