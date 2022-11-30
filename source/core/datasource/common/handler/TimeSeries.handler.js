@@ -199,7 +199,10 @@ class DelegateReplayHandler extends DelegateHandler {
     }
 
     connect(startTime) {
-        this.startTime = startTime;
+        if(startTime) {
+            this.startTime = startTime;
+            this.context.properties.startTime = this.startTime;
+        }
         this.startLoop();
     }
 

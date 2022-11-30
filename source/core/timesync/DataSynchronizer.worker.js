@@ -68,8 +68,14 @@ async function handleMessage(event) {
                 initBroadcastChannel(topicData, topicTime);
                 masterTimeRefreshRate = event.data.masterTimeRefreshRate;
                 startMasterTimeInterval(masterTimeRefreshRate);
+
+                dataSynchronizerAlgo.checkStart();
             } else if (event.data.message === 'add' && event.data.dataSources) {
+                console.log('Add datasource to synchronizer..')
                 addDataSources(event.data.dataSources);
+                for(let ds of event.data.dataSources) {
+                    dataSynchronizerAlgo.addDataSource(ds);
+                }
             } else if (event.data.message === 'current-time') {
                 data = {
                     message: 'current-time',

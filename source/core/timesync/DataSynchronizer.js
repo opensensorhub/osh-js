@@ -178,7 +178,7 @@ class DataSynchronizer {
         return new Promise(async (resolve, reject) => {
             try {
                 const dataSourcesForWorker = [];
-                let mode;
+                let mode = this.mode;
                 for (let dataSource of this.dataSources) {
                     const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
                     dataSourcesForWorker.push(dataSourceForWorker);
@@ -248,6 +248,7 @@ class DataSynchronizer {
                     message: 'add',
                     dataSources: [dataSourceForWorker]
                 }, resolve);
+                dataSource.connect();
             });
         } else {
             this.dataSources.push(dataSource);
