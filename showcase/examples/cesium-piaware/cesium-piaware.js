@@ -1,16 +1,9 @@
 import {
-    Ion,
-    Cartesian3,
-    Color,
-    HeightReference,
-    HorizontalOrigin,
-    SceneMode
+    Cartesian3, HeightReference, Ion, SceneMode
 } from 'cesium';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import { EllipsoidTerrainProvider } from 'cesium';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import {EventType} from "../../../source/core/event/EventType";
+import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
@@ -74,28 +67,25 @@ let pointMarker = new PointMarkerLayer({
     dataSourceIds: [locationDataSource.id, trackDataSource.id],
     getMarkerId: (rec) =>  {
         aircrafts.set(rec.hexIdent, rec.timestamp);
-        aircrafts.forEach((timestamp, hexIdent) => {
-           // console.log('airfraft,ts: ' + keys + "," + values + '\n');
-             console.log('Aircrafts.size ' + aircrafts.size);
 
-            if(Date.now() - timestamp > ageoff) {
-                console.log('Removing ' + hexIdent);
-                cesiumView.removeMarkerFromLayer(hexIdent);
-                aircrafts.delete(hexIdent);
-                return null;
-            }
-        })
-        
+        let markers = cesiumView.getMarkers();
+        markers.forEach((entity) => {
+             let sarr = entity.id.split('$');
+             //console.log('marker, uid: ' + entity.id + ',' + sarr[1] + ','  + rec.hexIdent);
+             if(rec.hexIdent !== sarr[1]) {
+                 let timestamp = aircrafts.get(sarr[1]);
+                 //console.log('Age check: ' + (Date.now() - timestamp)  + '>?' + ageoff);
+                 if(Date.now() - timestamp > ageoff) {
+                    console.log('Aging off: ' + sarr[1]);
+                    aircrafts.delete(sarr[1]);
+                    cesiumView.removeMarkerFromLayer(entity);
+                 }
+             }
+        });
+
         return rec.hexIdent;
     },
     getLabel: (rec) => rec.flightId != null ? rec.flightId : rec.hexIdent,
-    filter: (rec, timestamp, options) => {
-        if ((Date.now() - 60000) > rec.timestamp) {//? false : true;
-            console.log('Aging off ') + rec.hexIdent;
-            return false;
-        };
-        return true;
-    },
     allowBillboardRotation: true,
     onHover: (markerId, billboard, event) =>  {
         hover(markerId, billboard, event);
