@@ -67,12 +67,12 @@ async function handleMessage(event) {
                 topicTime = event.data.topics.time;
                 initBroadcastChannel(topicData, topicTime);
                 masterTimeRefreshRate = event.data.masterTimeRefreshRate;
-                startMasterTimeInterval(masterTimeRefreshRate);
-
-                dataSynchronizerAlgo.checkStart();
             } else if (event.data.message === 'add' && event.data.dataSources) {
                 console.log('Add datasource to synchronizer..')
                 addDataSources(event.data.dataSources);
+            } else if (event.data.message === 'connect') {
+                startMasterTimeInterval(masterTimeRefreshRate);
+                dataSynchronizerAlgo.checkStart();
             } else if (event.data.message === 'remove' && event.data.dataSources) {
                 console.log('Remove datasource from synchronizer..')
                 await removeDataSources(event.data.dataSources);

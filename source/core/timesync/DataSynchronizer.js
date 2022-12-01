@@ -313,9 +313,14 @@ class DataSynchronizer {
     }
 
     async doConnect() {
-        for (let dataSource of this.dataSources) {
-            await dataSource.connect();
-        }
+        return new Promise(async resolve => {
+            for (let dataSource of this.dataSources) {
+                await dataSource.connect();
+            }
+            await this.postMessage({
+                message: 'connect',
+            }, resolve);
+        });
     }
 
     /**

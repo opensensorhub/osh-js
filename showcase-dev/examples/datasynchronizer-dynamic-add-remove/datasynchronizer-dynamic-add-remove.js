@@ -67,18 +67,24 @@ timeSyncButtonStop.onclick = () => { dataSynchronizer.disconnect(); timeSyncButt
 
 // ACTIONS DS
 
-const ds0ButtonAdd = document.getElementById('ds0-button-add');
-const ds0ButtonRemove = document.getElementById('ds0-button-remove');
+addDS('ds0', ds0);
+addDS('ds1', ds1);
+addDS('ds2', ds2);
 
-ds0ButtonAdd.onclick = async () => {
-  ds0ButtonAdd.disabled = true;
-  ds0ButtonRemove.disabled = false;
-  await dataSynchronizer.addDataSource(ds0, true)
-};
+function addDS(dsNumber, ds) {
+  const dsButtonAdd = document.getElementById(dsNumber+'-button-add');
+  const dsButtonRemove = document.getElementById(dsNumber+'-button-remove');
 
-ds0ButtonRemove.onclick = async () => {
-  ds0ButtonAdd.disabled = false;
-  ds0ButtonRemove.disabled = true;
-  await dataSynchronizer.removeDataSource(ds0, true)
-};
+  dsButtonAdd.onclick = async () => {
+    dsButtonAdd.disabled = true;
+    dsButtonRemove.disabled = false;
+    await dataSynchronizer.addDataSource(ds, true)
+  };
+
+  dsButtonRemove.onclick = async () => {
+    dsButtonAdd.disabled = false;
+    dsButtonRemove.disabled = true;
+    await dataSynchronizer.removeDataSource(ds, true)
+  };
+}
 

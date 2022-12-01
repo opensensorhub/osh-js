@@ -224,6 +224,7 @@ class DelegateReplayHandler extends DelegateHandler {
                     this.promise = undefined;
                     this.context.onChangeStatus(Status.FETCH_ENDED);
                     this.context.onChangeStatus(Status.DISCONNECTED);
+                    this.context.disconnect();
                     if (isDefined(this.timeBc)) {
                         this.timeBc.close();
                     }
@@ -412,6 +413,7 @@ class TimeSeriesHandler extends DataSourceHandler {
         if (this.delegateHandler instanceof DelegateReplayHandler && !isDefined(this.timeSyncTopic)) {
             throw Error('DataSynchronizer must be used in case of Mode.REPLAY');
         }
+        this.context.init(this.properties);
         this.delegateHandler.connect(startTime);
     }
 
