@@ -1,6 +1,36 @@
 import Layer from "../../../../source/core/ui/layer/Layer";
 import {isDefined} from "../../utils/Utils";
 
+/**
+ * Enumeration of the ways that the frustum's position and orientation can be
+ * specified.
+ */
+ const FrustumPositionMode = Object.freeze({
+    /**
+     * Constant indicating that the position provided to the frustum layer is
+     * in the form of a latitude (in degrees), longitude (in degrees), and
+     * altitude above ellipsoid (in meters). This also indicates that platform
+     * orientation is provided as heading, pitch, and roll, in degrees; and
+     * sensor orientation is provided as yaw, pitch, and roll, in degrees.
+     */
+    LONLATALT_WITH_EULER_ANGLES: 1,
+
+    /**
+     * Constant indicating that the position provided to the frustum layer is
+     * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+     * the platform and sensor orientations are provided as 3x3 rotation
+     * matrices.
+     */
+    ECEF_WITH_MATRICES: 2,
+
+    /**
+     * Constant indicating that the position provided to the frustum layer is
+     * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+     * the platform and sensor orientations are provided as quaternions.
+     */
+    ECEF_WITH_QUATERNIONS: 3,
+});
+
 class frustumLayer extends Layer {
     /**
      */
@@ -19,7 +49,9 @@ class frustumLayer extends Layer {
             near : 0.009,
             range : null,
             platformOrientation : {heading: 0.0, pitch: 0.0, roll: 0.0},
-            sensorOrientation : {yaw: 0.0, pitch: 0.0, roll: 0.0}
+            sensorOrientation : {yaw: 0.0, pitch: 0.0, roll: 0.0},
+            positionMode: FrustumPositionMode.LONLATALT_WITH_EULER_ANGLES,
+            aspectRatio: 4/3
         };
 
         if(isDefined(properties.color)){
@@ -28,6 +60,14 @@ class frustumLayer extends Layer {
 
         if(isDefined(properties.opacity)){
             props.opacity = properties.opacity;
+        }
+
+        if (isDefined(properties.positionMode)) {
+            props.positionMode = properties.positionMode;
+        }
+
+        if (isDefined(properties.aspectRatio)) {
+            props.aspectRatio = properties.aspectRatio;
         }
 
         this.definedId('frustumId', props);
@@ -73,7 +113,14 @@ class frustumLayer extends Layer {
             };
             this.addFn(this.getDataSourcesIdsByProperty('getSensorOrientation'),fn);
         }
+        if (isDefined(properties.getAspectRatio)) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('aspectRatio',await this.getFunc('getAspectRatio')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getAspectRatio'), fn);
+        }
     }
 }
 
 export default  frustumLayer;
+export { FrustumPositionMode };
