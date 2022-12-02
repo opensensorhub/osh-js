@@ -390,7 +390,7 @@ class CesiumView extends MapView {
         const id = properties.id + "$" + properties.markerId;
         const isModel = properties.icon && properties.icon.endsWith(".glb") || false;
         const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : '';
-        console.log('[Cesium]' + properties.markerId + ' => ' + properties.orientation.heading);
+        //console.log('[Cesium]' + properties.markerId + ' => ' + properties.orientation.heading);
 
         const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
         const color =  isDefined(properties.color) ? Color.fromCssColorString(properties.color) : Color.YELLOW;
@@ -446,7 +446,8 @@ class CesiumView extends MapView {
                 eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex), // make sure icon always displays in front,
                 show: properties.visible,
                 heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
-                scale: 1.0,
+                //scale: 1.0,
+                scale: properties.iconScale,
                 imageSubRegion: undefined,
                 color: undefined,
                 width: undefined,

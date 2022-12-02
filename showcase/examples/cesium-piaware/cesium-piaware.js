@@ -13,9 +13,9 @@ window.CESIUM_BASE_URL = './';
 let locationDataSource = new SosGetResult('piaware-location', {
     protocol: 'ws',
     service: 'SOS',
-    endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    // endpointUrl: 'localhost:8181/sensorhub/sos',
-    offeringID: 'urn:osh:sensor:aviation:PiAware',
+    //endpointUrl: '76.187.247.4:8181/sensorhub/sos',
+    endpointUrl: 'localhost:8686/sensorhub/sos',
+    offeringID: 'urn:osh:sensor:aviation:piaware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',
     startTime: 'now',
     endTime: '2022-12-31T00:00:00Z',
@@ -26,9 +26,9 @@ let locationDataSource = new SosGetResult('piaware-location', {
 let trackDataSource = new SosGetResult('piaware-track', {
     protocol: 'ws',
     service: 'SOS',
-    endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    // endpointUrl: 'localhost:8181/sensorhub/sos',
-    offeringID: 'urn:osh:sensor:aviation:PiAware',
+    // endpointUrl: '76.187.247.4:8181/sensorhub/sos',
+    endpointUrl: 'localhost:8686/sensorhub/sos',
+    offeringID: 'urn:osh:sensor:aviation:piaware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Track',
     startTime: 'now',
     endTime: '2022-12-31T00:00:00Z',
@@ -118,7 +118,35 @@ let pointMarker = new PointMarkerLayer({
             };
         }
     },
-    icon: 'images/icons8-airplane-64.png',
+    getIcon: (rec) => {
+        switch (rec.category) {
+            case 'A7':
+                return 'images/heli.PNG';
+            default:
+                return 'images/icons8-airplane-64.png';
+        }
+    },
+    getIconScale: (rec) => {
+        if(!rec.category)
+            return 1.0;
+        switch (rec.category) {
+            case 'A1':
+                return 0.5;
+                break;
+            case 'A2':
+                return 0.7;
+            case 'A3':
+                return 0.9;
+            case 'A4':
+            case 'A5':
+            case 'A6':
+                return 1.2;
+            case 'A7':
+                return 0.5;
+            default:
+                return 1.0;
+            }
+    },
     iconAnchor: [16, 40]
 });
 
