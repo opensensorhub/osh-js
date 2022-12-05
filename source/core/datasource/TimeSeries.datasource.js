@@ -103,6 +103,11 @@ class TimeSeriesDatasource extends DataSource {
     }
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
+    /**
+     * @private
+     * @param dataSynchronizer
+     * @returns {Promise}
+     */
     async setDataSynchronizer(dataSynchronizer) {
         return new Promise(async (resolve, reject) => {
             await this.checkInit();

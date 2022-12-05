@@ -1139,6 +1139,11 @@ class CesiumView extends MapView {
         }
     }
 
+    removeDrapedImageFromLayer(drapedImagePrimitive) {
+        this.viewer.scene.primitives.remove(drapedImagePrimitive);
+        this.render();
+    }
+
     // -- Frustum
     async updateFrustum(props) {
         if(!isDefined(props.origin) || !isDefined(props.fov) || !isDefined(props.range)

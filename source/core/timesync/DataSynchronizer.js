@@ -178,7 +178,7 @@ class DataSynchronizer {
         return new Promise(async (resolve, reject) => {
             try {
                 const dataSourcesForWorker = [];
-                let mode;
+                let mode = this.mode;
                 for (let dataSource of this.dataSources) {
                     const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
                     dataSourcesForWorker.push(dataSourceForWorker);
@@ -247,10 +247,33 @@ class DataSynchronizer {
                 await this.postMessage({
                     message: 'add',
                     dataSources: [dataSourceForWorker]
-                }, resolve);
+                });
+                await dataSource.connect();
+                resolve();
             });
         } else {
             this.dataSources.push(dataSource);
+        }
+    }
+
+    /**
+     * Removes a DataSource object from the list of datasources of the synchronizer.
+     * @param {DataSource} dataSource - the new datasource to add
+     * @param [lazy=false] lazy - remove from the current running synchronizer
+     */
+    async removeDataSource(dataSource, lazy = false) {
+        if(lazy) {
+            return new Promise(async resolve => {
+                this.dataSources = this.dataSources.filter( elt => elt.id !== dataSource.getId());
+                await this.postMessage({
+                    message: 'remove',
+                    dataSources: [dataSource.getId()]
+                });
+                await dataSource.disconnect();
+                resolve();
+            });
+        } else {
+            this.dataSources = this.dataSources.filter( elt => elt.id !== dataSource.getId());
         }
     }
 
@@ -290,9 +313,14 @@ class DataSynchronizer {
     }
 
     async doConnect() {
-        for (let dataSource of this.dataSources) {
-            await dataSource.connect();
-        }
+        return new Promise(async resolve => {
+            for (let dataSource of this.dataSources) {
+                await dataSource.connect();
+            }
+            await this.postMessage({
+                message: 'connect',
+            }, resolve);
+        });
     }
 
     /**
