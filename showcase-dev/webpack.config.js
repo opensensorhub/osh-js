@@ -85,7 +85,8 @@ let directories = [
     'mqtt-utility',
     'multi-datasources-synchronized',
     'switch-realtime-batch',
-    'videodata-with-control-vuejs-synchronized'
+    'videodata-with-control-vuejs-synchronized',
+    'datasynchronizer-dynamic-add-remove'
 ];
 
 const plug = {};
