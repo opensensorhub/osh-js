@@ -997,36 +997,42 @@ class CesiumView extends MapView {
                 }
                 const gimbalOrientation = props.gimbalOrientation;
                 if (gimbalOrientation) {
+                    // Allow yaw to be specified either as "yaw" or "heading".
+                    const yaw = ("yaw" in gimbalOrientation) ? gimbalOrientation.yaw : gimbalOrientation.heading;
+                    // The "+ 90" on the next line is a little mysterious to this author (CSD), but probably has to
+                    // do with orienting camera coordinates to world space.
+                    const pitch = gimbalOrientation.pitch + 90;
+                    const roll = gimbalOrientation.roll;
                     switch (props.gimbalEulerAngleOrder) {
                         case GimbalEulerAngleOrder.YAW_PITCH_ROLL:
-                            Matrix3.multiply(camRot, Matrix3.fromRotationZ((gimbalOrientation.yaw | gimbalOrientation.heading)*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationY((90+gimbalOrientation.pitch)*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationX(gimbalOrientation.roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
                             break;
                         case GimbalEulerAngleOrder.YAW_ROLL_PITCH:
-                            Matrix3.multiply(camRot, Matrix3.fromRotationZ((gimbalOrientation.yaw | gimbalOrientation.heading)*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationX(gimbalOrientation.roll*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationY((90+gimbalOrientation.pitch)*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
                             break;
                         case GimbalEulerAngleOrder.PITCH_YAW_ROLL:
-                            Matrix3.multiply(camRot, Matrix3.fromRotationY((90+gimbalOrientation.pitch)*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationZ((gimbalOrientation.yaw | gimbalOrientation.heading)*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationX(gimbalOrientation.roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
                             break;
                         case GimbalEulerAngleOrder.PITCH_ROLL_YAW:
-                            Matrix3.multiply(camRot, Matrix3.fromRotationY((90+gimbalOrientation.pitch)*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationX(gimbalOrientation.roll*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationZ((gimbalOrientation.yaw | gimbalOrientation.heading)*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
                             break;
                         case GimbalEulerAngleOrder.ROLL_YAW_PITCH:
-                            Matrix3.multiply(camRot, Matrix3.fromRotationX(gimbalOrientation.roll*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationZ((gimbalOrientation.yaw | gimbalOrientation.heading)*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationY((90+gimbalOrientation.pitch)*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
                             break;
                         case GimbalEulerAngleOrder.ROLL_PITCH_YAW:
-                            Matrix3.multiply(camRot, Matrix3.fromRotationX(gimbalOrientation.roll*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationY((90+gimbalOrientation.pitch)*DTR, rotM), camRot);
-                            Matrix3.multiply(camRot, Matrix3.fromRotationZ((gimbalOrientation.yaw | gimbalOrientation.heading)*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
                             break;
                     }
                 }
