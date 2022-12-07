@@ -277,6 +277,8 @@ class MapView extends View {
 
         this.removePolygons(layer);
 
+        this.removeDrapedImages(layer);
+
         this.removeFrustums(layer);
 
         super.removeAllFromLayer(layer);

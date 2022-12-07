@@ -446,13 +446,11 @@ class CesiumView extends MapView {
                 eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex), // make sure icon always displays in front,
                 show: properties.visible,
                 heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
-                //scale: 1.0,
                 scale: properties.iconScale,
                 imageSubRegion: undefined,
                 color: color,
-                // color: undefined,
-                width: undefined,
-                height: undefined,
+                width: properties.iconSize[0],
+                height: properties.iconSize[1],
                 translucencyByDistance: undefined,
                 sizeInMeters: undefined,
                 distanceDisplayCondition: undefined,
@@ -1080,6 +1078,11 @@ class CesiumView extends MapView {
             existingDrapedImagePrimitive.show = props.visible;
             return existingDrapedImagePrimitive;
         }
+    }
+
+    removeDrapedImageFromLayer(drapedImagePrimitive) {
+        this.viewer.scene.primitives.remove(drapedImagePrimitive);
+        this.render();
     }
 
     // -- Frustum

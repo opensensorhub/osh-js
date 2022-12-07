@@ -78,6 +78,7 @@ class SweApiReplayContext extends SweApiContext {
     async disconnect() {
         this.collection = undefined;
         this.relativeStartTimestamp = undefined;
+        this.replayFunction = undefined;
     }
 
     async nextBatch(properties, masterTimestamp, status = {cancel:false}) {
