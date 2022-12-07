@@ -444,7 +444,7 @@ class CesiumView extends MapView {
                 eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex), // make sure icon always displays in front,
                 show: properties.visible,
                 heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
-                scale: 1.0,
+                scale: properties.iconScale,
                 imageSubRegion: undefined,
                 color: color,
                 width: properties.iconSize[0],
