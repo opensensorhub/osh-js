@@ -551,7 +551,6 @@ class CesiumView extends MapView {
             entity.description = entityOpts.description;
             entity.orientation = entityOpts.orientation;
 
-            console.log(entity.billboard)
             return entity;
         }
     }
