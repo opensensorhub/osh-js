@@ -449,7 +449,8 @@ class CesiumView extends MapView {
                 //scale: 1.0,
                 scale: properties.iconScale,
                 imageSubRegion: undefined,
-                color: undefined,
+                color: color,
+                // color: undefined,
                 width: undefined,
                 height: undefined,
                 translucencyByDistance: undefined,
@@ -576,8 +577,9 @@ class CesiumView extends MapView {
         this.render();
     }
 
-    removeMarkerFromLayer(marker) {
-        this.viewer.entities.remove(marker);
+    removeMarkerFromLayer(entity, markerId) {
+        this.viewer.entities.remove(entity);
+        delete this.layerIdToMarkers[markerId]; // Added by TC- check with Mathieu
         this.render();
     }
 

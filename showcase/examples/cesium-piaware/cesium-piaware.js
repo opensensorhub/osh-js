@@ -1,5 +1,5 @@
 import {
-    Cartesian3, HeightReference, Ion, SceneMode
+    Cartesian3, Color, HeightReference, Ion, SceneMode
 } from 'cesium';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
@@ -70,18 +70,27 @@ let pointMarker = new PointMarkerLayer({
 
         let markers = cesiumView.getMarkers();
         markers.forEach((entity) => {
-             let sarr = entity.id.split('$');
-             //console.log('marker, uid: ' + entity.id + ',' + sarr[1] + ','  + rec.hexIdent);
-             if(rec.hexIdent !== sarr[1]) {
-                 let timestamp = aircrafts.get(sarr[1]);
-                 //console.log('Age check: ' + (Date.now() - timestamp)  + '>?' + ageoff);
-                 if(Date.now() - timestamp > ageoff) {
-                    console.log('Aging off: ' + sarr[1]);
-                    aircrafts.delete(sarr[1]);
-                    cesiumView.removeMarkerFromLayer(entity);
-                 }
-             }
-        });
+            let sarr = entity.id.split('$');
+            //console.log('marker: ' + sarr[0] + ' =?= '  + rec.hexIdent);
+            if(rec.hexIdent === sarr[0]) 
+                return;
+            let timestamp = aircrafts.get(sarr[0]);
+            //console.log('Age check: ' + (Date.now() - timestamp)  + '>?' + ageoff);
+            if(Date.now() - timestamp > ageoff) {
+                const now = new Date();
+                console.log('Aging off:  ' + sarr[1] + ' : ' + now.toISOString() + ' : ac = ' + aircrafts.size + ' : cv = ' + cesiumView.getMarkers().length);
+                aircrafts.delete(sarr[1]);
+                // cesiumView.removeMarkerFromLayer(entity);
+                
+                cesiumView.removeMarkerFromLayer(entity, sarr[0]);
+                cesiumView.listMarkers();
+
+                console.log('---- Aircraft ----');
+                aircrafts.forEach((key, value, map) => {
+                    console.log('ac:' + value);
+                })
+            }
+        })
 
         return rec.hexIdent;
     },
@@ -123,10 +132,49 @@ let pointMarker = new PointMarkerLayer({
             case 'A7':
                 return 'images/heli.PNG';
             default:
-                return 'images/icons8-airplane-64.png';
+                //return 'images/icons8-airplane-64.png';
+               return 'images/Planex128.svg';
         }
     },
+    //iconAnchor: [16, 40],
+    // getIconColor: (rec) => {
+    //     return "#ffaa33F";
+    // },
+    getIconColor: {
+        dataSourceIds: [locationDataSource.id, trackDataSource.id],
+        handler: function(rec) {
+            return "#FFAA3355";
+        }
+    },
+    // getColor: {
+    //     dataSourceIds: [locationDataSource.id, trackDataSource.id],
+    //     handler: function(rec) {
+    //         return "#FFAA33";
+    //     }
+    // },
+    color: "#FFAA33",
     getIconScale: (rec) => {
+        if(!rec.category)
+            return 0.5;
+        switch (rec.category) {
+            case 'A1':
+                return 0.2;
+                break;
+            case 'A2':
+                return 0.3;
+            case 'A3':
+                return 0.4;
+            case 'A4':
+            case 'A5':
+            case 'A6':
+                return 0.5;
+            case 'A7':
+                return 0.5;
+            default:
+                return 0.4;
+            }
+    },
+    getIconScalePng: (rec) => {
         if(!rec.category)
             return 1.0;
         switch (rec.category) {
@@ -146,8 +194,7 @@ let pointMarker = new PointMarkerLayer({
             default:
                 return 1.0;
             }
-    },
-    iconAnchor: [16, 40]
+    }
 });
 
 // create Cesium view
@@ -163,6 +210,7 @@ cesiumView.viewer.entities.add({
     position: Cartesian3.fromDegrees(-97.6664, 30.1975),
     billboard: {
       image: "images/icons8-airport-50.png",
+      color: Color.YELLOW,
       heightReference: HeightReference.CLAMP_TO_GROUND,
       disableDepthTestDistance: Number.POSITIVE_INFINITY,
     },

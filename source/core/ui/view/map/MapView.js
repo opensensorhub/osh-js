@@ -153,6 +153,13 @@ class MapView extends View {
         return array;
     }
 
+    listMarkers() {
+        console.log('---- Markers ----');
+        for(let id in this.layerIdToMarkers) {
+            console.log('mv: ' + id);
+        }
+    }
+
     /**
      * Get all polylines contained in this view
      * @protected
