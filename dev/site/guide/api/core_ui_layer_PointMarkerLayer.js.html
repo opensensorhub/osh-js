@@ -105,7 +105,7 @@ class PointMarkerLayer extends Layer {
      * @param {Number[]} properties.location - [x,y,z]
      * @param {Number} [properties.orientation=0] -
      * @param {String} properties.icon -
-     * @param {String} [properties.iconScale=1] - the icon scale size
+     * @param {Number} [properties.iconScale=1] - the icon scale size
      * @param {String} [properties.iconColor="#000000"] - the icon color
      * @param {Number[]} [properties.iconAnchor=[16,16]] -
      * @param {Number[]} [properties.iconSize=[16,16]] -
@@ -160,7 +160,6 @@ class PointMarkerLayer extends Layer {
             labelScale: 1.0,
             labelOffset: [0, 0],
             zoomLevel: 15,
-            color: '#000000',
             defaultToTerrainElevation: false,
             zIndex: 0,
             allowBillboardRotation: true,
@@ -260,11 +259,6 @@ class PointMarkerLayer extends Layer {
         if (hasValue(properties.allowBillboardRotation)) {
             assertBoolean(properties.allowBillboardRotation, "allowBillboardRotation");
             props.allowBillboardRotation = properties.allowBillboardRotation;
-        }
-
-        if (hasValue(properties.color)) {
-            assertString(properties.color, "color");
-            props.color = properties.color;
         }
 
         this.definedId('markerId', props);

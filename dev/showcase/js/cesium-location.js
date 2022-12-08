@@ -38,6 +38,7 @@ let pointMarker = new PointMarkerLayer({
     }),
     icon: 'images/car-location.png',
     iconAnchor: [16, 40],
+    iconSize: [32, 65],
     allowBillboardRotation: false
 });
 
