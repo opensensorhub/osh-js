@@ -83,12 +83,12 @@ let pointMarker = new PointMarkerLayer({
                 // cesiumView.removeMarkerFromLayer(entity);
                 
                 cesiumView.removeMarkerFromLayer(entity, sarr[0]);
-                cesiumView.listMarkers();
+                // cesiumView.listMarkers();
 
-                console.log('---- Aircraft ----');
-                aircrafts.forEach((key, value, map) => {
-                    console.log('ac:' + value);
-                })
+                // console.log('---- Aircraft ----');
+                // aircrafts.forEach((key, value, map) => {
+                //     console.log('ac:' + value);
+                // })
             }
         })
 
@@ -99,11 +99,11 @@ let pointMarker = new PointMarkerLayer({
     onHover: (markerId, billboard, event) =>  {
         hover(markerId, billboard, event);
     },
-    onLeftClick: (markerId, billboard, event) => {
-        console.log('onLeftClick');
-        const rect = document.getElementById('cesium-container').getBoundingClientRect();
-        showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content ' + markerId);
-    },
+    // onLeftClick: (markerId, billboard, event) => {
+    //     console.log('onLeftClick');
+    //     const rect = document.getElementById('cesium-container').getBoundingClientRect();
+    //     showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content ' + markerId);
+    // },
     getLocation: {
         dataSourceIds: [locationDataSource.getId()],
         handler: function(rec, timestamp, options, instance) {
@@ -132,7 +132,7 @@ let pointMarker = new PointMarkerLayer({
             case 'A7':
                 return 'images/heli.PNG';
             default:
-                //return 'images/icons8-airplane-64.png';
+                // return 'images/icons8-airplane-64.png';
                return 'images/Planex128.svg';
         }
     },
@@ -143,7 +143,7 @@ let pointMarker = new PointMarkerLayer({
     getIconColor: {
         dataSourceIds: [locationDataSource.id, trackDataSource.id],
         handler: function(rec) {
-            return "#FFAA3355";
+            return "#FFAA33";
         }
     },
     // getColor: {
@@ -152,8 +152,8 @@ let pointMarker = new PointMarkerLayer({
     //         return "#FFAA33";
     //     }
     // },
-    color: "#FFAA33",
-    getIconScale: (rec) => {
+    // color: "#FFAA33",
+    getIconScaleSvg: (rec) => {
         if(!rec.category)
             return 0.5;
         switch (rec.category) {
@@ -174,25 +174,25 @@ let pointMarker = new PointMarkerLayer({
                 return 0.4;
             }
     },
-    getIconScalePng: (rec) => {
+    getIconScale: (rec) => {
         if(!rec.category)
-            return 1.0;
+            return 3.0;
         switch (rec.category) {
             case 'A1':
-                return 0.5;
+                return 2.5;
                 break;
             case 'A2':
-                return 0.7;
+                return 3.0;
             case 'A3':
-                return 0.9;
+                return 3.5;
             case 'A4':
             case 'A5':
             case 'A6':
-                return 1.2;
+                return 4.0;
             case 'A7':
-                return 0.5;
+                return 2.5;
             default:
-                return 1.0;
+                return 3.5;
             }
     }
 });
