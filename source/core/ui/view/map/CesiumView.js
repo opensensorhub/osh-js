@@ -391,7 +391,7 @@ class CesiumView extends MapView {
         const isModel = properties.icon && properties.icon.endsWith(".glb") || false;
         const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : '';
         const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-        const color =  isDefined(properties.color) ? Color.fromCssColorString(properties.color) : Color.YELLOW;
+        const color =  isDefined(properties.iconColor) ? Color.fromCssColorString(properties.iconColor) : Color.YELLOW;
 
         let lonLatAlt = [0, 0, 0];
 
