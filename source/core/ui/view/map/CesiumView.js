@@ -1111,33 +1111,24 @@ class CesiumView extends MapView {
         });
 
         if (!isDefined(existingDrapedImagePrimitive) || snapshot) {
-            // To guarantee that we have some geometry on the location of the image,
-            // we use an ellipsoid geometry for the entire earth, all the way up to
-            // the top of the Himalayas. Even though this feels pretty inefficient,
-            // it's fast enough for our usage. We may want to revisit this later and
-            // use a more carefully constructed geometry to optimize the case where
-            // the visible pixels of the draped image are much less than the entire
-            // viewport.
-            const extraHeight = 9000;
-            const ellipsoidGeometry = new EllipsoidGeometry({
-                radii: new Cartesian3(
-                    Ellipsoid.WGS84.radii.x + extraHeight,
-                    Ellipsoid.WGS84.radii.y + extraHeight,
-                    Ellipsoid.WGS84.radii.z + extraHeight
-                )
+            // Render the draped primitive on the whole earth (discarding pixels that do not fall
+            // in the draped image's bounds). This is inefficient, but the GPU is fast enough that
+            // it does not matter right now.
+            const drapedImageGeometry = new RectangleGeometry({
+                ellipsoid: Ellipsoid.WGS84,
+                rectangle: Rectangle.fromDegrees(-180, -90, 180, 90)
             });
-            const imageDrapingPrimitive = this.viewer.scene.primitives.add(new Primitive({
-                geometryInstances: new GeometryInstance({
-                    geometry: ellipsoidGeometry
-                }),
+            const drapedImagePrimitive = new Primitive({
+                geometryInstances: new GeometryInstance({ geometry: drapedImageGeometry }),
                 appearance: appearance,
                 show: props.visible
-            }));
+            });
+            this.viewer.scene.primitives.add(drapedImagePrimitive);
 
             if (!snapshot) {
-                this.viewer.scene.primitives.raiseToTop(imageDrapingPrimitive);
+                this.viewer.scene.primitives.raiseToTop(drapedImagePrimitive);
             }
-            return imageDrapingPrimitive;
+            return drapedImagePrimitive;
         } else {
             existingDrapedImagePrimitive.appearance = appearance;
             existingDrapedImagePrimitive.show = props.visible;
