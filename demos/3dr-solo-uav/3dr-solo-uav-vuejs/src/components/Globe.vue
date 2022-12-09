@@ -44,7 +44,9 @@
               };
             }
           },
-          icon: "./images/quadcopter.png"
+          icon: "./images/quadcopter.png",
+          iconSize: [32, 32],
+          iconScale: 1.5
         });
 
         // style it with a moving point marker

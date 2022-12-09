@@ -45,6 +45,7 @@ class BaseMap extends React.Component {
         }
       },
       icon: "./models/Drone+06B.glb",
+      iconScale: 12.0,
       name: 'Solo draping marker'
     });
 

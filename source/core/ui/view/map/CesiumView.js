@@ -393,7 +393,7 @@ class CesiumView extends MapView {
         const isModel = properties.icon && properties.icon.endsWith(".glb") || false;
         const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : '';
         const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-        const color =  isDefined(properties.color) ? Color.fromCssColorString(properties.color) : Color.YELLOW;
+        const color =  isDefined(properties.iconColor) ? Color.fromCssColorString(properties.iconColor) : Color.YELLOW;
 
         let lonLatAlt = [0, 0, 0];
 
@@ -446,11 +446,11 @@ class CesiumView extends MapView {
                 eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex), // make sure icon always displays in front,
                 show: properties.visible,
                 heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
-                scale: 1.0,
+                scale: properties.iconScale,
                 imageSubRegion: undefined,
-                color: undefined,
-                width: undefined,
-                height: undefined,
+                color: color,
+                width: properties.iconSize[0],
+                height: properties.iconSize[1],
                 translucencyByDistance: undefined,
                 sizeInMeters: undefined,
                 distanceDisplayCondition: undefined,
