@@ -70,6 +70,10 @@ class frustumLayer extends Layer {
             props.range = properties.range;
         }
 
+        if (isDefined(properties.fov)) {
+            props.fov = properties.fov;
+        }
+
         if (isDefined(properties.positionMode)) {
             props.positionMode = properties.positionMode;
         }
