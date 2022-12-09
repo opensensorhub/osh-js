@@ -62,6 +62,14 @@ class frustumLayer extends Layer {
             props.opacity = properties.opacity;
         }
 
+        if (isDefined(properties.near)) {
+            props.near = properties.near;
+        }
+
+        if (isDefined(properties.range)) {
+            props.range = properties.range;
+        }
+
         if (isDefined(properties.positionMode)) {
             props.positionMode = properties.positionMode;
         }
