@@ -1,4 +1,4 @@
-import {
+import cesium, {
     Cartesian3, Color, HeightReference, Ion, SceneMode
 } from 'cesium';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
@@ -59,6 +59,31 @@ document.body.onclick = () => {
     hidePopup();
 };
 
+function checkAge() {
+    console.log("Checking age");
+    let markers = cesiumView.getMarkers();
+    markers.forEach((entity) => {
+        let sarr = entity.id.split('$');
+        //console.log('marker: ' + sarr[0] + ' =?= '  + rec.hexIdent);
+        let timestamp = aircrafts.get(sarr[0]);
+        //console.log('Age check: ' + (Date.now() - timestamp)  + '>?' + ageoff);
+        if(Date.now() - timestamp > ageoff) {
+            const now = new Date();
+            console.log('Aging off:  ' + sarr[1] + ' : ' + now.toISOString() + ' : ac = ' + aircrafts.size + ' : cv = ' + cesiumView.getMarkers().length);
+            aircrafts.delete(sarr[1]);
+            //cesiumView.removeMarkerFromLayer(entity);
+            cesiumView.removeMarkerFromLayer(entity, sarr[0]);
+            //  cesiumView.listMarkers();
+
+            // console.log('---- Aircraft ----');
+            // aircrafts.forEach((key, value, map) => {
+            //      console.log('ac:' + value);
+            // })
+        }
+    })
+}
+
+setInterval(checkAge, 1000);
 
 // style it with a moving point marker
 const aircrafts = new Map();
@@ -67,34 +92,10 @@ let pointMarker = new PointMarkerLayer({
     dataSourceIds: [locationDataSource.id, trackDataSource.id],
     getMarkerId: (rec) =>  {
         aircrafts.set(rec.hexIdent, rec.timestamp);
-
-        let markers = cesiumView.getMarkers();
-        markers.forEach((entity) => {
-            let sarr = entity.id.split('$');
-            //console.log('marker: ' + sarr[0] + ' =?= '  + rec.hexIdent);
-            if(rec.hexIdent === sarr[0]) 
-                return;
-            let timestamp = aircrafts.get(sarr[0]);
-            //console.log('Age check: ' + (Date.now() - timestamp)  + '>?' + ageoff);
-            if(Date.now() - timestamp > ageoff) {
-                const now = new Date();
-                console.log('Aging off:  ' + sarr[1] + ' : ' + now.toISOString() + ' : ac = ' + aircrafts.size + ' : cv = ' + cesiumView.getMarkers().length);
-                aircrafts.delete(sarr[1]);
-                // cesiumView.removeMarkerFromLayer(entity);
-                
-                cesiumView.removeMarkerFromLayer(entity, sarr[0]);
-                // cesiumView.listMarkers();
-
-                // console.log('---- Aircraft ----');
-                // aircrafts.forEach((key, value, map) => {
-                //     console.log('ac:' + value);
-                // })
-            }
-        })
-
         return rec.hexIdent;
     },
     getLabel: (rec) => rec.flightId != null ? rec.flightId : rec.hexIdent,
+    labelSize: 40,
     allowBillboardRotation: true,
     onHover: (markerId, billboard, event) =>  {
         hover(markerId, billboard, event);
@@ -130,10 +131,9 @@ let pointMarker = new PointMarkerLayer({
     getIcon: (rec) => {
         switch (rec.category) {
             case 'A7':
-                return 'images/heli.PNG';
+                return 'images/heli2.png';
             default:
-                // return 'images/icons8-airplane-64.png';
-               return 'images/Planex128.svg';
+                return 'images/icons8-airplane-64.png';
         }
     },
     //iconAnchor: [16, 40],
@@ -141,18 +141,29 @@ let pointMarker = new PointMarkerLayer({
     //     return "#ffaa33F";
     // },
     getIconColor: {
-        dataSourceIds: [locationDataSource.id, trackDataSource.id],
+        dataSourceIds: [locationDataSource.id],
         handler: function(rec) {
-            return "#FFAA33";
+            //return "#FFAA33";
+
+            if(rec.location.alt < 500.) 
+                return Color.RED.toCssColorString();
+            if(rec.location.alt < 3000.) 
+                return Color.DARKORANGE.toCssColorString();
+            if(rec.location.alt < 6000.) 
+                return Color.GOLD.toCssColorString();
+            if(rec.location.alt < 10000.) 
+                return Color.MEDIUMSEAGREEN.toCssColorString();
+            if(rec.location.alt < 15000.) 
+                return Color.DEEPSKYBLUE.toCssColorString();
+            if(rec.location.alt < 25000.) 
+                return Color.DODGERBLUE.toCssColorString();
+            if(rec.location.alt < 30000.) 
+                return Color.VIOLET.toCssColorString();
+            if(rec.location.alt < 40000.) 
+                return Color.FIREBRICK.toCssColorString();
+            return Color.MAGENTA.toCssColorString();
         }
     },
-    // getColor: {
-    //     dataSourceIds: [locationDataSource.id, trackDataSource.id],
-    //     handler: function(rec) {
-    //         return "#FFAA33";
-    //     }
-    // },
-    // color: "#FFAA33",
     getIconScaleSvg: (rec) => {
         if(!rec.category)
             return 0.5;
@@ -176,23 +187,23 @@ let pointMarker = new PointMarkerLayer({
     },
     getIconScale: (rec) => {
         if(!rec.category)
-            return 3.0;
+            return 6.5;
         switch (rec.category) {
             case 'A1':
-                return 2.5;
+                return 3.5;
                 break;
             case 'A2':
-                return 3.0;
+                return 4.5;
             case 'A3':
-                return 3.5;
+                return 6.5;
             case 'A4':
             case 'A5':
             case 'A6':
-                return 4.0;
+                return 7.5;
             case 'A7':
-                return 2.5;
+                return 6.0;
             default:
-                return 3.5;
+                return 6.5;
             }
     }
 });
@@ -201,7 +212,9 @@ let pointMarker = new PointMarkerLayer({
 let cesiumView = new CesiumView({
     container: 'cesium-container',
     allowBillboardRotation: true,
-    sceneMode : SceneMode.SCENE2D,
+    // sceneMode : SceneMode.SCENE2D,
+    // scene3DOnly: false,
+    // autoZoomOnFirstMarker: false,
     layers: [pointMarker]
 });
 
@@ -210,13 +223,13 @@ cesiumView.viewer.entities.add({
     position: Cartesian3.fromDegrees(-97.6664, 30.1975),
     billboard: {
       image: "images/icons8-airport-50.png",
-      color: Color.YELLOW,
+    //   color: Color.GRAY,
       heightReference: HeightReference.CLAMP_TO_GROUND,
       disableDepthTestDistance: Number.POSITIVE_INFINITY,
     },
   });
 
-
+//cesiumView.viewer.camera.lookAt(Cartesian3.fromDegrees(-97.6664, 30.1975), new Cartesian3(0.0, 0.0, 2//00.0));
 console.log('connecting to datasources');
 
 // start streaming
