@@ -19,8 +19,7 @@ let locationDataSource = new SosGetResult('piaware-location', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    // endpointUrl: 'localhost:8181/sensorhub/sos',
-    offeringID: 'urn:osh:sensor:aviation:PiAware',
+    offeringID: 'urn:osh:sensor:aviation:piaware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',
     mode: Mode.REAL_TIME,
     responseFormat: 'application/json',
@@ -30,8 +29,7 @@ let trackDataSource = new SosGetResult('piaware-track', {
     protocol: 'ws',
     service: 'SOS',
     endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    // endpointUrl: 'localhost:8181/sensorhub/sos',
-    offeringID: 'urn:osh:sensor:aviation:PiAware',
+    offeringID: 'urn:osh:sensor:aviation:piaware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Track',
     responseFormat: 'application/json',
     mode: Mode.REAL_TIME
@@ -50,9 +48,19 @@ const planes = new Map();
 let pointMarker = new PointMarkerLayer({
     dataSourceIds: [locationDataSource.id, trackDataSource.id],
     getMarkerId: (rec) => rec.hexIdent,
+    getLabel: (rec) => rec.hexIdent,
     // filter: (rec) => rec.hexIdent === 'urn:osh:sensor:aviation:A3980F',
     allowBillboardRotation: true,
-    onHover: (markerId, billboard, event) => hover(markerId, billboard, event) ,
+    // onHover: (markerId, billboard, event) => hover(markerId, billboard, event) ,
+    onRightClick: (markerId, billboard, event) => {
+      console.log(markerId, billboard, event)
+    },
+    onLeftClick: (markerId, billboard, event) => {
+        console.log(markerId, billboard, event)
+    },
+    onHover: (markerId, billboard, event) => {
+        console.log(markerId, billboard, event)
+    },
     getLocation: {
         dataSourceIds: [locationDataSource.getId()],
         handler: function(rec, timestamp, options, instance) {
@@ -72,7 +80,8 @@ let pointMarker = new PointMarkerLayer({
         }
     },
     icon: 'images/icons8-airplane-64.png',
-    iconAnchor: [16, 40]
+    iconAnchor: [32, 32],
+    iconSize: [64 , 64],
 });
 
 // create Cesium view

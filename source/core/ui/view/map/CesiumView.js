@@ -141,6 +141,7 @@ class CesiumView extends MapView {
             [0, 0, 1,
                 1, 0, 0,
                 0, 1, 0])); // frustum is along Z
+
     }
 
     //---------- MAP SETUP
@@ -251,11 +252,12 @@ class CesiumView extends MapView {
                 const layerId = that.getLayerId(featureId);
                 console.log ('featureId , layerId: ' + featureId + " , " + layerId  );
                 const layer = that.getLayer(layerId);
+                const layerObject = that.getLayerObject(layerId);
 
                 if(isDefined(entity)) {
-                    that.viewer.selectedEntity = entity;
+                    that.viewer.selectedEntity = layerObject;
                     pickedFeature.pixel = movement.position;
-                    that.onMarkerRightClick(layerId, pickedFeature, layer.props, {});
+                    that.onMarkerLeftClick(layerId, pickedFeature, layer, movement);
                 } else {
                     // is primitive
                     //TODO: support primitive selection using tracking tool
@@ -299,7 +301,7 @@ class CesiumView extends MapView {
 
             that.viewer.selectedEntity = pickedFeature.id;
             pickedFeature.pixel = movement.position;
-            that.onMarkerRightClick(mId, pickedFeature, layer.props, {});
+            that.onMarkerRightClick(mId, pickedFeature, layer, movement);
         };
 
         const onHover = (movement) => {
@@ -320,13 +322,15 @@ class CesiumView extends MapView {
                 return;
             }
             pickedFeature.pixel = movement.endPosition;
-            that.onMarkerHover(mId, pickedFeature, layer.props, {});
+            that.onMarkerHover(mId, pickedFeature, layer, movement);
         };
 
         this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
         this.viewer.screenSpaceEventHandler.setInputAction(onRightClick, ScreenSpaceEventType.RIGHT_CLICK);
         this.viewer.screenSpaceEventHandler.setInputAction(onHover, ScreenSpaceEventType.MOUSE_MOVE);
     }
+
+
     /**
      *
      * @private
@@ -1166,21 +1170,21 @@ class CesiumView extends MapView {
         // mode specified to the FrustumLayer constructor.
         let origin, quat;
         switch (properties.positionMode) {
-            case FrustumPositionMode.LONLATALT_WITH_EULER_ANGLES:    
+            case FrustumPositionMode.LONLATALT_WITH_EULER_ANGLES:
                 origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
                 Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
-        
+
                 // platform attitude w/r NED
                 // see doc of Quaternion.fromHeadingPitchRoll, heading and roll are about negative z and y axes respectively
                 const platformHPR = properties.platformOrientation;
                 HeadingPitchRoll.fromDegrees(-platformHPR.heading, -platformHPR.pitch, platformHPR.roll, this.tmpHPR);
                 Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.platformQuat);
-        
+
                 // sensor orientation w/r platform
                 const sensorYPR = properties.sensorOrientation;
                 HeadingPitchRoll.fromDegrees(-sensorYPR.yaw, -sensorYPR.pitch, sensorYPR.roll, this.tmpHPR);
                 Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.sensorQuat);
-        
+
                 // compute combined transform
                 // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
                 Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
