@@ -1,5 +1,5 @@
 import cesium, {
-    Cartesian3, Color, HeightReference, Ion, SceneMode
+    Cartesian3, Color, ColorGeometryInstanceAttribute, HeightReference, Ion, GeometryInstance, GroundPrimitive, EllipseGeometry
 } from 'cesium';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
@@ -13,12 +13,14 @@ window.CESIUM_BASE_URL = './';
 let locationDataSource = new SosGetResult('piaware-location', {
     protocol: 'ws',
     service: 'SOS',
-    //endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    endpointUrl: 'localhost:8686/sensorhub/sos',
+    endpointUrl: '76.187.247.4:8181/sensorhub/sos',
+    // endpointUrl: 'botts-piaware.simple-url.com:8181/sensorhub/sos',
+    // endpointUrl: 'localhost:8686/sensorhub/sos',
     offeringID: 'urn:osh:sensor:aviation:piaware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',
-    startTime: 'now',
-    endTime: '2022-12-31T00:00:00Z',
+    // mode: Mode.REAL_TIME,
+    // startTime: 'now',
+    // endTime: '2022-12-31T00:00:00Z',
     responseFormat: 'application/json',
     replaySpeed: 1
 });
@@ -26,12 +28,14 @@ let locationDataSource = new SosGetResult('piaware-location', {
 let trackDataSource = new SosGetResult('piaware-track', {
     protocol: 'ws',
     service: 'SOS',
-    // endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    endpointUrl: 'localhost:8686/sensorhub/sos',
+    endpointUrl: '76.187.247.4:8181/sensorhub/sos',
+    // endpointUrl: 'botts-piaware.simple-url.com:8181/sensorhub/sos',
+    // endpointUrl: 'localhost:8686/sensorhub/sos',
     offeringID: 'urn:osh:sensor:aviation:piaware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Track',
-    startTime: 'now',
-    endTime: '2022-12-31T00:00:00Z',
+    // mode: Mode.REAL_TIME,
+    // startTime: 'now',
+    // endTime: '2022-12-31T00:00:00Z',
     responseFormat: 'application/json',
     replaySpeed: 1
 });
@@ -60,20 +64,17 @@ document.body.onclick = () => {
 };
 
 function checkAge() {
-    console.log("Checking age");
     let markers = cesiumView.getMarkers();
     markers.forEach((entity) => {
         let sarr = entity.id.split('$');
-        //console.log('marker: ' + sarr[0] + ' =?= '  + rec.hexIdent);
         let timestamp = aircrafts.get(sarr[0]);
-        //console.log('Age check: ' + (Date.now() - timestamp)  + '>?' + ageoff);
         if(Date.now() - timestamp > ageoff) {
             const now = new Date();
-            console.log('Aging off:  ' + sarr[1] + ' : ' + now.toISOString() + ' : ac = ' + aircrafts.size + ' : cv = ' + cesiumView.getMarkers().length);
-            aircrafts.delete(sarr[1]);
+            console.log('Aging off:  ' + sarr[0] + ' : ' + now.toISOString() + ' : ac = ' + aircrafts.size + ' : cv = ' + cesiumView.getMarkers().length);
+            aircrafts.delete(sarr[0]);
             //cesiumView.removeMarkerFromLayer(entity);
             cesiumView.removeMarkerFromLayer(entity, sarr[0]);
-            //  cesiumView.listMarkers();
+            // cesiumView.listMarkers();
 
             // console.log('---- Aircraft ----');
             // aircrafts.forEach((key, value, map) => {
@@ -95,22 +96,19 @@ let pointMarker = new PointMarkerLayer({
         return rec.hexIdent;
     },
     getLabel: (rec) => rec.flightId != null ? rec.flightId : rec.hexIdent,
-    labelSize: 40,
+    labelSize: 22,
     allowBillboardRotation: true,
-    onHover: (markerId, billboard, event) =>  {
-        hover(markerId, billboard, event);
-    },
-    // onLeftClick: (markerId, billboard, event) => {
-    //     console.log('onLeftClick');
-    //     const rect = document.getElementById('cesium-container').getBoundingClientRect();
-    //     showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content ' + markerId);
+    // onHover: (markerId, billboard, event) =>  {
+    //     hover(markerId, billboard, event);
     // },
+    onLeftClick: (markerId, billboard, event) => {
+        console.log('onLeftClick.. markerId = ' + markerId);
+        const rect = document.getElementById('cesium-container').getBoundingClientRect();
+        //showPopup(billboard.pixel.x + rect.left, billboard.pixel.y + rect.top, 'some content ' + markerId);
+    },
     getLocation: {
         dataSourceIds: [locationDataSource.getId()],
         handler: function(rec, timestamp, options, instance) {
-            // console.log(rec.hexIdent + ' , ' + rec.location.lat + "," + rec.location.lon);
-            //console.log(`${rec.hexIdent} => ${rec.location.lat} ,  ${rec.location.lon}`);
-
             return {
                 x: rec.location.lon,
                 y: rec.location.lat,
@@ -121,8 +119,6 @@ let pointMarker = new PointMarkerLayer({
     getOrientation: {
         dataSourceIds: [trackDataSource.getId()],
         handler: function(rec, timestamp, options, instance) {
-            //console.log(`${rec.hexIdent} => ${360 - rec.track}`);
-
             return {
                 heading: 360 - rec.track
             };
@@ -164,46 +160,25 @@ let pointMarker = new PointMarkerLayer({
             return Color.MAGENTA.toCssColorString();
         }
     },
-    getIconScaleSvg: (rec) => {
-        if(!rec.category)
-            return 0.5;
-        switch (rec.category) {
-            case 'A1':
-                return 0.2;
-                break;
-            case 'A2':
-                return 0.3;
-            case 'A3':
-                return 0.4;
-            case 'A4':
-            case 'A5':
-            case 'A6':
-                return 0.5;
-            case 'A7':
-                return 0.5;
-            default:
-                return 0.4;
-            }
-    },
     getIconScale: (rec) => {
         if(!rec.category)
-            return 6.5;
+            return 3.0;
         switch (rec.category) {
             case 'A1':
-                return 3.5;
+                return 1.75;
                 break;
             case 'A2':
-                return 4.5;
+                return 2.25;
             case 'A3':
-                return 6.5;
+                return 3.0;
             case 'A4':
             case 'A5':
             case 'A6':
-                return 7.5;
+                return 4.0;
             case 'A7':
-                return 6.0;
+                return 3.0;
             default:
-                return 6.5;
+                return 3.0;
             }
     }
 });
@@ -226,12 +201,55 @@ cesiumView.viewer.entities.add({
     //   color: Color.GRAY,
       heightReference: HeightReference.CLAMP_TO_GROUND,
       disableDepthTestDistance: Number.POSITIVE_INFINITY,
-    },
-  });
+    }
+});
+
+cesiumView.viewer.entities.add({
+    position: Cartesian3.fromDegrees(-97.6664, 30.197),
+    // position: Cartesian3.fromDegrees(-86.7758, 34.6405, 10000.),
+    name : '50 mile range ring',
+    ellipse : {
+        semiMinorAxis : 80467.2,
+        semiMajorAxis : 80467.2,
+        height: 100000,
+        fill: false,
+        outline: true,
+        outlineColor: Color.BLACK,
+        outerWidth: 10
+      }    
+});
+
+cesiumView.viewer.entities.add({
+    position: Cartesian3.fromDegrees(-97.6664, 30.1975, 10000.),
+    // position: Cartesian3.fromDegrees(-86.7758, 34.6405, 10000.),
+    name : '100 mile range ring',
+    ellipse : {
+        semiMinorAxis : 80467.2 * 2.,
+        semiMajorAxis : 80467.2 * 2.,
+        height: 100000,
+        fill: false,
+        outline: true,
+        outlineColor: Color.BLACK,
+      }    
+});
+
+cesiumView.viewer.entities.add({
+    position: Cartesian3.fromDegrees(-97.6664, 30.1975, 10000.),
+    // position: Cartesian3.fromDegrees(-86.7758, 34.6405, 10000.),
+    name : '150 mile range ring',
+    ellipse : {
+        semiMinorAxis : 80467.2 * 3.,
+        semiMajorAxis : 80467.2 * 3.,
+        height: 100000,
+        fill: false,
+        outline: true,
+        outlineColor: Color.BLACK,
+      }    
+});
 
 //cesiumView.viewer.camera.lookAt(Cartesian3.fromDegrees(-97.6664, 30.1975), new Cartesian3(0.0, 0.0, 2//00.0));
 console.log('connecting to datasources');
 
 // start streaming
- locationDataSource.connect();
- trackDataSource.connect();
+locationDataSource.connect();
+trackDataSource.connect();

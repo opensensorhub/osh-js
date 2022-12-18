@@ -247,6 +247,7 @@ class CesiumView extends MapView {
                 let featureId = entity && entity._id || primitive && primitive.id;
 
                 const layerId = that.getLayerId(featureId);
+                console.log ('featureId , layerId: ' + featureId + " , " + layerId  );
                 const layer = that.getLayer(layerId);
 
                 if(isDefined(entity)) {
@@ -386,12 +387,9 @@ class CesiumView extends MapView {
 
     // ----- MARKER
     addMarker(properties, entity= undefined) {
-        // console.log(properties);
         const id = properties.id + "$" + properties.markerId;
         const isModel = properties.icon && properties.icon.endsWith(".glb") || false;
         const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : '';
-        //console.log('[Cesium]' + properties.markerId + ' => ' + properties.orientation.heading);
-
         const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
         const color =  isDefined(properties.iconColor) ? Color.fromCssColorString(properties.iconColor) : Color.YELLOW;
 
@@ -558,8 +556,7 @@ class CesiumView extends MapView {
     }
 
     async updateMarker(props) {
-        // console.log(props.location);
-        if (!isDefined(props.location) || !isDefined(props.orientation.heading)) {
+        if (!isDefined(props.location)) {
             return;
         }
 
