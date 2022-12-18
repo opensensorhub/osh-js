@@ -18,6 +18,50 @@ import {isDefined, randomUUID} from "../../utils/Utils.js";
 import Layer from "./Layer.js";
 
 /**
+ * Enumeration of the ways that the camera's position and orientation can be
+ * specified for a draped image.
+ */
+ const ImageDrapingPositionMode = Object.freeze({
+  /**
+   * Constant indicating that the position provided to the draping layer is
+   * in the form of a latitude (in degrees), longitude (in degrees), and
+   * altitude above ellipsoid (in meters). This also indicates that platform
+   * orientation is provided as heading, pitch, and roll, in degrees; and
+   * gimbal orientation is provided as yaw, pitch, and roll, in degrees.
+   */
+  LONLATALT_WITH_EULER_ANGLES: 1,
+
+  /**
+   * Constant indicating that the position provided to the draping layer is
+   * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+   * the platform and gimbal orientations are provided as 3x3 rotation
+   * matrices.
+   */
+  ECEF_WITH_MATRICES: 2,
+
+  /**
+   * Constant indicating that the position provided to the draping layer is
+   * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+   * the platform and gimbal orientations are provided as quaternions.
+   */
+  ECEF_WITH_QUATERNIONS: 3,
+});
+
+/**
+ * When gimbal orientation is applied, which order do we apply the rotations?
+ * This only matters when the position mode is LONLATALT_WITH_EULER_ANGLES.
+ */
+const GimbalEulerAngleOrder = Object.freeze({
+  YAW_PITCH_ROLL: 1,
+  YAW_ROLL_PITCH: 2,
+  PITCH_YAW_ROLL: 3,
+  PITCH_ROLL_YAW: 4,
+  ROLL_YAW_PITCH: 5,
+  ROLL_PITCH_YAW: 6
+});
+
+
+/**
  * @extends Layer
  * @example
  import ImageDrapingLayer from 'core/ui/layer/ImageDrapingLayer.js';
@@ -100,7 +144,9 @@ class ImageDrapingLayer extends Layer {
             getSnapshot : null,
             platformLocation : null,
             platformOrientation : null,
-            gimbalOrientation : null
+            gimbalOrientation : null,
+            positionMode: ImageDrapingPositionMode.LONLATALT_WITH_EULER_ANGLES,
+            gimbalEulerAngleOrder: GimbalEulerAngleOrder.YAW_ROLL_PITCH
         };
 
         if (isDefined(properties.platformLocation)) {
@@ -125,6 +171,14 @@ class ImageDrapingLayer extends Layer {
 
         if (isDefined(properties.getSnapshot)) {
             props.getSnapshot = properties.getSnapshot;
+        }
+
+        if (isDefined(properties.positionMode)) {
+          props.positionMode = properties.positionMode;
+        }
+
+        if (isDefined(properties.gimbalEulerAngleOrder)) {
+          props.gimbalEulerAngleOrder = properties.gimbalEulerAngleOrder;
         }
 
         this.definedId('drapedImageId', props);
@@ -167,3 +221,4 @@ class ImageDrapingLayer extends Layer {
 }
 
 export default  ImageDrapingLayer;
+export { ImageDrapingPositionMode, GimbalEulerAngleOrder };
