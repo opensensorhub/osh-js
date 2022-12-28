@@ -73,6 +73,8 @@ class DataSynchronizerAlgo {
     onData(dataSourceId, dataBlock) {
     }
 
+    checkStart() {}
+
     /**
      * Change the dataSource status
      * @param {Status} status - the new status
