@@ -1123,11 +1123,7 @@ class CesiumView extends MapView {
                 appearance: appearance,
                 show: props.visible
             });
-            this.viewer.scene.primitives.add(drapedImagePrimitive);
-
-            if (!snapshot) {
-                this.viewer.scene.primitives.raiseToTop(drapedImagePrimitive);
-            }
+            this.viewer.scene.primitives.add(drapedImagePrimitive,0);
             return drapedImagePrimitive;
         } else {
             existingDrapedImagePrimitive.appearance = appearance;
@@ -1165,21 +1161,21 @@ class CesiumView extends MapView {
         // mode specified to the FrustumLayer constructor.
         let origin, quat;
         switch (properties.positionMode) {
-            case FrustumPositionMode.LONLATALT_WITH_EULER_ANGLES:    
+            case FrustumPositionMode.LONLATALT_WITH_EULER_ANGLES:
                 origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
                 Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
-        
+
                 // platform attitude w/r NED
                 // see doc of Quaternion.fromHeadingPitchRoll, heading and roll are about negative z and y axes respectively
                 const platformHPR = properties.platformOrientation;
                 HeadingPitchRoll.fromDegrees(-platformHPR.heading, -platformHPR.pitch, platformHPR.roll, this.tmpHPR);
                 Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.platformQuat);
-        
+
                 // sensor orientation w/r platform
                 const sensorYPR = properties.sensorOrientation;
                 HeadingPitchRoll.fromDegrees(-sensorYPR.yaw, -sensorYPR.pitch, sensorYPR.roll, this.tmpHPR);
                 Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.sensorQuat);
-        
+
                 // compute combined transform
                 // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
                 Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
