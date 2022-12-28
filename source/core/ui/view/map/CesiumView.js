@@ -1123,7 +1123,8 @@ class CesiumView extends MapView {
                 appearance: appearance,
                 show: props.visible
             });
-            this.viewer.scene.primitives.add(drapedImagePrimitive,0);
+            this.viewer.scene.primitives.add(drapedImagePrimitive);
+            this.viewer.scene.primitives.lowerToBottom(drapedImagePrimitive);
             return drapedImagePrimitive;
         } else {
             existingDrapedImagePrimitive.appearance = appearance;
