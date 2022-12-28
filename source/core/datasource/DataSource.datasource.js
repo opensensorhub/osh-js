@@ -25,7 +25,7 @@ import {Mode} from "./Mode";
  */
 class DataSource {
     constructor(name, properties) {
-        this.id = "DataSource-" + randomUUID();
+        this.id = properties.id || "DataSource-" + randomUUID();
         this.name = name;
         this.properties = properties;
         this.eventSubscriptionMap = {};
