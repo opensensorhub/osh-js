@@ -409,6 +409,15 @@ export function removeLastCharIfExist(value) {
 }
 
 /**
+ * Capitalize the first letter of a given string
+ * @param {String} str - the input string
+ * @returns {String} the result
+ */
+export function  capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+/**
  * Round off number to nearest 0.5
  * @param {Number} num - The number to round off
  * @return {number} The rounded number

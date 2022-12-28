@@ -29,22 +29,28 @@ class AudioDataLayer extends BinaryDataLayer {
     constructor(properties) {
         super(properties);
         this.type = 'audioData';
-        this.props.sampleRate = 0;
+    }
+
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
+
+        const props = {
+            sampleRate: 0
+        };
 
         if (isDefined(properties.sampleRate)){
-            this.props.sampleRate = properties.sampleRate;
+            props.sampleRate = properties.sampleRate;
         }
 
-        let that = this;
+        this.definedId('audioDataId', props);
 
         if (isDefined(properties.getSampleRate)){
-            let fn = async (rec) => {
-                that.props.sampleRate = await that.getFunc('getSampleRate')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('sampleRate',await this.getFunc('getSampleRate')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getSampleRate'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getSampleRate'), fn);
         }
-
-        this.saveState();
     }
 }
 export default AudioDataLayer;

@@ -24,6 +24,7 @@ class BaseMap extends React.Component {
 
     // add 3D model marker to Cesium view
     let pointMarkerLayer = new PointMarkerLayer({
+      dataSourceIds: [this.platformLocationDataSource.id, this.platformOrientationDataSource.id],
       label: "3DR Solo",
       getLocation : {
         dataSourceIds : [this.platformLocationDataSource.getId()],
@@ -44,6 +45,7 @@ class BaseMap extends React.Component {
         }
       },
       icon: "./models/Drone+06B.glb",
+      iconScale: 12.0,
       name: 'Solo draping marker'
     });
 
@@ -91,6 +93,7 @@ class BaseMap extends React.Component {
 
     // style it with a moving point marker
     let imageDrapingLayer = new ImageDrapingLayer({
+      dataSourceIds: [this.platformLocationDataSource.id, this.platformOrientationDataSource.id, this.gimbalOrientationDataSource.id],
       getPlatformLocation: {
         dataSourceIds: [this.platformLocationDataSource.getId()],
         handler: function (rec) {

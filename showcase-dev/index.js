@@ -65,7 +65,12 @@ var samples = [
         description: 'Display multiple videos data using forward/pause/play/backward control using the same DataSynchronizer',
         url: 'videodata-with-control-vuejs-synchronized',
         code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
-    }
+    },
+    {
+        name: 'Add/Remove DataSource(s) to/from DataSynchronizer',
+        description: 'Add/Remove DataSource(s) to/from DataSynchronizer even if DataSynchronizer is running',
+        url: 'datasynchronizer-dynamic-add-remove'
+    },
 ];
 
 // load sample cards

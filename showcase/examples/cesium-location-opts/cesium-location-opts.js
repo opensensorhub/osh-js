@@ -39,7 +39,8 @@ let pointMarker = new PointMarkerLayer({
         heading: 0
     },
     icon: 'images/car-location.png',
-    iconAnchor: [16, 40]
+    iconAnchor: [16, 40],
+    iconSize: [32, 65],
 });
 
 // #region snippet_cesium_location_view

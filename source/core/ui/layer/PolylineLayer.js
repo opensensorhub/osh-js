@@ -62,96 +62,94 @@ class PolylineLayer extends Layer {
 	constructor(properties) {
 		super(properties);
 		this.type = 'polyline';
-		this.properties = properties;
-		this.props.locations = {};
-		this.props.color = 'red';
-		this.props.weight = 1;
-		this.props.opacity = 1;
-		this.props.smoothFactor = 1;
-		this.props.maxPoints = 10;
-		this.props.polylineId = 'polyline';
-		this.props.clampToGround = true;
+	}
+	// call by super class
+	init(properties=this.properties) {
+		super.init(properties);
+		const props = {
+			polylineId: () => this.getId(),
+			locations: undefined,
+			color: 'red',
+			weight: 1,
+			opacity: 1,
+			smoothFactor: 1,
+			maxPoints: 10,
+			clampToGround: true
+		};
 
 		if(isDefined(properties.color)){
-			this.props.color = properties.color;
+			props.color = properties.color;
 		}
 
 		if(isDefined(properties.weight)){
-			this.props.weight = properties.weight;
+			props.weight = properties.weight;
 		}
 
 		if(isDefined(properties.opacity)){
-			this.props.opacity = properties.opacity;
+			props.opacity = properties.opacity;
 		}
 
 		if(isDefined(properties.smoothFactor)){
-			this.props.smoothFactor = properties.smoothFactor;
+			props.smoothFactor = properties.smoothFactor;
 		}
 
 		if(isDefined(properties.maxPoints)){
-			this.props.maxPoints = properties.maxPoints;
+			props.maxPoints = properties.maxPoints;
 		}
 
 		if(isDefined(properties.clampToGround)){
-			this.props.clampToGround = properties.clampToGround;
+			props.clampToGround = properties.clampToGround;
 		}
 
-		let that = this;
-		// must be first to assign correctly the first location to the right id if it is defined
-		if(isDefined(properties.getPolylineId)) {
-			let fn = async (rec) => {
-				that.props.polylineId = await that.getFunc('getPolylineId')(rec);
-			};
-			this.addFn(that.getDataSourcesIdsByProperty('getPolylineId'),fn);
-		}
+		this.definedId('polylineId', props);
 
 		if(isDefined(properties.getLocation)) {
-			let fn = async (rec) => {
-				let loc = await that.getFunc('getLocation')(rec);
-				if (!(that.props.polylineId in that.props.locations)) {
-					that.props.locations[that.props.polylineId] = [];
+			let fn = async (rec, timestamp, options) => {
+				let loc = await this.getFunc('getLocation')(rec, timestamp, options);
+				const currentProps = this.getCurrentProps();
+				if(!currentProps.locations) {
+					currentProps.locations = [];
 				}
-				that.props.locations[that.props.polylineId].push(loc);
-				if (that.props.locations[that.props.polylineId].length > that.props.maxPoints) {
-					that.props.locations[that.props.polylineId].shift();
+				currentProps.locations.push(loc);
+				if(currentProps.locations.length > currentProps.maxPoints ) {
+					currentProps.locations.shift();
 				}
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getLocation'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getLocation'),fn);
 		}
 
 		if(isDefined(properties.getColor)) {
-			let fn = async (rec) => {
-				that.props.color = await that.getFunc('getColor')(rec);
+			let fn = async (rec, timestamp, options) => {
+				this.updateProperty('color',await this.getFunc('getColor')(rec, timestamp, options));
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getColor'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getColor'),fn);
 		}
 
 		if(isDefined(properties.getWeight)) {
-			let fn = async (rec) => {
-				that.props.weight = await that.getFunc('getWeight')(rec);
+			let fn = async (rec, timestamp, options) => {
+				this.updateProperty('weight',await this.getFunc('getWeight')(rec, timestamp, options));
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getWeight'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getWeight'),fn);
 		}
 
 		if(isDefined(properties.getOpacity)) {
-			let fn = async (rec) => {
-				that.props.opacity = await that.getFunc('getOpacity')(rec);
+			let fn = async (rec, timestamp, options) => {
+				this.updateProperty('opacity',await this.getFunc('getOpacity')(rec, timestamp, options));
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getOpacity'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getOpacity'),fn);
 		}
 
 		if(isDefined(properties.getSmoothFactor)) {
-			let fn = async (rec) => {
-				that.props.smoothFactor = await that.getFunc('getSmoothFactor')(rec);
+			let fn = async (rec, timestamp, options) => {
+				this.updateProperty('smoothFactor',await this.getFunc('getSmoothFactor')(rec, timestamp, options));
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getSmoothFactor'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getSmoothFactor'),fn);
 		}
-
-		this.saveState();
 	}
 
 	clear() {
-		this.props.locations[this.props.polylineId] = [];
+		const currentProps = this.getCurrentProps();
+		currentProps.locations = [];
 	}
 }
 

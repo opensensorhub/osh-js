@@ -69,6 +69,7 @@ import Layer from "./Layer.js";
         }
     });
  */
+const initialStates = {};
 class PointMarkerLayer extends Layer {
     /**
      * Create the PointMarker
@@ -76,7 +77,7 @@ class PointMarkerLayer extends Layer {
      * @param {Number[]} properties.location - [x,y,z]
      * @param {Number} [properties.orientation=0] -
      * @param {String} properties.icon -
-     * @param {String} [properties.iconScale=1] - the icon scale size
+     * @param {Number} [properties.iconScale=1] - the icon scale size
      * @param {String} [properties.iconColor="#000000"] - the icon color
      * @param {Number[]} [properties.iconAnchor=[16,16]] -
      * @param {Number[]} [properties.iconSize=[16,16]] -
@@ -100,9 +101,6 @@ class PointMarkerLayer extends Layer {
      * @param {Function} [properties.getLabelColor] -
      * @param {Function} [properties.getLabelSize] -
      * @param {Function} [properties.getZindex] - z-ordering of markers
-     * @param {Function} [properties.onLeftClick] - trigger onLeftClick marker event
-     * @param {Function} [properties.onRightClick] - trigger onRightClick marker event
-     * @param {Function} [properties.onHover] - trigger onHover marker event
      * @param {Function} [properties.getMarkerId] - map an id to a unique marker
      * @param {Number} [properties.zoomLevel=15] - Set the default zoom level
      * @param {Boolean} [properties.defaultToTerrainElevation=false] - Set the default to terrain elevation
@@ -111,223 +109,194 @@ class PointMarkerLayer extends Layer {
     constructor(properties) {
         super(properties);
         this.type = 'marker';
+    }
 
-        this.props.location = null;
-        this.props.orientation = {heading: 0};
-        this.props.icon = null;
-        this.props.iconAnchor = [16, 16];
-        this.props.iconSize = [16, 16];
-        this.props.iconScale = 1.0;
-        this.props.iconColor = undefined;
-        this.props.iconOpacity = 0.75;
-        this.props.label = null;
-        this.props.labelColor = undefined;
-        this.props.labelOutlineColor = undefined;
-        this.props.labelBackgroundColor = undefined;
-        this.props.labelSize = 16;
-        this.props.labelScale = 1.0;
-        this.props.labelOffset = [0, 0];
-        this.props.zoomLevel = 15;
-        this.props.color = '#000000';
-        this.props.defaultToTerrainElevation = false;
-        this.props.zIndex = 0;
-        this.props.allowBillboardRotation = true;
-        this.props.options = {};
-        this.props.markerId = 'marker';
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
+        const props = {
+            markerId: () => this.getId(),
+            location: null,
+            orientation: {heading: 0},
+            icon: null,
+            iconAnchor: [16, 16],
+            iconSize: [16, 16],
+            iconScale: 1.0,
+            iconColor: undefined,
+            iconOpacity: 0.75,
+            label: null,
+            labelColor: undefined,
+            labelOutlineColor: undefined,
+            labelBackgroundColor: undefined,
+            labelSize: 16,
+            labelScale: 1.0,
+            labelOffset: [0, 0],
+            zoomLevel: 15,
+            defaultToTerrainElevation: false,
+            zIndex: 0,
+            allowBillboardRotation: true,
+            options: {}
+        };
 
         if (isDefined(properties.defaultToTerrainElevation)) {
-            this.props.defaultToTerrainElevation = properties.defaultToTerrainElevation;
+            props.defaultToTerrainElevation = properties.defaultToTerrainElevation;
         }
 
         if (hasValue(properties.location)) {
             assertObject(properties.location, "location");
-            this.props.location = properties.location;
+            props.location = properties.location;
         }
 
         if (hasValue(properties.orientation)) {
             assertObject(properties.orientation, "orientation");
-            this.props.orientation = properties.orientation;
+            props.orientation = properties.orientation;
         }
 
         if (hasValue(properties.icon)) {
             assertString(properties.icon, "icon");
-            this.props.icon = properties.icon;
+            props.icon = properties.icon;
         }
 
         if (hasValue(properties.iconAnchor)) {
             assertArray(properties.iconAnchor, "iconAnchor");
-            this.props.iconAnchor = properties.iconAnchor;
+            props.iconAnchor = properties.iconAnchor;
         }
 
         if (hasValue(properties.iconSize)) {
             assertArray(properties.iconSize, "iconSize");
-            this.props.iconSize = properties.iconSize;
+            props.iconSize = properties.iconSize;
         }
 
         if (hasValue(properties.iconScale)) {
             assertPositive(properties.iconScale, "iconScale");
-            this.props.iconScale = properties.iconScale;
+            props.iconScale = properties.iconScale;
         }
 
         if (hasValue(properties.iconColor)) {
             assertString(properties.iconColor, "iconColor");
-            this.props.iconColor = properties.iconColor;
+            props.iconColor = properties.iconColor;
         }
 
         if (hasValue(properties.iconOpacity)) {
             assertString(properties.iconOpacity, "iconOpacity");
-            this.props.iconOpacity = properties.iconOpacity;
+            props.iconOpacity = properties.iconOpacity;
         }
 
         if (hasValue(properties.label)) {
             assertString(properties.label, "label");
-            this.props.label = properties.label;
+            props.label = properties.label;
         }
 
         if (hasValue(properties.labelColor)) {
             assertString(properties.labelColor, "labelColor");
-            this.props.labelColor = properties.labelColor;
+            props.labelColor = properties.labelColor;
         }
 
         if (hasValue(properties.labelOutlineColor)) {
             assertString(properties.labelOutlineColor, "labelOutlineColor");
-            this.props.labelOutlineColor = properties.labelOutlineColor;
+            props.labelOutlineColor = properties.labelOutlineColor;
         }
 
         if (hasValue(properties.labelBackgroundColor)) {
             assertString(properties.labelBackgroundColor, "labelBackgroundColor");
-            this.props.labelBackgroundColor = properties.labelBackgroundColor;
+            props.labelBackgroundColor = properties.labelBackgroundColor;
         }
 
         if (hasValue(properties.labelSize)) {
             assertPositive(properties.labelSize, "labelSize");
-            this.props.labelSize = properties.labelSize;
+            props.labelSize = properties.labelSize;
         }
 
         if (hasValue(properties.labelScale)) {
             assertPositive(properties.labelScale, "labelScale");
-            this.props.labelScale = properties.labelScale;
+            props.labelScale = properties.labelScale;
         }
 
         if (hasValue(properties.labelOffset)) {
             assertArray(properties.labelOffset, "labelOffset");
-            this.props.labelOffset = properties.labelOffset;
+            props.labelOffset = properties.labelOffset;
         }
 
 
         if (hasValue(properties.zoomLevel)) {
             assertPositive(properties.zoomLevel, "zoomLevel");
-            this.props.zoomLevel = properties.zoomLevel;
+            props.zoomLevel = properties.zoomLevel;
         }
 
         if (hasValue(properties.zIndex)) {
             assertNumber(properties.zIndex, "zIndex");
-            this.props.zIndex = properties.zIndex;
+            props.zIndex = properties.zIndex;
         }
 
         if (hasValue(properties.allowBillboardRotation)) {
             assertBoolean(properties.allowBillboardRotation, "allowBillboardRotation");
-            this.props.allowBillboardRotation = properties.allowBillboardRotation;
+            props.allowBillboardRotation = properties.allowBillboardRotation;
         }
 
-        if (hasValue(properties.color)) {
-            assertString(properties.color, "color");
-            this.props.color = properties.color;
-        }
-
-        const that = this;
-
-        // must be first to assign correctly the first location to the right id if it is defined
-        if (this.checkFn("getMarkerId")) {
-            let fn = async (rec, timestamp, options) => {
-                that.props.markerId = await that.getFunc('getMarkerId')(rec, timestamp, options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getMarkerId'), fn);
-        }
+        this.definedId('markerId', props);
 
         if (this.checkFn("getLocation")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.location = await that.getFunc('getLocation')(rec, timestamp, options);
+                this.updateProperty('location',await this.getFunc('getLocation')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getLocation'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getLocation'), fn);
         }
 
         if (this.checkFn("getOrientation")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.orientation = await that.getFunc('getOrientation')(rec, timestamp, options);
+                this.updateProperty('orientation',await this.getFunc('getOrientation')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getOrientation'), fn);
-        }
-
-        if (this.checkFn("getDescription")) {
-            let fn = async (rec, timestamp, options) => {
-                that.props.description = await that.getFunc('getDescription')(rec, timestamp, options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getDescription'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getOrientation'), fn);
         }
 
         if (this.checkFn("getIcon")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.icon = await that.getFunc('getIcon')(rec, timestamp, options);
+                this.updateProperty('icon',await this.getFunc('getIcon')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getIcon'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getIcon'), fn);
         }
 
         if (this.checkFn("getIconColor")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.iconColor = await that.getFunc('getIconColor')(rec, timestamp, options);
+                this.updateProperty('iconColor',await this.getFunc('getIconColor')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getIconColor'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getIconColor'), fn);
         }
 
         if (this.checkFn("getIconScale")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.iconScale = await that.getFunc('getIconScale')(rec, timestamp, options);
+                this.updateProperty('iconScale',await this.getFunc('getIconScale')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getIconScale'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getIconScale'), fn);
         }
 
         if (this.checkFn("getLabel")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.label = await that.getFunc('getLabel')(rec, timestamp, options);
+                this.updateProperty('label',await this.getFunc('getLabel')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getLabel'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getLabel'), fn);
         }
 
         if (this.checkFn("getLabelColor")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.labelColor = await that.getFunc('getLabelColor')(rec, timestamp, options);
+                this.updateProperty('labelColor',await this.getFunc('getLabelColor')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getLabelColor'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getLabelColor'), fn);
         }
 
         if (this.checkFn("getLabelSize")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.labelSize = await that.getFunc('getLabelSize')(rec, timestamp, options);
+                this.updateProperty('labelSize',await this.getFunc('getLabelSize')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getLabelSize'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getLabelSize'), fn);
         }
 
         if (this.checkFn("getZindex")) {
             let fn = async (rec, timestamp, options) => {
-                that.props.zIndex = await that.getFunc('getZindex')(rec, timestamp, options);
+                this.updateProperty('zIndex',await this.getFunc('getZindex')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getZindex'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getZindex'), fn);
         }
-
-        if (isDefined(properties.onLeftClick) && assertFunction(properties.onLeftClick)) {
-            this.props.onLeftClick = properties.onLeftClick;
-        }
-
-        if (isDefined(properties.onRightClick) && assertFunction(properties.onRightClick)) {
-            this.props.onRightClick = properties.onRightClick;
-        }
-
-        if (isDefined(properties.onHover) && assertFunction(properties.onHover)) {
-            this.props.onHover = properties.onHover;
-        }
-
-        this.saveState();
     }
 }
 

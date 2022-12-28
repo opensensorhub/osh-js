@@ -24,7 +24,7 @@ let gpsDataSource = new SosGetResult('android-GPS', {
 });
 
 const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: 10,
+    replaySpeed: 5,
     startTime: '2015-02-16T07:58:22.00Z',
     endTime: '2015-02-16T08:09:00Z',
     dataSources: [gpsDataSource]
@@ -45,8 +45,11 @@ let pointMarker = new PointMarkerLayer({
     labelColor: '#ffffff',
     labelSize: 12,
     label: 'GPS car',
-    icon: 'images/car-location.png',
-    iconAnchor: [16, 40],
+    icon: 'images/location.svg',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    getIconColor: (rec) => (Math.random() < 0.5) ?  'rgba(255,0,0,0.5)' : 'rgba(0,82,255,0.5)',
+    iconColor: 'rgba(117,250,40,0.5)',
     description: 'Car',
     getDescription: (d) => `Alt: ${d.location.alt}`,
     zIndex: 2

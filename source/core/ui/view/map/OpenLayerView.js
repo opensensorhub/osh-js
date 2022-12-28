@@ -420,7 +420,7 @@ class OpenLayerView extends MapView {
     addPolyline(properties) {
         let polylinePoints = [];
 
-        const locations = properties.locations[properties.polylineId];
+        const locations = properties.locations;
 
         for (let i = 0; i < locations.length; i++) {
             polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
@@ -461,7 +461,7 @@ class OpenLayerView extends MapView {
      * @param {PolylineLayer.properties} props - The layer allowing the update of the polyline
      */
     async updatePolyline(props) {
-        if (!isDefined(props.locations) || props.locations[props.polylineId].length < 2) {
+        if (!isDefined(props.locations) || props.locations.length < 2) {
             return;
         }
 
@@ -475,7 +475,7 @@ class OpenLayerView extends MapView {
 
             // update locations
             let polylinePoints = [];
-            const locations = props.locations[props.polylineId];
+            const locations = props.locations;
 
             if(isDefined(locations) && locations.length > 0) {
                 for (let i = 0; i < locations.length; i++) {
@@ -508,7 +508,7 @@ class OpenLayerView extends MapView {
     addPolygon(properties) {
         let polygonPoints = [];
 
-        const vertices = properties.vertices[properties.polygonId];
+        const vertices = properties.vertices;
 
         for (let i = 0; i < vertices.length - 1; i = i +2) {
             polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
@@ -558,7 +558,7 @@ class OpenLayerView extends MapView {
 
             // update locations
             let polygonPoints = [];
-            const vertices = props.vertices[props.polygonId];
+            const vertices = props.vertices;
             if(isDefined(vertices) && vertices.length > 0) {
                 for (let i = 0; i < vertices.length - 1; i = i + 2) {
                     polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))

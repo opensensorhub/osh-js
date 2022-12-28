@@ -102,7 +102,7 @@ const commonDatasourceOpts = {
     maxTime: MAX_TIME,
     mode: MODE,
     prefetchBatchDuration: 10000,
-    prefetchBatchSize: 1000000
+    prefetchBatchSize: 250
 };
 
 const droneLocationDataSource = new SweApiDatasource('MISB UAS - Platform Location', {

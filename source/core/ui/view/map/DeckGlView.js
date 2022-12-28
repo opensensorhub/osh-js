@@ -229,7 +229,7 @@ class DeckGlView extends MapView {
      */
     async updatePolyline(layer) {
         const id = layer.id+'$'+layer.polylineId;
-        const path = layer.locations[layer.polylineId].map((coordinate) => {
+        const path = layer.locations.map((coordinate) => {
             return [coordinate.x, coordinate.y, coordinate.z || 1]
         });
 
@@ -266,7 +266,7 @@ class DeckGlView extends MapView {
 
         // update locations
         let polygonPoints = [];
-        const vertices = layer.vertices[layer.polygonId];
+        const vertices = layer.vertices;
         if(isDefined(vertices) && vertices.length > 0) {
             for (let i = 0; i < vertices.length - 1; i = i + 2) {
                 polygonPoints.push([vertices[i], vertices[i + 1]]);

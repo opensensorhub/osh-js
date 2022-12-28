@@ -68,14 +68,16 @@ import {
     GroundPolylinePrimitive,
     PolylineGeometry,
     PolylineColorAppearance,
-    LabelStyle
+    LabelStyle,
+    EllipsoidGeometry
 } from 'cesium';
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
 import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import MapView from "./MapView";
-
+import { FrustumPositionMode } from "../../layer/FrustumLayer";
+import { ImageDrapingPositionMode, GimbalEulerAngleOrder } from "../../layer/ImageDrapingLayer.js";
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Cesium object.
  * @extends MapView
@@ -386,11 +388,12 @@ class CesiumView extends MapView {
 
     // ----- MARKER
     addMarker(properties, entity= undefined) {
+        // console.log(properties);
         const id = properties.id + "$" + properties.markerId;
         const isModel = properties.icon && properties.icon.endsWith(".glb") || false;
         const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : '';
         const iconOffset = new Cartesian2(-properties.iconAnchor[0], -properties.iconAnchor[1]);
-        const color =  isDefined(properties.color) ? Color.fromCssColorString(properties.color) : Color.YELLOW;
+        const color =  isDefined(properties.iconColor) ? Color.fromCssColorString(properties.iconColor) : Color.YELLOW;
 
         let lonLatAlt = [0, 0, 0];
 
@@ -443,11 +446,11 @@ class CesiumView extends MapView {
                 eyeOffset: new Cartesian3(0, 0, -1 * properties.zIndex), // make sure icon always displays in front,
                 show: properties.visible,
                 heightReference: properties.defaultToTerrainElevation ? HeightReference.CLAMP_TO_GROUND : HeightReference.NONE,
-                scale: 1.0,
+                scale: properties.iconScale,
                 imageSubRegion: undefined,
-                color: undefined,
-                width: undefined,
-                height: undefined,
+                color: color,
+                width: properties.iconSize[0],
+                height: properties.iconSize[1],
                 translucencyByDistance: undefined,
                 sizeInMeters: undefined,
                 distanceDisplayCondition: undefined,
@@ -689,7 +692,7 @@ class CesiumView extends MapView {
      */
     addPolyline(properties) {
         const id = properties.id + "$" + properties.polylineId;
-        const locations = properties.locations[properties.polylineId];
+        const locations = properties.locations;
 
         const flatPositions = locations.map(element => Cartesian3.fromDegrees(element.x, element.y, element.z)).flat();
 
@@ -756,7 +759,7 @@ class CesiumView extends MapView {
      * @param props The properties containing the updated data
      */
     async updatePolyline(props) {
-        if (!isDefined(props.locations) || props.locations[props.polylineId].length < 2) {
+        if (!isDefined(props.locations) || props.locations.length < 2) {
             return;
         }
         const polyline = this.getPolyline(props);
@@ -803,7 +806,7 @@ class CesiumView extends MapView {
         // return this.viewer.entities.add(polygonObj);
         const polygonInstance = new GeometryInstance({
             geometry: new PolygonGeometry({
-                polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId])),
+                polygonHierarchy: new PolygonHierarchy(Cartesian3.fromDegreesArray(properties.vertices)),
                 attributes : {
                     color : ColorGeometryInstanceAttribute.fromColor(Color.fromRandom({alpha : 0.5}))
                 },
@@ -830,7 +833,7 @@ class CesiumView extends MapView {
         // according to this example: https://sandcastle.cesium.com/?#c=pVRNj9MwEP0rVi9JpeIulAWU7VZULVrQLlq0IC6EgzeZthaOHY2dVAH1v2MncZq05YQPbebjzbw38aRkSEoOe0BySyTsyQo0LzL6vfaFQVKbKyUN4xIwGN/EMpalRSVKYaot6kcsiT0v3r6iVxPy+sr+eo97JrPrnue69pzn9Dxv3vk6sfx5bMfQWC5M2o4tx5V3zegGVbaGLQLoJSKrwoZdn61Q2IM6k66XT/dPH9Y3TYoqjLAaV5cy7x4f1l2tXIlqq+QX5Bk3vITh5Dp3+KcRtAWVgcHqk9SGSTvQqJ9+dxL1KHd4GpGg7RZMjn5fMep6Njm+Fk0QmAFvhkekO32uQ1y/tz9t+48ckGGyq6IL+C4Ydm9pPKx06Nnt42HcKmJ5Dgyd9kHtz1YBciaWXbhPL2ujFyH1dfhW5RAG9esLJuREWX0doubvGDmcUdOVTHaopCrsW9swoSGWh/HgJrg786+r0IYtCQGJ4UqGDnuGoixNvbhcae4ybb9umC2bPU/NLiKzblWEUnlEDBbQOv5jKu1E+kvghzGU7Em71W++HFQnIIEeI05jZ9TiTldmfDllMBWXM5qM5tpUAhYNmfc8yxUaUqAIKZ0ayHJh5enpc5H8AkMTXe/8fOpB85SXdo9u49HJlywekUQwrW1kUwjxlf+GeLSYT23+ACYUS7ncPpaAglUuZfdy8dA4KaXzqTXPUUYp8cywV/Ev
         var polygonOutlinePrimitive = new PolylineCollection();
         polygonOutlinePrimitive.add({
-            positions: Cartesian3.fromDegreesArray(properties.vertices[properties.polygonId]),
+            positions: Cartesian3.fromDegreesArray(properties.vertices),
             width: properties.outlineWidth,
             loop: true,
             material: new Material({
@@ -893,7 +896,7 @@ class CesiumView extends MapView {
             geometry : new CoplanarPolygonGeometry({
                 polygonHierarchy: new PolygonHierarchy(
                     Cartesian3.fromDegreesArrayHeights(
-                        properties.vertices[properties.polygonId]
+                        properties.vertices
                     )),
             }),
             id: id,
@@ -969,58 +972,115 @@ class CesiumView extends MapView {
     }
 
     async addDrapedImage(props, existingDrapedImagePrimitive) {
-        const llaPos = props.platformLocation;
-        const DTR = Math.PI / 180;
-        const attitude = props.platformOrientation;
-        const gimbal = props.gimbalOrientation;
-
-        ///////////////////////////////////////////////////////////////////////////////////
-        // compute rotation matrix to transform lookrays from camera frame to ECEF frame //
-        ///////////////////////////////////////////////////////////////////////////////////
-        const camPos = Cartesian3.fromDegrees(llaPos.x, llaPos.y, llaPos.z);
-        const nedTransform = Transforms.northEastDownToFixedFrame(camPos);
+        // Camera position as ECEF Cartesian3. Will be set in the switch statement below.
+        let camPos;
+        // Camera rotation, relative to ECEF. Also will be set in the switch statement below.
         const camRot = new Matrix3();
-        Matrix4.getMatrix3(nedTransform, camRot);
+
+        // Temporary matrix used for performing rotations.
         const rotM = new Matrix3();
 
-        if (isDefined(attitude)) {
-            // UAV heading, pitch, roll (given in NED frame)
-            const uavHeading = Matrix3.fromRotationZ(attitude.heading * DTR, rotM);
-            Matrix3.multiply(camRot, uavHeading, camRot);
-            const uavPitch = Matrix3.fromRotationY(attitude.pitch * DTR, rotM);
-            Matrix3.multiply(camRot, uavPitch, camRot);
-            const uavRoll = Matrix3.fromRotationX(attitude.roll * DTR, rotM);
-            Matrix3.multiply(camRot, uavRoll, camRot);
+        const DTR = Math.PI / 180;
+
+        switch (props.positionMode) {
+            case ImageDrapingPositionMode.LONLATALT_WITH_EULER_ANGLES: {
+                // Get ECEF position from longitude, latitude, and altitude.
+                camPos = Cartesian3.fromDegrees(props.platformLocation.x, props.platformLocation.y, props.platformLocation.z);
+                // Start building the camera rotation matrix. Start with the NED transformation.
+                Matrix4.getMatrix3(Transforms.northEastDownToFixedFrame(camPos), camRot);
+                // Heading, pitch, and roll
+                const platformOrientation = props.platformOrientation;
+                if (platformOrientation) {
+                    Matrix3.multiply(camRot, Matrix3.fromRotationZ(platformOrientation.heading*DTR, rotM), camRot);
+                    Matrix3.multiply(camRot, Matrix3.fromRotationY(platformOrientation.pitch*DTR, rotM), camRot);
+                    Matrix3.multiply(camRot, Matrix3.fromRotationX(platformOrientation.roll*DTR, rotM), camRot);
+                }
+                const gimbalOrientation = props.gimbalOrientation;
+                if (gimbalOrientation) {
+                    // Allow yaw to be specified either as "yaw" or "heading".
+                    const yaw = ("yaw" in gimbalOrientation) ? gimbalOrientation.yaw : gimbalOrientation.heading;
+                    // The "+ 90" on the next line is a little mysterious to this author (CSD), but probably has to
+                    // do with orienting camera coordinates to world space.
+                    const pitch = gimbalOrientation.pitch + 90;
+                    const roll = gimbalOrientation.roll;
+                    switch (props.gimbalEulerAngleOrder) {
+                        case GimbalEulerAngleOrder.YAW_PITCH_ROLL:
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            break;
+                        case GimbalEulerAngleOrder.YAW_ROLL_PITCH:
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            break;
+                        case GimbalEulerAngleOrder.PITCH_YAW_ROLL:
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            break;
+                        case GimbalEulerAngleOrder.PITCH_ROLL_YAW:
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            break;
+                        case GimbalEulerAngleOrder.ROLL_YAW_PITCH:
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            break;
+                        case GimbalEulerAngleOrder.ROLL_PITCH_YAW:
+                            Matrix3.multiply(camRot, Matrix3.fromRotationX(roll*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationY(pitch*DTR, rotM), camRot);
+                            Matrix3.multiply(camRot, Matrix3.fromRotationZ(yaw*DTR, rotM), camRot);
+                            break;
+                    }
+                }
+                // transform to camera frame
+                Matrix3.fromRotationZ(90 * DTR, rotM);
+                Matrix3.multiply(camRot, rotM, camRot);
+                break;
+            }
+
+            case ImageDrapingPositionMode.ECEF_WITH_MATRICES: {
+                camPos = new Cartesian3(props.platformLocation.x, props.platformLocation.y, props.platformLocation.z);
+                if (props.platformOrientation) {
+                    Matrix3.clone(props.platformOrientation, camRot);
+                } else {
+                    Matrix3.clone(Matrix3.IDENTITY, camRot);
+                }
+                if (props.gimbalOrientation) {
+                    Matrix3.multiply(camRot, props.gimbalOrientation, camRot);
+                }
+                break;
+            }
+
+            case ImageDrapingPositionMode.ECEF_WITH_QUATERNIONS: {
+                camPos = new Cartesian3(props.platformLocation.x, props.platformLocation.y, props.platformLocation.z);
+                if (props.platformOrientation) {
+                    Matrix3.fromQuaternion(props.platformOrientation, camRot);
+                } else {
+                    Matrix3.clone(Matrix3.IDENTITY, camRot);
+                }
+                if (props.gimbalOrientation) {
+                    Matrix3.multiply(camRot, Matrix3.fromQuaternion(props.gimbalOrientation, new Matrix3()), camRot);
+                }
+                break;
+            }
+
+            default:
+                return;
         }
-
-        // gimbal angles (on solo gimbal, order is yaw, roll, pitch!)
-        if (isDefined(gimbal)) {
-            const gimbalYaw = Matrix3.fromRotationZ(gimbal.heading * DTR, rotM);
-            Matrix3.multiply(camRot, gimbalYaw, camRot);
-            const gimbalRoll = Matrix3.fromRotationX(gimbal.roll * DTR, rotM);
-            Matrix3.multiply(camRot, gimbalRoll, camRot);
-            const gimbalPitch = Matrix3.fromRotationY((90 + gimbal.pitch) * DTR, rotM);
-            Matrix3.multiply(camRot, gimbalPitch, camRot);
-        }
-
-        // transform to camera frame
-        var img2cam = Matrix3.fromRotationZ(90 * DTR, rotM);
-        Matrix3.multiply(camRot, img2cam, camRot);
-
-        ////////////////////////////////////////////////////////////////////////////////////
 
         const camProj = props.cameraModel.camProj;
         const camDistR = props.cameraModel.camDistR;
         const camDistT = props.cameraModel.camDistT;
 
         let imgSrc = props.imageSrc;
+        let snapshot = props.snapshot;
 
-        let snapshot = false;
-        if (props.getSnapshot !== null) {
-            snapshot = props.getSnapshot();
-        }
         // snapshot
-        if (props.snapshot) {
+        if (snapshot) {
             let ctx = this.captureCanvas.getContext('2d');
             ctx.drawImage(imgSrc, 0, 0, this.captureCanvas.width, this.captureCanvas.height);
             imgSrc = this.captureCanvas;
@@ -1051,28 +1111,34 @@ class CesiumView extends MapView {
         });
 
         if (!isDefined(existingDrapedImagePrimitive) || snapshot) {
-            const updatedPositions = await sampleTerrain(this.viewer.terrainProvider, 11, [Cartographic.fromDegrees(llaPos.x, llaPos.y)]);
-            const imageDrapingPrimitive = this.viewer.scene.primitives.add(new Primitive({
-                geometryInstances: new GeometryInstance({
-                    geometry: new RectangleGeometry({
-                        rectangle: Rectangle.fromDegrees(llaPos.x - 0.1, llaPos.y - 0.1, llaPos.x + 0.1, llaPos.y + 0.1),
-                        height: updatedPositions[0].height,
-                        extrudedHeight: llaPos.z - 1
-                    })
-                }),
+            // Render the draped primitive on the whole earth (discarding pixels that do not fall
+            // in the draped image's bounds). This is inefficient, but the GPU is fast enough that
+            // it does not matter right now.
+            const drapedImageGeometry = new RectangleGeometry({
+                ellipsoid: Ellipsoid.WGS84,
+                rectangle: Rectangle.fromDegrees(-180, -90, 180, 90)
+            });
+            const drapedImagePrimitive = new Primitive({
+                geometryInstances: new GeometryInstance({ geometry: drapedImageGeometry }),
                 appearance: appearance,
                 show: props.visible
-            }));
+            });
+            this.viewer.scene.primitives.add(drapedImagePrimitive);
 
             if (!snapshot) {
-                this.viewer.scene.primitives.raiseToTop(imageDrapingPrimitive);
+                this.viewer.scene.primitives.raiseToTop(drapedImagePrimitive);
             }
-            return imageDrapingPrimitive;
+            return drapedImagePrimitive;
         } else {
             existingDrapedImagePrimitive.appearance = appearance;
             existingDrapedImagePrimitive.show = props.visible;
             return existingDrapedImagePrimitive;
         }
+    }
+
+    removeDrapedImageFromLayer(drapedImagePrimitive) {
+        this.viewer.scene.primitives.remove(drapedImagePrimitive);
+        this.render();
     }
 
     // -- Frustum
@@ -1095,31 +1161,54 @@ class CesiumView extends MapView {
         // bind the object to the callback property
         const id = properties.id + "$" + properties.frustumId;
 
-        // NED rotation
-        const origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
-        Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
+        // Compute the geometry and orientation. This depends on the position
+        // mode specified to the FrustumLayer constructor.
+        let origin, quat;
+        switch (properties.positionMode) {
+            case FrustumPositionMode.LONLATALT_WITH_EULER_ANGLES:    
+                origin = Cartesian3.fromDegrees(properties.origin.x, properties.origin.y, properties.origin.z);
+                Transforms.headingPitchRollQuaternion(origin, new HeadingPitchRoll(0,0,0), Ellipsoid.WGS84, Transforms.northEastDownToFixedFrame, this.nedQuat);
+        
+                // platform attitude w/r NED
+                // see doc of Quaternion.fromHeadingPitchRoll, heading and roll are about negative z and y axes respectively
+                const platformHPR = properties.platformOrientation;
+                HeadingPitchRoll.fromDegrees(-platformHPR.heading, -platformHPR.pitch, platformHPR.roll, this.tmpHPR);
+                Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.platformQuat);
+        
+                // sensor orientation w/r platform
+                const sensorYPR = properties.sensorOrientation;
+                HeadingPitchRoll.fromDegrees(-sensorYPR.yaw, -sensorYPR.pitch, sensorYPR.roll, this.tmpHPR);
+                Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.sensorQuat);
+        
+                // compute combined transform
+                // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
+                Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
+                Quaternion.multiply(this.platformQuat, this.sensorQuat, this.sensorQuat); // result is sensorQuat w/r ECEF
+                quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF
+                break;
 
-        // platform attitude w/r NED
-        // see doc of Quaternion.fromHeadingPitchRoll, heading and roll are about negative z and y axes respectively
-        const platformHPR = properties.platformOrientation;
-        HeadingPitchRoll.fromDegrees(-platformHPR.heading, -platformHPR.pitch, platformHPR.roll, this.tmpHPR);
-        Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.platformQuat);
+            case FrustumPositionMode.ECEF_WITH_MATRICES:
+                origin = properties.origin;
+                Quaternion.fromRotationMatrix(properties.platformOrientation, this.platformQuat);
+                Quaternion.fromRotationMatrix(properties.sensorOrientation, this.sensorQuat);
+                quat = Quaternion.multiply(this.platformQuat, this.sensorQuat, new Quaternion());
+                break;
 
-        // sensor orientation w/r platform
-        const sensorYPR = properties.sensorOrientation;
-        HeadingPitchRoll.fromDegrees(-sensorYPR.yaw, -sensorYPR.pitch, sensorYPR.roll, this.tmpHPR);
-        Quaternion.fromHeadingPitchRoll(this.tmpHPR, this.sensorQuat);
+            case FrustumPositionMode.ECEF_WITH_QUATERNIONS:
+                origin = properties.origin;
+                this.platformQuat = properties.platformOrientation;
+                this.sensorQuat = properties.sensorOrientation;
+                quat = Quaternion.multiply(this.platformQuat, this.sensorQuat, new Quaternion());
+                break;
 
-        // compute combined transform
-        // goal is to get orientation of frustum in ECEF directly, knowing that the frustum direction is along the Z axis
-        Quaternion.multiply(this.nedQuat, this.platformQuat, this.platformQuat); // result is plaformQuat w/r ECEF
-        Quaternion.multiply(this.platformQuat, this.sensorQuat, this.sensorQuat); // result is sensorQuat w/r ECEF
-        const quat = Quaternion.multiply(this.sensorQuat, this.camQuat, this.sensorQuat); // result is frustum quat w/r ECEF
+            default:
+                return;
+        }
 
         const frustum = new PerspectiveFrustum({
             fov : Math.toRadians(properties.fov),
-            aspectRatio : 4 / 3,
-            near : 1.0,
+            aspectRatio : properties.aspectRatio,
+            near : properties.near,
             far : properties.range
         });
 

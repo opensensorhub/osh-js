@@ -77,6 +77,7 @@ let gimbalOrientationDataSource = new SosGetResult('android-Heading', {
 
 // add 3D model marker to Cesium view
 let pointMarkerLayer = new PointMarkerLayer({
+    dataSourceIds: [platformLocationDataSource.id, platformOrientationDataSource.id],
     label: "3DR Solo",
     getLocation : {
         dataSourceIds : [platformLocationDataSource.getId()],

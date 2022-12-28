@@ -25,6 +25,7 @@
         // add 3D model marker to Cesium view
         let pointMarkerLayer = new PointMarkerLayer({
           label: "3DR Solo",
+          dataSourceIds: [this.platformLocationDataSource.id, this.platformOrientationDataSource.id],
           getLocation : {
             dataSourceIds : [this.platformLocationDataSource.id],
             handler : function(rec) {
@@ -43,11 +44,14 @@
               };
             }
           },
-          icon: "./images/quadcopter.png"
+          icon: "./images/quadcopter.png",
+          iconSize: [32, 32],
+          iconScale: 1.5
         });
 
         // style it with a moving point marker
         let imageDrapingLayer = new ImageDrapingLayer({
+          dataSourceIds: [this.platformLocationDataSource.id, this.platformOrientationDataSource.id, this.gimbalOrientationDataSource.id],
           getPlatformLocation: {
             dataSourceIds: [this.platformLocationDataSource.getId()],
             handler: function (rec) {

@@ -1,0 +1,30 @@
+<style>
+    .container {
+        display: flex; /* or inline-flex */
+        flex-direction: column;
+        padding: 30px;
+    }
+    button {
+        margin:5px
+    }
+
+    .line-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .master {
+        font-weight: bold;
+    }
+    .date {
+        margin: 15px;
+    }
+</style>
+<div class="container">
+    <div class="line-container"><button class="button" id="timeSync-button-start">Start</button>/<button id="timeSync-button-stop">Stop</button>Master Time:<div class="date master" id="timeSync"></div></div>
+    <hr>
+    <div class="line-container"><button class="button" id="ds0-button-add">Add</button>/<button id="ds0-button-remove">Remove</button>DS Time:<div class="date" id="ds0"></div></div>
+    <div class="line-container"><button class="button" id="ds1-button-add">Add</button>/<button id="ds1-button-remove">Remove</button>DS Time:<div class="date" id="ds1"></div></div>
+    <div class="line-container"><button class="button" id="ds2-button-add">Add</button>/<button id="ds2-button-remove">Remove</button>DS Time:<div class="date" id="ds2"></div></div>
+</div>

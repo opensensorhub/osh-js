@@ -27,9 +27,6 @@ class TimeSeriesDatasource extends DataSource {
         super(name, properties);
 
         assertDefined(properties,'Some properties must be defined');
-        assertDefined(properties.startTime,'startTime must must be defined');
-        assertDefined(properties.endTime,'startTime must must be defined');
-
         this.dataSynchronizer = undefined;
     }
 
@@ -106,6 +103,11 @@ class TimeSeriesDatasource extends DataSource {
     }
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
+    /**
+     * @private
+     * @param dataSynchronizer
+     * @returns {Promise}
+     */
     async setDataSynchronizer(dataSynchronizer) {
         return new Promise(async (resolve, reject) => {
             await this.checkInit();

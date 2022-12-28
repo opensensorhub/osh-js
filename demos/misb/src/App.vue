@@ -99,7 +99,7 @@ export default {
       mode: MODE,
       replaySpeed: dsReplaySpeed,
       prefetchBatchDuration: 10000,
-      prefetchBatchSize: 1000000
+      prefetchBatchSize: 250
     };
 
     const droneVideoDataSource = new SweApiDatasource('MISB Drone - Video', {
