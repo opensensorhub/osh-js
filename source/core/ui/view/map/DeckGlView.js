@@ -193,9 +193,9 @@ class DeckGlView extends MapView {
                     }
                 },
                 getIcon: d => 'marker',
-                sizeScale: props.iconScale,
                 getPosition: d => d.position,
-                getSize: d => props.iconScale,
+                sizeScale: props.iconScale,
+                getSize: d => props.iconSize[1],
                 getColor: d => iconColor,
                 onHover: (info, event) => this.onMarkerHover(mId, info, props, event),
                 onClick: (info, event) => event.leftButton ? this.onMarkerLeftClick(mId, info, props, event) :
