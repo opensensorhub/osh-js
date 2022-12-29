@@ -175,7 +175,7 @@ class DeckGlView extends MapView {
             iconLayer = new IconLayer({
                 id: id,
                 data: [{
-                    position: [props.location.x, props.location.y, 1]
+                    position: [props.location.x, props.location.y, props.location.z]
                 }],
                 pickable: true,
                 // iconAtlas and iconMapping are required
