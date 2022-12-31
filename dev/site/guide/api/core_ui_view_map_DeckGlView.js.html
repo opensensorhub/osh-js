@@ -203,7 +203,7 @@ class DeckGlView extends MapView {
             iconLayer = new IconLayer({
                 id: id,
                 data: [{
-                    position: [props.location.x, props.location.y, 1]
+                    position: [props.location.x, props.location.y, props.location.z]
                 }],
                 pickable: true,
                 // iconAtlas and iconMapping are required
@@ -221,9 +221,9 @@ class DeckGlView extends MapView {
                     }
                 },
                 getIcon: d => 'marker',
-                sizeScale: props.iconScale,
                 getPosition: d => d.position,
-                getSize: d => props.iconScale,
+                sizeScale: props.iconScale,
+                getSize: d => props.iconSize[1],
                 getColor: d => iconColor,
                 onHover: (info, event) => this.onMarkerHover(mId, info, props, event),
                 onClick: (info, event) => event.leftButton ? this.onMarkerLeftClick(mId, info, props, event) :
