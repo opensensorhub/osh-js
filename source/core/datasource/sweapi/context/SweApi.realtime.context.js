@@ -85,6 +85,7 @@ class SweApiRealTimeContext extends SweApiContext {
         if(isDefined(this.streamObject)) {
             this.streamObject.stream().disconnect();
         }
+        this.properties.version++;
     }
 
     isConnected() {

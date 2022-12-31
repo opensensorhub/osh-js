@@ -32,8 +32,6 @@ class DataSynchronizer {
      * @param {Datasource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
-        assertDefined(properties.startTime, 'startTime');
-        assertDefined(properties.startTime, 'endTime');
         this.bufferingTime = 1000; // default
         this.currentTime = Date.now();
         this.id = randomUUID();
@@ -45,11 +43,19 @@ class DataSynchronizer {
         this.initialized = false;
         this.properties = {};
         this.properties.replaySpeed = this.replaySpeed;
-        this.properties.startTime = properties.startTime;
-        this.properties.endTime = properties.endTime;
 
         this.eventSubscriptionMap = {};
         this.messagesMap = {};
+
+        if(this.mode !== Mode.REAL_TIME) {
+            assertDefined(properties.startTime, 'startTime');
+            assertDefined(properties.startTime, 'endTime');
+            this.properties.startTime = properties.startTime;
+            this.properties.endTime = properties.endTime;
+        } else {
+            this.properties.startTime = 'now';
+            this.properties.endTime = '2055-01-01Z';
+        }
 
     }
 

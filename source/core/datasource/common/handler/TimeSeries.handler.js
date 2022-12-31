@@ -41,10 +41,12 @@ class DelegateHandler {
     }
 
     connect() {
+        this.status.cancel = false;
         this.context.connect();
     }
 
     async disconnect() {
+        this.status.cancel = true;
         return this.context.disconnect();
     }
 
@@ -295,13 +297,12 @@ class TimeSeriesHandler extends DataSourceHandler {
                 dataSourceId: this.dataSourceId,
                 type: EventType.TIME_CHANGED
             });
-            this.version++;
             await this.disconnect();
 
             this.properties = {
                 ...this.properties,
                 ...properties,
-                version: this.version
+                version: ++this.version
             };
             if(!(this.properties.mode in this.contexts)) {
                 console.warn(`creating new context for mode ${this.properties.mode}`);
@@ -377,7 +378,7 @@ class TimeSeriesHandler extends DataSourceHandler {
         } else {
             results.push({
                 data: data,
-                version: this.version
+                version: this.context.properties.version
             });
         }
 
@@ -413,6 +414,7 @@ class TimeSeriesHandler extends DataSourceHandler {
         if (this.delegateHandler instanceof DelegateReplayHandler && !isDefined(this.timeSyncTopic)) {
             throw Error('DataSynchronizer must be used in case of Mode.REPLAY');
         }
+        this.version++;
         this.context.init(this.properties);
         this.delegateHandler.connect(startTime);
     }
