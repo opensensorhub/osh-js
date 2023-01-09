@@ -13,8 +13,8 @@ window.CESIUM_BASE_URL = './';
 let locationDataSource = new SosGetResult('piaware-location', {
     protocol: 'ws',
     service: 'SOS',
-    endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    // endpointUrl: 'botts-piaware.simple-url.com:8181/sensorhub/sos',
+    //endpointUrl: '76.187.247.4:8181/sensorhub/sos',
+    endpointUrl: 'botts-piaware.simple-url.com:8181/sensorhub/sos',
     // endpointUrl: 'localhost:8686/sensorhub/sos',
     offeringID: 'urn:osh:sensor:aviation:piaware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Location',
@@ -28,8 +28,8 @@ let locationDataSource = new SosGetResult('piaware-location', {
 let trackDataSource = new SosGetResult('piaware-track', {
     protocol: 'ws',
     service: 'SOS',
-    endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    // endpointUrl: 'botts-piaware.simple-url.com:8181/sensorhub/sos',
+    //endpointUrl: '76.187.247.4:8181/sensorhub/sos',
+    endpointUrl: 'botts-piaware.simple-url.com:8181/sensorhub/sos',
     // endpointUrl: 'localhost:8686/sensorhub/sos',
     offeringID: 'urn:osh:sensor:aviation:piaware',
     observedProperty: 'http://sensorml.com/ont/swe/property/Track',
@@ -193,9 +193,10 @@ let cesiumView = new CesiumView({
     layers: [pointMarker]
 });
 
-// ABIA Airport icon
+// Airport icon
 cesiumView.viewer.entities.add({
-    position: Cartesian3.fromDegrees(-97.6664, 30.1975),
+    // position: Cartesian3.fromDegrees(-97.6664, 30.1975),
+    position: Cartesian3.fromDegrees(-86.773572, 34.642409),
     billboard: {
       image: "images/icons8-airport-50.png",
     //   color: Color.GRAY,
@@ -204,48 +205,33 @@ cesiumView.viewer.entities.add({
     }
 });
 
-cesiumView.viewer.entities.add({
-    position: Cartesian3.fromDegrees(-97.6664, 30.197),
-    // position: Cartesian3.fromDegrees(-86.7758, 34.6405, 10000.),
-    name : '50 mile range ring',
-    ellipse : {
-        semiMinorAxis : 80467.2,
-        semiMajorAxis : 80467.2,
-        height: 100000,
-        fill: false,
-        outline: true,
-        outlineColor: Color.BLACK,
-        outerWidth: 10
-      }    
-});
+function getRangeRing(lon, lat, alt, statuteMiles) {
+    return {
+        position: Cartesian3.fromDegrees(lon, lat, alt),
+        name : statuteMiles + ' mile range ring',
+        ellipse : {
+            semiMinorAxis : 1609.34 * statuteMiles,
+            semiMajorAxis : 1609.34 * statuteMiles,
+            height: alt,
+            fill: false,
+            outline: true,
+            outlineColor: Color.BLACK,
+            outerWidth: 10
+          }    
+        };
+}
 
-cesiumView.viewer.entities.add({
-    position: Cartesian3.fromDegrees(-97.6664, 30.1975, 10000.),
-    // position: Cartesian3.fromDegrees(-86.7758, 34.6405, 10000.),
-    name : '100 mile range ring',
-    ellipse : {
-        semiMinorAxis : 80467.2 * 2.,
-        semiMajorAxis : 80467.2 * 2.,
-        height: 100000,
-        fill: false,
-        outline: true,
-        outlineColor: Color.BLACK,
-      }    
-});
+cesiumView.viewer.entities.add(
+    getRangeRing(-86.780233, 34.666024, 10000.0, 50.0)
+);
 
-cesiumView.viewer.entities.add({
-    position: Cartesian3.fromDegrees(-97.6664, 30.1975, 10000.),
-    // position: Cartesian3.fromDegrees(-86.7758, 34.6405, 10000.),
-    name : '150 mile range ring',
-    ellipse : {
-        semiMinorAxis : 80467.2 * 3.,
-        semiMajorAxis : 80467.2 * 3.,
-        height: 100000,
-        fill: false,
-        outline: true,
-        outlineColor: Color.BLACK,
-      }    
-});
+cesiumView.viewer.entities.add(
+    getRangeRing(-86.780233, 34.666024, 10000.0, 100.0)
+);
+
+cesiumView.viewer.entities.add(
+    getRangeRing(-86.780233, 34.666024, 10000.0, 150.0)
+);
 
 //cesiumView.viewer.camera.lookAt(Cartesian3.fromDegrees(-97.6664, 30.1975), new Cartesian3(0.0, 0.0, 2//00.0));
 console.log('connecting to datasources');
