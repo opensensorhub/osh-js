@@ -9,36 +9,28 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0N
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
-// create piAware data sources
-let locationDataSource = new SosGetResult('piaware-location', {
-    protocol: 'ws',
-    service: 'SOS',
-    //endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    endpointUrl: 'botts-piaware.simple-url.com:8181/sensorhub/sos',
-    // endpointUrl: 'localhost:8686/sensorhub/sos',
-    offeringID: 'urn:osh:sensor:aviation:piaware',
-    observedProperty: 'http://sensorml.com/ont/swe/property/Location',
-    // mode: Mode.REAL_TIME,
-    // startTime: 'now',
-    // endTime: '2022-12-31T00:00:00Z',
-    responseFormat: 'application/json',
-    replaySpeed: 1
-});
+function createDataSource(url, observedProperty) {
+    return new SosGetResult('piaware-location', {
+        protocol: 'ws',
+        service: 'SOS',
+        endpointUrl: url,
+        offeringID: 'urn:osh:sensor:aviation:piaware',
+        observedProperty: observedProperty,
+        // mode: Mode.REAL_TIME, // default is REAL_TIME
+        responseFormat: 'application/json',
+        replaySpeed: 1
+    })
+}
 
-let trackDataSource = new SosGetResult('piaware-track', {
-    protocol: 'ws',
-    service: 'SOS',
-    //endpointUrl: '76.187.247.4:8181/sensorhub/sos',
-    endpointUrl: 'botts-piaware.simple-url.com:8181/sensorhub/sos',
-    // endpointUrl: 'localhost:8686/sensorhub/sos',
-    offeringID: 'urn:osh:sensor:aviation:piaware',
-    observedProperty: 'http://sensorml.com/ont/swe/property/Track',
-    // mode: Mode.REAL_TIME,
-    // startTime: 'now',
-    // endTime: '2022-12-31T00:00:00Z',
-    responseFormat: 'application/json',
-    replaySpeed: 1
-});
+
+let sosUrl;
+let airportPosition;
+let piLocation = setPiLocation('austin');
+// let piLocation = setPiLocation('madison');
+
+// create piAware data sources
+let locationDataSource = createDataSource(sosUrl, 'http://sensorml.com/ont/swe/property/Location');
+let trackDataSource = createDataSource(sosUrl, 'http://sensorml.com/ont/swe/property/Track');
 
 function hover(markerId, flightId, billboard, event) {
     console.log(markerId + ',' + flightId + ',' + billboard + ',' + event);
@@ -132,15 +124,9 @@ let pointMarker = new PointMarkerLayer({
                 return 'images/icons8-airplane-64.png';
         }
     },
-    //iconAnchor: [16, 40],
-    // getIconColor: (rec) => {
-    //     return "#ffaa33F";
-    // },
     getIconColor: {
         dataSourceIds: [locationDataSource.id],
         handler: function(rec) {
-            //return "#FFAA33";
-
             if(rec.location.alt < 500.) 
                 return Color.RED.toCssColorString();
             if(rec.location.alt < 3000.) 
@@ -193,44 +179,69 @@ let cesiumView = new CesiumView({
     layers: [pointMarker]
 });
 
-// Airport icon
-cesiumView.viewer.entities.add({
-    // position: Cartesian3.fromDegrees(-97.6664, 30.1975),
-    position: Cartesian3.fromDegrees(-86.773572, 34.642409),
-    billboard: {
-      image: "images/icons8-airport-50.png",
-    //   color: Color.GRAY,
-      heightReference: HeightReference.CLAMP_TO_GROUND,
-      disableDepthTestDistance: Number.POSITIVE_INFINITY,
+function setPiLocation(locationName) {
+    switch (locationName) {
+        case 'austin':
+            sosUrl = '76.187.247.4:8181/sensorhub/sos';
+            airportPosition = Cartesian3.fromDegrees(-97.709704, 30.336780, 10000.0);
+            return Cartesian3.fromDegrees(-97.709704, 30.336780, 10000.0);
+        case 'madison':
+        default:
+            sosUrl = 'botts-piaware.simple-url.com:8181/sensorhub/sos';
+            airportPosition = Cartesian3.fromDegrees(-86.773657, 34.703999, 10000.0);
+            return Cartesian3.fromDegrees(-86.780233, 34.666024, 10000.0);
     }
-});
+    
+}
 
-function getRangeRing(lon, lat, alt, statuteMiles) {
+let airportIcon = getAirportIcon(airportPosition);
+function getAirportIcon(position) {
     return {
-        position: Cartesian3.fromDegrees(lon, lat, alt),
+        position: position,
+        billboard: {
+          image: "images/icons8-airport-50.png",
+          heightReference: HeightReference.CLAMP_TO_GROUND,
+          disableDepthTestDistance: Number.POSITIVE_INFINITY,
+        }
+    }
+}
+
+// Airport icon
+cesiumView.viewer.entities.add(
+    airportIcon
+);
+
+function getRangeRing(position, statuteMiles) {
+    return {
+        // position: Cartesian3.fromDegrees(lon, lat, alt),
+        position: position,
         name : statuteMiles + ' mile range ring',
         ellipse : {
             semiMinorAxis : 1609.34 * statuteMiles,
             semiMajorAxis : 1609.34 * statuteMiles,
-            height: alt,
+            height: 10000.0,
             fill: false,
             outline: true,
             outlineColor: Color.BLACK,
             outerWidth: 10
-          }    
-        };
+        }    
+    };
 }
 
+let rangeRing50 = getRangeRing(piLocation, 50.0);
+let rangeRing100 = getRangeRing(piLocation, 100.0);
+let rangeRing150 = getRangeRing(piLocation, 150.0);
+
 cesiumView.viewer.entities.add(
-    getRangeRing(-86.780233, 34.666024, 10000.0, 50.0)
+    rangeRing50
 );
 
 cesiumView.viewer.entities.add(
-    getRangeRing(-86.780233, 34.666024, 10000.0, 100.0)
+    rangeRing100
 );
 
 cesiumView.viewer.entities.add(
-    getRangeRing(-86.780233, 34.666024, 10000.0, 150.0)
+    rangeRing150
 );
 
 //cesiumView.viewer.camera.lookAt(Cartesian3.fromDegrees(-97.6664, 30.1975), new Cartesian3(0.0, 0.0, 2//00.0));
