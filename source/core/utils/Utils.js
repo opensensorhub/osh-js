@@ -500,7 +500,6 @@ export function throttle(func, wait, leading, trailing, context) {
             previous = now;
             result = func.apply(ctx, args);
         } else if (!timeout && trailing) {
-            // Sinon on s’endort pendant le temps restant
             timeout = setTimeout(later, remaining);
         }
         return result;
