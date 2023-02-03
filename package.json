@@ -28,10 +28,15 @@
     "documentation": "yarn  --cwd jsdoc/ clean && yarn  --cwd jsdoc/ install && yarn  --cwd jsdoc/  all",
     "vuepress": "yarn install && shx rm -fr vuepress/docs/dist; yarn --cwd vuepress/docs prod",
     "clean-package": "rm -fr ./build",
-    "transpile": "tsc --project config/tsconfig-build.json && shx cp -rf source/vue build/osh-js/vue && shx cp -fr source/core/resources build/osh-js/core/resources && shx cp -fr source/ext/resources build/osh-js/ext/resources",
-    "copy-sources": "shx cp -rf source/ build/osh-js/source",
+    "transpile-package": "tsc --project config/tsconfig-build.json && shx cp -rf source/vue build/osh-js/vue && shx cp -fr source/core/resources build/osh-js/core/resources && shx cp -fr source/ext/resources build/osh-js/ext/resources",
+    "copy-sources-package": "shx cp -rf source/ build/osh-js/source",
     "prepare-package": "shx mkdir -p build/osh-js",
-    "build-package": "yarn clean-package && yarn prepare-package && yarn copy-sources && yarn transpile && node config/prepare-package"
+    "build-package": "yarn clean-package && yarn prepare-package && yarn copy-sources-package && yarn transpile-package && node config/prepare-package",
+
+    "transpile-lib": "tsc --project config/tsconfig-lib.json && shx cp -rf source/vue dist/vue && shx cp -fr source/core/resources dist/core/resources && shx cp -fr source/ext/resources dist/ext/resources",
+    "copy-sources-lib": "shx cp -rf source/ dist",
+    "prepare-lib": "rm -fr dist; shx mkdir -p dist",
+    "build-lib": "yarn prepare-lib && yarn copy-sources-lib && yarn transpile-lib && node config/prepare-lib"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",

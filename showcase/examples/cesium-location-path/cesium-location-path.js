@@ -45,7 +45,7 @@ let pointMarker = new PointMarkerLayer({
     labelColor: '#ffffff',
     labelSize: 12,
     label: 'GPS car',
-    icon: 'images/location.svg',
+    icon: 'images/test0.svg',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     getIconColor: (rec) => (Math.random() < 0.5) ?  'rgba(255,0,0,0.5)' : 'rgba(0,82,255,0.5)',
@@ -91,7 +91,7 @@ let ellipse = new EllipseLayer({
 // create Cesium view
 let cesiumView = new CesiumView({
     container: 'cesium-container',
-    layers: [pointMarker, polyline, ellipse],
+    layers: [pointMarker, polyline/*, ellipse*/],
     autoZoomOnFirstMarker: true,
     cesiumProps: {
         viewerProps: {
