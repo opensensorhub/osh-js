@@ -1,0 +1,27 @@
+{
+  "name": "osh-js",
+  "version": "2.2.0",
+  "description": "OSH javascript Toolkit",
+  "main": "core/OSH.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opensensorhub/osh-js.git"
+  },
+  "keywords": [
+    "OSH",
+    "Sensors",
+    "Toolkit",
+    "Javascript",
+    "GIS",
+    "Spatial",
+    "OGC",
+    "SensorML"
+  ],
+  "author": "OSH community",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/opensensorhub/osh-js/issues"
+  },
+  "homepage": "https://github.com/opensensorhub/osh-js#readme",
+  "dependencies": {}
+}
