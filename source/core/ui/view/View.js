@@ -210,6 +210,8 @@ class View {
             bc.close();
         }
         this.broadcastChannels = [];
+        // remove DOM element
+        this.elementDiv?.remove();
     }
     /**
      * Adds a layer to the view. A broadcastChannel is going to listen the new dataSources
