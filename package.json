@@ -36,7 +36,7 @@
     "transpile-lib": "tsc --project config/tsconfig-lib.json && shx cp -rf source/vue dist/vue && shx cp -fr source/core/resources dist/core/resources && shx cp -fr source/ext/resources dist/ext/resources",
     "copy-sources-lib": "shx cp -rf source/ dist",
     "prepare-lib": "rm -fr dist; shx mkdir -p dist",
-    "build-lib": "yarn prepare-lib && yarn copy-sources-lib && yarn transpile-lib && node config/prepare-lib"
+    "build-lib": "yarn prepare-lib && yarn copy-sources-lib && yarn transpile-lib && node config/prepare-lib && tar -czvf osh-js.tar.gz dist/* && mv osh-js.tar.gz ./dist"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
