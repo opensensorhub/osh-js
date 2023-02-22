@@ -138,7 +138,7 @@ class CanvasView extends View {
     }
 
     destroy() {
-
+        super.destroy();
     }
 
     /**

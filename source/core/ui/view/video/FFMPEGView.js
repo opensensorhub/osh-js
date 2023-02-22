@@ -232,9 +232,6 @@ class FFMPEGView extends CanvasView {
 
     destroy() {
         super.destroy();
-        if(isDefined(this.interval)) {
-            clearInterval(this.interval);
-        }
         if(isDefined(this.decodeWorker)) {
             this.decodeWorker.postMessage({
                 message: 'release'
