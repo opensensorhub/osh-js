@@ -519,7 +519,7 @@ class CesiumView extends MapView {
         // zoom map if first marker update
         if (this.first && this.properties.autoZoomOnFirstMarker) {
             this.viewer.camera.flyTo({
-                destination : Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], 1000),
+                destination : Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], (lonLatAlt[2] && lonLatAlt[2] + 1000 )|| 1000),
                 duration : 1.0
             });
             this.first = false;
