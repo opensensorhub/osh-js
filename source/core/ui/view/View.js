@@ -36,6 +36,7 @@ class View {
      * Create a View.
      * @param {Object} [properties={}] - the properties of the view
      * @param {string} properties.container - The div element to attach to
+     * @param {boolean} [properties.destroyAfterMutation=true]  - call view destroy() function after detecting div root Mutation
      * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
      * @param {string[]} properties.supportedLayers - List the supported layers of this View. It is corresponding to the the 'type' Layer property
      * @param {boolean} properties.visible - set the default behavior of the visibility of the view
@@ -79,6 +80,7 @@ class View {
         this.divId = this.id;
 
         let parentDivId = (isDefined(properties.container)? properties.container : document.body);
+        let destroyAfterMutation = (isDefined(properties.destroyAfterMutation)? properties.destroyAfterMutation : true);
 
         let div = document.getElementById(parentDivId);
 
@@ -120,16 +122,18 @@ class View {
         // Attach the mutation observer to blocker, and only when attribute values change
         observer.observe(this.elementDiv, {attributes: true});
 
-        const rootObserver = new MutationObserver(function(mutations) {
-            // try to get the div element by the id to check if it is still owned by the document object
-            if(!isDefined(document.getElementById(that.divId))){
-                this.disconnect();
-                that.destroy();
-            }
-        });
-        rootObserver.observe(document.body, {
-            childList: true,
-        });
+        if(destroyAfterMutation) {
+            const rootObserver = new MutationObserver(function (mutations) {
+                // try to get the div element by the id to check if it is still owned by the document object
+                if (!isDefined(document.getElementById(that.divId))) {
+                    this.disconnect();
+                    that.destroy();
+                }
+            });
+            rootObserver.observe(document.body, {
+                childList: true,
+            });
+        }
     }
 
     /**
