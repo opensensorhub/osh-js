@@ -70,6 +70,7 @@ class FFMPEGView extends CanvasView {
 
         this.buf = [];
         this.bufferingTime = 2 * 1000;
+
     }
 
     createCanvas(width, height, style) {
@@ -242,6 +243,21 @@ class FFMPEGView extends CanvasView {
 
     async getCanvas() {
         return this.yuvCanvas.canvasElement;
+    }
+
+    drawBlank() {
+        let nodata = new Uint8Array(1);
+        this.yuvCanvas.drawNextOuptutPictureGL({
+            yData: nodata,
+            yDataPerRow: 1,
+            yRowCnt: 1,
+            uData: nodata,
+            uDataPerRow: 1,
+            uRowCnt: 1,
+            vData: nodata,
+            vDataPerRow: 1,
+            vRowCnt: 1
+        });
     }
 }
 
