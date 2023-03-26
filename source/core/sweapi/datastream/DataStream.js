@@ -88,6 +88,10 @@ class DataStream extends SensorWebApi {
         const queryString = dataStreamFilter.toQueryString(['select', 'obsFormat']);
         return this.fetchAsJson(apiUrl, queryString);
     }
+
+    async getValuesTemplate(observationFilter = new ObservationFilter()) {
+        this.sweApiResultParser.init(observationFilter)
+    }
 }
 
 export default DataStream;

@@ -150,6 +150,10 @@ class DataSourceHandler {
     isConnected() {
         return this.context.isConnected();
     };
+
+    getValuesTemplate() {
+        console.log('Got getValuesTemplate message');
+    }
 }
 
 export default DataSourceHandler;

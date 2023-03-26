@@ -64,6 +64,11 @@ class SweApiResultParser  {
         const parser = await this.checkParser(format);
         return parser.parseDataBlock(arrayBuffer);
     }
+
+    async getValuesTemplate(format = 'application/om+json' ) {
+        const parser = await this.checkParser(format);
+        return parser;
+    }
 }
 
 export default SweApiResultParser;

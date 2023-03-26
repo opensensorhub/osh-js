@@ -61,6 +61,8 @@ async function handleMessage(event) {
                 value = dataSourceHandler.isConnected();
             } else if (event.message === 'is-init') {
                 value = dataSourceHandler.isInitialized();
+            } if (event.message === 'values-template') {
+                value = await dataSourceHandler.getValuesTemplate();
             }
         }
 

@@ -208,6 +208,15 @@ class DataSource {
     async onDisconnect(){}
 
     reset() {}
+
+    async getValuesTemplate() {
+        return new Promise(async resolve => {
+            await this.checkInit();
+            this.postMessage({
+                message: 'values-template',
+            }, resolve);
+        });
+    }
 }
 
 export default DataSource;
