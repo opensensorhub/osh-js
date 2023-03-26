@@ -210,8 +210,10 @@ class View {
     }
 
     destroy()  {
+        this.removeAllFromLayers();
         for(let bc of this.broadcastChannels) {
             bc.close();
+            console.log(`closing BC..`);
         }
         this.broadcastChannels = [];
         // remove DOM element
