@@ -217,7 +217,11 @@ class View {
         }
         this.broadcastChannels = [];
         // remove DOM element
-        this.elementDiv?.remove();
+        // this.elementDiv?.remove(); // does not compile with older webpack version ..
+        if(isDefined(this.elementDiv)) {
+            this.elementDiv.remove();
+        }
+
     }
     /**
      * Adds a layer to the view. A broadcastChannel is going to listen the new dataSources
