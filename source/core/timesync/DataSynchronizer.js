@@ -23,6 +23,7 @@ class DataSynchronizer {
     /**
      * Creates The dataSynchronizer.
      * @param {Object} properties - the property of the object
+     * @param {String} [properties.id=randomUUID] - id of the dataSynchronizer or random if not provided
      * @param {Number} [properties.replaySpeed=1] - replaySpeed value
      * @param {Number} [properties.timerResolution=5] - interval in which data is played (in milliseconds)
      * @param {Number} [properties.masterTimeRefreshRate=250] - interval in which time value is send through broadcast channel (in milliseconds)
@@ -34,7 +35,7 @@ class DataSynchronizer {
     constructor(properties) {
         this.bufferingTime = 1000; // default
         this.currentTime = Date.now();
-        this.id = randomUUID();
+        this.id = properties.id || randomUUID();
         this.dataSources = properties.dataSources || [];
         this.replaySpeed = properties.replaySpeed || 1;
         this.timerResolution = properties.timerResolution || 5;
