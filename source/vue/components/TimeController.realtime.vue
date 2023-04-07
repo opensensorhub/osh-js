@@ -9,14 +9,7 @@
           </a>
         </div>
         <span :id="'current-time-'+id" v-if="masterTime" v-html=parseTime(masterTime)></span>
-        <v-chip
-            x-small
-            class="ma-2 live"
-            color="red"
-            text-color="white"
-        >
-          LIVE
-        </v-chip>
+        <span class="chip live">LIVE</span>
         <div class="out-of-sync" v-if="Object.entries(outOfSync).length > 0">
           <a :id="'out-of-sync-btn-'+id" class="control-btn out-of-sync">
             <i class="fa fa-exclamation-triangle" data-toggle="tooltip" :title="renderOutOfSync()"></i>
@@ -445,4 +438,41 @@ export default {
   width: unset;
 }
 
+.control .datasource-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 10px;
+  width: 450px;
+}
+
+.chip.live {
+  border: solid 1px black;
+  background: #e0e0e0;
+  height: 18px;
+  top: -2px;
+  font-size: 13px;
+  padding-top: 1px;
+  align-items: center;
+  cursor: default;
+  display: inline-flex;
+  line-height: 20px;
+  max-width: 100%;
+  outline: none;
+  overflow: hidden;
+  padding: 0 12px;
+  position: relative;
+  text-decoration: none;
+  transition-duration: .28s;
+  transition-property: box-shadow,opacity;
+  transition-timing-function: cubic-bezier(.4,0,.2,1);
+  vertical-align: middle;
+  white-space: nowrap;
+  border-color: rgba(0,0,0,.12);
+  color: rgba(0,0,0,.87);
+  border-radius: 16px;
+  vertical-align: middle;
+  margin-left:10px;
+  align-items: baseline;
+}
 </style>
