@@ -12,9 +12,7 @@
                @click="decSpeed" @mousedown="decSpeedDown">
               <i class="fa fa-minus"></i>
             </a>
-            <span class="control-speed-content">
-              <v-chip :id="speedId">{{ speed > 0 ? speed.toFixed(2) + 'x' : 'none' }}</v-chip>
-            </span>
+              <span class="chip control-speed-content" :id="speedId">{{ speed > 0 ? speed.toFixed(2) + 'x' : 'none' }}</span>
             <a :id="'speed-plus-btn-'+id" class="control-btn" @mouseup="stopSpeed" @mouseleave="stopSpeed"
                @click="incSpeed" @mousedown="incSpeedDown">
               <i class="fa fa-plus"></i>
@@ -644,13 +642,6 @@ export default {
   background: #989898;
 }
 
-.control .v-chip.v-size--default {
-  height: 18px;
-  top: -2px;
-  font-size: 13px; /* according to font-family: sans-serif */
-  padding-top: 1px; /* according to font-family: sans-serif */
-}
-
 .control .control-speed-content {
   margin-right: 10px;
   font-weight: 700;
@@ -694,4 +685,32 @@ export default {
   width: unset;
 }
 
+.chip{
+  border: solid 1px black;
+  background: #e0e0e0;
+  height: 18px;
+  top: -2px;
+  font-size: 13px;
+  padding-top: 1px;
+  align-items: center;
+  cursor: default;
+  display: inline-flex;
+  line-height: 20px;
+  max-width: 100%;
+  outline: none;
+  overflow: hidden;
+  padding: 0 12px;
+  position: relative;
+  text-decoration: none;
+  transition-duration: .28s;
+  transition-property: box-shadow,opacity;
+  transition-timing-function: cubic-bezier(.4,0,.2,1);
+  vertical-align: middle;
+  white-space: nowrap;
+  border-color: rgba(0,0,0,.12);
+  color: rgba(0,0,0,.87);
+  border-radius: 16px;
+  vertical-align: middle;
+  align-items: baseline;
+}
 </style>
