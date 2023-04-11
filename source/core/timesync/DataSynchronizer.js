@@ -48,6 +48,11 @@ class DataSynchronizer {
         this.eventSubscriptionMap = {};
         this.messagesMap = {};
 
+        this.lastTime = {
+            start: undefined,
+            end: undefined
+        };
+
         if(this.mode !== Mode.REAL_TIME) {
             assertDefined(properties.startTime, 'startTime');
             assertDefined(properties.startTime, 'endTime');
@@ -166,6 +171,10 @@ class DataSynchronizer {
         }
         for(let dataSource of this.dataSources) {
             dataSource.terminate();
+        }
+        this.lastTime = {
+            start: undefined,
+            end: undefined
         }
     }
 
@@ -321,19 +330,35 @@ class DataSynchronizer {
 
     async doConnect() {
         return new Promise(async resolve => {
-            for (let dataSource of this.dataSources) {
-                await dataSource.connect();
+            if(this.lastTime.start) {
+                await this.setTimeRange(
+                    this.lastTime.start,
+                    this.getEndTime(),
+                    this.getReplaySpeed(),
+                    true
+                );
+            } else {
+                for (let dataSource of this.dataSources) {
+                    await dataSource.connect();
+                }
+                await this.postMessage({
+                    message: 'connect',
+                }, resolve);
             }
-            await this.postMessage({
-                message: 'connect',
-            }, resolve);
         });
     }
 
     /**
      * Disconnects all dataSources
      */
-    async disconnect() {
+    async disconnect(forceReset=false) {
+        if(forceReset) {
+            this.lastTime.start = undefined;
+            this.lastTime.end = undefined;
+        } else {
+            // save current time as startTime for later reuse
+            this.lastTime.start = (await this.getCurrentTime()).data;
+        }
         await this.reset();
         for (let dataSource of this.dataSources) {
             await dataSource.disconnect();
@@ -368,6 +393,10 @@ class DataSynchronizer {
                        reconnect= false,
                        mode= this.mode) {
         return new Promise(async resolve => {
+            // save for later
+            this.lastTime.start = startTime;
+            this.lastTime.end = endTime;
+
             this.properties.startTime = startTime;
             this.properties.endTime = endTime;
 
