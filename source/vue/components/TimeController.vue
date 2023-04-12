@@ -6,11 +6,11 @@
           :dataSynchronizer="dataSynchronizer"
           :debounce="debounce"
           :parseTime="parseTime"
-          :support-history="historyProps !== undefined"
+          :support-history="replayProps !== undefined"
           @event='onControlEvent'
       ></TimeControllerRealtime>
     </slot>
-    <slot v-else-if="historyProps && historyProps.mode === 'replay'">
+    <slot v-else-if="replayProps.startTime && replayProps.mode === 'replay'">
       <TimeControllerReplay
           :dataSource="dataSource"
           :dataSynchronizer="dataSynchronizer"
@@ -21,7 +21,7 @@
           @event='onControlEvent'
       ></TimeControllerReplay>
     </slot>
-    <slot v-else-if="historyProps && historyProps.mode === 'batch'">
+    <slot v-else-if="replayProps.startTime && replayProps.mode === 'batch'">
       <TimeControllerBatch
           :dataSource="dataSource"
           :debounce="debounce"
@@ -98,7 +98,6 @@ export default {
       replay: false,
       batch: false,
       realTime: false,
-      historyProps: undefined // type: 'batch' | 'replay', startTime: , endTime, replaySpeed
     };
   },
   beforeMount() {
@@ -111,7 +110,7 @@ export default {
     initComp() {
       if (this.dataSourceObject.mode === Mode.REPLAY) {
         this.replay = true;
-        this.historyProps = {
+        this.replayProps = {
           mode: 'replay',
           startTime: this.dataSourceObject.getStartTime(),
           endTime: this.dataSourceObject.getEndTime(),
@@ -119,7 +118,7 @@ export default {
         }
       } else if (this.dataSourceObject.mode === Mode.BATCH) {
         this.batch = true;
-        this.historyProps = {
+        this.replayProps = {
           mode: 'batch',
           startTime: this.dataSourceObject.getStartTime(),
           endTime: this.dataSourceObject.getEndTime()
@@ -134,11 +133,15 @@ export default {
     onControlEvent(event) {
       if (event.name === 'toggle-history') {
         if(!this.realTime) {
+          this.replayProps.startTime = event.startTime;
+          this.replayProps.endTime = event.endTime;
+          this.replayProps.replaySpeed = event.replaySpeed;
+          console.log('saving time', this.replayProps);
           this.toggleRealtime();
         } else {
-          if(this.historyProps.mode === Mode.REPLAY) {
+          if(this.replayProps.mode === Mode.REPLAY) {
             this.toggleReplay();
-          } else if(this.historyProps.mode === Mode.BATCH) {
+          } else if(this.replayProps.mode === Mode.BATCH) {
             this.toggleBatch();
           }
         }
@@ -150,9 +153,9 @@ export default {
     },
     async toggleReplay() {
       await this.dataSourceObject.setTimeRange(
-          this.historyProps.startTime,
-          this.historyProps.endTime,
-          this.historyProps.replaySpeed,
+          new Date(this.replayProps.startTime).toISOString(),
+          new Date(this.replayProps.endTime).toISOString(),
+          this.replayProps.replaySpeed,
           true,
           Mode.REPLAY
       );
@@ -160,8 +163,8 @@ export default {
     },
     async toggleBatch() {
       await this.dataSourceObject.setTimeRange(
-          this.historyProps.startTime,
-          this.historyProps.endTime,
+          new Date(this.replayProps.startTime).toISOString(),
+          new Date(this.replayProps.endTime).toISOString(),
           1.0,
           true,
           Mode.BATCH

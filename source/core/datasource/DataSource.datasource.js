@@ -116,7 +116,7 @@ class DataSource {
         await this.doConnect();
     }
 
-     async initDataSource() {
+    async initDataSource() {
         return new Promise(async (resolve, reject) => {
             this.dataSourceWorker = await this.createWorker(this.properties);
             this.handleWorkerMessage();
@@ -131,7 +131,7 @@ class DataSource {
                 // listen for Events to callback to subscriptions
                 const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
                 datasourceBroadcastChannel.onmessage = async (message) => {
-                   await this.handleMessage(message);
+                    await this.handleMessage(message);
                 };
                 resolve(message);
             });

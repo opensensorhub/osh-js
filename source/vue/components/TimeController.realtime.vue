@@ -102,7 +102,7 @@ export default {
   methods: {
     async initComp() {
       if (!this.init) {
-        let stCurrentRefresh = this.getDataSourceObject().getStartTime() !== 'now';
+        let stCurrentRefresh = this.getDataSourceObject().getMode() !== Mode.REAL_TIME;
         if (stCurrentRefresh) {
           await this.dataSourceObject.setTimeRange(
               'now',

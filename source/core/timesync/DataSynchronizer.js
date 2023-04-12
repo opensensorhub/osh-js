@@ -40,7 +40,7 @@ class DataSynchronizer {
         this.replaySpeed = properties.replaySpeed || 1;
         this.timerResolution = properties.timerResolution || 5;
         this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250,
-        this.mode = properties.mode || Mode.REPLAY;
+            this.mode = properties.mode || Mode.REPLAY;
         this.initialized = false;
         this.properties = {};
         this.properties.replaySpeed = this.replaySpeed;
@@ -48,9 +48,10 @@ class DataSynchronizer {
         this.eventSubscriptionMap = {};
         this.messagesMap = {};
 
-        this.lastTime = {
-            start: undefined,
-            end: undefined
+        this.last = {
+            startTime: undefined,
+            endTime: undefined,
+            replaySpeed: 1.0
         };
 
         if(this.mode !== Mode.REAL_TIME) {
@@ -105,7 +106,14 @@ class DataSynchronizer {
         if(this.dataSources.length === 0) {
             throw 'dataSource array is empty';
         }
-        return this.dataSources[0].properties.startTime;
+        let min = Number.MAX_VALUE;
+        for(let ds of this.dataSources) {
+            let currentDsMinTimestamp = new Date(ds.getStartTime()).getTime();
+            if(currentDsMinTimestamp < min) {
+                min = currentDsMinTimestamp;
+            }
+        }
+        return new Date(min).toISOString();
     }
 
     /**
@@ -116,18 +124,32 @@ class DataSynchronizer {
         if(this.dataSources.length === 0) {
             throw 'dataSource array is empty';
         }
-        return this.dataSources[0].properties.endTime;
+        let max = Number.MIN_VALUE;
+        for(let ds of this.dataSources) {
+            let currentDsMaxTimestamp = new Date(ds.getEndTime()).getTime();
+            if(currentDsMaxTimestamp > max) {
+                max = currentDsMaxTimestamp;
+            }
+        }
+        return new Date(max).toISOString();
     }
 
     /**
      * Gets the minTime of the first DataSource objet
-     * @returns {String} - startTime as ISO date
+     * @returns {String} - minTime as ISO date
      */
     getMinTime() {
         if(this.dataSources.length === 0) {
             throw 'dataSource array is empty';
         }
-        return isDefined(this.dataSources[0].properties.minTime) ? this.dataSources[0].properties.minTime : this.dataSources[0].properties.startTime;
+        let min = Number.MAX_VALUE;
+        for(let ds of this.dataSources) {
+            let currentDsMinTimestamp = new Date(ds.getMinTime()).getTime();
+            if(currentDsMinTimestamp < min) {
+                min = currentDsMinTimestamp;
+            }
+        }
+        return new Date(min).toISOString();
     }
 
     /**
@@ -138,7 +160,14 @@ class DataSynchronizer {
         if(this.dataSources.length === 0) {
             throw 'dataSource array is empty';
         }
-        return isDefined(this.dataSources[0].properties.maxTime) ? this.dataSources[0].properties.maxTime : this.dataSources[0].properties.endTime;
+        let max = Number.MIN_VALUE;
+        for(let ds of this.dataSources) {
+            let currentDsMaxTimestamp = new Date(ds.getMaxTime()).getTime();
+            if(currentDsMaxTimestamp > max) {
+                max = currentDsMaxTimestamp;
+            }
+        }
+        return new Date(max).toISOString();
     }
 
     setMinTime(time) {
@@ -188,6 +217,9 @@ class DataSynchronizer {
         }
     }
 
+    getMode() {
+        return this.mode;
+    }
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     async initDataSources() {
@@ -249,12 +281,12 @@ class DataSynchronizer {
         return obj;
     }
 
-     /**
-      * Adds a new DataSource object to the list of datasources to synchronize.
-      * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
-      * @param {Datasource} dataSource - the new datasource to add
-      * @param [lazy=false] lazy - add to current running synchronizer
-      */
+    /**
+     * Adds a new DataSource object to the list of datasources to synchronize.
+     * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
+     * @param {Datasource} dataSource - the new datasource to add
+     * @param [lazy=false] lazy - add to current running synchronizer
+     */
     async addDataSource(dataSource, lazy = false) {
         if(lazy) {
             return new Promise(async resolve => {
@@ -330,11 +362,11 @@ class DataSynchronizer {
 
     async doConnect() {
         return new Promise(async resolve => {
-            if(this.lastTime.start) {
+            if(this.last.startTime) {
                 await this.setTimeRange(
-                    this.lastTime.start,
-                    this.getEndTime(),
-                    this.getReplaySpeed(),
+                    this.last.startTime,
+                    this.last.endTime,
+                    this.last.replaySpeed,
                     true
                 );
             } else {
@@ -351,13 +383,12 @@ class DataSynchronizer {
     /**
      * Disconnects all dataSources
      */
-    async disconnect(forceReset=false) {
-        if(forceReset) {
-            this.lastTime.start = undefined;
-            this.lastTime.end = undefined;
-        } else {
-            // save current time as startTime for later reuse
-            this.lastTime.start = (await this.getCurrentTime()).data;
+    async disconnect() {
+        // save current time as startTime for later reuse
+        const lastTime = (await this.getCurrentTime()).data;
+        if(lastTime) {
+            this.last.startTime = new Date(lastTime).toISOString();
+            console.log(`Saving lastTimestamp as ${this.last.startTime}`);
         }
         await this.reset();
         for (let dataSource of this.dataSources) {
@@ -371,6 +402,7 @@ class DataSynchronizer {
     async setReplaySpeed(replaySpeed) {
         return new Promise(async resolve => {
             this.replaySpeed = replaySpeed;
+            this.last.replaySpeed = replaySpeed;
             this.properties.replaySpeed = replaySpeed;
             await this.postMessage({
                 message: 'replay-speed',
@@ -393,9 +425,11 @@ class DataSynchronizer {
                        reconnect= false,
                        mode= this.mode) {
         return new Promise(async resolve => {
+
             // save for later
-            this.lastTime.start = startTime;
-            this.lastTime.end = endTime;
+            this.last.startTime = startTime;
+            this.last.endTime = endTime;
+            this.last.replaySpeed = replaySpeed;
 
             this.properties.startTime = startTime;
             this.properties.endTime = endTime;
@@ -441,6 +475,9 @@ class DataSynchronizer {
         });
     }
 
+    getLast() {
+        return (this.last.startTime)? this.last : { startTime: this.getStartTime(), endTime: this.getEndTime(), replaySpeed: this.getReplaySpeed()};
+    }
     /**
      * Connect the dataSource then the protocol will be opened as well.
      */

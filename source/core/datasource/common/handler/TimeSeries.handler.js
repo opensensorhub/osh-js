@@ -382,6 +382,9 @@ class TimeSeriesHandler extends DataSourceHandler {
             });
         }
 
+        if(results.length > 0) {
+            this.lastData = results[results.length - 1];
+        }
         this.broadcastChannel.postMessage({
             dataSourceId: this.dataSourceId,
             type: EventType.DATA,
