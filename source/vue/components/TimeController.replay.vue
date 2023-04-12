@@ -12,7 +12,7 @@
                @click="decSpeed" @mousedown="decSpeedDown">
               <i class="fa fa-minus"></i>
             </a>
-              <span class="chip control-speed-content" :id="speedId">{{ speed > 0 ? speed.toFixed(2) + 'x' : 'none' }}</span>
+            <span class="chip control-speed-content" :id="speedId">{{ speed > 0 ? speed.toFixed(2) + 'x' : 'none' }}</span>
             <a :id="'speed-plus-btn-'+id" class="control-btn" @mouseup="stopSpeed" @mouseleave="stopSpeed"
                @click="incSpeed" @mousedown="incSpeedDown">
               <i class="fa fa-plus"></i>
@@ -31,9 +31,9 @@
                 class="fa fa-fast-forward"></i></a>
           </div>
           <div class="control-time">
-            <span :id="'current-time-'+id" v-html=parseTime(startTime)></span>
+            <span :id="'current-time-'+id" v-html=parseTime(startTimestamp)></span>
             <span style="padding:0 10px 0 10px">/</span>
-            <span :id="'end-time-'+id" v-html=parseTime(endTime)></span>
+            <span :id="'end-time-'+id" v-html=parseTime(endTimestamp)></span>
           </div>
         </div>
       </div>
@@ -96,7 +96,7 @@ export default {
 
         return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
       }
-    }
+    },
   },
   data() {
     return {
@@ -105,10 +105,10 @@ export default {
       event: null,
       dataSourceObject: null,
       connected: true,
-      startTime: null,
-      endTime: null,
-      minTime: null,
-      maxTime: null,
+      startTimestamp: null,
+      endTimestamp: null,
+      minTimestamp: null,
+      maxTimestamp: null,
       speed: 1.0,
       interval: false,
       rangeSlider: null,
@@ -123,8 +123,8 @@ export default {
     event(newValue) {
       this.$emit('event', {
         event: newValue,
-        startTime: this.startTime,
-        endTime: this.endTime
+        startTime: this.startTimestamp,
+        endTime: this.endTimestamp
       });
     }
   },
@@ -143,37 +143,14 @@ export default {
       assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
       if (!this.init) {
         this.dataSourceObject.isConnected().then(value => this.connected = value);
-        let minTime = this.dataSourceObject.getMinTime();
-        let maxTime = this.dataSourceObject.getMaxTime();
+        this.minTimestamp = new Date(this.dataSourceObject.getMinTime()).getTime();
+        this.maxTimestamp = new Date(this.dataSourceObject.getMaxTime()).getTime();
 
-        if (isDefined(this.dataSourceObject.properties.replaySpeed)) {
-          this.speed = this.dataSourceObject.properties.replaySpeed;
-        } else {
-          this.speed = 0.0;
-        }
+        const last = this.dataSourceObject.getLast();
 
-        if (isDefined(minTime)) {
-          this.startTime = new Date(minTime).getTime();
-        } else {
-          this.startTime = new Date(this.dataSourceObject.getStartTime()).getTime();
-        }
-        this.minTime = this.startTime;
-
-        if (isDefined(maxTime)) {
-          this.endTime = new Date(maxTime).getTime();
-        } else {
-          this.endTime = new Date(this.dataSourceObject.getEndTime()).getTime();
-        }
-        this.maxTime = this.endTime;
-
-        // await this.dataSourceObject.setTimeRange(
-        //     new Date(this.minTime).toISOString(),
-        //     new Date(this.maxTime).toISOString(),
-        //     this.speed,
-        //     true,
-        //     Mode.REPLAY
-        // );
-
+        this.speed = last.replaySpeed;
+        this.startTimestamp = new Date(last.startTime).getTime();
+        this.endTimestamp = new Date(last.endTime).getTime();
 
         // compute skip time
         if ((this.skipTimeStep.endsWith('s'))) {
@@ -181,7 +158,7 @@ export default {
           this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1)) * 1000;
         } else if (this.skipTimeStep.endsWith('%')) {
           // compute percent on the whole period
-          const totalTime = this.maxTime - this.minTime;
+          const totalTime = this.maxTimestamp - this.minTimestamp;
           const percent = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1));
           this.skipTime = percent * totalTime / 100;
         }
@@ -245,8 +222,8 @@ export default {
       }, [EventType.TIME_CHANGED, EventType.MASTER_TIME]);
     },
     setStartTime(timestamp) {
-      this.startTime = timestamp;
-      this.rangeSlider.setStartTime(this.startTime, this.endTime);
+      this.startTimestamp = timestamp;
+      this.rangeSlider.setStartTime(this.startTimestamp, this.endTimestamp);
     },
     createRangeSlider() {
       if (!this.rangeSlider) {
@@ -260,14 +237,16 @@ export default {
 
         this.rangeSlider = new RangeSliderReplay({
           container: this.id,
-          startTime: this.minTime,
-          endTime: this.maxTime,
+          startTime: new Date(this.minTimestamp),
+          endTime: new Date(this.maxTimestamp),
           debounce: 200,
           options: {}
         });
 
+        this.rangeSlider.setStartTime(this.startTimestamp);
+
         this.update = false;
-        this.rangeSlider.onChange = (startTime, endTime, event) => {
+        this.rangeSlider.onChange = (startTimestamp, endTimestamp, event) => {
           if (event === 'slide') {
             this.waitForTimeChanged = true;
             this.update = true;
@@ -276,8 +255,8 @@ export default {
           }
 
           if (!this.interval) {
-            this.startTime = startTime;
-            this.endTime = endTime;
+            this.startTimestamp = startTimestamp;
+            this.endTimestamp = endTimestamp;
 
             this.on(event);
           }
@@ -291,12 +270,12 @@ export default {
     doBackward() {
       if (!this.interval) {
         this.interval = setInterval(() => {
-          let backwardTime = parseInt(this.startTime - this.skipTime);
-          if (backwardTime > this.minTime) {
-            this.startTime = backwardTime;
+          let backwardTime = parseInt(this.startTimestamp - this.skipTime);
+          if (backwardTime > this.minTimestamp) {
+            this.startTimestamp = backwardTime;
           } else {
-            this.startTime = this.minTime;
-            backwardTime = this.minTime;
+            this.startTimestamp = this.minTimestamp;
+            backwardTime = this.minTimestamp;
           }
           this.setRangeSliderStartTime(backwardTime);
         }, 70);
@@ -314,8 +293,8 @@ export default {
 
     resetMasterTime() {
       // reset master time
+      this.waitForTimeChangedEvent = this.lastSynchronizedTimestamp !== -1;
       this.lastSynchronizedTimestamp = -1;
-      this.waitForTimeChangedEvent = true;
       this.on('time-changed');
       this.update = false;
     },
@@ -323,16 +302,16 @@ export default {
     async updateTime(event) {
       this.resetMasterTime();
       this.dataSourceObject.setTimeRange(
-          new Date(this.startTime).toISOString(),
-          new Date(this.endTime).toISOString(),
+          new Date(this.startTimestamp).toISOString(),
+          new Date(this.endTimestamp).toISOString(),
           this.speed,
           true
       );
 
       this.on(event, {
         replaySpeed: this.speed,
-        startTime: this.startTime,
-        endTime: this.endTime
+        startTime: this.startTimestamp,
+        endTime: this.endTimestamp
       });
     }
     ,
@@ -362,12 +341,12 @@ export default {
     doFastForward() {
       if (!this.interval) {
         this.interval = setInterval(() => {
-          let forwardTime = parseInt(this.startTime +  this.skipTime);
-          if (forwardTime < this.maxTime) {
-            this.startTime = forwardTime;
+          let forwardTime = parseInt(this.startTimestamp +  this.skipTime);
+          if (forwardTime < this.maxTimestamp) {
+            this.startTimestamp = forwardTime;
           } else {
-            this.startTime = this.maxTime;
-            forwardTime = this.maxTime ;
+            this.startTimestamp = this.maxTimestamp;
+            forwardTime = this.maxTimestamp ;
           }
           this.setRangeSliderStartTime(forwardTime);
         }, 70);
@@ -395,8 +374,8 @@ export default {
     async toggleReplay() {
       this.on('toggle-history', {
         replay: false,
-        startTime: this.startTime,
-        endTime: this.endTime,
+        startTime: this.startTimestamp,
+        endTime: this.endTimestamp,
         replaySpeed: this.speed
       });
     }

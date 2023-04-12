@@ -26,6 +26,12 @@ class TimeSeriesDatasource extends DataSource {
     constructor(name, properties) {
         super(name, properties);
 
+        if(!('minTime' in properties)) {
+            this.setMinTime(properties.startTime);
+        }
+        if(!('maxTime' in properties)) {
+            this.setMaxTime(properties.endTime);
+        }
         assertDefined(properties,'Some properties must be defined');
         this.dataSynchronizer = undefined;
     }
@@ -199,6 +205,7 @@ class TimeSeriesDatasource extends DataSource {
                        replaySpeed= this.getReplaySpeed(),
                        reconnect= false,
                        mode= this.getMode()) {
+
         return this.updateProperties({
             startTime: startTime,
             endTime: endTime,

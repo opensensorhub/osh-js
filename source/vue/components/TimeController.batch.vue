@@ -8,9 +8,9 @@
             <i class="fa fa-history"></i>
           </a>
           <div class="control-time">
-            <span :id="'current-time-'+id" v-html=parseTime(startTime)></span>
+            <span :id="'current-time-'+id" v-html=parseTime(startTimestamp)></span>
             <span style="padding:0 10px 0 10px">/</span>
-            <span :id="'end-time-'+id" v-html=parseTime(endTime)></span>
+            <span :id="'end-time-'+id" v-html=parseTime(endTimestamp)></span>
           </div>
         </div>
       </div>
@@ -69,10 +69,10 @@ export default {
       speedId: randomUUID(),
       event: null,
       connected: true,
-      startTime: null,
-      endTime: null,
-      minTime: null,
-      maxTime: null,
+      startTimestamp: null,
+      endTimestamp: null,
+      minTimestamp: null,
+      maxTimestamp: null,
       interval: false,
       rangeSlider: null,
       bcTime: null,
@@ -84,8 +84,8 @@ export default {
     event(newValue) {
       this.$emit('event', {
         event: newValue,
-        startTime: this.startTime,
-        endTime: this.endTime
+        startTime: this.startTimestamp,
+        endTime: this.endTimestamp
       });
     }
   },
@@ -96,29 +96,18 @@ export default {
     async initComp() {
       if (!this.init) {
         this.dataSource.isConnected().then(value => this.connected = value);
-        let stCurrentRefresh = this.dataSource.getStartTime() === 'now';
+        let stCurrentRefresh = this.dataSource.getMode() === Mode.REAL_TIME;
 
-        let minTime = this.dataSource.getMinTime();
-        let maxTime = this.dataSource.getMaxTime();
+        this.minTimestamp = new Date(this.dataSource.getMinTime()).getTime();
+        this.maxTimestamp = new Date(this.dataSource.getMaxTime()).getTime();
 
-        if (isDefined(minTime)) {
-          this.startTime = new Date(minTime).getTime();
-        } else {
-          this.startTime = new Date(this.dataSource.getStartTime()).getTime();
-        }
-        this.minTime = this.startTime;
-
-        if (isDefined(maxTime)) {
-          this.endTime = new Date(maxTime).getTime();
-        } else {
-          this.endTime = new Date(this.dataSource.getEndTime()).getTime();
-        }
-        this.maxTime = this.endTime;
+        this.startTimestamp = new Date(this.dataSource.getStartTime()).getTime();
+        this.endTimestamp = new Date(this.dataSource.getEndTime()).getTime();
 
         if (stCurrentRefresh) {
           await this.dataSource.setTimeRange(
-              new Date(this.minTime).toISOString(),
-              new Date(this.maxTime).toISOString(),
+              new Date(this.minTimestamp).toISOString(),
+              new Date(this.maxTimestamp).toISOString(),
               this.speed,
               true,
               Mode.BATCH
@@ -177,21 +166,22 @@ export default {
       }, [EventType.TIME_CHANGED, EventType.MASTER_TIME]);
     },
     setStartTime(timestamp) {
-      this.startTime = timestamp;
-      this.rangeSlider.setStartTime(this.startTime, this.endTime);
+      this.startTimestamp = timestamp;
+      this.rangeSlider.setStartTime(this.startTimestamp, this.endTimestamp);
     },
     createRangeSlider() {
       if (!this.rangeSlider) {
         this.rangeSlider = new RangeSliderReplay({
           container: this.id,
-          startTime: this.minTime,
-          endTime: this.maxTime,
+          startTime: new Date(this.minTimestamp),
+          endTime: new Date(this.maxTimestamp),
           debounce: 200,
           options: {}
         });
 
+        this.rangeSlider.setStartTime(this.startTimestamp);
         this.update = false;
-        this.rangeSlider.onChange = (startTime, endTime, event) => {
+        this.rangeSlider.onChange = (startTimestamp, endTimestamp, event) => {
           if (event === 'slide') {
             this.waitForTimeChanged = true;
             this.update = true;
@@ -200,8 +190,8 @@ export default {
           }
 
           if (!this.interval) {
-            this.startTime = startTime;
-            this.endTime = endTime;
+            this.startTimestamp = startTimestamp;
+            this.endTimestamp = endTimestamp;
 
             this.on(event);
           }
@@ -217,8 +207,8 @@ export default {
     },
     resetMasterTime() {
       // reset master time
+      this.waitForTimeChangedEvent = this.lastSynchronizedTimestamp !== -1;
       this.lastSynchronizedTimestamp = -1;
-      this.waitForTimeChangedEvent = true;
       this.on('time-changed');
       this.update = false;
     },
@@ -226,16 +216,16 @@ export default {
     async updateTime(event) {
       this.resetMasterTime();
       this.dataSource.setTimeRange(
-          new Date(this.startTime).toISOString(),
-          new Date(this.endTime).toISOString(),
+          new Date(this.startTimestamp).toISOString(),
+          new Date(this.endTimestamp).toISOString(),
           this.speed,
           true
       );
 
       this.on(event, {
         replaySpeed: this.speed,
-        startTime: this.startTime,
-        endTime: this.endTime
+        startTime: this.startTimestamp,
+        endTime: this.endTimestamp
       });
     }
     ,
@@ -248,7 +238,12 @@ export default {
     setRangeSliderStartTimeThrottle() {},
 
     async toggleReplay() {
-      this.on('toggle-history');
+      this.on('toggle-history', {
+        replay: false,
+        startTime: this.startTimestamp,
+        endTime: this.endTimestamp,
+        replaySpeed: 1.0
+      });
     },
     on(eventName, props = {}) {
       this.$emit('event', {
