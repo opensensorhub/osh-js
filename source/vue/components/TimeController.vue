@@ -136,7 +136,6 @@ export default {
           this.replayProps.startTime = event.startTime;
           this.replayProps.endTime = event.endTime;
           this.replayProps.replaySpeed = event.replaySpeed;
-          console.log('saving time', this.replayProps);
           this.toggleRealtime();
         } else {
           if(this.replayProps.mode === Mode.REPLAY) {
