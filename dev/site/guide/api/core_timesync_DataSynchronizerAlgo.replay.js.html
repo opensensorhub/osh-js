@@ -78,6 +78,9 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
+            // skip DatSource if out of time range
+            if(currentDs.skip) continue;
+
             if (currentDs.dataBuffer.length > 0) {
                 const dTs = (currentDs.dataBuffer[0].data.timestamp - tsRef);
                 // we use an intermediate object to store the data to shift because we want to return the oldest one
@@ -113,7 +116,10 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             id: dataSource.id,
             name: dataSource.name || dataSource.id,
             status: Status.DISCONNECTED, //MEANING Enabled, 0 = Disabled
-            version: undefined
+            version: undefined,
+            minTime: dataSource.minTimestamp,
+            maxTime: dataSource.maxTimestamp,
+            skip: false
         };
         this.datasources.push(dataSource);
     }
@@ -141,15 +147,25 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
 
     checkStart() {
         if(!isDefined(this.interval)) {
-            let nbDatasourcesFetchedOk = 0;
+            let nbSkip = 0;
+            let nbFetch = 0
             let totalDataSources = Object.keys(this.dataSourceMap).length;
 
+            let dataSource;
             for(let dataSourceID in this.dataSourceMap) {
-                if(this.dataSourceMap[dataSourceID].status === Status.FETCH_STARTED) nbDatasourcesFetchedOk++;
+                dataSource = this.dataSourceMap[dataSourceID];
+                dataSource.skip = (this.startTimestamp &lt; dataSource.minTime) || (this.startTimestamp > dataSource.maxTime);
+                console.log(`${new Date(dataSource.minTime).toISOString()+'-'+new Date(dataSource.maxTime).toISOString()}`);
+                if(dataSource.status === Status.FETCH_STARTED){
+                    nbFetch++;
+                } else if(dataSource.skip) {
+                    nbSkip++;
+                }
             }
 
-            console.warn(`[Synchronizer] Fetched ${nbDatasourcesFetchedOk}/${totalDataSources} datasources`);
-            if(nbDatasourcesFetchedOk === totalDataSources) {
+            console.warn(`[Synchronizer] Fetched ${nbFetch}/${totalDataSources} datasources`);
+            console.warn(`[Synchronizer] Skipped ${nbSkip}/${totalDataSources} datasources`);
+            if((nbFetch + nbSkip) === totalDataSources) {
                 console.warn('Starting Replay Algorithm...');
                 this.processData();
                 this.onStart();
@@ -178,6 +194,7 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         currentDs.dataBuffer = [];
         currentDs.status= Status.DISCONNECTED;
         currentDs.version = undefined;
+        currentDs.skip = false;
     }
 
     onEnd() {}
