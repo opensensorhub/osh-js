@@ -268,7 +268,9 @@ class DataSynchronizer {
             bufferingTime: dataSource.properties.bufferingTime || 0,
             timeOut: dataSource.properties.timeOut || 0,
             id: dataSource.id,
-            name: dataSource.name
+            name: dataSource.name,
+            minTimestamp: new Date(dataSource.getMinTime()).getTime(),
+            maxTimestamp: new Date(dataSource.getMaxTime()).getTime(),
         };
         // bind dataSource data onto dataSynchronizer data
         try {
@@ -288,6 +290,7 @@ class DataSynchronizer {
      * @param [lazy=false] lazy - add to current running synchronizer
      */
     async addDataSource(dataSource, lazy = false) {
+        dataSource.checkInit();
         if(lazy) {
             return new Promise(async resolve => {
                 const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
