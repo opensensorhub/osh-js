@@ -17,6 +17,7 @@
 import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_TIME_TOPIC} from "../Constants";
 import {assertDefined, isDefined} from "../utils/Utils";
 import DataSource from "./DataSource.datasource";
+import {Mode} from './Mode';
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -206,9 +207,29 @@ class TimeSeriesDatasource extends DataSource {
                        reconnect= false,
                        mode= this.getMode()) {
 
+
+        let intersectStartTime = startTime;
+        let intersectEndTime = endTime;
+
+        if(mode !== Mode.REAL_TIME) {
+            // compute date intersection
+            let stDelta = new Date(startTime).getTime() - new Date(this.getMinTime()).getTime();
+            let endDelta = new Date(this.getMaxTime()).getTime() - new Date(endTime).getTime();
+
+            if (stDelta < 0 && endDelta < 0) {
+                // out of time range, skipping
+                //TODO: warning: Mode is not changed at this step, may corrupt datasource on the dataSynchronizer?!
+                // should be set when  a valid timeRange is setup
+                return;
+            }
+
+            intersectStartTime = (stDelta < 0) ? this.getMinTime() : startTime;
+            intersectEndTime = (endDelta < 0) ? this.getMaxTime() : endTime;
+        }
+
         return this.updateProperties({
-            startTime: startTime,
-            endTime: endTime,
+            startTime: intersectStartTime,
+            endTime: intersectEndTime,
             replaySpeed: replaySpeed,
             reconnect : reconnect,
             mode: mode
