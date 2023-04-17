@@ -288,6 +288,7 @@ class DataSynchronizer {
      * @param [lazy=false] lazy - add to current running synchronizer
      */
     async addDataSource(dataSource, lazy = false) {
+        dataSource.checkInit();
         if(lazy) {
             return new Promise(async resolve => {
                 const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
