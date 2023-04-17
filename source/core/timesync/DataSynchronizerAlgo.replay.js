@@ -127,7 +127,6 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             for(let dataSourceID in this.dataSourceMap) {
                 dataSource = this.dataSourceMap[dataSourceID];
                 dataSource.skip = (this.startTimestamp < dataSource.minTime) || (this.startTimestamp > dataSource.maxTime);
-                console.log(`${new Date(dataSource.minTime).toISOString()+'-'+new Date(dataSource.maxTime).toISOString()}`);
                 if(dataSource.status === Status.FETCH_STARTED){
                     nbFetch++;
                 } else if(dataSource.skip) {
