@@ -268,7 +268,9 @@ class DataSynchronizer {
             bufferingTime: dataSource.properties.bufferingTime || 0,
             timeOut: dataSource.properties.timeOut || 0,
             id: dataSource.id,
-            name: dataSource.name
+            name: dataSource.name,
+            minTimestamp: new Date(dataSource.getMinTime()).getTime(),
+            maxTimestamp: new Date(dataSource.getMaxTime()).getTime(),
         };
         // bind dataSource data onto dataSynchronizer data
         try {
