@@ -96,6 +96,10 @@ class PolylineLayer extends Layer {
 			this.props.clampToGround = properties.clampToGround;
 		}
 
+		if(isDefined(properties.lineDash)){
+			this.props.lineDash = properties.lineDash;
+		}
+
 		let that = this;
 		// must be first to assign correctly the first location to the right id if it is defined
 		if(isDefined(properties.getPolylineId)) {
