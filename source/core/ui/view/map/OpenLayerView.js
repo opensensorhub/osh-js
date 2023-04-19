@@ -445,7 +445,9 @@ class OpenLayerView extends MapView {
                 }),
                 stroke: new Stroke({
                     color: properties.color,
-                    width: properties.weight
+                    width: properties.weight,
+                    lineDash: properties.lineDash,
+                    lineCap: properties.lineCap
                 })
             })
         });
@@ -489,6 +491,7 @@ class OpenLayerView extends MapView {
             style.getStroke().setColor(props.color);
             style.getStroke().setWidth(props.weight);
             style.getFill().setColor(props.color);
+            style.getLineDash().setLineDash(props.lineDash);
         }
     }
 

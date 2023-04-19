@@ -101,7 +101,20 @@ class PolylineLayer extends Layer {
 			props.clampToGround = properties.clampToGround;
 		}
 
+		if(isDefined(properties.lineDash)){
+			this.props.lineDash = properties.lineDash;
+		}
+
 		this.definedId('polylineId', props);
+
+		let that = this;
+		// must be first to assign correctly the first location to the right id if it is defined
+		if(isDefined(properties.getPolylineId)) {
+			let fn = async (rec) => {
+				that.props.polylineId = await that.getFunc('getPolylineId')(rec);
+			};
+			this.addFn(that.getDataSourcesIdsByProperty('getPolylineId'),fn);
+		}
 
 		if(isDefined(properties.getLocation)) {
 			let fn = async (rec, timestamp, options) => {
