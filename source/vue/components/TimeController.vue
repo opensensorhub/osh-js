@@ -19,6 +19,7 @@
           :skipTimeStep="skipTimeStep"
           :replaySpeedStep="replaySpeedStep"
           @event='onControlEvent'
+          :startTime="replayProps.startTime"
       ></TimeControllerReplay>
     </slot>
     <slot v-else-if="replayProps.startTime && replayProps.mode === 'batch'">

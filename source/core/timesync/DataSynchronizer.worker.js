@@ -73,9 +73,9 @@ async function handleMessage(event) {
             } else if (event.data.message === 'connect') {
                 startMasterTimeInterval(masterTimeRefreshRate);
                 dataSynchronizerAlgo.checkStart();
-            } else if (event.data.message === 'remove' && event.data.dataSources) {
+            } else if (event.data.message === 'remove' && event.data.dataSourceIds) {
                 console.log('Remove datasource from synchronizer..')
-                await removeDataSources(event.data.dataSources);
+                await removeDataSources(event.data.dataSourceIds);
             } else if (event.data.message === 'current-time') {
                 data = {
                     message: 'current-time',
@@ -160,9 +160,11 @@ function initBroadcastChannel(dataTopic, timeTopic) {
         } else if(event.data.type === EventType.STATUS) {
             const dataSourceId = event.data.dataSourceId;
             dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
-            console.log(dataSources[dataSourceId].name + ": status=" + event.data.status);
             // bubble the message
-            bcChannels[dataSourceId].postMessage(event.data);
+            if(dataSourceId in bcChannels) {
+                console.log(dataSources[dataSourceId].name + ": status=" + event.data.status);
+                bcChannels[dataSourceId].postMessage(event.data);
+            }
         }
     }
 
@@ -192,19 +194,20 @@ function addDataSource(dataSource) {
 
 /**
  *
- * @param dataSources
+ * @param dataSourceIds
  */
-async function removeDataSources(dataSources) {
-    for(let dataSource of dataSources) {
-        await removeDataSource(dataSource);
+async function removeDataSources(dataSourceIds) {
+    for(let dataSourceId of dataSourceIds) {
+        await removeDataSource(dataSourceId);
     }
 }
 
-async function removeDataSource(dataSource) {
-    await dataSynchronizerAlgo.removeDataSource(dataSource);
+async function removeDataSource(dataSourceId) {
+    await dataSynchronizerAlgo.removeDataSource(dataSourceId);
     // create a BC to push back the synchronized data into the DATA Stream.
-    delete bcChannels[dataSource.id];
-    delete dataSources[dataSource.id];
+    console.log('deleting BC for datasource '+dataSourceId);
+    delete bcChannels[dataSourceId];
+    delete dataSources[dataSourceId];
 }
 
 function checkMasterTime() {

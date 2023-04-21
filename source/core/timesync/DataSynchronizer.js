@@ -39,8 +39,8 @@ class DataSynchronizer {
         this.dataSources = properties.dataSources || [];
         this.replaySpeed = properties.replaySpeed || 1;
         this.timerResolution = properties.timerResolution || 5;
-        this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250,
-            this.mode = properties.mode || Mode.REPLAY;
+        this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250;
+        this.mode = properties.mode || Mode.REPLAY;
         this.initialized = false;
         this.properties = {};
         this.properties.replaySpeed = this.replaySpeed;
@@ -63,7 +63,6 @@ class DataSynchronizer {
             this.properties.startTime = 'now';
             this.properties.endTime = '2055-01-01Z';
         }
-
     }
 
     getTopicId() {
@@ -287,15 +286,23 @@ class DataSynchronizer {
      * Adds a new DataSource object to the list of datasources to synchronize.
      * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
      * @param {Datasource} dataSource - the new datasource to add
-     * @param [lazy=false] lazy - add to current running synchronizer
      */
-    async addDataSource(dataSource, lazy = false) {
-        dataSource.checkInit();
-        if(lazy) {
-            return new Promise(async resolve => {
-                const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-                this.dataSources.push(dataSource);
-                await this.postMessage({
+    async addDataSource(dataSource) {
+        if(!this.initialized) {
+            console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
+            this.dataSources.push(dataSource);
+            this.onTimeChanged(this.getMinTime(),this.getMaxTime());
+        } else {
+            const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
+            const lastTimestamp = (await this.getCurrentTime()).data;
+            if(isDefined(lastTimestamp)) {
+                await dataSource.setTimeRange(
+                    new Date(lastTimestamp + 1000).toISOString(),
+                );
+            }
+            this.dataSources.push(dataSource);
+            console.log('minTime='+this.getMinTime()+',maxTime='+this.getMaxTime());
+            await this.postMessage({
                     message: 'add',
                     dataSources: [dataSourceForWorker]
                 });
@@ -310,21 +317,30 @@ class DataSynchronizer {
     /**
      * Removes a DataSource object from the list of datasources of the synchronizer.
      * @param {DataSource} dataSource - the new datasource to add
-     * @param [lazy=false] lazy - remove from the current running synchronizer
      */
-    async removeDataSource(dataSource, lazy = false) {
-        if(lazy) {
-            return new Promise(async resolve => {
-                this.dataSources = this.dataSources.filter( elt => elt.id !== dataSource.getId());
-                await this.postMessage({
-                    message: 'remove',
-                    dataSources: [dataSource.getId()]
-                });
-                await dataSource.disconnect();
-                resolve();
-            });
-        } else {
+    async removeDataSource(dataSource) {
+        if(!this.initialized) {
             this.dataSources = this.dataSources.filter( elt => elt.id !== dataSource.getId());
+            this.onTimeChanged(this.getMinTime(),this.getMaxTime());
+        } else {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+                    await this.postMessage({
+                        message: 'remove',
+                        dataSourceIds: [dataSource.getId()]
+                    });
+                    await dataSource.disconnect();
+                    if(this.dataSources.length > 0) {
+                        this.onTimeChanged(this.getMinTime(), this.getMaxTime());
+                    } else {
+                        await this.reset();
+                    }
+                    resolve();
+                }catch (ex) {
+                 reject(ex);
+                }
+            });
         }
     }
 
@@ -448,6 +464,7 @@ class DataSynchronizer {
                     ds.setTimeRange(startTime, endTime, replaySpeed, reconnect, mode);
                 }
                 this.mode = mode;
+                this.onTimeChanged(this.getMinTime(),this.getMaxTime());
                 resolve();
             });
         });
@@ -458,6 +475,18 @@ class DataSynchronizer {
             ds.updateProperties(properties);
         }
     }
+
+    resetTimes() {
+        this.lastTime = {
+            start: undefined,
+            end: undefined
+        };
+        this.startTime = 0;
+        this.minTime = 0;
+        this.maxTime = 0;
+        this.endTime = 0;
+        this.lastTime = 0;
+    }
     /**
      * Resets reference time
      */
@@ -466,7 +495,9 @@ class DataSynchronizer {
             await this.checkInit();
             await this.postMessage({
                 message: 'reset'
-            }, resolve);
+            });
+            this.resetTimes();
+            resolve();
         });
     }
 
@@ -516,5 +547,6 @@ class DataSynchronizer {
             }
         }
     }
+    onTimeChanged(start, min){}
 }
 export default  DataSynchronizer;

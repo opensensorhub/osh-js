@@ -15,13 +15,15 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             return;
         }
 
-        const ds = this.dataSourceMap[dataSourceId];
-        const lastData = dataBlocks[dataBlocks.length-1];
-        if (!this.checkVersion(ds, lastData)) {
-            console.warn(`[DataSynchronizer] incompatible version ${ds.version} ~ ${lastData.version}, skipping data`);
-            return;
+        if(dataSourceId in this.dataSourceMap) {
+            const ds = this.dataSourceMap[dataSourceId];
+            const lastData = dataBlocks[dataBlocks.length - 1];
+            if (!this.checkVersion(ds, lastData)) {
+                console.warn(`[DataSynchronizer] incompatible version ${ds.version} ~ ${lastData.version}, skipping data`);
+                return;
+            }
+            ds.dataBuffer.push(...dataBlocks);
         }
-        ds.dataBuffer.push(...dataBlocks);
     }
 
     processData() {
@@ -93,14 +95,20 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             maxTime: dataSource.maxTimestamp,
             skip: false
         };
+        if(dataSource.maxTimestamp < this.getCurrentTimestamp() || dataSource.minTimestamp > this.getCurrentTimestamp()) {
+            this.dataSourceMap[dataSource.id].skip = true;
+            console.warn(`Skipping new added dataSource ${dataSource.id} because timeRange of the dataSource is not intersecting the synchronizer one`);
+        }
         this.datasources.push(dataSource);
     }
 
     checkVersion(datasource, dataBlock) {
-        if(!isDefined(datasource.version)) {
-            return true;
-        } else if(datasource.version !== dataBlock.version) {
-            return false;
+        if(isDefined(datasource)) {
+            if (!isDefined(datasource.version)) {
+                return true;
+            } else if (datasource.version !== dataBlock.version) {
+                return false;
+            }
         }
     }
 
@@ -123,6 +131,9 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             let nbFetch = 0
             let totalDataSources = Object.keys(this.dataSourceMap).length;
 
+            if(totalDataSources === 0) {
+                return;
+            }
             let dataSource;
             for(let dataSourceID in this.dataSourceMap) {
                 dataSource = this.dataSourceMap[dataSourceID];

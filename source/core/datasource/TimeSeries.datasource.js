@@ -167,12 +167,17 @@ class TimeSeriesDatasource extends DataSource {
     async initDataSource(properties) {
         await super.initDataSource(properties);
         return new Promise(async (resolve, reject) => {
+            const topics =  {
+                data: this.getTopicId(),
+                time: this.getTimeTopicId()
+            };
+            if(this.dataSynchronizer) {
+                topics.sync = dataSynchronizer.getTimeTopicId()
+            }
+
             this.postMessage({
                 message: 'topics',
-                topics:  {
-                    data: this.getTopicId(),
-                    time: this.getTimeTopicId()
-                },
+                topics:  topics,
             }, async () => {
                 // listen for Events to callback to subscriptions
                 const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
@@ -207,7 +212,7 @@ class TimeSeriesDatasource extends DataSource {
                        reconnect= false,
                        mode= this.getMode()) {
 
-
+        await this.checkInit();
         let intersectStartTime = startTime;
         let intersectEndTime = endTime;
 
@@ -227,13 +232,15 @@ class TimeSeriesDatasource extends DataSource {
             intersectEndTime = (endDelta < 0) ? this.getMaxTime() : endTime;
         }
 
-        return this.updateProperties({
-            startTime: intersectStartTime,
-            endTime: intersectEndTime,
-            replaySpeed: replaySpeed,
-            reconnect : reconnect,
-            mode: mode
-        });
+        if(intersectEndTime !== this.getMinTime() || intersectEndTime !== this.getMaxTime()) {
+            return this.updateProperties({
+                startTime: intersectStartTime,
+                endTime: intersectEndTime,
+                replaySpeed: replaySpeed,
+                reconnect: reconnect,
+                mode: mode
+            });
+        }
     }
 }
 
