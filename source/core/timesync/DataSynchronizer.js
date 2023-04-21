@@ -306,11 +306,8 @@ class DataSynchronizer {
                     message: 'add',
                     dataSources: [dataSourceForWorker]
                 });
-                await dataSource.connect();
-                resolve();
-            });
-        } else {
-            this.dataSources.push(dataSource);
+            console.log('minTime='+this.getMinTime()+',maxTime='+this.getMaxTime());
+            this.onTimeChanged(this.getMinTime(),this.getMaxTime());
         }
     }
 
