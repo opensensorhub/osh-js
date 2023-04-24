@@ -1,6 +1,6 @@
 <template>
   <div :id="'control-component-'+this.id" class="control">
-    <RangeSlider
+    <RangeSliderReplay
         :update="update"
         :interval="interval"
         @event="onRangeSliderEvent"
@@ -9,7 +9,7 @@
         :currentTime="startTime"
         ref="rangeSliderRef"
         v-if="rangeSliderInit && init"
-    ></RangeSlider>
+    ></RangeSliderReplay>
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
         <div class="datasource-actions replay">
@@ -39,10 +39,10 @@
                @mousedown="doFastForward"> <i
                 class="fa fa-fast-forward"></i></a>
           </div>
-          <ControleTimeReplay
+          <ControlTimeReplay
               :current-time="currentTime"
               :end-time="endTime"
-          ></ControleTimeReplay>
+          ></ControlTimeReplay>
         </div>
       </div>
     </div>
@@ -55,8 +55,8 @@ import {isDefined} from '../../core/utils/Utils';
 import {Status as STATUS} from "../../core/connector/Status";
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
 import {EventType} from "../../core/event/EventType";
-import RangeSlider from './RangeSlider.vue';
-import ControleTimeReplay from "./ControleTime.replay.vue";
+import RangeSliderReplay from './RangeSlider.replay.vue';
+import ControlTimeReplay from "./ControlTime.replay.vue";
 
 /**
  * @module osh-vue/TimeController
@@ -72,8 +72,8 @@ import ControleTimeReplay from "./ControleTime.replay.vue";
 export default {
   name: "TimeControllerReplay",
   components: {
-    ControleTimeReplay,
-    RangeSlider
+    ControlTimeReplay,
+    RangeSliderReplay
   },
   props: {
     dataSource: {
@@ -124,14 +124,12 @@ export default {
       speed: 1.0,
       interval: false,
       rangeSlider: null,
-      bcTime: null,
       skipTime: 0,
       init: false,
       update: false,
       lastSynchronizedTimestamp: -1,
       waitForTimeChangedEvent: false,
       rangeSliderInit: false,
-      versionRangeSlider: 0,
       rangeStartDate: undefined,
       rangeEndDate: undefined
     };
@@ -213,14 +211,6 @@ export default {
         this.init = true;
       }
     },
-    destroyBc() {
-      if (isDefined(this.bcTime)) {
-        this.bcTime.close();
-      }
-    },
-    destroyTimeBc() {
-      this.bcTime.close();
-    },
     displayConsoleWarningIncompatibleVersionThrottle() {
 
     },
@@ -280,7 +270,6 @@ export default {
             }
             this.rangeStartDate = this.parseTime(this.startTimestamp);
             this.rangeEndDate = this.parseTime(this.maxTimestamp);
-            this.versionRangeSlider++;
             // in case where we click on Pause, remove the DataSource, and doPlay again
             this.waitForTimeChangedEvent = false;
           }.bind(this);
@@ -464,8 +453,7 @@ export default {
           }, 200);
         }
       }
-    }
-    ,
+    },
     stopSpeed() {
       if (this.interval || isDefined(this.incSpeedTimeout)) {
         if (this.interval) {
@@ -477,18 +465,30 @@ export default {
         }
         this.updateTimeDebounce('end');
       }
-    }
-    ,
+    },
     on(eventName, props={}) {
       this.$emit('event', {
         name: eventName,
         ...props
       });
-    }
-    ,
+    },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
     },
+    // vuejs 3.x
+    beforeUnmount() {
+      const ref = this.$refs.rangeSliderRef;
+      if(ref) {
+        ref.destroy();
+      }
+    },
+    // vuejs 2.x
+    beforeDestroy() {
+      const ref = this.$refs.rangeSliderRef;
+      if(ref) {
+        ref.destroy();
+      }
+    }
   }
 }
 </script>

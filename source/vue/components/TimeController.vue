@@ -28,6 +28,7 @@
           :debounce="debounce"
           :parseTime="parseTime"
           @event='onControlEvent'
+          :startTime="replayProps.startTime"
       ></TimeControllerBatch>
     </slot>
   </div>

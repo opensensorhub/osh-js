@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: "ControleTimeReplay",
+  name: "ControlTimeReplay",
   props: ['currentTime', 'endTime'],
 }
 </script>
