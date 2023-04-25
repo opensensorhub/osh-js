@@ -19,6 +19,7 @@
           :skipTimeStep="skipTimeStep"
           :replaySpeedStep="replaySpeedStep"
           @event='onControlEvent'
+          :startTime="replayProps.startTime"
       ></TimeControllerReplay>
     </slot>
     <slot v-else-if="replayProps.startTime && replayProps.mode === 'batch'">
@@ -27,6 +28,7 @@
           :debounce="debounce"
           :parseTime="parseTime"
           @event='onControlEvent'
+          :startTime="replayProps.startTime"
       ></TimeControllerBatch>
     </slot>
   </div>
@@ -44,7 +46,6 @@ import TimeControllerBatch from "./TimeController.batch.vue";
  * @desc TimeController component to control timeline of the datasources
  * @vue-prop {DataSource}  [dataSource] - DataSource object
  * @vue-prop {DataSynchronizer} [dataSynchronizer] - DataSynchronizer object
- * @vue-prop {String} [skipTimeStep='5s'] Time to skip backward/forward. In seconds or percent of the total time
  * @vue-prop {Number} [replaySpeedStep=0.1] Time to decrease/increase replay speed value
  * @vue-prop {Number} [debounce=800] Debounce time before executing refresh while clicking on backward/forward/replaySpeed action. In millis
  * @vue-prop {Function} [parseTime] - Function used to parse the time and display next to the actions buttons. Return value can be text or HTML.

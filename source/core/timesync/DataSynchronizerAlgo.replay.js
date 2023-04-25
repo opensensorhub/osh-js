@@ -15,13 +15,15 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             return;
         }
 
-        const ds = this.dataSourceMap[dataSourceId];
-        const lastData = dataBlocks[dataBlocks.length-1];
-        if (!this.checkVersion(ds, lastData)) {
-            console.warn(`[DataSynchronizer] incompatible version ${ds.version} ~ ${lastData.version}, skipping data`);
-            return;
+        if(dataSourceId in this.dataSourceMap) {
+            const ds = this.dataSourceMap[dataSourceId];
+            const lastData = dataBlocks[dataBlocks.length - 1];
+            if (!this.checkVersion(ds, lastData)) {
+                console.warn(`[DataSynchronizer] incompatible version ${ds.version} ~ ${lastData.version}, skipping data`);
+                return;
+            }
+            ds.dataBuffer.push(...dataBlocks);
         }
-        ds.dataBuffer.push(...dataBlocks);
     }
 
     processData() {
@@ -29,8 +31,12 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
 
         this.interval = setInterval(() => {
             // 1) return the oldest data if any
-            while (this.computeNextData(this.startTimestamp, clockTimeRef)) {}
-            this.checkEnd();
+            while (this.computeNextData(this.startTimestamp, clockTimeRef)) {
+                this.checkEnd();
+                if(!isDefined(this.interval)) {
+                    break;
+                }
+            }
         }, this.timerResolution);
         console.warn(`Started Replay Algorithm with tsRef=${new Date(this.startTimestamp).toISOString()}`);
     }
@@ -46,10 +52,17 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         let currentDsToShift = null;
 
         const dClock = (performance.now() - refClockTime) * this.replaySpeed;
-        this.tsRun = tsRef + dClock;
+        let tsRun = tsRef + dClock;
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
+            if(currentDs.skip) {
+                // if datasource is in current range
+                if(tsRun > currentDs.minTimestamp && tsRun <  currentDs.maxTimestamp) {
+                    currentDs.skip = false;
+                }
+            }
+            this.tsRun = tsRun;
             // skip DatSource if out of time range
             if(currentDs.skip) continue;
 
@@ -72,7 +85,9 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
 
         // finally pop the data from DS queue
         if (currentDsToShift !== null) {
-            this.onData(currentDsToShift.id, currentDsToShift.dataBuffer.shift());
+            if(currentDsToShift.id in this.dataSourceMap) {
+                this.onData(currentDsToShift.id, currentDsToShift.dataBuffer.shift());
+            }
             return true;
         }
         return false;
@@ -89,18 +104,29 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             name: dataSource.name || dataSource.id,
             status: Status.DISCONNECTED, //MEANING Enabled, 0 = Disabled
             version: undefined,
-            minTime: dataSource.minTimestamp,
-            maxTime: dataSource.maxTimestamp,
+            minTimestamp: dataSource.minTimestamp,
+            maxTimestamp: dataSource.maxTimestamp,
             skip: false
         };
+        if(dataSource.maxTimestamp < this.getCurrentTimestamp() || dataSource.minTimestamp > this.getCurrentTimestamp()) {
+            this.dataSourceMap[dataSource.id].skip = true;
+            console.warn(`Skipping new added dataSource ${dataSource.id} because timeRange of the dataSource is not intersecting the synchronizer one`);
+        }
         this.datasources.push(dataSource);
+
+        // check if start at the right startTime
+        if(this.dataSourceMap.length  === 1) {
+            // reset min/max to that dataSource
+        }
     }
 
     checkVersion(datasource, dataBlock) {
-        if(!isDefined(datasource.version)) {
-            return true;
-        } else if(datasource.version !== dataBlock.version) {
-            return false;
+        if(isDefined(datasource)) {
+            if (!isDefined(datasource.version)) {
+                return true;
+            } else if (datasource.version !== dataBlock.version) {
+                return false;
+            }
         }
     }
 
@@ -123,10 +149,13 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
             let nbFetch = 0
             let totalDataSources = Object.keys(this.dataSourceMap).length;
 
+            if(totalDataSources === 0) {
+                return;
+            }
             let dataSource;
             for(let dataSourceID in this.dataSourceMap) {
                 dataSource = this.dataSourceMap[dataSourceID];
-                dataSource.skip = (this.startTimestamp < dataSource.minTime) || (this.startTimestamp > dataSource.maxTime);
+                dataSource.skip = (this.startTimestamp < dataSource.minTimestamp) || (this.startTimestamp > dataSource.maxTimestamp);
                 if(dataSource.status === Status.FETCH_STARTED){
                     nbFetch++;
                 } else if(dataSource.skip) {
@@ -152,12 +181,12 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
     }
 
     reset() {
-        this.tsRun = undefined;
         console.log('reset synchronizer algo')
         this.close();
         for (let currentDsId in this.dataSourceMap) {
             this.resetDataSource(currentDsId);
         }
+        this.tsRun = undefined;
     }
 
     resetDataSource(datasourceId) {
@@ -166,6 +195,35 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         currentDs.status= Status.DISCONNECTED;
         currentDs.version = undefined;
         currentDs.skip = false;
+    }
+
+    removeDataSource(dataSourceId) {
+        super.removeDataSource(dataSourceId);
+        // looking for next start Timestamp
+        let currentTimestamp = this.getCurrentTimestamp();
+        let min, ds;
+        for(let dsKey in this.dataSourceMap) {
+            ds = this.dataSourceMap[dsKey];
+            if(currentTimestamp >= ds.minTimestamp && currentTimestamp <= ds.maxTimestamp) {
+                // continue because this datasource is in the current range
+                return;
+            } else {
+                // otherwise
+                // looking for next range and reset algo
+                if(!min) {
+                    min = ds.minTimestamp;
+                } else if(ds.minTimestamp < min) {
+                    min = ds.minTimestamp;
+                }
+            }
+        }
+
+        if(min) {
+            this.reset();
+            this.startTimestamp = min;
+            console.log('set this.startTimestamp to ' + new Date(this.startTimestamp).toISOString());
+            this.checkStart();
+        }
     }
 
     onEnd() {}

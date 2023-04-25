@@ -98,7 +98,10 @@ class SweApiReplayContext extends SweApiContext {
 
                     console.warn(`fetching ${relativeStartTime} -> ` +
                         `${this.properties.endTime} for datasource ${this.properties.dataSourceId}`);
-                    this.collection = await this.replayFunction(properties, relativeStartTime, this.properties.endTime);
+                    // if disconnected, replay function is reset
+                    if(this.replayFunction) {
+                        this.collection = await this.replayFunction(properties, relativeStartTime, this.properties.endTime);
+                    }
                 }
 
                 const fetchNext = async () => {

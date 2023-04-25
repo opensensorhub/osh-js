@@ -48,10 +48,10 @@ class DataSynchronizerAlgoRealtime extends DataSynchronizerAlgo {
             }
         }
         const dClock = (performance.now() - refClockTime);
-        this.tsRun = tsRef + dClock;
         // compute next data to return
         for (let currentDsId in this.dataSourceMap) {
             currentDs = this.dataSourceMap[currentDsId];
+            this.tsRun = tsRef + dClock;
             if (currentDs.dataBuffer.length > 0) {
                 const dTs = (currentDs.dataBuffer[0].data.timestamp - tsRef);
                 const dClockAdj = dClock - maxLatency;

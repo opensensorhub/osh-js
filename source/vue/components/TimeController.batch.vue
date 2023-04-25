@@ -1,17 +1,25 @@
 <template>
   <div :id="'control-component-'+this.id" class="control">
-    <div :id="id" class="range"></div>
+    <RangeSliderReplay
+        :update="update"
+        :interval="interval"
+        @event="onRangeSliderEvent"
+        :minTimestamp="minTimeStamp"
+        :maxTimestamp="maxTimeStamp"
+        :currentTime="startTime"
+        ref="rangeSliderRef"
+        v-if="rangeSliderInit && init"
+    ></RangeSliderReplay>
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
         <div class="datasource-actions replay">
           <a :id="'replay-btn-'+id" class="control-btn clicked" @click="toggleReplay">
             <i class="fa fa-history"></i>
           </a>
-          <div class="control-time">
-            <span :id="'current-time-'+id" v-html=parseTime(startTimestamp)></span>
-            <span style="padding:0 10px 0 10px">/</span>
-            <span :id="'end-time-'+id" v-html=parseTime(endTimestamp)></span>
-          </div>
+          <ControlTimeReplay
+              :current-time="currentTime"
+              :end-time="endTime"
+          ></ControlTimeReplay>
         </div>
       </div>
     </div>
@@ -19,13 +27,13 @@
 </template>
 
 <script>
-import RangeSliderReplay from '../../ext/ui/view/rangeslider/RangeSliderView.replay.js';
 import {randomUUID} from '../../core/utils/Utils.js';
 import {isDefined} from '../../core/utils/Utils';
 import {Status as STATUS} from "../../core/connector/Status";
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
 import {EventType} from "../../core/event/EventType";
-import {Mode} from "../../core/datasource/Mode";
+import ControlTimeReplay from "./ControlTime.replay.vue";
+import RangeSliderReplay from './RangeSlider.replay.vue';
 
 
 /**
@@ -41,7 +49,10 @@ import {Mode} from "../../core/datasource/Mode";
  */
 export default {
   name: "TimeControllerBatch",
-  components: {},
+  components: {
+    ControlTimeReplay,
+    RangeSliderReplay
+  },
   props: {
     dataSource: {
       type: Object
@@ -61,7 +72,10 @@ export default {
 
         return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
       }
-    }
+    },
+    startTime: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -74,10 +88,11 @@ export default {
       minTimestamp: null,
       maxTimestamp: null,
       interval: false,
-      rangeSlider: null,
       bcTime: null,
       init: false,
-      waitForTimeChangedEvent: false
+      waitForTimeChangedEvent: false,
+      update: false,
+      rangeSliderInit: false,
     };
   },
   watch: {
@@ -89,6 +104,20 @@ export default {
       });
     }
   },
+  computed: {
+    minTimeStamp() {
+      return this.minTimestamp;
+    },
+    maxTimeStamp() {
+      return this.maxTimestamp;
+    },
+    currentTime() {
+      return this.parseTime(this.startTimestamp);
+    },
+    endTime() {
+      return this.parseTime(this.maxTimestamp);
+    }
+  },
   mounted() {
     this.initComp();
   },
@@ -96,23 +125,11 @@ export default {
     async initComp() {
       if (!this.init) {
         this.dataSource.isConnected().then(value => this.connected = value);
-        let stCurrentRefresh = this.dataSource.getMode() === Mode.REAL_TIME;
-
         this.minTimestamp = new Date(this.dataSource.getMinTime()).getTime();
         this.maxTimestamp = new Date(this.dataSource.getMaxTime()).getTime();
 
         this.startTimestamp = new Date(this.dataSource.getStartTime()).getTime();
         this.endTimestamp = new Date(this.dataSource.getEndTime()).getTime();
-
-        if (stCurrentRefresh) {
-          await this.dataSource.setTimeRange(
-              new Date(this.minTimestamp).toISOString(),
-              new Date(this.maxTimestamp).toISOString(),
-              this.speed,
-              true,
-              Mode.BATCH
-          );
-        }
 
         this.createTimeBc();
         // listen for datasource status
@@ -170,35 +187,29 @@ export default {
       this.rangeSlider.setStartTime(this.startTimestamp, this.endTimestamp);
     },
     createRangeSlider() {
-      if (!this.rangeSlider) {
-        this.rangeSlider = new RangeSliderReplay({
-          container: this.id,
-          startTime: new Date(this.minTimestamp),
-          endTime: new Date(this.maxTimestamp),
-          debounce: 200,
-          options: {}
-        });
+      if (!this.rangeSliderInit) {
+        let dataSourceObj = {};
 
-        this.rangeSlider.setStartTime(this.startTimestamp);
-        this.update = false;
-        this.rangeSlider.onChange = (startTimestamp, endTimestamp, event) => {
-          if (event === 'slide') {
-            this.waitForTimeChanged = true;
-            this.update = true;
-          } else if (event === 'end') {
-            this.update = false;
-          }
-
-          if (!this.interval) {
-            this.startTimestamp = startTimestamp;
-            this.endTimestamp = endTimestamp;
-
-            this.on(event);
-          }
-          if (event === 'end') {
-            this.doPlay();
-          }
+        if (isDefined(this.dataSynchronizer)) {
+          dataSourceObj.dataSynchronizer = this.dataSynchronizer;
+          this.dataSynchronizer.onTimeChanged = function(minTime, maxTime) {
+            this.minTimestamp = new Date(minTime).getTime();
+            this.maxTimestamp = new Date(maxTime).getTime();
+            this.endTimestamp = new Date(maxTime).getTime();
+            if(new Date(minTime).getTime() > this.startTimestamp) {
+              this.startTimestamp = new Date(minTime).getTime();
+            }
+            this.rangeStartDate = this.parseTime(this.startTimestamp);
+            this.rangeEndDate = this.parseTime(this.maxTimestamp);
+            // in case where we click on Pause, remove the DataSource, and doPlay again
+            this.waitForTimeChangedEvent = false;
+          }.bind(this);
+        } else {
+          dataSourceObj.dataSource = this.dataSource;
         }
+
+        this.rangeSliderInit = true;
+        // HAS BEEN REPLACED
       }
     },
     doPlay() {
@@ -240,20 +251,36 @@ export default {
     async toggleReplay() {
       this.on('toggle-history', {
         replay: false,
-        startTime: this.startTimestamp,
-        endTime: this.endTimestamp,
+        startTime: new Date(this.startTimestamp).toISOString(),
+        endTime: new Date(this.endTimestamp).toISOString(),
         replaySpeed: 1.0
       });
     },
-    on(eventName, props = {}) {
+    on(eventName, props={}) {
       this.$emit('event', {
         name: eventName,
         ...props
       });
-    }
-    ,
+    },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
+    },
+    onRangeSliderEvent(props) {
+      if('startTimestamp' in props) {
+        this.startTimestamp = props.startTimestamp;
+      }
+      if('endTimestamp' in props) {
+        this.endTimestamp = props.endTimestamp;
+      }
+      if('update' in props) {
+        this.update = props.update;
+      }
+      if('waitForTimeChangedEvent' in props) {
+        this.waitForTimeChangedEvent = props.waitForTimeChangedEvent;
+      }
+      if(props.name === 'doPlay') {
+        this.doPlay();
+      }
     },
   }
 }

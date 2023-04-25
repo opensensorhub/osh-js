@@ -165,7 +165,6 @@ class DelegateReplayHandler extends DelegateHandler {
                 this.timeBc = new BroadcastChannel(this.timeTopic);
                 this.timeBc.onmessage = async (event) => {
                     if (event.data.type === EventType.MASTER_TIME) {
-
                         masterTimestamp = event.data.timestamp;
                         if (masterTimestamp >= endTimestamp) {
                             await this.disconnect();
@@ -178,10 +177,12 @@ class DelegateReplayHandler extends DelegateHandler {
                             // less than 5 sec
                             if (dTimestamp <= prefetchBatchDuration) {
                                 // request next batch
-                                data = await this.context.nextBatch();
-                                if (!this.status.cancel && data.length > 0) {
-                                    this.handleData(data);
-                                    lastTimestamp = data[data.length - 1].timestamp;
+                                if (!this.status.cancel) {
+                                    data = await this.context.nextBatch();
+                                    if (data.length > 0) {
+                                        this.handleData(data);
+                                        lastTimestamp = data[data.length - 1].timestamp;
+                                    }
                                 }
                             }
                             fetching = false;
@@ -229,6 +230,7 @@ class DelegateReplayHandler extends DelegateHandler {
                     this.context.disconnect();
                     if (isDefined(this.timeBc)) {
                         this.timeBc.close();
+                        this.timeBc = undefined;
                     }
                     this.initialized = false;
                 } catch (ex) {
