@@ -73,6 +73,12 @@ async function handleMessage(event) {
             } else if (event.data.message === 'connect') {
                 startMasterTimeInterval(masterTimeRefreshRate);
                 dataSynchronizerAlgo.checkStart();
+            } else if(event.data.message === 'is-connected') {
+                console.log(isDefined(masterTimeInterval), isDefined(dataSynchronizerAlgo), isDefined(dataSynchronizerAlgo.interval))
+                data = {
+                    message: 'is-connected',
+                    data: isDefined(masterTimeInterval) && isDefined(dataSynchronizerAlgo) && isDefined(dataSynchronizerAlgo.interval)
+                };
             } else if (event.data.message === 'remove' && event.data.dataSourceIds) {
                 console.log('Remove datasource from synchronizer..')
                 await removeDataSources(event.data.dataSourceIds);

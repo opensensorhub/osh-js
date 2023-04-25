@@ -288,27 +288,49 @@ class DataSynchronizer {
      * @param {Datasource} dataSource - the new datasource to add
      */
     async addDataSource(dataSource) {
-        if(!this.initialized) {
-            console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
-            this.dataSources.push(dataSource);
-            this.onTimeChanged(this.getMinTime(),this.getMaxTime());
-        } else {
-            const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-            const lastTimestamp = (await this.getCurrentTime()).data;
-            if(isDefined(lastTimestamp)) {
-                await dataSource.setTimeRange(
-                    new Date(lastTimestamp + 1000).toISOString(),
-                );
-            }
-            this.dataSources.push(dataSource);
-            console.log('minTime='+this.getMinTime()+',maxTime='+this.getMaxTime());
-            await this.postMessage({
+        return new Promise(async resolve => {
+            if (!this.initialized) {
+                console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
+                this.dataSources.push(dataSource);
+                this.onTimeChanged(this.getMinTime(), this.getMaxTime());
+            } else {
+                const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
+                const lastTimestamp = (await this.getCurrentTime()).data;
+                if (isDefined(lastTimestamp)) {
+                    const minDsTimestamp = new Date(dataSource.getMinTime()).getTime();
+                    const maxDsTimestamp = new Date(dataSource.getMaxTime()).getTime();
+                    const current = lastTimestamp + 1000;
+                    if(current > minDsTimestamp && current < maxDsTimestamp) {
+                        await dataSource.setTimeRange(
+                            new Date(lastTimestamp + 1000).toISOString(),
+                        );
+                    }
+                }
+                this.dataSources.push(dataSource);
+                await this.postMessage({
                     message: 'add',
                     dataSources: [dataSourceForWorker]
+                }, async () => {
+                    if (this.dataSources.length === 1) {
+                        await this.postMessage({
+                            message: 'update-properties',
+                            mode: this.mode,
+                            replaySpeed: this.replaySpeed,
+                            startTime: this.getMinTime(),
+                            endTime: this.getMaxTime()
+                        }, () => {
+                            this.onTimeChanged(this.getMinTime(), this.getMaxTime());
+                            this.onAddedDataSource(dataSource.id);
+                            resolve();
+                        });
+                    } else {
+                        this.onTimeChanged(this.getMinTime(), this.getMaxTime());
+                        this.onAddedDataSource(dataSource.id);
+                        resolve();
+                    }
                 });
-            console.log('minTime='+this.getMinTime()+',maxTime='+this.getMaxTime());
-            this.onTimeChanged(this.getMinTime(),this.getMaxTime());
-        }
+            }
+        });
     }
 
     /**
@@ -333,6 +355,7 @@ class DataSynchronizer {
                     } else {
                         await this.reset();
                     }
+                    this.onRemovedDataSource(dataSource.id);
                     resolve();
                 }catch (ex) {
                  reject(ex);
@@ -361,8 +384,12 @@ class DataSynchronizer {
      * Connects all dataSources
      */
     async connect() {
-        await this.checkInit();
-        await this.doConnect();
+        if((this.mode === Mode.REPLAY && this.dataSources.length === 0)) {
+            return;
+        } else {
+            await this.checkInit();
+            await this.doConnect();
+        }
     }
 
     async checkInit() {
@@ -457,11 +484,13 @@ class DataSynchronizer {
                 startTime: startTime,
                 endTime: endTime
             }, () => {
-                for (let ds of this.dataSources) {
-                    ds.setTimeRange(startTime, endTime, replaySpeed, reconnect, mode);
+                if(this.dataSources.length > 0 ) {
+                    for (let ds of this.dataSources) {
+                        ds.setTimeRange(startTime, endTime, replaySpeed, reconnect, mode);
+                    }
+                    this.onTimeChanged(this.getMinTime(),this.getMaxTime());
                 }
                 this.mode = mode;
-                this.onTimeChanged(this.getMinTime(),this.getMaxTime());
                 resolve();
             });
         });
@@ -513,12 +542,16 @@ class DataSynchronizer {
      * Connect the dataSource then the protocol will be opened as well.
      */
     async isConnected() {
-        for (let ds of this.dataSources) {
-            if (!(await ds.isConnected())) {
-                return false;
-            }
+        if(this.dataSources.length === 0)  {
+            return false;
+        } else {
+            await this.checkInit();
+            return new Promise(async resolve => {
+                await this.postMessage({
+                    message: 'is-connected'
+                }, (message) => resolve(message.data));
+            });
         }
-        return true;
     }
 
     async postMessage(props, Fn, checkInit = true) {
@@ -545,5 +578,9 @@ class DataSynchronizer {
         }
     }
     onTimeChanged(start, min){}
+
+    onRemovedDataSource(dataSourceId){}
+
+    onAddedDataSource(dataSourceId){}
 }
 export default  DataSynchronizer;

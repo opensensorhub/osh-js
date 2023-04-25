@@ -4,11 +4,12 @@
 
 <script>
 import RangeSliderReplay from "../../ext/ui/view/rangeslider/RangeSliderView.replay";
-import {randomUUID} from "../../core/utils/Utils";
+import {isDefined, randomUUID} from "../../core/utils/Utils";
+import dataSynchronizer from "../../core/timesync/DataSynchronizer";
 
 export default {
   name: "RangeSliderReplay",
-  props: ['minTimestamp', 'maxTimestamp', 'interval', 'waitForTimeChangedEvent', 'currentTime'],
+  props: ['minTimestamp', 'maxTimestamp', 'interval', 'waitForTimeChangedEvent', 'currentTime', 'dataSynchronizer'],
   watch: {
     minTimestamp() {
       this.rangeSlider.setTime(this.minTimestamp, this.maxTimestamp);
@@ -62,6 +63,22 @@ export default {
         });
       }
     }
+
+    // add listen on disabling if no datasources
+    this.dataSynchronizer.onRemovedDataSource = function(dataSourceId) {
+      if(this.dataSynchronizer.dataSources.length === 0 && isDefined(this.rangeSlider)) {
+        // To disable
+        this.rangeSlider.disable();
+      }
+    }.bind(this);
+
+    this.dataSynchronizer.onAddedDataSource = function(dataSourceId) {
+      console.log('onAdded')
+      if(this.dataSynchronizer.dataSources.length > 0 && isDefined(this.rangeSlider)) {
+        // To disable
+        this.rangeSlider.enable();
+      }
+    }.bind(this);
   },
   methods: {
     setStartTime(timestamp) {
@@ -70,11 +87,15 @@ export default {
   },
   // vuejs 3.x
   beforeUnmount() {
-    this.rangeSlider.destroy();
+    if(this.rangeSlider) {
+      this.rangeSlider.destroy();
+    }
   },
   // vuejs 2.x
   beforeDestroy() {
-    this.rangeSlider.destroy();
+    if(this.rangeSlider) {
+      this.rangeSlider.destroy();
+    }
   }
 }
 </script>

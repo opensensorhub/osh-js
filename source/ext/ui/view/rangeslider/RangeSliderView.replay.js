@@ -108,7 +108,6 @@ class RangeSliderViewReplay extends View {
             }
         }
 
-        console.log(new Date(minTimeRangeTimestamp).toISOString(), new Date(maxTimeRangeTimestamp).toISOString())
         const options = {
             start: [startTimestamp, endTimestamp]/*,timestamp("2015-02-16T08:09:00Z")]*/,
             range: {
@@ -258,9 +257,23 @@ class RangeSliderViewReplay extends View {
     }
 
     destroy() {
-        this.slider.noUiSlider.destroy();
-        if (this.bc) {
+        if(isDefined(this.slider) && isDefined(this.slider.noUiSlider)) {
+            this.slider.noUiSlider.destroy();
+        }
+        if (isDefined(this.bc)) {
             this.bc.close();
+        }
+    }
+
+    disable() {
+        if(isDefined(this.slider)) {
+            this.slider.setAttribute('disabled', true);
+        }
+    }
+
+    enable() {
+        if(isDefined(this.slider)) {
+            this.slider.removeAttribute('disabled');
         }
     }
 }

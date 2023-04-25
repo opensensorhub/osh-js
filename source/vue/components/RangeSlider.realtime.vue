@@ -29,7 +29,9 @@ export default {
       this.rangeSlider.setStartTime(timestamp);
     },
     destroy() {
-      this.rangeSlider.destroy();
+      if(this.rangeSlider) {
+        this.rangeSlider.destroy();
+      }
     }
   },
   // vuejs 3.x

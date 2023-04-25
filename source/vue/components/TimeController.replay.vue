@@ -7,6 +7,7 @@
         :minTimestamp="minTimeStamp"
         :maxTimestamp="maxTimeStamp"
         :currentTime="startTime"
+        :dataSynchronizer="dataSynchronizer"
         ref="rangeSliderRef"
         v-if="rangeSliderInit && init"
     ></RangeSliderReplay>
@@ -130,8 +131,6 @@ export default {
       lastSynchronizedTimestamp: -1,
       waitForTimeChangedEvent: false,
       rangeSliderInit: false,
-      rangeStartDate: undefined,
-      rangeEndDate: undefined
     };
   },
   watch: {
@@ -194,16 +193,12 @@ export default {
 
         this.createTimeBc();
         // listen for datasource status
-        this.dataSourceObject.subscribe(message => {
-          if (message.status === STATUS.DISCONNECTED || message.status === STATUS.FETCH_ENDED) {
-            this.connected = false;
-          } else if (message.status === STATUS.FETCH_STARTED) {
-            this.connected = true;
+        this.dataSourceObject.subscribe(async message => {
+          if (message.status === STATUS.DISCONNECTED || message.status === STATUS.FETCH_ENDED || message.status === STATUS.FETCH_STARTED) {
+            this.connected = await this.dataSourceObject.isConnected();
           }
         }, [EventType.STATUS]);
 
-        this.rangeStartDate = this.parseTime(this.startTimestamp);
-        this.rangeEndDate = this.parseTime(this.endTimestamp);
         this.createRangeSlider();
         this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
         this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
@@ -225,6 +220,9 @@ export default {
         }
 
         if(message.type === EventType.MASTER_TIME) {
+          if(!this.connected) {
+            this.connected = true;
+          }
           // consider here datasynchronizer sends data in time order
           if (!this.interval && this.speed > 0.0 && !this.update) {
             // }
@@ -265,11 +263,12 @@ export default {
             this.minTimestamp = new Date(minTime).getTime();
             this.maxTimestamp = new Date(maxTime).getTime();
             this.endTimestamp = new Date(maxTime).getTime();
-            if(new Date(minTime).getTime() > this.startTimestamp) {
+            // console.log(minTime, new Date(this.startTimestamp).toISOString())
+            if(new Date(minTime).getTime() > this.startTimestamp
+                || this.maxTimestamp < this.startTimestamp /* current time out of range */)
+            {
               this.startTimestamp = new Date(minTime).getTime();
             }
-            this.rangeStartDate = this.parseTime(this.startTimestamp);
-            this.rangeEndDate = this.parseTime(this.maxTimestamp);
             // in case where we click on Pause, remove the DataSource, and doPlay again
             this.waitForTimeChangedEvent = false;
           }.bind(this);
@@ -333,7 +332,7 @@ export default {
 
     async updateTime(event) {
       this.resetMasterTime();
-      this.dataSourceObject.setTimeRange(
+      await this.dataSourceObject.setTimeRange(
           new Date(this.startTimestamp).toISOString(),
           new Date(this.endTimestamp).toISOString(),
           this.speed,
@@ -389,7 +388,7 @@ export default {
     }
     ,
     doPause() {
-      this.connected = false;
+      // this.connected = false;
       this.waitForTimeChangedEvent = true;
       this.dataSourceObject.disconnect();
       //save current time
@@ -399,7 +398,6 @@ export default {
     ,
     doPlay() {
       this.updateTime('play');
-      this.connected = true;
     }
     ,
     getDataSourceObject() {
