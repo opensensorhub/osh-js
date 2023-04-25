@@ -106,10 +106,12 @@ export default {
   },
   methods: {
     async initComp() {
+      if(!this.init) {
         assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
         this.subscribeEvents();
         this.displayConsoleWarningIncompatibleVersionThrottle = throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
         this.init = true;
+      }
     },
     displayConsoleWarningIncompatibleVersionThrottle() {
 
@@ -119,35 +121,33 @@ export default {
     },
     subscribeEvents() {
       // listen for BC
+      const isDataSynchronizer = isDefined(this.dataSynchronizer);
       this.dataSourceObject.subscribe(message => {
-        if(message.type === EventType.MASTER_TIME) {
-          // consider here dataSynchronizer sends data in time order
-          if (isDefined(this.dataSynchronizer)) {
+        if(isDataSynchronizer) {
+          if(message.type === EventType.MASTER_TIME) {
+            // consider here dataSynchronizer sends data in time order
             const contains = message.dataSourceId in this.outOfSync;
             if (message.timestamp < this.lastSynchronizedTimestamp) {
               if (!contains) {
-                if (isDefined(this.dataSynchronizer)) {
-                  this.dataSynchronizer.dataSources.forEach(datasource => {
-                    if (datasource.id === message.dataSourceId) {
-                      this.outOfSync[datasource.id] = datasource;
-                    }
-                  });
-                } else {
-                  this.outOfSync[message.dataSourceId] = this.dataSourceObject;
-                }
+                this.dataSynchronizer.dataSources.forEach(datasource => {
+                  if (datasource.id === message.dataSourceId) {
+                    this.outOfSync[datasource.id] = datasource;
+                  }
+                });
               }
               return;
             } else if (contains) {
               // check that the datasource is not out of sync anymore
               delete this.outOfSync[message.dataSourceId];
             }
-          }
-          this.lastSynchronizedTimestamp = message.timestamp;
-          this.masterTime = message.timestamp;
-          if(!this.rangeSliderInit) {
-            this.rangeSliderInit = true;
+            this.lastSynchronizedTimestamp = message.timestamp;
+            this.masterTime = message.timestamp;
+            if(!this.rangeSliderInit) {
+              this.rangeSliderInit = true;
+            }
           }
         } else if(message.type === EventType.LAST_TIME) {
+          // single dataSource
           this.masterTime = message.timestamp;
           if(!this.rangeSliderInit) {
             this.rangeSliderInit = true;

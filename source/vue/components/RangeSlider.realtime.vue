@@ -16,7 +16,6 @@ export default {
     }
   },
   mounted() {
-    console.log('mount')
     this.rangeSlider = new RangeSliderViewRealtime({
       container: this.id,
       debounce: 200,
