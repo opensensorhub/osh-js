@@ -122,12 +122,15 @@ export default {
       }
     },
     async onControlEvent(event) {
+      this.$emit('event','play');
       if (event.name === 'toggle-replay') {
         await this.dataSourceObject.disconnect();
         if(this.mode === Mode.BATCH) {
           await this.dataSourceObject.setMode(Mode.BATCH);
+          this.dataSourceObject.connect(); // connect by default in batch mode
         } else if(this.mode === Mode.REPLAY) {
           await this.dataSourceObject.setMode(Mode.REPLAY);
+          this.dataSourceObject.connect(); // connect by default in replay mode
         }
         this.checkMode();
       } else if(event.name === 'toggle-realtime') {
@@ -136,7 +139,6 @@ export default {
         this.checkMode();
         this.dataSourceObject.connect(); // connect by default in realtime mode
       }
-      this.$emit('event','play');
     },
   }
 }

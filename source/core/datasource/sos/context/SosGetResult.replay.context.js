@@ -122,7 +122,6 @@ class SosGetResultReplayContext extends SosGetResultContext {
                 let data;
                 do {
                     await moveTimeCursor();
-                    console.log(this.relativeDate);
                     data = await fetchNext(this.relativeDate.toISOString(), new Date(this.relativeDate.getTime() + fetchDuration).toISOString());
                 } while (data.length === 0 && this.relativeDate.getTime() < this.endTimestamp);
 

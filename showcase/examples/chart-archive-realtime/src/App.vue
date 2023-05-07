@@ -19,6 +19,7 @@ import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js'
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {isDefined} from "osh-js/core/utils/Utils";
 
 export default {
   components: {
@@ -121,6 +122,11 @@ export default {
   },
   methods: {
     onControlEvent(eventName) {
+      if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
+          || eventName === 'replaySpeed'
+          || (eventName === 'play')) {
+        this.view.reset();
+      }
     }
   }
 };

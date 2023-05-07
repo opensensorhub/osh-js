@@ -276,7 +276,6 @@ class DataSynchronizerRealtime {
         for (let dataSource of this.dataSources) {
             await dataSource.disconnect();
         }
-        console.log('Has disconnected')
     }
 
     async updateProperties(properties) {
