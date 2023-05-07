@@ -9,7 +9,7 @@
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
         <div class="datasource-actions live">
-          <a :id="'replay-btn-'+id" class="control-btn replay" @click="toggleReplay" v-if="supportHistory">
+          <a :id="'replay-btn-'+id" class="control-btn replay" @click="toggleReplay">
             <i class="fa fa-history"></i>
           </a>
         </div>
@@ -57,10 +57,6 @@ export default {
     debounce: {
       type: Number,
       default: () => 800 // 800ms
-    },
-    supportHistory: {
-      type: Boolean,
-      default: () => false // 800ms
     },
     parseTime: {
       type: Function,
@@ -129,7 +125,7 @@ export default {
             const contains = message.dataSourceId in this.outOfSync;
             if (message.timestamp < this.lastSynchronizedTimestamp) {
               if (!contains) {
-                this.dataSynchronizer.dataSources.forEach(datasource => {
+                this.dataSynchronizer.getDataSources().forEach(datasource => {
                   if (datasource.id === message.dataSourceId) {
                     this.outOfSync[datasource.id] = datasource;
                   }
@@ -168,12 +164,10 @@ export default {
       this.on();
     },
     on() {
-      if(this.supportHistory) {
-        this.$emit('event', {
-          name: 'toggle-history',
-          active: true
-        });
-      }
+      this.$emit('event', {
+        name: 'toggle-replay',
+        active: true
+      });
     }
     ,
     withLeadingZeros(dt) {

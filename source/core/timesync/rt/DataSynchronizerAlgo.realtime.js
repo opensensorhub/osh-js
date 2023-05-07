@@ -1,6 +1,6 @@
-import {isDefined} from "../utils/Utils.js";
-import {Status} from "../connector/Status.js";
-import DataSynchronizerAlgo from "./DataSynchronizerAlgo";
+import {isDefined} from "../../utils/Utils.js";
+import {Status} from "../../connector/Status.js";
+import DataSynchronizerAlgo from "./../DataSynchronizerAlgo";
 
 class DataSynchronizerAlgoRealtime extends DataSynchronizerAlgo {
     push(dataSourceId, dataBlocks) {

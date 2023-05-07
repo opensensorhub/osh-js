@@ -237,7 +237,13 @@ class RangeSliderViewReplay extends View {
         }
     }
 
-    setTime(minRangeTimestamp, maxRangeTimestamp) {
+    setTime(startTimestamp, endTimestamp) {
+        if (!this.update) {
+            this.slider.noUiSlider.set([startTimestamp, endTimestamp]);
+        }
+    }
+
+    setTimeRange(minRangeTimestamp, maxRangeTimestamp) {
         if (!this.update) {
             this.slider.noUiSlider.updateOptions({
                 range: {
@@ -245,7 +251,6 @@ class RangeSliderViewReplay extends View {
                     max: maxRangeTimestamp
                 }
             });
-            this.slider.noUiSlider.set([null, maxRangeTimestamp]);
         }
     }
 

@@ -1,15 +1,15 @@
 <template>
   <div class="control-time">
-    <span v-html=currentTime></span>
+    <span v-html=htmlCurrentTime></span>
     <span style="padding:0 10px 0 10px">/</span>
-    <span v-html=endTime></span>
+    <span v-html=htmlEndTime></span>
   </div>
 </template>
 
 <script>
 export default {
   name: "ControlTimeReplay",
-  props: ['currentTime', 'endTime'],
+  props: ['htmlCurrentTime', 'htmlEndTime'],
 }
 </script>
 

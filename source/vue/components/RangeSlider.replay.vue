@@ -9,13 +9,19 @@ import dataSynchronizer from "../../core/timesync/DataSynchronizer";
 
 export default {
   name: "RangeSliderReplay",
-  props: ['minTimestamp', 'maxTimestamp', 'interval', 'waitForTimeChangedEvent', 'currentTime', 'dataSynchronizer'],
+  props: ['minTimestamp', 'maxTimestamp', 'startTimestamp', 'endTimestamp', 'interval', 'waitForTimeChangedEvent', 'dataSynchronizer'],
   watch: {
     minTimestamp() {
-      this.rangeSlider.setTime(this.minTimestamp, this.maxTimestamp);
+      this.rangeSlider.setTimeRange(this.minTimestamp, this.maxTimestamp);
     },
     maxTimestamp() {
-      this.rangeSlider.setTime(this.minTimestamp, this.maxTimestamp);
+      this.rangeSlider.setTimeRange(this.minTimestamp, this.maxTimestamp);
+    },
+    startTimestamp() {
+      this.rangeSlider.setTime(this.startTimestamp, this.endTimestamp);
+    },
+    endTimestamp() {
+      this.rangeSlider.setTime(this.startTimestamp, this.endTimestamp);
     }
   },
   data() {
@@ -29,7 +35,8 @@ export default {
       container: this.id,
       minTimeRange: new Date(this.minTimestamp).toISOString(),
       maxTimeRange: new Date(this.maxTimestamp).toISOString(),
-      startTime: new Date(this.currentTime).toISOString(),
+      startTime: new Date(this.startTimestamp).toISOString(),
+      endTime: new Date(this.endTimestamp).toISOString(),
       debounce: 200,
       options: {}
     });
@@ -64,21 +71,23 @@ export default {
       }
     }
 
-    // add listen on disabling if no datasources
-    this.dataSynchronizer.onRemovedDataSource = function(dataSourceId) {
-      if(this.dataSynchronizer.dataSources.length === 0 && isDefined(this.rangeSlider)) {
-        // To disable
-        this.rangeSlider.disable();
-      }
-    }.bind(this);
+    if (isDefined(this.dataSynchronizer)) {
+      // add listen on disabling if no datasources
+      this.dataSynchronizer.onRemovedDataSource = function (dataSourceId) {
+        if (this.dataSynchronizer.getDataSources().length === 0 && isDefined(this.rangeSlider)) {
+          // To disable
+          this.rangeSlider.disable();
+        }
+      }.bind(this);
 
-    this.dataSynchronizer.onAddedDataSource = function(dataSourceId) {
-      console.log('onAdded')
-      if(this.dataSynchronizer.dataSources.length > 0 && isDefined(this.rangeSlider)) {
-        // To disable
-        this.rangeSlider.enable();
-      }
-    }.bind(this);
+      this.dataSynchronizer.onAddedDataSource = function (dataSourceId) {
+        console.log('onAdded')
+        if (this.dataSynchronizer.getDataSources().length > 0 && isDefined(this.rangeSlider)) {
+          // To disable
+          this.rangeSlider.enable();
+        }
+      }.bind(this);
+    }
   },
   methods: {
     setStartTime(timestamp) {
@@ -87,13 +96,13 @@ export default {
   },
   // vuejs 3.x
   beforeUnmount() {
-    if(this.rangeSlider) {
+    if (this.rangeSlider) {
       this.rangeSlider.destroy();
     }
   },
   // vuejs 2.x
   beforeDestroy() {
-    if(this.rangeSlider) {
+    if (this.rangeSlider) {
       this.rangeSlider.destroy();
     }
   }

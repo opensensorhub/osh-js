@@ -65,14 +65,9 @@ class SweApiRealTimeContext extends SweApiContext {
     onStreamMessage(messages, format) {
          // in case of om+json ,we have to add the timestamp which is not included for each record but at the root level
         let results = messages;
-        if (format === 'application/om+json') {
-            results = [];
-            for(let message of messages) {
-                results.push({
-                    timestamp: message.timestamp,
-                    ...message.result
-                })
-            }
+        let version = this.properties.version;
+        for(let message of messages) {
+            message.version = version;
         }
         this.handleData(results, format);
     }
@@ -85,7 +80,6 @@ class SweApiRealTimeContext extends SweApiContext {
         if(isDefined(this.streamObject)) {
             this.streamObject.stream().disconnect();
         }
-        this.properties.version++;
     }
 
     isConnected() {

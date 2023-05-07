@@ -47,6 +47,7 @@ export default {
       tls: true
     });
 
+    console.log('chart dataSource: '+chartDataSource.id);
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.5,
       startTime: startTime,

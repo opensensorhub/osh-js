@@ -80,6 +80,7 @@ class SosGetResultReplayContext extends SosGetResultContext {
                     });
                 }
                 const fetchNext = async (startTime, endTime) => {
+                    const version = this.properties.version;
                     return new Promise(async (resolve, reject) => {
                         console.warn(`fetching ${startTime} -> ` +
                             `${endTime} for datasource ${this.properties.dataSourceId}`);
@@ -95,10 +96,20 @@ class SosGetResultReplayContext extends SosGetResultContext {
                         // this is because binary < 1.4 issue and the use of WS. In case in using WS, the data are provided in an array
                         if(Array.isArray(data)) {
                             for(let d of data) {
-                                results.push(...await this.parseData(d));
+                                const parsedData  = await this.parseData(d);
+                                parsedData.map(elt => {
+                                    elt.version = version;
+                                    return elt;
+                                });
+                                results.push(...parsedData);
                             }
                         } else {
-                            results.push(...await this.parseData(data));
+                            const parsedData  = await this.parseData(data);
+                            parsedData.map(elt => {
+                                elt.version = version;
+                                return elt;
+                            });
+                            results.push(...parsedData);
                         }
                         if(status.cancel) {
                             reject('Status=canceled');
@@ -111,52 +122,11 @@ class SosGetResultReplayContext extends SosGetResultContext {
                 let data;
                 do {
                     await moveTimeCursor();
+                    console.log(this.relativeDate);
                     data = await fetchNext(this.relativeDate.toISOString(), new Date(this.relativeDate.getTime() + fetchDuration).toISOString());
                 } while (data.length === 0 && this.relativeDate.getTime() < this.endTimestamp);
 
                 resolve(data);
-                /*const fetchNext = async (startTimestamp, endTimestamp) => {
-                    const results = [];
-                    await this.parser.templatePromise;
-
-                    let startTime = new Date(startTimestamp).toISOString();
-                    let endTime = new Date(endTimestamp).toISOString();
-
-                    console.warn(`fetching ${startTime} -> ` +
-                        `${endTime} for datasource ${this.properties.dataSourceId}`);
-                    let data;
-
-                    let data = await this.connector.doRequest('', this.getQueryString({
-                        ...this.properties,
-                        ...properties,
-                        startTime: startTime,
-                        endTime: endTime
-                    }));
-                    if(status.cancel) {
-                        reject();
-                    } else {
-                        // this is because binary < 1.4 issue and the use of WS. In case in using WS, the data are provided in a array
-                        if(Array.isArray(data)) {
-                            for(let d of data) {
-                                results.push(...await this.parseData(d));
-                            }
-                        } else {
-                            results.push(...await this.parseData(data));
-                        }
-                        console.log(results)
-                        resolve(results);
-                    }
-                }
-
-                await this.parser.templatePromise;
-                console.log(new Date(this.startTimestamp).toISOString(), new Date(this.endTimestamp).toISOString())
-                let stTimestamp = (isDefined(this.relativeStartTimestamp)) ? this.relativeStartTimestamp : this.startTimestamp;
-                let fetchDuration = this.properties.prefetchBatchDuration;
-                this.relativeStartTimestamp = stTimestamp + fetchDuration;
-                console.log(new Date(stTimestamp).toISOString(), new Date(this.relativeStartTimestamp).toISOString())
-                if(this.relativeStartTimestamp <=  this.endTimestamp) {
-                    await fetchNext(stTimestamp, this.relativeStartTimestamp);
-                }*/
 
             } catch (ex) {
                 reject(ex);
