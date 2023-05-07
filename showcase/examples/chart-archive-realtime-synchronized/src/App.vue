@@ -112,7 +112,7 @@ export default {
     onControlEvent(eventName) {
       if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
           || eventName === 'replaySpeed'
-          || (eventName === 'play' && (!isDefined(this.dataSynchronizer.properties.replaySpeed)))) {
+          || (eventName === 'play')) {
         this.view.reset();
       }
     },

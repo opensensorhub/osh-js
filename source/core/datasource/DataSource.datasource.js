@@ -64,10 +64,6 @@ class DataSource {
         return DATASOURCE_DATA_TOPIC + this.id;
     }
 
-    getVersion() {
-        return 0;
-    }
-
     subscribe(fn, eventTypes) {
         // associate function to eventType
         for(let i=0;i < eventTypes.length;i++) {
@@ -116,14 +112,14 @@ class DataSource {
         await this.doConnect();
     }
 
-    async initDataSource() {
+    async initDataSource(properties=this.properties) {
         return new Promise(async (resolve, reject) => {
             this.dataSourceWorker = await this.createWorker(this.properties);
             this.handleWorkerMessage();
             this.postMessage({
                 message: 'init',
                 id: this.id,
-                properties: this.properties,
+                properties: properties,
                 topics:  {
                     data: this.getTopicId()
                 }
@@ -165,10 +161,14 @@ class DataSource {
     }
     async isConnected() {
         return new Promise(async resolve => {
-            await this.checkInit();
-            this.postMessage({
-                message: 'is-connected'
-            }, resolve);
+            if(!this.init) {
+                resolve(false);
+            } else {
+                await this.checkInit();
+                this.postMessage({
+                    message: 'is-connected'
+                }, resolve);
+            }
         });
     }
 
@@ -207,7 +207,16 @@ class DataSource {
 
     async onDisconnect(){}
 
-    reset() {}
+    reset() {
+        this.init = undefined;
+    }
+
+    onRemovedDataSource(dataSourceId) {
+    }
+
+    onAddedDataSource(dataSourceId) {
+    }
+
 }
 
 export default DataSource;

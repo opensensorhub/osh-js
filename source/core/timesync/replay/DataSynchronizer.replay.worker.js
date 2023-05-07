@@ -1,9 +1,7 @@
-import {DATASOURCE_DATA_TOPIC} from "../Constants.js";
-import {EventType} from "../event/EventType.js";
-import {isDefined} from "../utils/Utils";
-import {Mode} from "../datasource/Mode";
+import {DATASOURCE_DATA_TOPIC} from "../../Constants.js";
+import {EventType} from "../../event/EventType.js";
+import {isDefined} from "../../utils/Utils";
 import DataSynchronizerAlgoReplay from "./DataSynchronizerAlgo.replay";
-import DataSynchronizerAlgoRealtime from "./DataSynchronizerAlgo.realtime.js";
 
 const bcChannels = {};
 let dataSynchronizerAlgo;
@@ -40,26 +38,19 @@ async function handleMessage(event) {
             let data = undefined;
             if (event.data.message === 'init') {
                 replaySpeed = event.data.replaySpeed;
-                startTimestamp = new Date(event.data.startTime).getTime();
-                endTimestamp = new Date(event.data.endTime).getTime();
+                startTimestamp = event.data.startTimestamp;
+                endTimestamp = event.data.endTimestamp;
+                version = event.data.version;
 
-                if (event.data.mode === Mode.REPLAY) {
-                    dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
-                        event.data.dataSources,
-                        event.data.replaySpeed,
-                        startTimestamp,
-                        endTimestamp,
-                        event.data.timerResolution
-                    );
-                    dataSynchronizerAlgo.onEnd = onEnd;
-                    dataSynchronizerAlgo.onStart = onStart;
-                } else {
-                    dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
-                        event.data.dataSources,
-                        event.data.replaySpeed,
-                        event.data.timerResolution
-                    );
-                }
+                dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
+                    event.data.dataSources,
+                    replaySpeed,
+                    startTimestamp,
+                    endTimestamp,
+                    event.data.timerResolution,
+                    version
+                );
+                dataSynchronizerAlgo.onClose = onClose;
                 dataSynchronizerAlgo.onData = onData;
                 init = true;
                 addDataSources(event.data.dataSources);
@@ -73,9 +64,18 @@ async function handleMessage(event) {
             } else if (event.data.message === 'connect') {
                 startMasterTimeInterval(masterTimeRefreshRate);
                 dataSynchronizerAlgo.checkStart();
-            } else if (event.data.message === 'remove' && event.data.dataSources) {
+                version = event.data.version;
+            } else if(event.data.message === 'is-connected') {
+                data = {
+                    message: 'is-connected',
+                    data: isDefined(masterTimeInterval) && isDefined(dataSynchronizerAlgo) && isDefined(dataSynchronizerAlgo.interval)
+                };
+            } else if (event.data.message === 'remove' && event.data.dataSourceIds) {
                 console.log('Remove datasource from synchronizer..')
-                await removeDataSources(event.data.dataSources);
+                await removeDataSources(event.data.dataSourceIds);
+                if(dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay) {
+                    dataSynchronizerAlgo.endTimestamp = event.data.endTimestamp;
+                }
             } else if (event.data.message === 'current-time') {
                 data = {
                     message: 'current-time',
@@ -88,34 +88,14 @@ async function handleMessage(event) {
                     reset();
                     dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
                 }
-            } else if (event.data.message === 'update-properties') {
-                reset();
-                let datasources = [];
-                if (dataSynchronizerAlgo !== null) {
-                    datasources = dataSynchronizerAlgo.datasources;
-                }
-
-                startTimestamp = new Date(event.data.startTime).getTime();
-                endTimestamp = new Date(event.data.endTime).getTime();
-
-                if (event.data.mode === Mode.REPLAY) {
-                    dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
-                        datasources,
-                        event.data.replaySpeed,
-                        startTimestamp,
-                        endTimestamp,
-                        dataSynchronizerAlgo.timerResolution
-                    );
-                    dataSynchronizerAlgo.onEnd = onEnd;
-                    dataSynchronizerAlgo.onStart = onStart;
-                } else {
-                    dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
-                        datasources,
-                        dataSynchronizerAlgo.timerResolution
-                    );
-                }
-
-                dataSynchronizerAlgo.onData = onData;
+            } else if (event.data.message === 'time-range') {
+                setTimeRange(
+                    event.data.startTimestamp,
+                    event.data.endTimestamp,
+                    event.data.mode,
+                    event.data.replaySpeed,
+                    event.data.version
+                )
             } else if (event.data.message === 'data') {
                 checkMasterTime();
                 if (dataSynchronizerAlgo !== null) {
@@ -138,15 +118,38 @@ async function handleMessage(event) {
         }
     });
 }
+function setTimeRange(startTimestamp, endTimestamp, mode, replaySpeed, newVersion) {
+    reset();
+    version = newVersion;
+    let datasources = [];
+    if (dataSynchronizerAlgo !== null) {
+        datasources = dataSynchronizerAlgo.datasources;
+    }
+
+    dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
+        datasources,
+        replaySpeed,
+        startTimestamp,
+        endTimestamp,
+        dataSynchronizerAlgo.timerResolution,
+        version
+    );
+    dataSynchronizerAlgo.onEnd = onEnd;
+    dataSynchronizerAlgo.onStart = onStart;
+    dataSynchronizerAlgo.onClose = onClose;
+    dataSynchronizerAlgo.onData = onData;
+}
 function reset() {
     clearInterval(masterTimeInterval);
     masterTimeInterval = undefined;
-    version = -1;
     if(dataSynchronizerAlgo !== null) {
         dataSynchronizerAlgo.reset();
     }
     timeBroadcastChannel.postMessage({
         type: EventType.TIME_CHANGED
+    });
+    timeBroadcastChannel.postMessage({
+        type: EventType.CLOSED
     });
 }
 function initBroadcastChannel(dataTopic, timeTopic) {
@@ -156,13 +159,16 @@ function initBroadcastChannel(dataTopic, timeTopic) {
     dataSourceBroadCastChannel.onmessage = async (event) => {
         checkMasterTime();
         if(event.data.type === EventType.DATA) {
+            // console.log(new Date(event.data.values[0].data.timestamp).toISOString(), event.data.values[0].version);
             dataSynchronizerAlgo.push(event.data.dataSourceId,event.data.values);
         } else if(event.data.type === EventType.STATUS) {
             const dataSourceId = event.data.dataSourceId;
             dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
-            console.log(dataSources[dataSourceId].name + ": status=" + event.data.status);
             // bubble the message
-            bcChannels[dataSourceId].postMessage(event.data);
+            if(dataSourceId in bcChannels) {
+                console.log(dataSources[dataSourceId].name + ": status=" + event.data.status);
+                bcChannels[dataSourceId].postMessage(event.data);
+            }
         }
     }
 
@@ -192,19 +198,20 @@ function addDataSource(dataSource) {
 
 /**
  *
- * @param dataSources
+ * @param dataSourceIds
  */
-async function removeDataSources(dataSources) {
-    for(let dataSource of dataSources) {
-        await removeDataSource(dataSource);
+async function removeDataSources(dataSourceIds) {
+    for(let dataSourceId of dataSourceIds) {
+        await removeDataSource(dataSourceId);
     }
 }
 
-async function removeDataSource(dataSource) {
-    await dataSynchronizerAlgo.removeDataSource(dataSource);
+async function removeDataSource(dataSourceId) {
+    await dataSynchronizerAlgo.removeDataSource(dataSourceId);
     // create a BC to push back the synchronized data into the DATA Stream.
-    delete bcChannels[dataSource.id];
-    delete dataSources[dataSource.id];
+    console.log('deleting BC for datasource '+dataSourceId);
+    delete bcChannels[dataSourceId];
+    delete dataSources[dataSourceId];
 }
 
 function checkMasterTime() {
@@ -224,18 +231,23 @@ async function onEnd() {
 }
 
 async function onStart() {
-    // checkMasterTime();
+    checkMasterTime();
+}
+
+function onClose() {
+    timeBroadcastChannel.postMessage({
+        type: EventType.CLOSED
+    });
 }
 
 async function onData(dataSourceId, dataBlock) {
-    if((version === -1 && (isDefined(lastData) ) && dataBlock.version === lastData.dataBlock.version)){
+    if(dataBlock.version !== version) {
+        console.error('version are different:',dataBlock.version,version);
         return;
     }
-
-    version = dataBlock.version;
     lastData = {
         dataSourceId: dataSourceId,
-        dataBlock: dataBlock
+        dataBlock: dataBlock,
     };
     bcChannels[dataSourceId].postMessage({
             values: [dataBlock],
@@ -261,21 +273,19 @@ function startMasterTimeInterval(masterTimeRefreshRate) {
                 });
             }
 
-            // check version
-            if (!isDefined(lastData) || version !== lastData.dataBlock.version || version === -1) {
-                return;
-            }
-            cTime = lastData.dataBlock.data.timestamp;
-            cId = lastData.dataSourceId;
+            if(isDefined(lastData)) {
+                cTime = lastData.dataBlock.data.timestamp;
+                cId = lastData.dataSourceId;
 
-            if ((cTime !== -1 && lastTime === -1) || (lastTime !== -1 && cTime !== lastTime)) { // does not send the same data twice
-                timeBroadcastChannel.postMessage({
-                    timestamp: cTime,
-                    dataSourceId: cId,
-                    type: EventType.LAST_TIME
-                });
+                if ((cTime !== -1 && lastTime === -1) || (lastTime !== -1 && cTime !== lastTime)) { // does not send the same data twice
+                    timeBroadcastChannel.postMessage({
+                        timestamp: cTime,
+                        dataSourceId: cId,
+                        type: EventType.LAST_TIME
+                    });
+                }
+                lastTime = cTime;
             }
-            lastTime = cTime;
         }, masterTimeRefreshRate);
     }
 }

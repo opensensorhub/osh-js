@@ -63,7 +63,16 @@ class SosGetResultRealTimeContext extends SosGetResultContext {
     }
 
     async onMessage(messages, format) {
-        this.handleData(await this.parseData(messages));
+        const data = await this.parseData(messages);
+        const version = this.properties.version;
+        if(Array.isArray(data)) {
+            for(let d of data) {
+                d.version = version;
+            }
+        } else {
+            data.version = version;
+        }
+        this.handleData(data);
     }
 
     connect() {

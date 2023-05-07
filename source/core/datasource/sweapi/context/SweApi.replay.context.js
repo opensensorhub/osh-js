@@ -82,6 +82,7 @@ class SweApiReplayContext extends SweApiContext {
     }
 
     async nextBatch(properties, masterTimestamp, status = {cancel:false}) {
+        let version = this.properties.version;
         return new Promise(async (resolve, reject) => {
             try {
                 let data;
@@ -98,7 +99,10 @@ class SweApiReplayContext extends SweApiContext {
 
                     console.warn(`fetching ${relativeStartTime} -> ` +
                         `${this.properties.endTime} for datasource ${this.properties.dataSourceId}`);
-                    this.collection = await this.replayFunction(properties, relativeStartTime, this.properties.endTime);
+                    // if disconnected, replay function is reset
+                    if(this.replayFunction) {
+                        this.collection = await this.replayFunction(properties, relativeStartTime, this.properties.endTime);
+                    }
                 }
 
                 const fetchNext = async () => {
@@ -107,23 +111,16 @@ class SweApiReplayContext extends SweApiContext {
                         reject('Status has been cancelled');
                     }
                     if (data.length > 0) {
-                        if (this.properties.responseFormat === 'application/om+json') {
-                            for (let d of data) {
-                                results.push({
-                                    timestamp: d.timestamp,
-                                    ...d.result
-                                })
-                            }
-                        } else {
-                            results = data;
+                        results = data;
+                        for(let d of results) {
+                            d.version = version;
                         }
-
                         if(status.cancel) {
                             reject('Status has been cancelled');
                         } else {
                             // start startTime cursor
                             this.relativeStartTimestamp = results[results.length-1].timestamp;
-                            resolve(results);
+                            resolve(data);
                         }
                     }
                 }

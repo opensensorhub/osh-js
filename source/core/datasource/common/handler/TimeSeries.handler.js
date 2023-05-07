@@ -165,7 +165,6 @@ class DelegateReplayHandler extends DelegateHandler {
                 this.timeBc = new BroadcastChannel(this.timeTopic);
                 this.timeBc.onmessage = async (event) => {
                     if (event.data.type === EventType.MASTER_TIME) {
-
                         masterTimestamp = event.data.timestamp;
                         if (masterTimestamp >= endTimestamp) {
                             await this.disconnect();
@@ -178,10 +177,12 @@ class DelegateReplayHandler extends DelegateHandler {
                             // less than 5 sec
                             if (dTimestamp <= prefetchBatchDuration) {
                                 // request next batch
-                                data = await this.context.nextBatch();
-                                if (!this.status.cancel && data.length > 0) {
-                                    this.handleData(data);
-                                    lastTimestamp = data[data.length - 1].timestamp;
+                                if (!this.status.cancel) {
+                                    data = await this.context.nextBatch();
+                                    if (data.length > 0) {
+                                        this.handleData(data);
+                                        lastTimestamp = data[data.length - 1].timestamp;
+                                    }
                                 }
                             }
                             fetching = false;
@@ -229,6 +230,7 @@ class DelegateReplayHandler extends DelegateHandler {
                     this.context.disconnect();
                     if (isDefined(this.timeBc)) {
                         this.timeBc.close();
+                        this.timeBc = undefined;
                     }
                     this.initialized = false;
                 } catch (ex) {
@@ -257,7 +259,6 @@ class TimeSeriesHandler extends DataSourceHandler {
             ...this.properties,
             ...properties,
             dataSourceId: dataSourceId,
-            version: this.version
         };
         this.setTopics(topics);
         this.contexts[this.properties.mode] = this.createContext(this.properties);
@@ -301,8 +302,7 @@ class TimeSeriesHandler extends DataSourceHandler {
 
             this.properties = {
                 ...this.properties,
-                ...properties,
-                version: ++this.version
+                ...properties
             };
             if(!(this.properties.mode in this.contexts)) {
                 console.warn(`creating new context for mode ${this.properties.mode}`);
@@ -371,19 +371,22 @@ class TimeSeriesHandler extends DataSourceHandler {
             for (let i = 0; i < data.length; i++) {
                 d = {
                     data: data[i],
-                    version: this.context.properties.version
+                    version:  data[i].version
                 };
                 results.push(d);
             }
         } else {
             results.push({
                 data: data,
-                version: this.context.properties.version
+                version:  data[0].version
             });
         }
 
         if(results.length > 0) {
             this.lastData = results[results.length - 1];
+           if(data[0].version !== this.properties.version) {
+               console.warn('incompatible version, drop data');
+           }
         }
         this.broadcastChannel.postMessage({
             dataSourceId: this.dataSourceId,
@@ -412,12 +415,12 @@ class TimeSeriesHandler extends DataSourceHandler {
         await this.promiseDisconnect;
     }
 
-    async connect(startTime = this.properties.startTime) {
+    async connect(startTime = this.properties.startTime, version = this.properties.version) {
+        this.properties.version = version;
         await this.checkDisconnect();
         if (this.delegateHandler instanceof DelegateReplayHandler && !isDefined(this.timeSyncTopic)) {
             throw Error('DataSynchronizer must be used in case of Mode.REPLAY');
         }
-        this.version++;
         this.context.init(this.properties);
         this.delegateHandler.connect(startTime);
     }

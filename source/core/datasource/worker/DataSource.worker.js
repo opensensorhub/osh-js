@@ -43,16 +43,9 @@ async function handleMessage(event) {
             }
         } else {
             if (event.message === 'connect') {
-                await dataSourceHandler.connect(event.startTime);
-                // send back result or just return
-                postMessage({
-                    message: event.message,
-                    data: value,
-                    messageId: event.messageId
-                });
-                resolve();
+                await dataSourceHandler.connect(event.startTime, event.version);
             } else if (event.message === 'disconnect') {
-                dataSourceHandler.disconnect();
+                await dataSourceHandler.disconnect();
             } else if (event.message === 'topics') {
                 dataSourceHandler.setTopics(event.topics);
             } else if (event.message === 'update-properties') {
