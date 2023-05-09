@@ -166,6 +166,20 @@ class TimeSeriesDatasource {
     }
 
     /**
+     * Sets the start time
+     */
+    setStartTime(time) {
+        this.timeSeriesDataSource.setStartTime(time);
+    }
+
+    /**
+     * Sets the end time
+     */
+    setEndTime(time) {
+        this.timeSeriesDataSource.setEndTime(time);
+    }
+
+    /**
      * Gets the endTime
      * @returns {String} - endTime as ISO date
      */

@@ -84,41 +84,55 @@ class DataSynchronizerReplay {
     computeMinMax() {
         if (this.dataSources.length > 0) {
             let minTimestamp = Number.MAX_VALUE, maxTimestamp = Number.MIN_VALUE;
+            let startTimestamp = Number.MAX_VALUE, endTimestamp = Number.MIN_VALUE;
+            // default min/max will be adjusted on the most min/max DataSource
             for (let ds of this.dataSources) {
+                // compute min/max range of dataSynchronizer
                 let dsMinTimestamp = ds.getMinTimeAsTimestamp();
-                let dsMaxTimestamp = ds.getMaxTimeAsTimestamp()
+                let dsMaxTimestamp = ds.getMaxTimeAsTimestamp();
 
-                if (dsMinTimestamp < minTimestamp) {
+                if (dsMinTimestamp < minTimestamp ) {
                     minTimestamp = dsMinTimestamp;
                 }
 
                 if (dsMaxTimestamp > maxTimestamp) {
                     maxTimestamp = dsMaxTimestamp;
                 }
+
+                // compute start/end range of dataSynchronizer
+                let dsStartTimestamp = ds.getStartTimeAsTimestamp();
+                let dsEndStartTimestamp = ds.getEndTimeAsTimestamp();
+
+                if (dsStartTimestamp < startTimestamp ) {
+                    startTimestamp = dsStartTimestamp;
+                }
+
+                if (dsEndStartTimestamp > endTimestamp) {
+                    endTimestamp = dsEndStartTimestamp;
+                }
+
             }
 
-            // set proper limit
-            if(this.minTimestamp && (minTimestamp < this.minTimestamp || minTimestamp > this.maxTimestamp)) {
+            // check if a default Min/Max has been defined into DataSynchronizer forcing intersection with current computed ones
+            if(isDefined(this.minTimestamp) && this.minTimestamp > minTimestamp) {
+                // intersect and takes the min of dataSynchronizer
                 minTimestamp = this.minTimestamp;
             }
 
-            if(this.maxTimestamp && (maxTimestamp > this.maxTimestamp || maxTimestamp < this.minTimestamp)) {
+            if(isDefined(this.maxTimestamp) && this.maxTimestamp > endTimestamp) {
+                // intersect and takes the min of dataSynchronizer
                 maxTimestamp = this.maxTimestamp;
             }
 
             this.properties.minTimestamp = minTimestamp;
             this.properties.maxTimestamp = maxTimestamp;
 
-            if (!this.properties.startTimestamp || this.dataSources.length === 1 || this.properties.startTimestamp < this.getMinTimeAsTimestamp()) {
-                this.properties.startTimestamp = this.getMinTimeAsTimestamp();
-            } else if(this.properties.startTimestamp > this.getMaxTimeAsTimestamp()) {
-                this.properties.startTimestamp = this.getMaxTimeAsTimestamp();
-            }
 
-            if (!this.properties.endTimestamp || this.dataSources.length === 1 || this.properties.endTimestamp > this.getMaxTimeAsTimestamp()) {
-                this.properties.endTimestamp = this.getMaxTimeAsTimestamp();
-            } else if(this.properties.endTimestamp < this.getMinTimeAsTimestamp()) {
-                this.properties.endTimestamp = this.getMinTimeAsTimestamp();
+            if(!isDefined(this.properties.startTimestamp)) {
+                this.properties.startTimestamp = startTimestamp;
+            }
+            if(!isDefined(this.properties.endTimestamp)) {
+                this.properties.endTimestamp = endTimestamp;
             }
         }
     }
@@ -232,6 +246,30 @@ class DataSynchronizerReplay {
             throw 'dataSource array is empty';
         }
         return this.properties.maxTimestamp;
+    }
+
+
+    async setStartTime(time, lazy = false) {
+        this.properties.startTimestamp = new Date(time).getTime();
+        if(!lazy) {
+            await this.updateAlgo();
+        }
+    }
+
+    async setEndTime(time, lazy = false) {
+        this.properties.endTimestamp = new Date(time).getTime();
+        if(!lazy) {
+            await this.updateAlgo();
+        }
+    }
+
+    async setMaxTime(maxTime) {
+        this.properties.maxTimestamp = new Date(maxTime).getTime();
+        for(let ds of this.dataSources) {
+            ds.setMaxTime(maxTime);
+        }
+        this.computeMinMax();
+        this.timeChanged();
     }
 
     /**
@@ -355,7 +393,6 @@ class DataSynchronizerReplay {
                 resolve();
             } else {
                 const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-                console.log(this.getStartTimeAsIsoDate())
                 await dataSource.setTimeRange(
                     this.getStartTimeAsIsoDate(),
                     this.getEndTimeAsIsoDate(),
@@ -459,6 +496,7 @@ class DataSynchronizerReplay {
 
     async doConnect() {
         return new Promise(async resolve => {
+            await this.updateAlgo();
             for (let dataSource of this.dataSources) {
                 await dataSource.connect();
             }
@@ -507,56 +545,56 @@ class DataSynchronizerReplay {
                        reconnect = false) {
         return new Promise(async resolve => {
             this.incVersion();
-
-            // compute intersection
-            let stTimestamp = new Date(startTime).getTime();
-            let endTimestamp = new Date(endTime).getTime();
-
-            // is it in the dataSynchronizer range?
-            if (stTimestamp < this.getMinTimeAsTimestamp()) {
-                this.properties.startTimestamp = this.getMinTimeAsTimestamp();
-            } else if (stTimestamp > this.getMaxTimeAsTimestamp()) {
-                this.properties.startTimestamp = this.getMaxTimeAsTimestamp();
-            } else {
-                this.properties.startTimestamp = stTimestamp;
-            }
-
-            if (endTimestamp < this.getMinTimeAsTimestamp()) {
-                this.properties.endTimestamp = this.getMinTimeAsTimestamp();
-            } else if (endTimestamp > this.getMaxTimeAsTimestamp()) {
-                this.properties.endTimestamp = this.getMaxTimeAsTimestamp();
-            } else {
-                this.properties.endTimestamp = endTimestamp;
-            }
-
+            // update properties of DataSynchronizer
             this.replaySpeed = replaySpeed;
 
-            // update Synchronizer Web Worker
-            let st = new Date(this.getStartTimeAsTimestamp() + 1000).toISOString();
-            let end = this.getEndTimeAsIsoDate();
+            await this.setStartTime(startTime, true);
+            await this.setEndTime(endTime, true);
 
-            this.onTimeChanged(
-                this.getMinTimeAsTimestamp(),
-                this.getMaxTimeAsTimestamp(),
-                this.getStartTimeAsTimestamp(),
-                this.getEndTimeAsTimestamp()
-            );
+            this.computeMinMax();
 
-            await this.postMessage({
+            // update properties of each DataSource
+            for (let ds of this.dataSources) {
+                await ds.setTimeRange(startTime, endTime, this.getReplaySpeed(), false, this.getMode(), this.version());
+            }
+
+            // update algo using these new properties
+            return this.updateAlgo();
+        });
+    }
+
+    async updateAlgo() {
+        // synchronize startTimestamp of synchronizer to datasources
+        for (let dataSource of this.dataSources) {
+            dataSource.setStartTimestamp(this.getStartTimeAsTimestamp());
+            dataSource.setEndTimestamp(this.getEndTimeAsTimestamp());
+        }
+        // re-compute new min/max of synchronizer
+        this.computeMinMax();
+        // provide new min/max of each dataSource to dataSynchronizer
+        const dataSourcesForWorker = [];
+        for (let dataSource of this.dataSources) {
+            const obj = {
+                bufferingTime: dataSource.properties.bufferingTime || 0,
+                timeOut: dataSource.properties.timeOut || 0,
+                id: dataSource.getId(),
+                name: dataSource.getName(),
+                minTimestamp: dataSource.getMinTimeAsTimestamp(),
+                maxTimestamp: dataSource.getMaxTimeAsTimestamp()
+            };
+            dataSourcesForWorker.push(obj);
+        }
+
+        return new Promise(resolve => {
+            return this.postMessage({
                 message: 'time-range',
                 mode: this.getMode(),
-                replaySpeed: replaySpeed,
-                startTimestamp: stTimestamp,
+                replaySpeed: this.getReplaySpeed(),
+                startTimestamp: this.getStartTimeAsTimestamp(),
                 endTimestamp: this.getEndTimeAsTimestamp(),
-                version: this.version()
-            }, async () => {
-                if (this.dataSources.length > 0) {
-                    for (let ds of this.dataSources) {
-                        await ds.setTimeRange(st, end, replaySpeed, false, this.getMode(), this.version());
-                    }
-                }
-                resolve();
-            });
+                version: this.version(),
+                dataSources: dataSourcesForWorker
+            }, resolve);
         });
     }
 
@@ -636,41 +674,6 @@ class DataSynchronizerReplay {
         this.properties.version++;
     }
 
-    async setMinTime(minTime) {
-        this.minTimestamp = new Date(minTime).getTime();
-        this.computeMinMax();
-        return new Promise(async resolve => {
-            return this.postMessage({
-                message: 'time-range',
-                mode: this.getMode(),
-                replaySpeed: this.getReplaySpeed(),
-                startTimestamp: this.getMinTimeAsTimestamp(),
-                endTimestamp: this.getMaxTimeAsTimestamp(),
-                version: this.version()
-            }, () => {
-                this.timeChanged();
-                resolve();
-            });
-        });
-    }
-
-    async setMaxTime(maxTime) {
-        this.maxTimestamp = new Date(maxTime).getTime();
-        this.computeMinMax();
-        return new Promise(async resolve => {
-            return this.postMessage({
-                message: 'time-range',
-                mode: this.getMode(),
-                replaySpeed: this.getReplaySpeed(),
-                startTimestamp: this.getMinTimeAsTimestamp(),
-                endTimestamp: this.getMaxTimeAsTimestamp(),
-                version: this.version()
-            }, () => {
-                this.timeChanged();
-                resolve();
-            });
-        });
-    }
     onTimeChanged(min, max, start, end) {
     }
 

@@ -211,8 +211,10 @@ class DataSynchronizerAlgoReplay extends DataSynchronizerAlgo {
         }
     }
 
-    //TO Test, not working!
-    setTimeRange(startTimestamp, endTimestamp, replaySped, ) {
+    setEndTimestamp(maxTimestamp) {
+        this.endTimestamp = maxTimestamp;
+    }
+    setTimeRange(startTimestamp, endTimestamp, replaySped) {
         this.replaySpeed = replaySped;
         this.startTimestamp = startTimestamp;
         this.endTimestamp = endTimestamp;

@@ -141,6 +141,7 @@ class TimeSeriesReplayDatasource extends DataSource {
      */
     setStartTimestamp(timestamp) {
         this.properties.startTimestamp = timestamp;
+        this.computeMinMax();
     }
 
     /**
@@ -148,6 +149,21 @@ class TimeSeriesReplayDatasource extends DataSource {
      */
     setEndTimestamp(timestamp) {
         this.properties.endTimestamp = timestamp;
+        this.computeMinMax();
+    }
+
+    /**
+     * Sets the start time
+     */
+    setStartTime(time) {
+        this.setStartTimestamp(new Date(time).getTime());
+    }
+
+    /**
+     * Sets the end time
+     */
+    setEndTime(time) {
+        this.setEndTimestamp(new Date(time).getTime());
     }
 
     /**
@@ -272,6 +288,17 @@ class TimeSeriesReplayDatasource extends DataSource {
     version() {
         return this.properties.version;
     }
+
+    computeMinMax() {
+        // intersect end/start depending on the min/max
+        if(this.properties.startTimestamp < this.properties.minTimestamp) {
+            this.properties.startTimestamp = this.properties.minTimestamp;
+        }
+        if(this.properties.endTimestamp > this.properties.maxTimestamp) {
+            this.properties.endTimestamp = this.properties.maxTimestamp;
+        }
+    }
+
     /**
      * Sets the data source time range
      * @param {String} startTime - the startTime (in date ISO)
@@ -297,27 +324,10 @@ class TimeSeriesReplayDatasource extends DataSource {
         }
 
         // compute intersection
-        let stTimestamp = new Date(startTime).getTime();
-        let endTimestamp = new Date(endTime).getTime();
+        this.properties.startTimestamp = new Date(startTime).getTime();
+        this.properties.endTimestamp   = new Date(endTime).getTime();
+        this.computeMinMax();
 
-        // is it in the dataSynchronizer range?
-        if(stTimestamp < this.getMinTimeAsTimestamp()) {
-            this.properties.startTimestamp = this.getMinTimeAsTimestamp();
-        } else if(stTimestamp > this.getMaxTimeAsTimestamp()) {
-            this.properties.startTimestamp = this.getMaxTimeAsTimestamp();
-        } else {
-            this.properties.startTimestamp = stTimestamp;
-        }
-
-        if(endTimestamp < this.getMinTimeAsTimestamp()) {
-            this.properties.endTimestamp = this.getMinTimeAsTimestamp();
-        } else if(endTimestamp > this.getMaxTimeAsTimestamp()) {
-            this.properties.endTimestamp = this.getMaxTimeAsTimestamp();
-        } else {
-            this.properties.endTimestamp = endTimestamp;
-        }
-
-        console.log('[DataSource] Set new Time range: '+this.getStartTimeAsIsoDate()+" -> "+this.getEndTimeAsIsoDate());
         return this.updateProperties({
             startTime: this.getStartTimeAsIsoDate(),
             endTime: this.getEndTimeAsIsoDate(),

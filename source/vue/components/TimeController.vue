@@ -40,8 +40,9 @@ import TimeControllerBatch from "./TimeController.batch.vue";
  * @desc TimeController component to control timeline of the datasources
  * @vue-prop {DataSource}  [dataSource] - DataSource object
  * @vue-prop {DataSynchronizer} [dataSynchronizer] - DataSynchronizer object
- * @vue-prop {Number} [replaySpeedStep=0.1] Time to decrease/increase replay speed value
- * @vue-prop {Number} [debounce=800] Debounce time before executing refresh while clicking on backward/forward/replaySpeed action. In millis
+ * @vue-prop {Number} [replaySpeedStep=0.1] - Time to decrease/increase replay speed value
+ * @vue-prop {String} trackRealtime - Track time before the given time (HH:MM:SS)
+ * @vue-prop {Number} [debounce=800] - Debounce time before executing refresh while clicking on backward/forward/replaySpeed action. In millis
  * @vue-prop {Function} [parseTime] - Function used to parse the time and display next to the actions buttons. Return value can be text or HTML.
  * @vue-event {String} [event='change'/'slide'/'end'/'replaySpeed'] - Emit event's name after time change
  */
@@ -56,6 +57,9 @@ export default {
     supportRealTime: {
       type: Boolean,
       default:() => true
+    },
+    onControlEventFn: {
+      type: Function,
     },
     dataSource: {
       type: Object
@@ -74,6 +78,9 @@ export default {
     debounce: {
       type: Number,
       default: () => 800 // 800ms
+    },
+    trackRealtime: {
+      type: String
     },
     parseTime: {
       type: Function,
@@ -96,12 +103,17 @@ export default {
       replay: false,
       batch: false,
       realTime: false,
-      mode: Mode.REPLAY
+      mode: Mode.REPLAY,
+      timeNow: -1
     };
   },
-  beforeMount() {
+  async beforeMount() {
     this.dataSourceObject = this.getDataSourceObject();
     this.mode = this.dataSourceObject.getMode();
+    if (isDefined(this.trackRealtime)) {
+      await this.dataSourceObject.setMode(Mode.REAL_TIME);
+      await this.dataSourceObject.connect();
+    }
     this.checkMode();
   },
   methods: {
@@ -121,15 +133,28 @@ export default {
         this.realTime = true;
       }
     },
+    async trackRt() {
+      const maxTime = new Date(Date.now()).toISOString();
+      await this.getDataSourceObject().disconnect();
+      await this.getDataSourceObject().setMaxTime(maxTime);
+
+    },
     async onControlEvent(event) {
+      if(this.onControlEventFn) {
+        this.onControlEventFn('play');
+      }
       this.$emit('event','play');
       if (event.name === 'toggle-replay') {
+        this.timeNow = event.lastTimestamp;
         await this.dataSourceObject.disconnect();
         if(this.mode === Mode.BATCH) {
           await this.dataSourceObject.setMode(Mode.BATCH);
           this.dataSourceObject.connect(); // connect by default in batch mode
         } else if(this.mode === Mode.REPLAY) {
           await this.dataSourceObject.setMode(Mode.REPLAY);
+          if(isDefined(this.trackRealtime)) {
+            await this.trackRt();
+          }
           this.dataSourceObject.connect(); // connect by default in replay mode
         }
         this.checkMode();

@@ -6,8 +6,7 @@
         :dataSynchronizer="dataSynchronizer"
         @event='onControlEvent'
         :skipTimeStep="'60s'"
-        :parseTime='parseTime'
-        :trackRealtime="'1h'"
+        :trackRealtime="'00:01:00'"
         v-if="dataSynchronizer"
     ></TimeController>
   </div>
@@ -15,12 +14,11 @@
 <script>
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import {isDefined} from 'osh-js/core/utils/Utils';
 import {Mode} from 'osh-js/core/datasource/Mode';
+import SweApiDatasource from "osh-js/core/datasource/sweapi/SweApi.datasource";
 
 export default {
   components: {
@@ -34,59 +32,53 @@ export default {
   },
   mounted() {
 
-    let startTime = (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString());
-    let endTime = (new Date().toISOString());
+    const tls = true;
 
-    const opts = {
-      endpointUrl: "sensiasoft.net/sensorhub/sos",
-      offeringID: "urn:mysos:offering04",
-      observedProperty: "http://sensorml.com/ont/swe/property/Weather",
+    const dsReplaySpeed = 2.0;
+
+    const startTime = (new Date(Date.now() - 60 * 1000 * 2).toISOString());
+    const endTime = (new Date().toISOString());
+
+    const commonDatasourceOpts = {
+      endpointUrl:  'api.georobotix.io/ogc/t18/api',
+      protocol: 'mqtt',
+      mqttOpts: {
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+      },
+      tls: tls,
       startTime: startTime,
       endTime: endTime,
-      timeOut: 100,
       mode: Mode.REPLAY,
-      tls: true
+      replaySpeed: dsReplaySpeed,
+      prefetchBatchDuration: 10000,
+      prefetchBatchSize: 250
     };
 
-    let chartDataSource1 = new SosGetResult("weather", {
-      ...opts
+    const chartDataSource1 = new SweApiDatasource('Simulated Weather Sensor - weather', {
+      ...commonDatasourceOpts,
+      resource: '/datastreams/0tsop3f16nvp8/observations',
+      responseFormat: 'application/swe+json',
     });
 
-    let chartDataSource2 = new SosGetResult("weather", {
-      ...opts
-    });
 
     this.view = new ChartJsView({
       container: 'container',
       layers: [
           new CurveLayer({
+          maxValues: 25,
           dataSourceId: chartDataSource1.id,
           getValues: (rec, timestamp) => {
             return {
-              x: timestamp,
-              y: rec.windSpeed
+              x: rec.timestamp,
+              y: rec.temperature
             }
           },
           lineColor: 'rgba(0,220,204,0.5)',
           backgroundColor: 'rgba(0,220,204,0.5)',
           fill:true,
           getCurveId:(rec, timestamp) => 2,
-          name: 'Wind Speed 1 (m/s)'
-        }),
-        new CurveLayer({
-          dataSourceId: chartDataSource2.id,
-          getValues: (rec, timestamp) => {
-            return {
-              x: timestamp,
-              y: rec.windSpeed - 0.02
-
-            }
-          },
-          lineColor: 'rgba(59,210,29,0.5)',
-          backgroundColor: 'rgba(59,210,29,0.5)',
-          fill:true,
-          getCurveId:(rec, timestamp) => 1,
-          name: 'Wind Speed 2 (m/s)'
+          name: 'Temperature (°)'
         })
       ],
       css: "chart-view",
@@ -97,13 +89,18 @@ export default {
 
 // start streaming
     const dataSynchronizer = new DataSynchronizer({
-      replaySpeed: 1.0,
-      dataSources: [chartDataSource1, chartDataSource2]
+      replaySpeed: dsReplaySpeed,
+      dataSources: [chartDataSource1]
     })
 
     dataSynchronizer.connect();
     // connects each DataSource
     this.dataSynchronizer = dataSynchronizer;
+
+    setInterval(() => {
+      dataSynchronizer.setMaxTime(new Date().toISOString());
+      console.log(dataSynchronizer)
+    }, 2000);
   },
   methods: {
     onControlEvent(eventName) {
@@ -113,19 +110,6 @@ export default {
         this.view.reset();
       }
     },
-    parseTime(timestamp) {
-      const date = new Date(timestamp);
-      const smallDate =  this.withLeadingZeros(date.getUTCFullYear()) + '-' + this.withLeadingZeros(date.getUTCMonth())
-          + '-' + this.withLeadingZeros(date.getUTCDay());
-
-      const smallTime =  this.withLeadingZeros(date.getUTCHours()) + ":" + this.withLeadingZeros(date.getUTCMinutes()) + ":"
-          + this.withLeadingZeros(date.getUTCSeconds());
-
-      return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate+ ')</small></i></div></div>';
-    },
-    withLeadingZeros(dt) {
-      return (dt < 10 ? '0' : '') + dt;
-    }
   }
 };
 </script>

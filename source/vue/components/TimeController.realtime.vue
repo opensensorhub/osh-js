@@ -166,7 +166,8 @@ export default {
     on() {
       this.$emit('event', {
         name: 'toggle-replay',
-        active: true
+        active: true,
+        lastTimestamp: this.lastSynchronizedTimestamp
       });
     }
     ,

@@ -102,6 +102,7 @@ let directories = [
     'chart-archive-realtime',
     'chart-archive-realtime-batch',
     'chart-archive-realtime-synchronized',
+    'chart-archive-realtime-synchronized-sweapi',
     'audio',
     'audio-with-control-vuejs',
     'audio-video-synchronized-with-control-vuejs',
