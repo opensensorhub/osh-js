@@ -33,20 +33,21 @@ class DataSynchronizer {
      * @param {Datasource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
+        const id = properties.id || randomUUID();
         this.dataSynchronizerReplay = new DataSynchronizerReplay({
             ...properties,
-            id: properties.id+'-replay'
+            id: id+'-replay'
         }, this);
         this.dataSynchronizerRt = new DataSynchronizerRealtime({
             ...properties,
-            id: properties.id+'-realtime'
+            id: id+'-realtime'
         }, this)
 
-        this.setMode(properties.mode || Mode.REPLAY);
-
-        this.dataSynchronizer.onTimeChanged = (min, max, start, end) =>  this.onTimeChanged(min, max, start, end);
-        this.dataSynchronizer.onAddedDataSource   = (dataSourceId) => this.onAddedDataSource(dataSourceId);
-        this.dataSynchronizer.onRemovedDataSource = (dataSourceId) => this.onRemovedDataSource(dataSourceId);
+        this.setMode(properties.mode || Mode.REPLAY).then(() => {
+            this.dataSynchronizer.onTimeChanged = (min, max, start, end) => this.onTimeChanged(min, max, start, end);
+            this.dataSynchronizer.onAddedDataSource = (dataSourceId) => this.onAddedDataSource(dataSourceId);
+            this.dataSynchronizer.onRemovedDataSource = (dataSourceId) => this.onRemovedDataSource(dataSourceId);
+        });
     }
 
     getId() {
@@ -270,7 +271,8 @@ class DataSynchronizer {
     setMaxTime(maxTime) {
         this.dataSynchronizer.setMaxTime(maxTime);
     }
-    /**
+
+        /**
      * Connect the dataSource then the protocol will be opened as well.
      */
     async isConnected() {

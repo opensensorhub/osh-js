@@ -143,6 +143,12 @@ var samples = [{
         code: 'vue/App_examples/chart-archive-realtime-synchronized.vue'
     },
     {
+        name: "Chart with Time controller and Synchronizer using 'trackRealtime' option(Chart.js)",
+        description: "Display a chart with time series of weather measurements and time controller and tracking realtime.",
+        url: "chart-archive-realtime-synchronized-sweapi",
+        code: 'vue/App_examples/chart-archive-realtime-synchronized-sweapi.vue'
+    },
+    {
         name: "Audio WebCodec/FFmpeg.js decoding",
         description: "Listen audio stream using WebCodec/FFmpeg.js",
         url: "audio"

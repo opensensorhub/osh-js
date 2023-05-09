@@ -184,9 +184,7 @@ export default {
         this.dataSourceObject.isConnected().then(value => this.connected = value);
         this.minTimestamp = this.dataSourceObject.getMinTimeAsTimestamp();
         this.maxTimestamp = this.dataSourceObject.getMaxTimeAsTimestamp();
-
         this.speed = this.dataSourceObject.getReplaySpeed();
-
         this.startTimestamp = this.dataSourceObject.getStartTimeAsTimestamp()
         this.endTimestamp = this.dataSourceObject.getEndTimeAsTimestamp()
 
@@ -278,9 +276,6 @@ export default {
             this.maxTimestamp = maxTimestamp;
             this.startTimestamp = startTimestamp;
             this.endTimestamp = endTimestamp;
-            console.log(new Date(this.minTimestamp).toISOString(),'-', new Date(this.maxTimestamp).toISOString(),'; ',
-            new Date(this.startTimestamp).toISOString(), '-',new Date(this.endTimestamp).toISOString()
-            )
           }.bind(this);
         } else {
           dataSourceObj.dataSource = this.dataSource;

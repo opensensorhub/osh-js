@@ -23,6 +23,7 @@ let promise;
 let masterTimeRefreshRate;
 let startTimestamp;
 let endTimestamp;
+let timerResolution;
 
 self.onmessage = async (event) => {
     if(isDefined(promise)) {
@@ -41,6 +42,7 @@ async function handleMessage(event) {
                 startTimestamp = event.data.startTimestamp;
                 endTimestamp = event.data.endTimestamp;
                 version = event.data.version;
+                timerResolution = event.data.timerResolution;
 
                 dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
                     event.data.dataSources,
@@ -88,13 +90,16 @@ async function handleMessage(event) {
                     reset();
                     dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
                 }
+            }  else if (event.data.message === 'set-max-time') {
+                dataSynchronizerAlgo.setEndTimestamp(event.data.maxTimestamp);
             } else if (event.data.message === 'time-range') {
                 setTimeRange(
                     event.data.startTimestamp,
                     event.data.endTimestamp,
                     event.data.mode,
                     event.data.replaySpeed,
-                    event.data.version
+                    event.data.version,
+                    event.data.dataSources
                 )
             } else if (event.data.message === 'data') {
                 checkMasterTime();
@@ -118,20 +123,16 @@ async function handleMessage(event) {
         }
     });
 }
-function setTimeRange(startTimestamp, endTimestamp, mode, replaySpeed, newVersion) {
+function setTimeRange(startTimestamp, endTimestamp, mode, replaySpeed, newVersion, dsArray) {
     reset();
     version = newVersion;
-    let datasources = [];
-    if (dataSynchronizerAlgo !== null) {
-        datasources = dataSynchronizerAlgo.datasources;
-    }
 
     dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
-        datasources,
+        dsArray,
         replaySpeed,
         startTimestamp,
         endTimestamp,
-        dataSynchronizerAlgo.timerResolution,
+        timerResolution,
         version
     );
     dataSynchronizerAlgo.onEnd = onEnd;
