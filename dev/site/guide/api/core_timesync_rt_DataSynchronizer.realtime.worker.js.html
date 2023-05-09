@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/timesync/rt/DataSynchronizer.realtime.worker.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <div id="main">
+
+        <h1 class="page-title">Source: core/timesync/rt/DataSynchronizer.realtime.worker.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {DATASOURCE_DATA_TOPIC} from "../../Constants.js";
+import {EventType} from "../../event/EventType.js";
+import {isDefined} from "../../utils/Utils";
+import {Mode} from "../../datasource/Mode";
+import DataSynchronizerAlgoReplay from "./../replay/DataSynchronizerAlgo.replay";
+import DataSynchronizerAlgoRealtime from "./DataSynchronizerAlgo.realtime.js";
+
+const bcChannels = {};
+let dataSynchronizerAlgo;
+
+let init = false;
+let dataSourceBroadCastChannel = null;
+let lastData = undefined;
+const dataSources = {};
+let timeBroadcastChannel = null;
+let topicTime;
+let topicData;
+let masterTimeInterval = undefined;
+let cTime;
+let cId;
+let lastTime = -1;
+let version = -1;
+let promise;
+let masterTimeRefreshRate;
+
+self.onmessage = async (event) => {
+    if(isDefined(promise)) {
+        await promise;
+    }
+    promise = handleMessage(event);
+}
+
+async function handleMessage(event) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let sendResponse = true;
+            let data = undefined;
+            if (event.data.message === 'init') {
+                version = event.data.version;
+
+                dataSynchronizerAlgo = new DataSynchronizerAlgoRealtime(
+                    event.data.dataSources,
+                    event.data.replaySpeed,
+                    event.data.timerResolution
+                );
+                dataSynchronizerAlgo.onData = onData;
+                init = true;
+                addDataSources(event.data.dataSources);
+                topicData = event.data.topics.data;
+                topicTime = event.data.topics.time;
+                initBroadcastChannel(topicData, topicTime);
+                masterTimeRefreshRate = event.data.masterTimeRefreshRate;
+            } else if (event.data.message === 'add' &amp;&amp; event.data.dataSources) {
+                console.log('Add datasource to synchronizer..')
+                addDataSources(event.data.dataSources);
+            } else if (event.data.message === 'connect') {
+                startMasterTimeInterval(masterTimeRefreshRate);
+                dataSynchronizerAlgo.checkStart();
+                version = event.data.version;
+            } else if(event.data.message === 'is-connected') {
+                data = {
+                    message: 'is-connected',
+                    data: isDefined(masterTimeInterval) &amp;&amp; isDefined(dataSynchronizerAlgo) &amp;&amp; isDefined(dataSynchronizerAlgo.interval)
+                };
+            } else if (event.data.message === 'remove' &amp;&amp; event.data.dataSourceIds) {
+                console.log('Remove datasource from synchronizer..')
+                await removeDataSources(event.data.dataSourceIds);
+            } else if (event.data.message === 'current-time') {
+                data = {
+                    message: 'current-time',
+                    data: dataSynchronizerAlgo.getCurrentTimestamp()
+                };
+            } else if (event.data.message === 'reset') {
+                reset();
+            } else if (event.data.message === 'replay-speed') {
+                if (dataSynchronizerAlgo !== null) {
+                    reset();
+                }
+            }  else if (event.data.message === 'data') {
+                checkMasterTime();
+                if (dataSynchronizerAlgo !== null) {
+                    dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
+                }
+            } else {
+                // skip response
+                sendResponse = false;
+            }
+            if (sendResponse) {
+                self.postMessage({
+                    message: event.data.message,
+                    data: data,
+                    messageId: event.data.messageId
+                });
+            }
+            resolve();
+        } catch (ex) {
+            reject(ex);
+        }
+    });
+}
+
+function reset() {
+    clearInterval(masterTimeInterval);
+    masterTimeInterval = undefined;
+    if(dataSynchronizerAlgo !== null) {
+        dataSynchronizerAlgo.reset();
+    }
+    timeBroadcastChannel.postMessage({
+        type: EventType.TIME_CHANGED
+    });
+    timeBroadcastChannel.postMessage({
+        type: EventType.CLOSED
+    });
+}
+function initBroadcastChannel(dataTopic, timeTopic) {
+    console.log('listen on topic ',dataTopic)
+
+    dataSourceBroadCastChannel = new BroadcastChannel(dataTopic);
+    dataSourceBroadCastChannel.onmessage = async (event) => {
+        checkMasterTime();
+        if(event.data.type === EventType.DATA) {
+            dataSynchronizerAlgo.push(event.data.dataSourceId,event.data.values);
+        } else if(event.data.type === EventType.STATUS) {
+            const dataSourceId = event.data.dataSourceId;
+            dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
+            // bubble the message
+            if(dataSourceId in bcChannels) {
+                console.log(dataSources[dataSourceId].name + ": status=" + event.data.status);
+                bcChannels[dataSourceId].postMessage(event.data);
+            }
+        }
+    }
+
+    timeBroadcastChannel = new BroadcastChannel(timeTopic);
+
+}
+
+/**
+ *
+ * @param dataSources
+ */
+function addDataSources(dataSources) {
+    for(let dataSource of dataSources) {
+        addDataSource(dataSource);
+    }
+}
+
+function addDataSource(dataSource) {
+    dataSynchronizerAlgo.addDataSource(dataSource);
+    // create a BC to push back the synchronized data into the DATA Stream.
+    bcChannels[dataSource.id] = new BroadcastChannel(DATASOURCE_DATA_TOPIC + dataSource.id);
+
+    if(!(dataSource.id in dataSources)) {
+        dataSources[dataSource.id] = dataSource;
+    }
+}
+
+/**
+ *
+ * @param dataSourceIds
+ */
+async function removeDataSources(dataSourceIds) {
+    for(let dataSourceId of dataSourceIds) {
+        await removeDataSource(dataSourceId);
+    }
+}
+
+async function removeDataSource(dataSourceId) {
+    await dataSynchronizerAlgo.removeDataSource(dataSourceId);
+    // create a BC to push back the synchronized data into the DATA Stream.
+    console.log('deleting BC for datasource '+dataSourceId);
+    delete bcChannels[dataSourceId];
+    delete dataSources[dataSourceId];
+}
+
+function checkMasterTime() {
+    if(!isDefined(masterTimeInterval)) {
+        startMasterTimeInterval(masterTimeRefreshRate);
+    }
+}
+async function onEnd() {
+    const masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
+    clearInterval(masterTimeInterval);
+    masterTimeInterval = undefined;
+    // end at this time
+    timeBroadcastChannel.postMessage({
+        timestamp: masterTime,
+        type: EventType.MASTER_TIME
+    });
+}
+
+async function onStart() {
+    checkMasterTime();
+}
+
+function onClose() {
+    timeBroadcastChannel.postMessage({
+        type: EventType.CLOSED
+    });
+}
+
+async function onData(dataSourceId, dataBlock) {
+    if(dataBlock.version !== version) {
+        console.error('version are different:',dataBlock.version,version);
+        return;
+    }
+    lastData = {
+        dataSourceId: dataSourceId,
+        dataBlock: dataBlock,
+    };
+    bcChannels[dataSourceId].postMessage({
+            values: [dataBlock],
+            dataSourceId:dataSourceId,
+            type: EventType.DATA
+        }
+    );
+}
+self.onclose = function() {
+    dataSynchronizerAlgo.close();
+    console.log("Data Synchronizer has been terminated successfully");
+}
+
+let masterTime;
+function startMasterTimeInterval(masterTimeRefreshRate) {
+    if (!isDefined(masterTimeInterval)) {
+        masterTimeInterval = setInterval(() => {
+            masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
+            if (isDefined(masterTime)) {
+                timeBroadcastChannel.postMessage({
+                    timestamp: masterTime,
+                    type: EventType.MASTER_TIME
+                });
+            }
+
+            if(isDefined(lastData)) {
+                cTime = lastData.dataBlock.data.timestamp;
+                cId = lastData.dataSourceId;
+
+                if ((cTime !== -1 &amp;&amp; lastTime === -1) || (lastTime !== -1 &amp;&amp; cTime !== lastTime)) { // does not send the same data twice
+                    timeBroadcastChannel.postMessage({
+                        timestamp: cTime,
+                        dataSourceId: cId,
+                        type: EventType.LAST_TIME
+                    });
+                }
+                lastTime = cTime;
+            }
+        }, masterTimeRefreshRate);
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

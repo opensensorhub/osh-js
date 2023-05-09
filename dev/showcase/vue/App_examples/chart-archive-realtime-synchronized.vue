@@ -7,6 +7,7 @@
         @event='onControlEvent'
         :skipTimeStep="'60s'"
         :parseTime='parseTime'
+        :trackRealtime="'1h'"
         v-if="dataSynchronizer"
     ></TimeController>
   </div>
@@ -34,7 +35,7 @@ export default {
   mounted() {
 
     let startTime = (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString());
-    let endTime = (new Date(Date.now()).toISOString());
+    let endTime = (new Date().toISOString());
 
     const opts = {
       endpointUrl: "sensiasoft.net/sensorhub/sos",
@@ -42,8 +43,6 @@ export default {
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
       startTime: startTime,
       endTime: endTime,
-      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
-      maxTime: (new Date(Date.now()).toISOString()),
       timeOut: 100,
       mode: Mode.REPLAY,
       tls: true
@@ -99,8 +98,6 @@ export default {
 // start streaming
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.0,
-      startTime: startTime,
-      endTime: endTime,
       dataSources: [chartDataSource1, chartDataSource2]
     })
 
@@ -112,7 +109,7 @@ export default {
     onControlEvent(eventName) {
       if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
           || eventName === 'replaySpeed'
-          || (eventName === 'play' && (!isDefined(this.dataSynchronizer.properties.replaySpeed)))) {
+          || (eventName === 'play')) {
         this.view.reset();
       }
     },

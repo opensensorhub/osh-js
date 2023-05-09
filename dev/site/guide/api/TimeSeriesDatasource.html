@@ -149,6 +149,94 @@
     
 
     
+    <h4 class="name" id="connect"><span class="type-signature">(async) </span>connect<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Connect the dataSource then the protocol will be opened as well.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line302">line 302</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="disconnect"><span class="type-signature">(async) </span>disconnect<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
@@ -201,7 +289,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line137">line 137</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line214">line 214</a>
     </li></ul></dd>
     
 
@@ -237,7 +325,7 @@
     
 
     
-    <h4 class="name" id="getEndTime"><span class="type-signature"></span>getEndTime<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="getEndTimeAsIsoDate"><span class="type-signature"></span>getEndTimeAsIsoDate<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
     
 
     
@@ -289,7 +377,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line62">line 62</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line96">line 96</a>
     </li></ul></dd>
     
 
@@ -347,7 +435,7 @@
     
 
     
-    <h4 class="name" id="getMaxTime"><span class="type-signature"></span>getMaxTime<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="getEndTimeAsTimestamp"><span class="type-signature"></span>getEndTimeAsTimestamp<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
     
 
     
@@ -399,7 +487,227 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line78">line 78</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - endTime as unix timestamp
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getId"><span class="type-signature"></span>getId<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Gets the datasource id.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line259">line 259</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the datasource id
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getMaxTimeAsIsoDate"><span class="type-signature"></span>getMaxTimeAsIsoDate<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Gets the endTime
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line120">line 120</a>
     </li></ul></dd>
     
 
@@ -457,7 +765,117 @@
     
 
     
-    <h4 class="name" id="getMinTime"><span class="type-signature"></span>getMinTime<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="getMaxTimeAsTimestamp"><span class="type-signature"></span>getMaxTimeAsTimestamp<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Gets the endTime
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line136">line 136</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - endTime as unix timestamp
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getMinTimeAsIsoDate"><span class="type-signature"></span>getMinTimeAsIsoDate<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
     
 
     
@@ -509,7 +927,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line70">line 70</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line112">line 112</a>
     </li></ul></dd>
     
 
@@ -539,6 +957,116 @@
         
 <div class="param-desc">
     - startTime as ISO date
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getMinTimeAsTimestamp"><span class="type-signature"></span>getMinTimeAsTimestamp<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Gets the startTime
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line128">line 128</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - startTime as unix timestamp
 </div>
 
 
@@ -619,7 +1147,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line55">line 55</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line69">line 69</a>
     </li></ul></dd>
     
 
@@ -660,6 +1188,116 @@
     <dd>
         
 <span class="param-type"><a href="global.html#Mode">Mode</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getName"><span class="type-signature"></span>getName<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Gets the datasource name.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line267">line 267</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the datasource name
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
 
 
     </dd>
@@ -729,7 +1367,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line100">line 100</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line186">line 186</a>
     </li></ul></dd>
     
 
@@ -787,7 +1425,7 @@
     
 
     
-    <h4 class="name" id="getStartTime"><span class="type-signature"></span>getStartTime<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="getStartTimeAsIsoDate"><span class="type-signature"></span>getStartTimeAsIsoDate<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
     
 
     
@@ -839,7 +1477,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line48">line 48</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -869,6 +1507,116 @@
         
 <div class="param-desc">
     - startTime as ISO date
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getStartTimeAsTimestamp"><span class="type-signature"></span>getStartTimeAsTimestamp<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Gets the startTime
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line88">line 88</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - startTime as unix timestamp
 </div>
 
 
@@ -993,7 +1741,329 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line167">line 167</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line227">line 227</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setDataSynchronizer"><span class="type-signature">(async) </span>setDataSynchronizer<span class="signature">(dataSynchronizer)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dataSynchronizer</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line203">line 203</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setEndTime"><span class="type-signature"></span>setEndTime<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the end time
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line178">line 178</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setEndTimestamp"><span class="type-signature"></span>setEndTimestamp<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the end time
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line164">line 164</a>
     </li></ul></dd>
     
 
@@ -1081,7 +2151,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line92">line 92</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line150">line 150</a>
     </li></ul></dd>
     
 
@@ -1169,7 +2239,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line85">line 85</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line143">line 143</a>
     </li></ul></dd>
     
 
@@ -1257,7 +2327,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line108">line 108</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line194">line 194</a>
     </li></ul></dd>
     
 
@@ -1315,7 +2385,183 @@
     
 
     
-    <h4 class="name" id="setTimeRange"><span class="type-signature">(async) </span>setTimeRange<span class="signature">(startTime, endTime, replaySpeed, reconnect, mode)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setStartTime"><span class="type-signature"></span>setStartTime<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the start time
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line171">line 171</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setStartTimestamp"><span class="type-signature"></span>setStartTimestamp<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the start time
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line157">line 157</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setTimeRange"><span class="type-signature">(async) </span>setTimeRange<span class="signature">(startTime, endTime, replaySpeed, reconnect, mode, version)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1495,6 +2741,33 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>version</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">version of data</td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -1532,7 +2805,354 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line204">line 204</a>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line243">line 243</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updateProperties"><span class="type-signature">(async) </span>updateProperties<span class="signature">(name, properties)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Update properties
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the datasource name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the datasource properties
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bufferingTime</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">defines the time during the data has to be buffered</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>timeOut</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">defines the limit time before data has to be skipped</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>protocol</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">defines the protocol of the datasource. @see <a href="DataConnector.html">DataConnector</a></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>endpointUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the endpoint url</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>service</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the service</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>responseFormat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the response format (e.g video/mp4)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>reconnectTimeout</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the timeout before reconnecting</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_datasource_TimeSeries.datasource.js.html">core/datasource/TimeSeries.datasource.js</a>, <a href="core_datasource_TimeSeries.datasource.js.html#line295">line 295</a>
     </li></ul></dd>
     
 
