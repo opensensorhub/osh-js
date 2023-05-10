@@ -16,7 +16,7 @@
 
 
 import View from "../View.js";
-import {hex2rgb, isDefined, merge, randomUUID} from "../../../utils/Utils.js";
+import {hex2rgb, hex2rgba, isDefined, merge, randomUUID} from "../../../utils/Utils.js";
 import { Chart, registerables } from 'chart.js';
 import 'chartjs-adapter-moment';
 
@@ -48,12 +48,18 @@ class ChartJsView extends View {
             maintainAspectRatio: false,
             normalized : true,
             scales: {
+                y: {
+                    title: {
+                        display: true,
+                        text: ''
+                    }
+                },
                 x: {
                     type: 'time',
                     time: {
                         unit: 'second',
                     },
-                }
+                },
             },
             plugins: {},
             datasets: {},
@@ -117,6 +123,7 @@ class ChartJsView extends View {
         if(this.resetting) {
             return;
         }
+        this.chart.options.scales.y.title.text = props[0].yLabel;
         let currentDataset = this.datasets[props[0].curveId];
         const values = props.map(item => ({'x': item.x, 'y': item.y}));
 
@@ -156,8 +163,13 @@ class ChartJsView extends View {
     getColor(value) {
         let v = value;
         if(v.length > 0 && v.charAt(0) === '#') {
-            const rgb = hex2rgb(value);
-            v = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0.2)';
+            if(value.length === 9) {
+                const rgba = hex2rgba(value);
+                v = 'rgba(' + rgba[0] + ',' + rgba[1] + ',' + rgba[2] + ',' + rgba[3] + ')';
+            } else {
+                const rgb = hex2rgb(value);
+                v = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1.0)';
+            }
         }
         return v;
     }

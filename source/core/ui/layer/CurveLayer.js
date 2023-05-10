@@ -60,6 +60,10 @@ class CurveLayer extends Layer {
         };
 
 
+        if (isDefined(properties.yLabel)) {
+            props.yLabel = properties.yLabel;
+        }
+
         if (isDefined(properties.stroke)) {
             props.stroke = properties.stroke;
         }
