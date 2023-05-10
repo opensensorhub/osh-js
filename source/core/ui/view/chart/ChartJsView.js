@@ -130,6 +130,7 @@ class ChartJsView extends View {
                 fill:  props[0].fill,
                 backgroundColor: bgColor,
                 borderColor: lineColor,
+                borderWidth: props[0].stroke,
                 data: values
             };
             currentDataset = {...this.datasetsProps, ...currentDataset};

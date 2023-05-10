@@ -280,7 +280,6 @@ self.onclose = function() {
 
 let masterTime;
 function startMasterTimeInterval(masterTimeRefreshRate) {
-    console.log('ici')
     if (!isDefined(masterTimeInterval)) {
         masterTimeInterval = setInterval(() => {
             masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
