@@ -7,7 +7,7 @@ const bcChannels = {};
 let dataSynchronizerAlgo;
 
 let init = false;
-let dataSourceBroadCastChannel = null;
+let dataSynchronizerBroadCastChannel = null;
 let lastData = undefined;
 const dataSources = {};
 let timeBroadcastChannel = null;
@@ -152,15 +152,19 @@ function reset() {
     timeBroadcastChannel.postMessage({
         type: EventType.CLOSED
     });
+
+    dataSynchronizerBroadCastChannel.postMessage({
+        type: EventType.STATUS,
+        status: 'not_running',
+    });
 }
 function initBroadcastChannel(dataTopic, timeTopic) {
     console.log('listen on topic ',dataTopic)
 
-    dataSourceBroadCastChannel = new BroadcastChannel(dataTopic);
-    dataSourceBroadCastChannel.onmessage = async (event) => {
-        checkMasterTime();
+    dataSynchronizerBroadCastChannel = new BroadcastChannel(dataTopic);
+    dataSynchronizerBroadCastChannel.onmessage = async (event) => {
         if(event.data.type === EventType.DATA) {
-            // console.log(new Date(event.data.values[0].data.timestamp).toISOString(), event.data.values[0].version);
+            checkMasterTime();
             dataSynchronizerAlgo.push(event.data.dataSourceId,event.data.values);
         } else if(event.data.type === EventType.STATUS) {
             const dataSourceId = event.data.dataSourceId;
@@ -229,6 +233,10 @@ async function onEnd() {
         timestamp: masterTime,
         type: EventType.MASTER_TIME
     });
+    dataSynchronizerBroadCastChannel.postMessage({
+        type: EventType.STATUS,
+        status: 'not_running',
+    });
 }
 
 async function onStart() {
@@ -238,6 +246,10 @@ async function onStart() {
 function onClose() {
     timeBroadcastChannel.postMessage({
         type: EventType.CLOSED
+    });
+    dataSynchronizerBroadCastChannel.postMessage({
+        type: EventType.STATUS,
+        status: 'not_running',
     });
 }
 
@@ -260,10 +272,15 @@ async function onData(dataSourceId, dataBlock) {
 self.onclose = function() {
     dataSynchronizerAlgo.close();
     console.log("Data Synchronizer has been terminated successfully");
+    dataSynchronizerBroadCastChannel.postMessage({
+        type: EventType.STATUS,
+        status: 'not_running',
+    });
 }
 
 let masterTime;
 function startMasterTimeInterval(masterTimeRefreshRate) {
+    console.log('ici')
     if (!isDefined(masterTimeInterval)) {
         masterTimeInterval = setInterval(() => {
             masterTime = dataSynchronizerAlgo.getCurrentTimestamp();
@@ -288,5 +305,9 @@ function startMasterTimeInterval(masterTimeRefreshRate) {
                 lastTime = cTime;
             }
         }, masterTimeRefreshRate);
+        dataSynchronizerBroadCastChannel.postMessage({
+            type: EventType.STATUS,
+            status: 'running',
+        });
     }
 }
