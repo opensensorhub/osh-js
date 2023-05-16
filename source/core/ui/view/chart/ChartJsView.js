@@ -157,15 +157,12 @@ class ChartJsView extends View {
 
             this.buffer = this.buffer.concat(values);
             if(this.lastTimestamp === -1 || Date.now() - this.lastTimestamp > this.refreshRate) {
-                const bufferLength = this.buffer.length;
-                for(let i = 0;i < bufferLength; i++) {
-                    this.datasets[props[0].curveId].data.push(this.buffer.shift());
-                    //TODO: max points with multiple dataset won't work
-                    if((currentDataset.data.length > props[0].maxValues)) {
-                        this.chart.data.labels.shift();
-                        currentDataset.data.shift();
-                    }
+                const nbToShift = this.buffer.length - props[0].maxValues;
+                if(nbToShift > 0) {
+                    // double buffering
+                    this.buffer = this.buffer.splice(nbToShift);
                 }
+                this.datasets[props[0].curveId].data = this.buffer;
                 this.chart.update('none');
                 this.lastTimestamp = Date.now();
             }
@@ -192,6 +189,7 @@ class ChartJsView extends View {
         this.datasets = {};
         this.chart.data.datasets = [];
         this.chart.data.labels = [];
+        this.buffer = [];
         this.chart.update(0);
         this.resetting = false;
         // this.chart.data.datasets = [];
