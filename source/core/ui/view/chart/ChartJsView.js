@@ -33,6 +33,7 @@ class ChartJsView extends View {
      * @param {Object} [properties.options={}] - Properties which can override the default framework ones
      * @param {Object} [properties.datasetOptions={}] - Properties which can override the default framework ones (as defined [dataset]{@link https://www.chartjs.org/docs/latest/configuration/#dataset-configuration}
      * @param {boolean} [properties.override=false] - Defines if options (as defined [Chart options]{@link https://www.chartjs.org/docs/3.5.1/general/options.html}) are completely overridden or merge only. Default is merge
+     @param {boolean} [properties.refreshRate=500] - Defines the refresh data rate (in millis)
      */
     constructor(properties) {
         super({
@@ -69,6 +70,7 @@ class ChartJsView extends View {
             elements: {}
         };
 
+        this.refreshRate = 500;
         // #endregion snippet_chartjsview_default_chartprops
         if (isDefined(properties)) {
             if(properties.hasOwnProperty('options')){
@@ -79,6 +81,9 @@ class ChartJsView extends View {
             }
             if(properties.hasOwnProperty('datasetOptions')){
                 this.datasetOptions = properties.datasetOptions;
+            }
+            if(properties.hasOwnProperty('refreshRate')) {
+                this.refreshRate = properties.refreshRate;
             }
         }
 
@@ -97,6 +102,9 @@ class ChartJsView extends View {
             });
 
         this.datasets = {};
+
+        this.buffer = [];
+        this.lastTimestamp = -1;
     }
 
     async setData(dataSourceId, data) {
@@ -147,17 +155,22 @@ class ChartJsView extends View {
             this.datasets[props[0].curveId].backgroundColor = bgColor;
             this.datasets[props[0].curveId].borderColor = lineColor;
 
-            values.forEach(value => {
-                this.datasets[props[0].curveId].data.push(value);
-            });
-        }
-        //TODO: max points with multiple dataset won't work
-        if((currentDataset.data.length > props[0].maxValues)) {
-            this.chart.data.labels.shift();
-            currentDataset.data.shift();
+            this.buffer = this.buffer.concat(values);
+            if(this.lastTimestamp === -1 || Date.now() - this.lastTimestamp > this.refreshRate) {
+                const bufferLength = this.buffer.length;
+                for(let i = 0;i < bufferLength; i++) {
+                    this.datasets[props[0].curveId].data.push(this.buffer.shift());
+                    //TODO: max points with multiple dataset won't work
+                    if((currentDataset.data.length > props[0].maxValues)) {
+                        this.chart.data.labels.shift();
+                        currentDataset.data.shift();
+                    }
+                }
+                this.chart.update('none');
+                this.lastTimestamp = Date.now();
+            }
         }
 
-        this.chart.update('none');
     }
 
     getColor(value) {
