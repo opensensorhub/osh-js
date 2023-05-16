@@ -72,8 +72,8 @@ async function handleMessage(event) {
                     message: 'is-connected',
                     data: isDefined(masterTimeInterval) && isDefined(dataSynchronizerAlgo) && isDefined(dataSynchronizerAlgo.interval)
                 };
-            } else if (event.data.message === 'remove' && event.data.dataSourceIds) {
-                console.log('Remove datasource from synchronizer..')
+            } else if (event.data.message === 'remove') {
+                console.log('Remove datasource from synchronizer algorithm..')
                 await removeDataSources(event.data.dataSourceIds);
                 if(dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay) {
                     dataSynchronizerAlgo.endTimestamp = event.data.endTimestamp;

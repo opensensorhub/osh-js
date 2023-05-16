@@ -237,7 +237,6 @@ class View {
            // this.setData(dataSourceId, [layer.getProps()]);
             // observes the data come in
             let self = this;
-            console.log('View Listen on '+(DATASOURCE_DATA_TOPIC+dataSourceId));
             const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
             broadcastChannel.onmessage = async (event) => {
                 if (event.data.type === EventType.STATUS && event.data.status === Status.CLOSED_ERROR) {

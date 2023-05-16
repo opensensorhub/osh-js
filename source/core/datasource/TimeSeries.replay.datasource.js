@@ -213,7 +213,8 @@ class TimeSeriesReplayDatasource extends DataSource {
             this.dataSourceWorker.terminate();
             this.dataSynchronizer = undefined;
         }
-        // this.init = undefined;
+        this.init = undefined;
+        this.dataSynchronizer = undefined;
         await this.checkInit();
 
     }
@@ -221,25 +222,24 @@ class TimeSeriesReplayDatasource extends DataSource {
      * Disconnect the dataSource then the protocol will be closed as well.
      */
     async disconnect() {
-        await this.checkInit();
-        return new Promise(async resolve => {
-            await this.checkInit();
-            this.postMessage({
-                message: 'disconnect'
-            }, resolve);
-        });
+        if(isDefined(this.init)) {
+            return new Promise(async resolve => {
+                try {
+                    this.postMessage({
+                        message: 'disconnect'
+                    }, resolve);
+                }catch (ex) {
+                    console.error(ex);
+                }
+            });
+        }
     }
 
     async doConnect() {
         return new Promise(async resolve => {
-            let startTime;
-            if(isDefined(this.dataSynchronizer)) {
-                startTime = (this.dataSynchronizer.getMode() === Mode.REAL_TIME) ? 'now' : this.getStartTimeAsIsoDate();
-            }
-
             this.postMessage({
                 message: 'connect',
-                startTime: startTime,
+                startTime: this.getStartTimeAsIsoDate(),
                 version: this.version()
             }, resolve);
         });
@@ -265,6 +265,7 @@ class TimeSeriesReplayDatasource extends DataSource {
                 message: 'topics',
                 topics:  topics,
             }, async () => {
+                console.log('initiated datasources')
                 // listen for Events to callback to subscriptions
                 const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
                 datasourceBroadcastChannel.onmessage = async (message) => {

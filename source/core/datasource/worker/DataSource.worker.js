@@ -22,7 +22,7 @@ import SosGetResultHandler from "../sos/handler/SosGetResult.handler";
 let dataSourceHandler = undefined;
 
 self.onmessage = async (event) => {
-    await handleMessage(event.data, self);
+    handleMessage(event.data, self);
 };
 
 let promise = new Promise(resolve => {resolve()});
@@ -31,41 +31,41 @@ async function checkPerformingAction() {
     await promise;
 }
 async function handleMessage(event) {
-    await checkPerformingAction();
+    // await checkPerformingAction();
     // ensure the right order of the actions
-    promise = new Promise(async resolve => {
-        let value;
-        if (!isDefined(dataSourceHandler)) {
-            if (event.message === 'init') {
-                dataSourceHandler = createHandlerFromProperties(event.properties);
-                await dataSourceHandler.init(event.properties, event.topics, event.id);
-                value = dataSourceHandler.isInitialized();
-            }
-        } else {
-            if (event.message === 'connect') {
-                await dataSourceHandler.connect(event.startTime, event.version);
-            } else if (event.message === 'disconnect') {
-                await dataSourceHandler.disconnect();
-            } else if (event.message === 'topics') {
-                dataSourceHandler.setTopics(event.topics);
-            } else if (event.message === 'update-properties') {
-                dataSourceHandler.updateProperties(event.data);
-            } else if (event.message === 'is-connected') {
-                value = dataSourceHandler.isConnected();
-            } else if (event.message === 'is-init') {
-                value = dataSourceHandler.isInitialized();
-            }
+    // promise = new Promise(async resolve => {
+    let value;
+    if (!isDefined(dataSourceHandler)) {
+        if (event.message === 'init') {
+            dataSourceHandler = createHandlerFromProperties(event.properties);
+            await dataSourceHandler.init(event.properties, event.topics, event.id);
+            value = dataSourceHandler.isInitialized();
         }
+    } else {
+        if (event.message === 'connect') {
+            await dataSourceHandler.connect(event.startTime, event.version);
+        } else if (event.message === 'disconnect') {
+            await dataSourceHandler.disconnect();
+        } else if (event.message === 'topics') {
+            dataSourceHandler.setTopics(event.topics);
+        } else if (event.message === 'update-properties') {
+            dataSourceHandler.updateProperties(event.data);
+        } else if (event.message === 'is-connected') {
+            value = dataSourceHandler.isConnected();
+        } else if (event.message === 'is-init') {
+            value = dataSourceHandler.isInitialized();
+        }
+    }
 
-        // send back result or just return
-        postMessage({
-            message: event.message,
-            data: value,
-            messageId: event.messageId
-        });
-        resolve();
+    // send back result or just return
+    postMessage({
+        message: event.message,
+        data: value,
+        messageId: event.messageId
     });
-    return promise;
+    // resolve();
+    // });
+    // return promise;
 }
 
 function createHandlerFromProperties(properties) {

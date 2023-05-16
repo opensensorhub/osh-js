@@ -180,38 +180,52 @@ export default {
   methods: {
     async initComp() {
       assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
-      if (!this.init) {
-        this.dataSourceObject.isConnected().then(value => this.connected = value);
-        this.minTimestamp = this.dataSourceObject.getMinTimeAsTimestamp();
-        this.maxTimestamp = this.dataSourceObject.getMaxTimeAsTimestamp();
-        this.speed = this.dataSourceObject.getReplaySpeed();
-        this.startTimestamp = this.dataSourceObject.getStartTimeAsTimestamp()
-        this.endTimestamp = this.dataSourceObject.getEndTimeAsTimestamp()
+      await this.checkInit();
+      this.createTimeBc();
 
-        // compute skip time
-        if ((this.skipTimeStep.endsWith('s'))) {
-          // time in second
-          this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1)) * 1000;
-        } else if (this.skipTimeStep.endsWith('%')) {
-          // compute percent on the whole period
-          const totalTime = this.maxTimestamp - this.minTimestamp;
-          const percent = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1));
-          this.skipTime = percent * totalTime / 100;
+      // listen for datasource status
+      this.dataSourceObject.subscribe(async message => {
+        if (message.status === STATUS.DISCONNECTED || message.status === STATUS.FETCH_ENDED || message.status === STATUS.FETCH_STARTED) {
+          this.connected = await this.dataSourceObject.isConnected();
         }
+      }, [EventType.STATUS]);
 
-        this.createTimeBc();
-        // listen for datasource status
-        this.dataSourceObject.subscribe(async message => {
-          if (message.status === STATUS.DISCONNECTED || message.status === STATUS.FETCH_ENDED || message.status === STATUS.FETCH_STARTED) {
-            this.connected = await this.dataSourceObject.isConnected();
+      this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
+      this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
+      this.displayConsoleWarningIncompatibleVersionThrottle = throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
+
+      if(isDefined(this.dataSynchronizer)) {
+        this.dataSynchronizer.onAddedDataSource = async () => {
+          await this.checkInit();
+        };
+      }
+
+    },
+    async checkInit() {
+      if (!this.init && this.dataSourceObject.getDataSources().length > 0) {
+        try {
+          this.dataSourceObject.isConnected().then(value => this.connected = value);
+          this.minTimestamp = this.dataSourceObject.getMinTimeAsTimestamp();
+          this.maxTimestamp = this.dataSourceObject.getMaxTimeAsTimestamp();
+          this.speed = this.dataSourceObject.getReplaySpeed();
+          this.startTimestamp = this.dataSourceObject.getStartTimeAsTimestamp()
+          this.endTimestamp = this.dataSourceObject.getEndTimeAsTimestamp()
+
+          // compute skip time
+          if ((this.skipTimeStep.endsWith('s'))) {
+            // time in second
+            this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1)) * 1000;
+          } else if (this.skipTimeStep.endsWith('%')) {
+            // compute percent on the whole period
+            const totalTime = this.maxTimestamp - this.minTimestamp;
+            const percent = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1));
+            this.skipTime = percent * totalTime / 100;
           }
-        }, [EventType.STATUS]);
-
-        this.createRangeSlider();
-        this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
-        this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
-        this.displayConsoleWarningIncompatibleVersionThrottle = throttle(this.displayConsoleWarningIncompatibleVersion.bind(this), this.debounce);
-        this.init = true;
+          this.init = true;
+          this.createRangeSlider();
+        }catch (ex) {
+          console.error(ex);
+        }
       }
     },
     displayConsoleWarningIncompatibleVersionThrottle() {

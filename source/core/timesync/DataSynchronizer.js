@@ -67,6 +67,7 @@ class DataSynchronizer {
         for(let ds of this.dataSynchronizer.getDataSources()) {
             await ds.setMode(mode);
         }
+        this.onChangedMode(mode);
     }
     getDataSources() {
         return this.dataSynchronizer.getDataSources();
@@ -217,7 +218,6 @@ class DataSynchronizer {
     }
 
     async doConnect() {
-        console.log('do connect')
         return this.dataSynchronizer.doConnect()
     }
 
@@ -287,6 +287,8 @@ class DataSynchronizer {
 
     onAddedDataSource(dataSourceId) {
     }
+
+    onChangedMode(mode) {}
 }
 
 export default DataSynchronizer;

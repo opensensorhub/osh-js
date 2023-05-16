@@ -110,10 +110,6 @@ export default {
   async beforeMount() {
     this.dataSourceObject = this.getDataSourceObject();
     this.mode = this.dataSourceObject.getMode();
-    if (isDefined(this.trackRealtime)) {
-      await this.dataSourceObject.setMode(Mode.REAL_TIME);
-      await this.dataSourceObject.connect();
-    }
     this.checkMode();
   },
   methods: {
@@ -140,10 +136,6 @@ export default {
 
     },
     async onControlEvent(event) {
-      if(this.onControlEventFn) {
-        this.onControlEventFn('play');
-      }
-      this.$emit('event','play');
       if (event.name === 'toggle-replay') {
         this.timeNow = event.lastTimestamp;
         await this.dataSourceObject.disconnect();
@@ -158,11 +150,24 @@ export default {
           this.dataSourceObject.connect(); // connect by default in replay mode
         }
         this.checkMode();
+        if(this.onControlEventFn) {
+          this.onControlEventFn('play'); // backward compatibility
+          this.onControlEventFn('mode', 'replay' );
+        }
+        this.$emit('event','play'); // backward compatibility
+        this.$emit('mode','replay');
       } else if(event.name === 'toggle-realtime') {
         await this.dataSourceObject.disconnect();
         await this.dataSourceObject.setMode(Mode.REAL_TIME);
         this.checkMode();
         this.dataSourceObject.connect(); // connect by default in realtime mode
+
+        if(this.onControlEventFn) {
+          this.onControlEventFn('play'); // backward compatibility
+          this.onControlEventFn('mode', 'realtime' );
+        }
+        this.$emit('event','play'); // backward compatibility
+        this.$emit('mode','realtime');
       }
     },
   }
