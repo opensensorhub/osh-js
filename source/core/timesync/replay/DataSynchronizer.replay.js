@@ -527,10 +527,8 @@ class DataSynchronizerReplay {
             // update properties of DataSynchronizer
             this.replaySpeed = replaySpeed;
 
-            await this.setStartTime(startTime, true);
-            await this.setEndTime(endTime, true);
-
-            this.computeMinMax();
+            await this.setStartTime(startTime, false);
+            await this.setEndTime(endTime, false);
 
             // update properties of each DataSource
             for (let ds of this.dataSources) {
@@ -538,17 +536,18 @@ class DataSynchronizerReplay {
                     this.getStartTimeAsIsoDate(),
                     this.getEndTimeAsIsoDate(),
                     this.getReplaySpeed(),
-                    reconnect,
+                    false,
                     this.getMode(),
                     this.version()
                 )
             }
-
+            /*
+            this.computeMinMax();
             // update algo using these new properties
             await this.updateAlgo();
             if(reconnect) {
                 await this.connect();
-            }
+            }*/
             resolve();
         });
     }

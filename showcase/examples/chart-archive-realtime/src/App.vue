@@ -81,7 +81,7 @@ export default {
       },
       fill: true,
       backgroundColor: 'rgba(169,212,255,0.5)',
-      maxValues: 25,
+      maxValues: 20,
       getBackgroundColor: (rec) => {
         const randomNumber = getRandomArbitrary(0,1);
         if(randomNumber > 0.5) {

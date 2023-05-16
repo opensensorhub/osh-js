@@ -87,16 +87,19 @@ class ChartJsView extends View {
             }
         }
 
+        this.type = type;
         let domNode = document.getElementById(this.divId);
 
+        this.id = randomUUID();
         let ctx = document.createElement("canvas");
-        ctx.setAttribute("id", randomUUID());
+        ctx.setAttribute("id", this.id);
         domNode.appendChild(ctx);
 
+        this.ctx = ctx;
         this.resetting = false;
 
         this.chart = new Chart(
-            ctx, {
+            this.ctx, {
                 type: type,
                 options: this.options
             });
@@ -154,20 +157,18 @@ class ChartJsView extends View {
         } else {
             this.datasets[props[0].curveId].backgroundColor = bgColor;
             this.datasets[props[0].curveId].borderColor = lineColor;
-
-            this.buffer = this.buffer.concat(values);
-            if(this.lastTimestamp === -1 || Date.now() - this.lastTimestamp > this.refreshRate) {
-                const nbToShift = this.buffer.length - props[0].maxValues;
-                if(nbToShift > 0) {
-                    // double buffering
-                    this.buffer = this.buffer.splice(nbToShift);
-                }
-                this.datasets[props[0].curveId].data = this.buffer;
-                this.chart.update('none');
-                this.lastTimestamp = Date.now();
-            }
         }
-
+        this.buffer = this.buffer.concat(values);
+        if(this.lastTimestamp === -1 || Date.now() - this.lastTimestamp > this.refreshRate) {
+            const nbToShift = this.buffer.length - props[0].maxValues;
+            if(nbToShift > 0) {
+                // double buffering
+                this.buffer = this.buffer.slice(nbToShift);
+            }
+            this.lastTimestamp = Date.now();
+            this.datasets[props[0].curveId].data = this.buffer;
+            this.chart.update('none');
+        }
     }
 
     getColor(value) {
@@ -183,17 +184,16 @@ class ChartJsView extends View {
         }
         return v;
     }
+
     reset() {
         this.resetting = true;
         super.reset();
         this.datasets = {};
         this.chart.data.datasets = [];
-        this.chart.data.labels = [];
         this.buffer = [];
-        this.chart.update(0);
+        //
+        this.lastTimestamp = -1;
         this.resetting = false;
-        // this.chart.data.datasets = [];
-        // this.chart.update();
     }
 }
 
