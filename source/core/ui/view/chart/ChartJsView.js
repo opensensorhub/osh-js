@@ -33,7 +33,7 @@ class ChartJsView extends View {
      * @param {Object} [properties.options={}] - Properties which can override the default framework ones
      * @param {Object} [properties.datasetOptions={}] - Properties which can override the default framework ones (as defined [dataset]{@link https://www.chartjs.org/docs/latest/configuration/#dataset-configuration}
      * @param {boolean} [properties.override=false] - Defines if options (as defined [Chart options]{@link https://www.chartjs.org/docs/3.5.1/general/options.html}) are completely overridden or merge only. Default is merge
-     @param {boolean} [properties.refreshRate=500] - Defines the refresh data rate (in millis)
+     @param {boolean} [properties.refreshRate=1000] - Defines the refresh data rate (in millis)
      */
     constructor(properties) {
         super({
@@ -70,7 +70,7 @@ class ChartJsView extends View {
             elements: {}
         };
 
-        this.refreshRate = 500;
+        this.refreshRate = 1000;
         // #endregion snippet_chartjsview_default_chartprops
         if (isDefined(properties)) {
             if(properties.hasOwnProperty('options')){

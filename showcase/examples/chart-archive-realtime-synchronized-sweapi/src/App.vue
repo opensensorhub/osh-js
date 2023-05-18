@@ -34,7 +34,7 @@ export default {
 
     const tls = true;
 
-    const dsReplaySpeed = 2.0;
+    const dsReplaySpeed = 1.0;
 
     const startTime = (new Date(Date.now() - 60 * 1000 * 2).toISOString());
     const endTime = (new Date().toISOString());
@@ -66,7 +66,7 @@ export default {
       container: 'container',
       layers: [
           new CurveLayer({
-          maxValues: 25,
+          maxValues: 1000,
           dataSourceId: chartDataSource1.id,
           getValues: (rec, timestamp) => {
             return {
@@ -84,7 +84,8 @@ export default {
       css: "chart-view",
       datasetOptions: {
        tension: 0.2 // for 'line'
-      }
+      },
+      refreshRate: 1000
     });
 
 // start streaming
@@ -99,7 +100,6 @@ export default {
 
     setInterval(() => {
       dataSynchronizer.setMaxTime(new Date().toISOString());
-      console.log(dataSynchronizer)
     }, 2000);
   },
   methods: {
