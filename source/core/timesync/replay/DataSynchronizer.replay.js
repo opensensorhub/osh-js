@@ -98,19 +98,6 @@ class DataSynchronizerReplay {
                 if (dsMaxTimestamp > maxTimestamp) {
                     maxTimestamp = dsMaxTimestamp;
                 }
-
-                // compute start/end range of dataSynchronizer
-                let dsStartTimestamp = ds.getStartTimeAsTimestamp();
-                let dsEndStartTimestamp = ds.getEndTimeAsTimestamp();
-
-                if (dsStartTimestamp < startTimestamp ) {
-                    startTimestamp = dsStartTimestamp;
-                }
-
-                if (dsEndStartTimestamp > endTimestamp) {
-                    endTimestamp = dsEndStartTimestamp;
-                }
-
             }
 
             // check if a default Min/Max has been defined into DataSynchronizer forcing intersection with current computed ones
@@ -127,13 +114,6 @@ class DataSynchronizerReplay {
             this.properties.minTimestamp = minTimestamp;
             this.properties.maxTimestamp = maxTimestamp;
 
-
-            if(!isDefined(this.properties.startTimestamp) || this.dataSources.length === 1) { // this.dataSources.length === 1 to reset default 1970 date
-                this.properties.startTimestamp = startTimestamp;
-            }
-            if(!isDefined(this.properties.endTimestamp) || this.dataSources.length === 1) { // this.dataSources.length === 1 to reset default 2055 date
-                this.properties.endTimestamp = endTimestamp;
-            }
         } else {
             const st = new Date('1970-01-01T00:00:00Z').getTime();
             const end = new Date('2055-01-01T00:00:00Z').getTime();
@@ -174,7 +154,11 @@ class DataSynchronizerReplay {
      * @returns {String} - startTime as ISO date
      */
     getStartTimeAsIsoDate() {
-        return new Date(this.properties.startTimestamp).toISOString();
+        if(this.properties.startTimestamp) {
+            return new Date(this.properties.startTimestamp).toISOString();
+        } else {
+            return this.getMinTimeAsIsoDate();
+        }
     }
 
     /**
@@ -190,7 +174,11 @@ class DataSynchronizerReplay {
      * @returns {String} - endTime as ISO date
      */
     getEndTimeAsIsoDate() {
-        return new Date(this.properties.endTimestamp).toISOString();
+        if(this.properties.endTimestamp) {
+            return new Date(this.properties.endTimestamp).toISOString();
+        } else {
+            return this.getMaxTimeAsIsoDate();
+        }
     }
 
     getEndTimeAsTimestamp() {
@@ -244,11 +232,14 @@ class DataSynchronizerReplay {
         }
     }
 
-    async setMaxTime(maxTime) {
-        this.properties.maxTimestamp = new Date(maxTime).getTime();
-        for(let ds of this.dataSources) {
-            ds.setMaxTime(maxTime);
-        }
+    async setMinTime(minTime, resetStartTime = false) {
+        this.minTimestamp = new Date(minTime).getTime();
+        this.computeMinMax();
+        this.timeChanged();
+    }
+
+    async setMaxTime(maxTime, resetStartTime = false) {
+        this.maxTimestamp = new Date(maxTime).getTime();
         this.computeMinMax();
         this.timeChanged();
     }
@@ -472,12 +463,22 @@ class DataSynchronizerReplay {
         });
     }
 
+    checkStartEndTime() {
+        if(!this.properties.startTimestamp) {
+            this.properties.startTimestamp = this.properties.minTimestamp;
+        }
+        if(!this.properties.endTimestamp) {
+            this.properties.endTimestamp = this.properties.maxTimestamp;
+        }
+    }
     async doConnect() {
         return new Promise(async resolve => {
+            this.checkStartEndTime();
             await this.updateAlgo();
             for (let dataSource of this.dataSources) {
-                await dataSource.connect();
+                await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true);
             }
+
             await this.postMessage({
                 message: 'connect',
                 version: this.version()

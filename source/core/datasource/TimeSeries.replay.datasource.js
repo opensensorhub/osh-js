@@ -125,29 +125,31 @@ class TimeSeriesReplayDatasource extends DataSource {
     /**
      * Sets the min time
      */
-    setMinTime(time) {
+    async setMinTime(time) {
         this.properties.minTimestamp = new Date(time).getTime();
+        await this.computeMinMax();
     }
 
     /**
      * Sets the max time
      */
-    setMaxTime(time) {
+    async setMaxTime(time) {
         this.properties.maxTimestamp = new Date(time).getTime();
+        await this.computeMinMax();
     }
 
     /**
      * Sets the start time
      */
-    setStartTimestamp(timestamp) {
+    async setStartTimestamp(timestamp) {
         this.properties.startTimestamp = timestamp;
-        this.computeMinMax();
+        await this.computeMinMax();
     }
 
     /**
      * Sets the end time
      */
-    setEndTimestamp(timestamp) {
+    async setEndTimestamp(timestamp) {
         this.properties.endTimestamp = timestamp;
         this.computeMinMax();
     }
@@ -155,15 +157,15 @@ class TimeSeriesReplayDatasource extends DataSource {
     /**
      * Sets the start time
      */
-    setStartTime(time) {
-        this.setStartTimestamp(new Date(time).getTime());
+    async setStartTime(time) {
+        await this.setStartTimestamp(new Date(time).getTime());
     }
 
     /**
      * Sets the end time
      */
-    setEndTime(time) {
-        this.setEndTimestamp(new Date(time).getTime());
+    async setEndTime(time) {
+        await this.setEndTimestamp(new Date(time).getTime());
     }
 
     /**

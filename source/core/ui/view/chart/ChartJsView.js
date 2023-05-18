@@ -106,7 +106,7 @@ class ChartJsView extends View {
 
         this.datasets = {};
 
-        this.buffer = [];
+        this.buffer = {}
         this.lastTimestamp = -1;
     }
 
@@ -134,8 +134,9 @@ class ChartJsView extends View {
         if(this.resetting) {
             return;
         }
+        const curveId = props[0].curveId;
         this.chart.options.scales.y.title.text = props[0].yLabel;
-        let currentDataset = this.datasets[props[0].curveId];
+        let currentDataset = this.datasets[curveId];
         const values = props.map(item => ({'x': item.x, 'y': item.y}));
 
         let lineColor = this.getColor(props[0].lineColor);
@@ -152,21 +153,26 @@ class ChartJsView extends View {
                 data: values
             };
             currentDataset = {...this.datasetsProps, ...currentDataset};
-            this.datasets[props[0].curveId] = currentDataset;
+            this.datasets[curveId] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
+            this.buffer[curveId] = [];
         } else {
-            this.datasets[props[0].curveId].backgroundColor = bgColor;
-            this.datasets[props[0].curveId].borderColor = lineColor;
+            this.datasets[curveId].backgroundColor = bgColor;
+            this.datasets[curveId].borderColor = lineColor;
         }
-        this.buffer = this.buffer.concat(values);
+        this.buffer[curveId] = this.buffer[curveId].concat(values);
         if(this.lastTimestamp === -1 || Date.now() - this.lastTimestamp > this.refreshRate) {
-            const nbToShift = this.buffer.length - props[0].maxValues;
-            if(nbToShift > 0) {
-                // double buffering
-                this.buffer = this.buffer.slice(nbToShift);
+            for(let bufferKey in this.buffer) {
+                const currentBuffer = this.buffer[bufferKey];
+                const nbToShift = currentBuffer.length - props[0].maxValues;
+                if(nbToShift > 0) {
+                    // double buffering
+                    this.buffer[bufferKey] = currentBuffer.slice(nbToShift);
+                }
+                this.datasets[bufferKey].data = this.buffer[bufferKey];
             }
-            this.lastTimestamp = Date.now();
-            this.datasets[props[0].curveId].data = this.buffer;
+
+
             this.chart.update('none');
         }
     }
@@ -190,7 +196,7 @@ class ChartJsView extends View {
         super.reset();
         this.datasets = {};
         this.chart.data.datasets = [];
-        this.buffer = [];
+        this.buffer = {};
         //
         this.lastTimestamp = -1;
         this.resetting = false;

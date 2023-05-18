@@ -279,6 +279,14 @@ class DataSynchronizer {
         return this.dataSynchronizer.isConnected();
     }
 
+    minMaxChanged(resetStartTimestamp = false) {
+        if(resetStartTimestamp) {
+            this.dataSynchronizerReplay.properties.startTimestamp = undefined;
+            this.dataSynchronizerReplay.properties.endTimestamp = undefined;
+        }
+        this.dataSynchronizerReplay.computeMinMax();
+        this.dataSynchronizerReplay.timeChanged();
+    }
     onTimeChanged(start, min) {
     }
 
