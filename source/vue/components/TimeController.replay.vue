@@ -208,8 +208,8 @@ export default {
           this.minTimestamp = this.dataSourceObject.getMinTimeAsTimestamp();
           this.maxTimestamp = this.dataSourceObject.getMaxTimeAsTimestamp();
           this.speed = this.dataSourceObject.getReplaySpeed();
-          this.startTimestamp = this.dataSourceObject.getStartTimeAsTimestamp()
-          this.endTimestamp = this.dataSourceObject.getEndTimeAsTimestamp()
+          this.startTimestamp = this.dataSourceObject.getStartTimeAsTimestamp() ? this.dataSourceObject.getStartTimeAsTimestamp() : this.minTimestamp;
+          this.endTimestamp = this.dataSourceObject.getEndTimeAsTimestamp() ? this.dataSourceObject.getEndTimeAsTimestamp() : this.maxTimestamp;
 
           // compute skip time
           if ((this.skipTimeStep.endsWith('s'))) {
@@ -288,8 +288,8 @@ export default {
           this.dataSynchronizer.onTimeChanged = function(minTimestamp, maxTimestamp,startTimestamp, endTimestamp) {
             this.minTimestamp = minTimestamp;
             this.maxTimestamp = maxTimestamp;
-            this.startTimestamp = startTimestamp;
-            this.endTimestamp = endTimestamp;
+            this.startTimestamp = startTimestamp? startTimestamp : minTimestamp;
+            this.endTimestamp = endTimestamp? endTimestamp : maxTimestamp;
           }.bind(this);
         } else {
           dataSourceObj.dataSource = this.dataSource;
