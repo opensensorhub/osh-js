@@ -129,19 +129,6 @@ class DataSynchronizerReplay {
                 if (dsMaxTimestamp > maxTimestamp) {
                     maxTimestamp = dsMaxTimestamp;
                 }
-
-                // compute start/end range of dataSynchronizer
-                let dsStartTimestamp = ds.getStartTimeAsTimestamp();
-                let dsEndStartTimestamp = ds.getEndTimeAsTimestamp();
-
-                if (dsStartTimestamp &lt; startTimestamp ) {
-                    startTimestamp = dsStartTimestamp;
-                }
-
-                if (dsEndStartTimestamp > endTimestamp) {
-                    endTimestamp = dsEndStartTimestamp;
-                }
-
             }
 
             // check if a default Min/Max has been defined into DataSynchronizer forcing intersection with current computed ones
@@ -158,13 +145,11 @@ class DataSynchronizerReplay {
             this.properties.minTimestamp = minTimestamp;
             this.properties.maxTimestamp = maxTimestamp;
 
-
-            if(!isDefined(this.properties.startTimestamp)) {
-                this.properties.startTimestamp = startTimestamp;
-            }
-            if(!isDefined(this.properties.endTimestamp)) {
-                this.properties.endTimestamp = endTimestamp;
-            }
+        } else {
+            const st = new Date('1970-01-01T00:00:00Z').getTime();
+            const end = new Date('2055-01-01T00:00:00Z').getTime();
+            this.properties.minTimestamp = this.properties.startTimestamp = st;
+            this.properties.maxTimestamp = this.properties.endTimestamp = end;
         }
     }
 
@@ -200,10 +185,11 @@ class DataSynchronizerReplay {
      * @returns {String} - startTime as ISO date
      */
     getStartTimeAsIsoDate() {
-        if (this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
+        if(this.properties.startTimestamp) {
+            return new Date(this.properties.startTimestamp).toISOString();
+        } else {
+            return this.getMinTimeAsIsoDate();
         }
-        return new Date(this.properties.startTimestamp).toISOString();
     }
 
     /**
@@ -211,9 +197,6 @@ class DataSynchronizerReplay {
      * @returns {String} - startTime as unix timestamp
      */
     getStartTimeAsTimestamp() {
-        if (this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
         return this.properties.startTimestamp;
     }
 
@@ -222,16 +205,14 @@ class DataSynchronizerReplay {
      * @returns {String} - endTime as ISO date
      */
     getEndTimeAsIsoDate() {
-        if (this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
+        if(this.properties.endTimestamp) {
+            return new Date(this.properties.endTimestamp).toISOString();
+        } else {
+            return this.getMaxTimeAsIsoDate();
         }
-        return new Date(this.properties.endTimestamp).toISOString();
     }
 
     getEndTimeAsTimestamp() {
-        if (this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
         return this.properties.endTimestamp;
     }
 
@@ -240,9 +221,6 @@ class DataSynchronizerReplay {
      * @returns {String} - startTime as ISO date
      */
     getMinTimeAsIsoDate() {
-        if (this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
         return new Date(this.properties.minTimestamp).toISOString();
     }
 
@@ -251,9 +229,6 @@ class DataSynchronizerReplay {
      * @returns {String} - startTime as unix timestamp
      */
     getMinTimeAsTimestamp() {
-        if (this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
         return this.properties.minTimestamp;
     }
 
@@ -262,9 +237,6 @@ class DataSynchronizerReplay {
      * @returns {String} - endTime as ISO date
      */
     getMaxTimeAsIsoDate() {
-        if (this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
         return new Date(this.properties.maxTimestamp).toISOString();
     }
 
@@ -273,9 +245,6 @@ class DataSynchronizerReplay {
      * @returns {String} - endTime as unix timestamp
      */
     getMaxTimeAsTimestamp() {
-        if (this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
         return this.properties.maxTimestamp;
     }
 
@@ -294,11 +263,14 @@ class DataSynchronizerReplay {
         }
     }
 
-    async setMaxTime(maxTime) {
-        this.properties.maxTimestamp = new Date(maxTime).getTime();
-        for(let ds of this.dataSources) {
-            ds.setMaxTime(maxTime);
-        }
+    async setMinTime(minTime, resetStartTime = false) {
+        this.minTimestamp = new Date(minTime).getTime();
+        this.computeMinMax();
+        this.timeChanged();
+    }
+
+    async setMaxTime(maxTime, resetStartTime = false) {
+        this.maxTimestamp = new Date(maxTime).getTime();
         this.computeMinMax();
         this.timeChanged();
     }
@@ -415,35 +387,31 @@ class DataSynchronizerReplay {
      * @param {TimeSeriesDataSource} dataSource - the new datasource to add
      */
     async addDataSource(dataSource) {
-        return new Promise(async resolve => {
-            this.dataSources.push(dataSource);
-            this.computeMinMax();
-            if (!this.initialized) {
-                console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
-                this.timeChanged();
-                resolve();
-            } else {
-                const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-                await dataSource.setTimeRange(
-                    this.getStartTimeAsIsoDate(),
-                    this.getEndTimeAsIsoDate(),
-                    this.getReplaySpeed(),
-                    false,
-                    this.getMode(),
-                    this.version()
-                );
-
+        this.dataSources.push(dataSource);
+        this.computeMinMax();
+        if (!this.initialized) {
+            console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
+            this.timeChanged();
+            this.onAddedDataSource(dataSource.id);
+        } else {
+            dataSource.setStartTime(this.getStartTimeAsIsoDate());
+            dataSource.setEndTime(this.getEndTimeAsIsoDate());
+            const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
+            return new Promise(async resolve => {
                 // add dataSource to synchronizer algorithm
                 await this.postMessage({
                     message: 'add',
                     dataSources: [dataSourceForWorker]
                 }, async () => {
+                    if(await this.isConnected()) {
+                        await dataSource.connect()
+                    }
                     this.onAddedDataSource(dataSource.id);
                     this.timeChanged();
                     resolve();
                 });
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -460,10 +428,12 @@ class DataSynchronizerReplay {
 
             if (!this.initialized) {
                 console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
+                await dataSource.removeDataSynchronizer();
                 this.timeChanged();
+                this.onRemovedDataSource(dataSource.id);
                 resolve();
             } else {
-                // await dataSource.disconnect();
+                await dataSource.disconnect();
                 await dataSource.removeDataSynchronizer();
 
                 await this.postMessage({
@@ -506,7 +476,6 @@ class DataSynchronizerReplay {
         if (this.dataSources.length === 0) {
             return;
         } else {
-            console.log('connect replay')
             await this.checkInit();
             if(!(await this.isConnected())) {
                 await this.doConnect();
@@ -525,12 +494,22 @@ class DataSynchronizerReplay {
         });
     }
 
+    checkStartEndTime() {
+        if(!this.properties.startTimestamp) {
+            this.properties.startTimestamp = this.properties.minTimestamp;
+        }
+        if(!this.properties.endTimestamp) {
+            this.properties.endTimestamp = this.properties.maxTimestamp;
+        }
+    }
     async doConnect() {
         return new Promise(async resolve => {
+            this.checkStartEndTime();
             await this.updateAlgo();
             for (let dataSource of this.dataSources) {
-                await dataSource.connect();
+                await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true);
             }
+
             await this.postMessage({
                 message: 'connect',
                 version: this.version()
@@ -575,22 +554,33 @@ class DataSynchronizerReplay {
                        replaySpeed = this.getReplaySpeed(),
                        reconnect = false) {
         return new Promise(async resolve => {
+            await this.disconnect();
             this.incVersion();
             // update properties of DataSynchronizer
             this.replaySpeed = replaySpeed;
 
-            await this.setStartTime(startTime, true);
-            await this.setEndTime(endTime, true);
-
-            this.computeMinMax();
+            await this.setStartTime(startTime, false);
+            await this.setEndTime(endTime, false);
 
             // update properties of each DataSource
             for (let ds of this.dataSources) {
-                await ds.setTimeRange(startTime, endTime, this.getReplaySpeed(), false, this.getMode(), this.version());
+                await ds.setTimeRange(
+                    this.getStartTimeAsIsoDate(),
+                    this.getEndTimeAsIsoDate(),
+                    this.getReplaySpeed(),
+                    false,
+                    this.getMode(),
+                    this.version()
+                )
             }
-
+            /*
+            this.computeMinMax();
             // update algo using these new properties
-            return this.updateAlgo();
+            await this.updateAlgo();
+            if(reconnect) {
+                await this.connect();
+            }*/
+            resolve();
         });
     }
 

@@ -55,7 +55,8 @@ export default {
       backgroundColor: 'rgba(141,242,246, 0.5)',
       lineColor: 'rgba(183,183,183,0.83)',
       fill: true,
-      name: 'Wind Speed (m/s)'
+      name: 'Wind Speed (m/s)',
+      maxValues: 2500000
     });
 // #endregion snippet_curve_layer
 

@@ -176,7 +176,6 @@ class TimeSeriesRealtimeDatasource extends DataSource {
      */
     async setDataSynchronizer(dataSynchronizer) {
         return new Promise(async (resolve, reject) => {
-            console.log('set dataSynchronizer')
             await this.checkInit();
             const topic = DATA_SYNCHRONIZER_TOPIC + dataSynchronizer.id;
             this.dataSynchronizer = dataSynchronizer;
@@ -214,7 +213,6 @@ class TimeSeriesRealtimeDatasource extends DataSource {
     }
 
     async doConnect() {
-        console.log(this.dataSynchronizer);
         return new Promise(async resolve => {
             this.postMessage({
                 message: 'connect',

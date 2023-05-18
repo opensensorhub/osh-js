@@ -71,7 +71,8 @@ export default {
           backgroundColor: 'rgba(0,220,204,0.5)',
           fill:true,
           getCurveId:(rec, timestamp) => 2,
-          name: 'Wind Speed 1 (m/s)'
+          name: 'Wind Speed 1 (m/s)',
+          maxValues: 25
         }),
         new CurveLayer({
           dataSourceId: chartDataSource2.id,
@@ -86,7 +87,8 @@ export default {
           backgroundColor: 'rgba(59,210,29,0.5)',
           fill:true,
           getCurveId:(rec, timestamp) => 1,
-          name: 'Wind Speed 2 (m/s)'
+          name: 'Wind Speed 2 (m/s)',
+          maxValues: 25
         })
       ],
       css: "chart-view",

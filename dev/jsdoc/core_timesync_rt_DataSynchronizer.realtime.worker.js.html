@@ -40,7 +40,7 @@ const bcChannels = {};
 let dataSynchronizerAlgo;
 
 let init = false;
-let dataSourceBroadCastChannel = null;
+let dataSynchronizerBroadCastChannel = null;
 let lastData = undefined;
 const dataSources = {};
 let timeBroadcastChannel = null;
@@ -91,7 +91,7 @@ async function handleMessage(event) {
             } else if(event.data.message === 'is-connected') {
                 data = {
                     message: 'is-connected',
-                    data: isDefined(masterTimeInterval) &amp;&amp; isDefined(dataSynchronizerAlgo) &amp;&amp; isDefined(dataSynchronizerAlgo.interval)
+                    data: isDefined(masterTimeInterval)
                 };
             } else if (event.data.message === 'remove' &amp;&amp; event.data.dataSourceIds) {
                 console.log('Remove datasource from synchronizer..')
@@ -142,12 +142,16 @@ function reset() {
     timeBroadcastChannel.postMessage({
         type: EventType.CLOSED
     });
+    dataSynchronizerBroadCastChannel.postMessage({
+        type: EventType.STATUS,
+        status: 'not_running',
+    });
 }
 function initBroadcastChannel(dataTopic, timeTopic) {
     console.log('listen on topic ',dataTopic)
 
-    dataSourceBroadCastChannel = new BroadcastChannel(dataTopic);
-    dataSourceBroadCastChannel.onmessage = async (event) => {
+    dataSynchronizerBroadCastChannel = new BroadcastChannel(dataTopic);
+    dataSynchronizerBroadCastChannel.onmessage = async (event) => {
         checkMasterTime();
         if(event.data.type === EventType.DATA) {
             dataSynchronizerAlgo.push(event.data.dataSourceId,event.data.values);
@@ -277,6 +281,10 @@ function startMasterTimeInterval(masterTimeRefreshRate) {
                 lastTime = cTime;
             }
         }, masterTimeRefreshRate);
+        dataSynchronizerBroadCastChannel.postMessage({
+            type: EventType.STATUS,
+            status: 'running',
+        });
     }
 }
 </code></pre>
