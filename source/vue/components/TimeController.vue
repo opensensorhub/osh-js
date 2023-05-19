@@ -130,9 +130,9 @@ export default {
       }
     },
     async trackRt() {
-      const maxTime = new Date(Date.now()).toISOString();
-      await this.getDataSourceObject().disconnect();
-      await this.getDataSourceObject().setMaxTime(maxTime);
+      // const maxTime = new Date(Date.now()).toISOString();
+      // await this.getDataSourceObject().disconnect();
+      // await this.getDataSourceObject().setMaxTime(maxTime);
 
     },
     async onControlEvent(event) {
