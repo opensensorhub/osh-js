@@ -295,7 +295,6 @@ class TimeSeriesReplayDatasource extends DataSource {
                 message: 'topics',
                 topics:  topics,
             }, async () => {
-                console.log('initiated datasources')
                 // listen for Events to callback to subscriptions
                 const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
                 datasourceBroadcastChannel.onmessage = async (message) => {
