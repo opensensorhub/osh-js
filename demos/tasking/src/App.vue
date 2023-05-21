@@ -78,7 +78,7 @@ export default {
   async beforeMount() {
     const systemId = "jrc2e0kaj1m5a";
     const posDsId = "rbnag2hrc04mm";
-    const cmdStreamId = "hf62t0dotfd5k";
+    const cmdStreamId = "rtbajuvqi9b54";
 
     const mqttProps = {
       prefix: '/api',
@@ -93,6 +93,7 @@ export default {
       protocol: 'mqtt',
       mqttOpts: mqttProps,
       tls: true,
+      responseFormat: 'application/swe+json'
     });
 
     this.systems = new Systems({
