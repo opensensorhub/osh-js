@@ -27,16 +27,8 @@ class TimeSeriesReplayDatasource extends DataSource {
     constructor(name, properties) {
         super(name, properties);
 
-        if(!('minTime' in properties)) {
-            this.setMinTime(properties.startTime);
-        } else {
-            this.properties.minTimestamp = new Date(properties.minTime).getTime()
-        }
-        if(!('maxTime' in properties)) {
-            this.setMaxTime(properties.endTime);
-        } else {
-            this.properties.maxTimestamp = new Date(properties.maxTime).getTime()
-        }
+        this.setMinTime(properties.startTime);
+        this.setMaxTime(properties.endTime);
         this.properties.startTimestamp = new Date(properties.startTime).getTime();
         this.properties.endTimestamp = new Date(properties.endTime).getTime();
 

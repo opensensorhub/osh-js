@@ -84,7 +84,6 @@ class DataSynchronizerReplay {
     computeMinMax() {
         if (this.dataSources.length > 0) {
             let minTimestamp = Number.MAX_VALUE, maxTimestamp = Number.MIN_VALUE;
-            let startTimestamp = Number.MAX_VALUE, endTimestamp = Number.MIN_VALUE;
             // default min/max will be adjusted on the most min/max DataSource
             for (let ds of this.dataSources) {
                 // compute min/max range of dataSynchronizer
@@ -106,14 +105,13 @@ class DataSynchronizerReplay {
                 minTimestamp = this.minTimestamp;
             }
 
-            if(isDefined(this.maxTimestamp) && this.maxTimestamp > endTimestamp) {
+            if(isDefined(this.maxTimestamp) && this.maxTimestamp > maxTimestamp) {
                 // intersect and takes the min of dataSynchronizer
                 maxTimestamp = this.maxTimestamp;
             }
 
             this.properties.minTimestamp = minTimestamp;
             this.properties.maxTimestamp = maxTimestamp;
-
         } else {
             const st = new Date('1970-01-01T00:00:00Z').getTime();
             const end = new Date('2055-01-01T00:00:00Z').getTime();
