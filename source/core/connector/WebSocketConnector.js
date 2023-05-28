@@ -51,6 +51,7 @@ class WebSocketConnector extends DataConnector {
         this.interval = -1;
         this.lastReceiveTime = 0;
         this.extraUrl = '';
+        this.reconnectRetry = (properties && properties.reconnectRetry) || 10;
     }
 
     /**
@@ -209,8 +210,8 @@ class WebSocketConnector extends DataConnector {
                 let delta = Date.now() - this.lastReceiveTime;
                 // -1 means the WS went in error
                 if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
-                    if(count++ >= this.properties.reconnectRetry) {
-                        console.warn(`Maximum reconnection retries attempted: ${this.properties.reconnectRetry}`)
+                    if(count++ >= this.reconnectRetry) {
+                        console.warn(`Maximum reconnection retries attempted: ${this.reconnectRetry}`)
                         clearInterval(reconnectionInterval);
                     } else {
                         let fullUrl = url;
@@ -221,7 +222,7 @@ class WebSocketConnector extends DataConnector {
                             fullUrl += '?'+this.queryString;
                         }
 
-                        console.warn(`(${count}/${this.properties.reconnectRetry}) trying to reconnect: ${fullUrl}`);
+                        console.warn(`(${count}/${this.reconnectRetry}) trying to reconnect: ${fullUrl}`);
                         this.init = false;
                         this.connect();
                     }
