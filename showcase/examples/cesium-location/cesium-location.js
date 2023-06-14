@@ -36,7 +36,8 @@ let pointMarker = new PointMarkerLayer({
         x: rec.location.lon,
         y: rec.location.lat
     }),
-    icon: 'images/car-location.png',
+    // icon: 'images/car-location.png',
+    icon: 'https://storage.googleapis.com/grx-morpheusx-icons/mdi-svg/ab-testing.svg',
     iconAnchor: [16, 40],
     iconSize: [32, 65],
     allowBillboardRotation: false
