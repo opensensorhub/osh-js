@@ -320,6 +320,7 @@ class TimeSeriesReplayDatasource extends DataSource {
         // compute intersection
         this.properties.startTimestamp = new Date(startTime).getTime();
         this.properties.endTimestamp   = new Date(endTime).getTime();
+
         this.computeMinMax();
 
         return this.updateProperties({

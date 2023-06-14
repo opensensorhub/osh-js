@@ -13,7 +13,6 @@ import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import '../../../resources/css/ffmpegview.css';
 import CanvasView from "./CanvasView";
 import DecodeWorker from './workers/webapi.decode.worker.js';
-import YUVCanvas from "./YUVCanvas";
 import {FrameType} from "./FrameType";
 
 /**

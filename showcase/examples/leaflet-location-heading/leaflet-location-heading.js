@@ -43,13 +43,19 @@ let pointMarker = new PointMarkerLayer({
   name: "Android Phone GPS",
   dataSourceIds: [gpsDataSource.id, attitudeDataSource.id],
   getLocation: {
-    dataSourceIds: [gpsDataSource.getId()],
-    handler: function (rec) {
-      return {
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: rec.location.alt
-      };
+    dataSourceIds: [gpsDataSource.getId(), attitudeDataSource.getId()],
+    handler: function (rec, timestamp, options) {
+      if(options.dataSourceId === "c3ada815-084d-f5dc-8d57-c09193e0f2e4") {
+        // this is orient
+        return {...}
+      } else {
+        // this is location
+        return {
+          x: rec.location.lon,
+          y: rec.location.lat,
+          z: rec.location.alt
+        };
+      }
     }
   },
   getOrientation : {
