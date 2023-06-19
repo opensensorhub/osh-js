@@ -177,15 +177,21 @@ class WebCodecView extends CanvasView {
                     this.width = videoFrame.codedWidth;
                     this.height = videoFrame.codedHeight;
 
+                    this.yuvCanvas.resize(this.width, this.height);
+
                     this.videoDecoder.configure({
                         codec: this.codec,
                         codedWidth: this.width,
                         codedHeight:this.height,
                     });
                 }
-                const bitmap = await createImageBitmap(videoFrame);
-                videoFrame.close();
-                await this.handleDocodedFrame(bitmap, this.width, this.height, videoFrame.timestamp, this.queue.shift());
+                // const bitmap = await createImageBitmap(videoFrame);
+                // videoFrame.close();
+                try {
+                    await this.handleDocodedFrame(videoFrame, this.width, this.height, videoFrame.timestamp, this.queue.shift());
+                } finally {
+                    videoFrame.close();
+                }
             },
             error: (error) => {
                 this.queue.shift();
@@ -206,24 +212,44 @@ class WebCodecView extends CanvasView {
         }
     }
 
-    drawFrame(bitmap, frame_width, frame_height, roll) {
+    async drawFrame(videoFrame, frame_width, frame_height, roll) {
         this.yuvCanvas.canvasElement.drawing = true;
-        if(this.width !== frame_width ||
-            this.height !== frame_height) {
-            //re-create the canvas
-            this.yuvCanvas.resize(frame_width,frame_height);
-            this.width = frame_width;
-            this.height =frame_height;
-        }
-        this.yuvCanvas.drawNextOuptutPictureBitmapGL({
-            yData: bitmap,
+        // this.yuvCanvas.drawNextOuptutPictureBitmapGL({
+        //     yData: bitmap,
+        //     roll: roll
+        // });
+
+        let buffer = new Uint8Array(videoFrame.allocationSize());
+        let layout = await videoFrame.copyTo(buffer);
+        //            frameYData: new Uint8Array(this.Module.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
+        //             frameUData: new Uint8Array(this.Module.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
+        //             frameVData: new Uint8Array(this.Module.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
+        // offset / stride
+        const yData = new Uint8Array(buffer.slice(layout[0].offset, layout[0].offset + frame_width * frame_height));
+        const uData = new Uint8Array(buffer.slice(layout[1].offset, layout[1].offset + frame_width /2 * frame_height / 2));
+        const vData = new Uint8Array(buffer.slice(layout[2].offset, layout[2].offset + frame_width /2 * frame_height / 2));
+
+        // const yData = new Uint8Array(buffer.buffer, layout[0].offset,(frame_width * frame_height) );
+        // console.log(layout[0].offset,yData.length, test.length);
+
+        this.yuvCanvas.drawNextOuptutPictureGL({
+            yData: yData,
+            yDataPerRow: frame_width,
+            yRowCnt: frame_height,
+            uData: uData,
+            uDataPerRow: frame_width / 2,
+            uRowCnt: frame_height / 2,
+            vData: vData,
+            vDataPerRow: frame_width / 2,
+            vRowCnt: frame_height / 2,
             roll: roll
         });
+
 
         this.yuvCanvas.canvasElement.drawing = false;
     }
 
-    async handleDocodedFrame(bitmap, width, height, timestamp = 0, queueElt = null) {
+    async handleDocodedFrame(videoFrame, width, height, timestamp = 0, queueElt = null) {
         try {
             if(this.width !== width || this.height !== height) {
                 this.width = width;
@@ -237,14 +263,14 @@ class WebCodecView extends CanvasView {
             // if (roll > 180) roll -= 360;
 
             // draw image
-            this.drawFrame(bitmap, width, height, queueElt.roll);
+            this.drawFrame(videoFrame, width, height, queueElt.roll);
             // this.gl.transferFromImageBitmap(bitmap);
             // this.gl.rotate(queueElt.roll * Math.PI/180); // rotate by 90 degrees
             // this.gl.rotate( 90 * Math.PI / 180);
             // this.gl.drawImage(bitmap,600,-600);
             // this.gl.setTransform(1, 0, 0, 1, 0, 0);
             // update stats
-            this.onAfterDecoded(bitmap, FrameType.ARRAY);
+            this.onAfterDecoded(videoFrame, FrameType.ARRAY);
             this.updateStatistics(queueElt.pktSize);
             if(this.showTime) {
                 this.textFpsDiv.innerText = new Date(timestamp).toISOString()+' ';
@@ -258,8 +284,6 @@ class WebCodecView extends CanvasView {
         } catch (exception) {
             console.error(exception);
             //continue;
-        } finally {
-            bitmap.close();
         }
     }
 
