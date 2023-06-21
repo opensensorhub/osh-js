@@ -31,6 +31,7 @@ class VideoView extends View {
      * @param {Boolean} [properties.showStats=false] - Enable or ignore the display stats (FPS number) onto the canvas
      * @param {Number} [properties.width=1920] - Set the default canvas width
      * @param {Number} [properties.height=1080] - Set the default canvas height
+     * @param {Number} [properties.useWebCodecApi=true] - Use experimental WebCodecApi
      */
     constructor(properties) {
         super({
@@ -39,6 +40,10 @@ class VideoView extends View {
         });
         this.videoView = undefined;
         this.canvasResolve = undefined;
+        this.useWebCodecApi = true;
+        if('useWebCodecApi' in properties) {
+            this.useWebCodecApi = properties['useWebCodecApi'];
+        }
     }
 
     createVideoView(compression) {

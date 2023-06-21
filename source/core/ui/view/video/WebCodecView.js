@@ -13,7 +13,6 @@ import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import '../../../resources/css/ffmpegview.css';
 import CanvasView from "./CanvasView";
 import {FrameType} from "./FrameType";
-import YUVCanvas from "./YUVCanvas";
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
@@ -104,16 +103,11 @@ class WebCodecView extends CanvasView {
         this.compression = properties.codec;
 
         // create webGL canvas
-        // create webGL canvas
-        this.yuvCanvas = this.createCanvas(this.width,this.height);
-        this.domNode.appendChild(this.yuvCanvas.canvasElement);
+        this.canvasElt = this.createCanvas(this.width, this.height);
+        this.domNode.appendChild(this.canvasElt);
 
         this.queue = [];
     }
-    createCanvas(width, height, style) {
-        return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
-    }
-
     /**
      * Create <canvas> DOM element with some height/width/style
      * @protected
@@ -121,19 +115,19 @@ class WebCodecView extends CanvasView {
      * @param {String} height - the height
      * @param {String} style - the dom element style (Optional)
      */
-    // createCanvas(width, height, style) {
-    //     const canvasElement = document.createElement('canvas');
-    //     canvasElement.setAttribute('width', width);
-    //     canvasElement.setAttribute('height', height);
-    //     if (isDefined(style)) {
-    //         canvasElement.setAttribute('style', style);
-    //     }
-    //     return canvasElement;
-    // }
+    createCanvas(width, height, style) {
+        const canvasElement = document.createElement('canvas');
+        canvasElement.setAttribute('width', width);
+        canvasElement.setAttribute('height', height);
+        if (isDefined(style)) {
+            canvasElement.setAttribute('style', style);
+        }
+        return canvasElement;
+    }
 
     updateCanvasSize(width, height) {
-        this.canvasElt.setAttribute('width', width);
-        this.canvasElt.setAttribute('height', height);
+        this.canvasElt.width = width;
+        this.canvasElt.height = height;
     }
 
     async setData(dataSourceId, data) {
@@ -168,7 +162,7 @@ class WebCodecView extends CanvasView {
     }
 
     initDecoder() {
-        // this.gl = this.canvasElt.getContext("2d");
+        this.gl = this.canvasElt.getContext("bitmaprenderer");
 
         const init = {
             output: async (videoFrame) => {
@@ -177,7 +171,7 @@ class WebCodecView extends CanvasView {
                     this.width = videoFrame.codedWidth;
                     this.height = videoFrame.codedHeight;
 
-                    this.yuvCanvas.resize(this.width, this.height);
+                    this.updateCanvasSize(this.width ,this.height);
 
                     this.videoDecoder.configure({
                         codec: this.codec,
@@ -185,10 +179,9 @@ class WebCodecView extends CanvasView {
                         codedHeight:this.height,
                     });
                 }
-                // const bitmap = await createImageBitmap(videoFrame);
-                // videoFrame.close();
+                const bitmap = await createImageBitmap(videoFrame);
                 try {
-                    await this.handleDocodedFrame(videoFrame, this.width, this.height, videoFrame.timestamp, this.queue.shift());
+                    await this.handleDocodedFrame(bitmap, this.width, this.height, videoFrame.timestamp, this.queue.shift());
                 } finally {
                     videoFrame.close();
                 }
@@ -212,63 +205,24 @@ class WebCodecView extends CanvasView {
         }
     }
 
-    async drawFrame(videoFrame, frame_width, frame_height, roll) {
-        this.yuvCanvas.canvasElement.drawing = true;
-        // this.yuvCanvas.drawNextOuptutPictureBitmapGL({
-        //     yData: bitmap,
-        //     roll: roll
-        // });
-
-        let buffer = new Uint8Array(videoFrame.allocationSize());
-        let layout = await videoFrame.copyTo(buffer);
-        //            frameYData: new Uint8Array(this.Module.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
-        //             frameUData: new Uint8Array(this.Module.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
-        //             frameVData: new Uint8Array(this.Module.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
-        // offset / stride
-        const yData = new Uint8Array(buffer.slice(layout[0].offset, layout[0].offset + frame_width * frame_height));
-        const uData = new Uint8Array(buffer.slice(layout[1].offset, layout[1].offset + frame_width /2 * frame_height / 2));
-        const vData = new Uint8Array(buffer.slice(layout[2].offset, layout[2].offset + frame_width /2 * frame_height / 2));
-
-        // const yData = new Uint8Array(buffer.buffer, layout[0].offset,(frame_width * frame_height) );
-        // console.log(layout[0].offset,yData.length, test.length);
-
-        this.yuvCanvas.drawNextOuptutPictureGL({
-            yData: yData,
-            yDataPerRow: frame_width,
-            yRowCnt: frame_height,
-            uData: uData,
-            uDataPerRow: frame_width / 2,
-            uRowCnt: frame_height / 2,
-            vData: vData,
-            vDataPerRow: frame_width / 2,
-            vRowCnt: frame_height / 2,
-            roll: roll
-        });
-
-
-        this.yuvCanvas.canvasElement.drawing = false;
-    }
-
     async handleDocodedFrame(videoFrame, width, height, timestamp = 0, queueElt = null) {
         try {
-            if(this.width !== width || this.height !== height) {
-                this.width = width;
-                this.height = height;
-                //re-configure the canvas
-                this.updateCanvasSize(width,height);
+            // draw image
+            let roll = Math.round(queueElt.roll/90) * 90;
+            if (roll > 180) roll -= 360;
+            let scale = 1.0;
+            if (Math.abs(roll) === 90) {
+                scale = this.height / this.width;
+            }
+            const angleRad = roll*Math.PI/180.;
+            if((this.angleRad && this.angleRad !== angleRad) || (this.scale && this.scale !== scale) || !this.angleRad || !this.scale) {
+                this.canvasElt.style = `transform:rotate(${angleRad}rad) scale(${scale})`;
+                this.angleRad = angleRad;
+                this.scale = scale;
             }
 
-            // apply rotation if needed
-            // let roll = Math.round(queueElt.roll/90) * 90;
-            // if (roll > 180) roll -= 360;
+            this.gl.transferFromImageBitmap(videoFrame);
 
-            // draw image
-            this.drawFrame(videoFrame, width, height, queueElt.roll);
-            // this.gl.transferFromImageBitmap(bitmap);
-            // this.gl.rotate(queueElt.roll * Math.PI/180); // rotate by 90 degrees
-            // this.gl.rotate( 90 * Math.PI / 180);
-            // this.gl.drawImage(bitmap,600,-600);
-            // this.gl.setTransform(1, 0, 0, 1, 0, 0);
             // update stats
             this.onAfterDecoded(videoFrame, FrameType.ARRAY);
             this.updateStatistics(queueElt.pktSize);
