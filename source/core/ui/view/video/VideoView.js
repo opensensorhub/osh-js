@@ -1,10 +1,8 @@
-import CanvasView from "./CanvasView";
 import MjpegView from "./MjpegView";
 import WebCodecView from "./WebCodecView";
 import FFMPEGView from "./FFMPEGView";
 import View from "../View";
 import {isDefined} from "../../../utils/Utils";
-import {FrameType} from "./FrameType";
 
 /***************************** BEGIN LICENSE BLOCK ***************************
  The contents of this file are subject to the Mozilla Public License, v. 2.0.
@@ -33,7 +31,7 @@ class VideoView extends View {
      * @param {Boolean} [properties.showStats=false] - Enable or ignore the display stats (FPS number) onto the canvas
      * @param {Number} [properties.width=1920] - Set the default canvas width
      * @param {Number} [properties.height=1080] - Set the default canvas height
-     * @param {Number} [properties.useWebCodecApi=false] - Use experimental WebCodecApi
+     * @param {Number} [properties.useWebCodecApi=true] - Use experimental WebCodecApi
      */
     constructor(properties) {
         super({
@@ -42,6 +40,10 @@ class VideoView extends View {
         });
         this.videoView = undefined;
         this.canvasResolve = undefined;
+        this.useWebCodecApi = true;
+        if('useWebCodecApi' in properties) {
+            this.useWebCodecApi = properties['useWebCodecApi'];
+        }
     }
 
     createVideoView(compression) {
@@ -51,14 +53,26 @@ class VideoView extends View {
                 ...this.properties,
                 layers: []
             });
-        } else if('useWebCodecApi' in this.properties && this.properties['useWebCodecApi']) {
-            this.videoView = new WebCodecView({
-                ...this.properties,
-                layers: []
-            });
+        } else if(compression !== 'h265') { // because h265 there are some issues with h265
+            try {
+                this.videoView = new WebCodecView({
+                    ...this.properties,
+                    codec: compression,
+                    layers: []
+                });
+                this.videoView.initDecoder();
+            } catch (ex) {
+                // use ffmpeg as fallback
+                this.videoView = new FFMPEGView({
+                    ...this.properties,
+                    codec: compression,
+                    layers: []
+                });
+            }
         } else {
             this.videoView = new FFMPEGView({
                 ...this.properties,
+                codec: compression,
                 layers: []
             });
         }

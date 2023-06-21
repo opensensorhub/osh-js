@@ -157,7 +157,7 @@ class CesiumView extends MapView {
         // #region snippet_cesiumview_default_cesiumprops_viewer_props
 
         let imageryProviders = createDefaultImageryProviderViewModels();
-        if(options.options.layers) {
+        if(options && options.options && options.options.layers) {
             const imageryFilter = options.options.layers;
             imageryProviders = imageryProviders.filter(el => imageryFilter.includes(el.name));
         }
