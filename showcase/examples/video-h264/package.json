@@ -38,6 +38,5 @@
     "worker-loader": "2.0.0",
     "worklet-loader": "1.0.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

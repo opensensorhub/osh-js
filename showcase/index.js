@@ -165,11 +165,6 @@ var samples = [{
         url: 'audio-video-synchronized-with-control-vuejs',
         code: 'vue/App_examples/audio-video-synchronized-with-control-vuejs.vue'
     },
-    {
-        name: "Tasking simulated drone using SweApi",
-        description: "Tasking simulated drone using SweApi, display drone position and control status",
-        url: 'tasking',
-    },
 ];
 
 // load sample cards

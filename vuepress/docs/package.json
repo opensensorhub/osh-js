@@ -18,17 +18,17 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "vuepress": "^1.9.7",
-    "vuepress-plugin-element-tabs": "^0.2.8"
+    "vuepress": "1.9.7",
+    "vuepress-plugin-element-tabs": "0.2.8"
   },
   "dependencies": {
-    "copy-webpack-plugin": "^5.1.2",
+    "copy-webpack-plugin": "5.1.2",
     "jsdoc": "3.6.6",
-    "markdown-it-include": "^2.0.0",
-    "prism-themes": "^1.9.0",
-    "taffydb": "^2.7.3",
-    "underscore": "^1.13.2",
-    "vuepress-plugin-auto-sidebar": "^2.3.2",
-    "worker-loader": "^3.0.8"
+    "markdown-it-include": "2.0.0",
+    "prism-themes": "1.9.0",
+    "taffydb": "2.7.3",
+    "underscore": "1.13.2",
+    "vuepress-plugin-auto-sidebar": "2.3.2",
+    "worker-loader": "3.0.8"
   }
 }

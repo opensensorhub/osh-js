@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
+    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch",
+    "prod": "webpack --config webpack.config.js --mode production"
   },
   "dependencies": {
     "chart.js": "3.5.1",
