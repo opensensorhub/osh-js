@@ -79,10 +79,6 @@ class AudioView extends View {
         });
         this.visualizers = this.properties.visualizers;
         this.isInitContext = false;
-
-        this.webCodecApiMapping = {
-            'aac': 'mp4a.40.2',
-        };
     }
 
     initVisualizers() {
@@ -144,12 +140,9 @@ class AudioView extends View {
             //TODO: since the WebCodec API changed after chrome >=94, we need to detect correctly which version
             // of the browser is used to be sure to apply the right decoder
             // this.decoder = new WebCodecApi({
-            if(!(compression in this.webCodecApiMapping)) {
-                throw Error(`Compression ${compression} is not supported by WebCodecApi`);
-            }
             this.decoder = new FfmpegAudio({
                 ...this.properties,
-                codec: this.webCodecApiMapping[compression],
+                codec: compression,
                 audioCtx: this.audioCtx
             });
             console.warn('using WebCodec for audio decoding');

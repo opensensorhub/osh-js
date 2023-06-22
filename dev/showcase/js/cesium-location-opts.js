@@ -45,8 +45,6 @@ let pointMarker = new PointMarkerLayer({
 
 // #region snippet_cesium_location_view
 // create Cesium view
-const imageryProviders = createDefaultImageryProviderViewModels();
-
 let cesiumView = new CesiumView({
     container: 'cesium-container',
     layers: [pointMarker],
@@ -69,9 +67,17 @@ let cesiumView = new CesiumView({
             showRenderLoopErrors: true,
             animation: false,
             scene3DOnly: true, // for draw layer
-            imageryProviderViewModels: imageryProviders,
-            selectedImageryProviderViewModel: imageryProviders[7],
-        })
+        }),
+        location: {
+            longitude: -5.185511,
+            latitude: 42.092383,
+            altitude: 3000
+        },
+        orientation: {
+            heading: 150,
+            pitch: -35
+        },
+        layers: ['Bing Maps Aerial', 'Bing Maps Aerial with Labels', 'Bing Maps Roads']
     }
 });
 
@@ -79,4 +85,4 @@ let cesiumView = new CesiumView({
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 
 // start streaming
-dataSynchronizer.connect();
+// dataSynchronizer.connect();

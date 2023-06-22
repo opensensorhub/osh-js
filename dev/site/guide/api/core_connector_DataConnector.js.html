@@ -57,7 +57,7 @@ class DataConnector {
         this.url = url;
         this.properties = properties;
         this.id = "DataConnector-" + randomUUID();
-        this.reconnectTimeout = 1000 * 60 * 2; //2 min
+        this.reconnectTimeout = 1000 * 20; // 20 sec
         this.status =  Status.DISCONNECTED;
     }
 

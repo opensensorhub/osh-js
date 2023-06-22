@@ -176,6 +176,18 @@ class YUVCanvas {
                 var tRight = width / yDataPerRow;
                 var texturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
 
+                let roll = Math.round(par.roll/90) * 90;
+                if (roll > 180) roll -= 360;
+                if (Math.abs(roll) == 90) {
+                    this.canvasElement.width = this.height;
+                    this.canvasElement.height = this.width;
+                    gl.viewport(0, 0, height, width);
+                } else {
+                    this.canvasElement.width = this.width;
+                    this.canvasElement.height = this.height;
+                    gl.viewport(0, 0, width, height);
+                }
+
                 gl.bindBuffer(gl.ARRAY_BUFFER, texturePosBuffer);
                 gl.bufferData(gl.ARRAY_BUFFER, texturePosValues, gl.DYNAMIC_DRAW);
 
@@ -190,6 +202,7 @@ class YUVCanvas {
                     gl.UNSIGNED_BYTE, // type
                     yData);
 
+                gl.uniform1f(this.rollUniform, roll*Math.PI/180.);
                 gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             };
 

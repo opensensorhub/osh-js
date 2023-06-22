@@ -41,7 +41,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {assertDefined, isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
-import DecodeWorker from './workers/ffmpeg.decode.worker.js';
+import DecodeWorker from './workers/ffmpeg.decode.video.worker.js';
 import '../../../resources/css/ffmpegview.css';
 import YUVCanvas from "./YUVCanvas";
 import CanvasView from "./CanvasView";
@@ -179,7 +179,7 @@ class FFMPEGView extends CanvasView {
         this.decodeWorker.postMessage({
             'message': 'init',
             'codec' : codec.toLowerCase()
-        })
+        });
         // const offscreenCanvas = this.canvas.transferControlToOffscreen();
         // let canvas = document.createElement('canvas');
         // canvas.setAttribute('width', this.width);
