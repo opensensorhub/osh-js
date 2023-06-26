@@ -6,14 +6,13 @@ class WorkerExt {
     }
 
     postMessage(message, transfer) {
-        console.log('post no ack');
+        // console.log('post no ack');
         this.worker.postMessage(message, transfer);
     }
 
     postMessageWithAck(message, transfer) {
         const ackId = crypto.randomUUID();
-        console.log('post ack ' + ackId);
-
+        // console.log('post ack ' + ackId);
 
         return new Promise((resolve, reject) => {
 

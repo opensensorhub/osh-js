@@ -110,9 +110,11 @@ class FFMPEGView extends CanvasView {
         //     this.decodeWorker.terminate();
         //     this.decodeWorker = null;
         // }
-        this. decodeWorker.postMessage({
-            message: 'release'
-        });
+        if(this.decodeWorker) {
+            this.decodeWorker.postMessage({
+                message: 'release'
+            });
+        }
         let nodata = new Uint8Array(1);
         nodata[0] = 128;
         this.yuvCanvas.drawNextOuptutPictureGL({

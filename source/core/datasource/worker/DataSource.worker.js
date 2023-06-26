@@ -60,7 +60,6 @@ async function handleMessage(event) {
         console.error(ex);
         resp.error = ex;
     } finally {
-        console.log(returnValue, eventData)
         resp.data = returnValue;
         self.postMessage(resp);
     }
