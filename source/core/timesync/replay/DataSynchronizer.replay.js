@@ -61,8 +61,6 @@ class DataSynchronizerReplay {
                 this.maxTimestamp = new Date(properties.maxTime).getTime();
             }
         }
-        this.eventSubscriptionMap = {};
-
         this.computeMinMax();
     }
 
@@ -119,33 +117,6 @@ class DataSynchronizerReplay {
             this.properties.minTimestamp = this.properties.startTimestamp = st;
             this.properties.maxTimestamp = this.properties.endTimestamp = end;
         }
-    }
-
-    /**
-     * @private
-     */
-    initEventSubscription() {
-        // listen for Events to callback to subscriptions
-        new BroadcastChannel(this.getTopicId()).onmessage = (message) => {
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
-
-        new BroadcastChannel(this.getTimeTopicId()).onmessage = (message) => {
-            if (message.data.type === EventType.MASTER_TIME) {
-                this.properties.startTimestamp = message.data.timestamp; // save as last timestamp
-            }
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
     }
 
     /**
@@ -264,16 +235,6 @@ class DataSynchronizerReplay {
         }
     }
 
-    subscribe(fn, eventTypes) {
-        // associate function to eventType
-        for (let i = 0; i < eventTypes.length; i++) {
-            if (!(eventTypes[i] in this.eventSubscriptionMap)) {
-                this.eventSubscriptionMap[eventTypes[i]] = [];
-            }
-            this.eventSubscriptionMap[eventTypes[i]].push(fn);
-        }
-    }
-
     getMode() {
         return Mode.REPLAY;
     }
@@ -303,7 +264,6 @@ class DataSynchronizerReplay {
                     time: this.getTimeTopicId()
                 }
             }).then(() => {
-                this.initEventSubscription();
                 this.initialized = true;
             });
         } catch (error) {
@@ -527,6 +487,10 @@ class DataSynchronizerReplay {
             ));
         }
         return Promise.all(promises);
+    }
+
+    setStartTimestamp(timestamp){
+        this.properties.startTimestamp = timestamp;
     }
 
     async updateAlgo() {

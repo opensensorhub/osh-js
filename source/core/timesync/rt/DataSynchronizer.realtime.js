@@ -40,8 +40,6 @@ class DataSynchronizerRealtime {
         this.timeSync = timeSync;
         this.properties = {};
         this.properties.version = 0;
-
-        this.eventSubscriptionMap = {};
     }
 
     getId() {
@@ -60,28 +58,8 @@ class DataSynchronizerRealtime {
         return TIME_SYNCHRONIZER_TOPIC + this.id;
     }
 
-    /**
-     * @private
-     */
-    initEventSubscription() {
-        // listen for Events to callback to subscriptions
-        new BroadcastChannel(this.getTopicId()).onmessage = (message) => {
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
-
-        new BroadcastChannel(this.getTimeTopicId()).onmessage = (message) => {
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
+    setStartTimestamp(timestamp){
+        this.properties.startTimestamp = timestamp;
     }
 
     /**
@@ -94,16 +72,6 @@ class DataSynchronizerRealtime {
         }
         for (let dataSource of this.dataSources) {
             dataSource.terminate();
-        }
-    }
-
-    subscribe(fn, eventTypes) {
-        // associate function to eventType
-        for (let i = 0; i < eventTypes.length; i++) {
-            if (!(eventTypes[i] in this.eventSubscriptionMap)) {
-                this.eventSubscriptionMap[eventTypes[i]] = [];
-            }
-            this.eventSubscriptionMap[eventTypes[i]].push(fn);
         }
     }
 
@@ -133,7 +101,6 @@ class DataSynchronizerRealtime {
                     time: this.getTimeTopicId()
                 }
             }).then(() => {
-                this.initEventSubscription();
                 this.initialized = true;
             });
         } catch (error) {
