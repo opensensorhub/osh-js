@@ -28,12 +28,11 @@ class DataSourceContext {
         this.connector.onMessage = this.onMessage.bind(this);
     }
 
-    createDataConnector(properties) {
-        throw Error('Should be overridden');
+    async createDataConnector(properties) {
+
     }
 
     connect() {
-        throw Error('Should be overridden');
     }
 
     async onMessage(messages, format) {
@@ -41,7 +40,6 @@ class DataSourceContext {
     }
 
     async disconnect() {
-        throw Error('Should be overridden');
     }
 
     handleData(data) {
