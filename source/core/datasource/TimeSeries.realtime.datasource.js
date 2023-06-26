@@ -210,7 +210,7 @@ class TimeSeriesRealtimeDatasource extends DataSource {
             topics.sync = dataSynchronizer.getTimeTopicId()
         }
 
-        this.postMessage({
+        return this.dataSourceWorker.postMessageWithAck({
             message: 'topics',
             topics: topics,
         }).then(() => {

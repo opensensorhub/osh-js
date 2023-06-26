@@ -5,7 +5,7 @@ import {Mode} from "osh-js/core/datasource/Mode";
 
 let gpsDataSource = new SweApiFetch("android-GPS", {
   endpointUrl: 'api.georobotix.io/ogc/t18/api',
-  resource: '/datastreams/fled6eics1cl4/observations',
+  resource: '/datastreams/o7pce3e60s0ie/observations',
   tls: true,
   protocol: 'mqtt',
   mqttOpts: {

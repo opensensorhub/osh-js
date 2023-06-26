@@ -10,7 +10,7 @@ var prevTime = 0;
 
 const systemId = "jrc2e0kaj1m5a";
 const posDsId = "rbnag2hrc04mm";
-const cmdStreamId = "hf62t0dotfd5k";
+const cmdStreamId = "rtbajuvqi9b54";
 
 const username = 'uxs-team';
 const password = 'WR6zlso9h#';
@@ -25,10 +25,10 @@ const mqttProps = {
 let gpsDataSource = new SweApiFetch("supersonic drone GPS", {
     resource: `/api/datastreams/${posDsId}/observations`,
     endpointUrl: 'api.georobotix.io/ogc/t18/api',
-    protocol: 'mqtt',
+    protocol: 'ws',
     mqttOpts: mqttProps,
     tls: true,
-    responseFormat: 'application/om+json',
+    responseFormat: 'application/swe+json',
     connectorOpts: {
         username: username,
         password: password
@@ -54,9 +54,9 @@ const textStatusElt =  document.getElementById("text_status");
 const pointMarkerLayer = new PointMarkerLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => ({
-        x: rec.pos.lon, //om+json
-        y: rec.pos.lat,
-        z: rec.pos.alt
+            x: rec.pos.lon, //swe+json
+            y: rec.pos.lat,
+            z: rec.pos.alt
     }),
     name: 'drone',
     description: 'Drone',

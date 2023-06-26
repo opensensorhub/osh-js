@@ -39,7 +39,6 @@ class FileContext extends DataSourceContext {
     }
 
     connect() {
-        console.log('ici')
         if(isDefined(this.connector)) {
             this.connector.doRequest(this.getPaths(this.properties));
         } else {
