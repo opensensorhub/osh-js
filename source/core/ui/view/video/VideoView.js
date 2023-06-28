@@ -53,7 +53,7 @@ class VideoView extends View {
                 ...this.properties,
                 layers: []
             });
-        } else if(compression !== 'h265') { // because h265 there are some issues with h265
+        } else if(compression !== 'h265' && this.useWebCodecApi) { // because h265 there are some issues with h265
             try {
                 this.videoView = new WebCodecView({
                     ...this.properties,

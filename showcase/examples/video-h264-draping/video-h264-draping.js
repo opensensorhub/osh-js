@@ -15,6 +15,7 @@ import {Mode} from 'osh-js/core/datasource/Mode';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
+
 window.CESIUM_BASE_URL = './';
 
 let videoDataSource = new SosGetResult("drone-Video", {
@@ -35,6 +36,7 @@ let videoView = new VideoView({
     framerate:25,
     showTime: true,
     showStats: true,
+    useWebCodecApi: false,
     layers: [
         new VideoDataLayer({
             dataSourceId: videoDataSource.id,
@@ -156,14 +158,12 @@ videoView.getVideoCanvas().then(canvasElt => {
 
 // #endregion snippet_image_draping_layer
 
-// create Cesium view
-Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
-    'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
-    '2WfIX0QHiZcOjVaXI92stjDh4fI';
-
 let cesiumView = new CesiumView({
     container: 'cesium-h264-draping-container',
-    layers: [pointMarkerLayer, imageDrapingLayer]
+    layers: [pointMarkerLayer, imageDrapingLayer],
+    options: {
+        layers: ['Bing Maps Aerial', 'Bing Maps Aerial with Labels', 'Bing Maps Roads']
+    },
 });
 
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
@@ -174,7 +174,7 @@ cesiumView.viewer.camera.setView({
 
 // select bing maps as default imagery
 const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-// baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
+baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
 
 // start streaming
 const dataSynchronizer = new DataSynchronizer({

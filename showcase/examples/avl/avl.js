@@ -251,7 +251,7 @@ const deckView = new DeckGlView({
     layers: [
         new PointMarkerLayer({
             ...commonMarkerConf,
-            iconScale: 7,
+            iconScale: 1.5,
             onHover: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
             onLeftClick: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
             onRightClick: (markerId, pickingInfo, event) => {

@@ -19,61 +19,68 @@ import SweApiHandler from "../sweapi/handler/SweApi.handler";
 import SosGetFoisHandler from "../sos/handler/SosGetFois.handler";
 import SosGetResultHandler from "../sos/handler/SosGetResult.handler";
 
-let dataSourceHandler = undefined;
+let dataSourceHandlers = {};
 
 self.onmessage = async (event) => {
-    handleMessage(event.data, self);
+    handleMessage(event);
 };
 
-let promise = new Promise(resolve => {resolve()});
-
-async function checkPerformingAction() {
-    await promise;
-}
-async function handleMessage(event) {
-    // await checkPerformingAction();
-    // ensure the right order of the actions
-    // promise = new Promise(async resolve => {
-    let value;
-    if (!isDefined(dataSourceHandler)) {
-        if (event.message === 'init') {
-            dataSourceHandler = createHandlerFromProperties(event.properties);
-            await dataSourceHandler.init(event.properties, event.topics, event.id);
-            value = dataSourceHandler.isInitialized();
-        }
-    } else {
-        if (event.message === 'connect') {
-            await dataSourceHandler.connect(event.startTime, event.version);
-        } else if (event.message === 'disconnect') {
-            await dataSourceHandler.disconnect();
-        } else if (event.message === 'topics') {
-            dataSourceHandler.setTopics(event.topics);
-        } else if (event.message === 'update-properties') {
-            dataSourceHandler.updateProperties(event.data);
-        } else if (event.message === 'is-connected') {
-            value = dataSourceHandler.isConnected();
-        } else if (event.message === 'is-init') {
-            value = dataSourceHandler.isInitialized();
-        }
+function handleMessage(event) {
+    let resp = {};
+    if (event.data.ackId) {
+        resp.ackId = event.data.ackId;
     }
+    const eventData = event.data;
+    const dsId = eventData.dsId;
 
-    // send back result or just return
-    postMessage({
-        message: event.message,
-        data: value,
-        messageId: event.messageId
-    });
-    // resolve();
-    // });
-    // return promise;
+    try {
+        if (!(dsId in dataSourceHandlers)) {
+            if (eventData.message === 'init') {
+                dataSourceHandlers[dsId] = createHandlerFromProperties(eventData.properties);
+                dataSourceHandlers[dsId].init(eventData.properties, eventData.topics, eventData.id).then(() => {
+                    resp.data = dataSourceHandlers[dsId].isInitialized();
+                    self.postMessage(resp);
+                });
+            }
+        } else {
+            if (eventData.message === 'connect') {
+                dataSourceHandlers[dsId].connect(eventData.startTime, eventData.version).then(() => {
+                    self.postMessage(resp);
+                });
+            } else if (eventData.message === 'disconnect') {
+                dataSourceHandlers[dsId].disconnect().then(() => {
+                    self.postMessage(resp);
+                });
+            } else if (eventData.message === 'topics') {
+                dataSourceHandlers[dsId].setTopics(eventData.topics);
+                self.postMessage(resp);
+            } else if (eventData.message === 'update-properties') {
+                dataSourceHandlers[dsId].updateProperties(eventData.data);
+                self.postMessage(resp);
+            } else if (eventData.message === 'is-connected') {
+                resp.data = dataSourceHandlers[dsId].isConnected();
+                self.postMessage(resp);
+            } else if (eventData.message === 'is-init') {
+                resp.data = dataSourceHandlers[dsId].isInitialized();
+                self.postMessage(resp);
+            }
+        }
+    } catch (ex) {
+        console.error(ex);
+        resp.error = ex;
+        self.postMessage(resp);
+    } finally {
+        // resp.data = returnValue;
+        // self.postMessage(resp);
+    }
 }
 
 function createHandlerFromProperties(properties) {
-    if(properties.type === 'SosGetResult') {
+    if (properties.type === 'SosGetResult') {
         return new SosGetResultHandler();
-    } else if(properties.type === 'SosGetFois') {
+    } else if (properties.type === 'SosGetFois') {
         return new SosGetFoisHandler();
-    } else if(properties.type === 'SweApiStream') {
+    } else if (properties.type === 'SweApiStream') {
         return new SweApiHandler();
     } else {
         throw Error('Unsupported SOS service Error');

@@ -110,22 +110,26 @@ class TimeSeriesRealtimeDatasource extends DataSource {
     /**
      * Sets the min time
      */
-    setMinTime(time) {}
+    setMinTime(time) {
+    }
 
     /**
      * Sets the max time
      */
-    setMaxTime(time) {}
+    setMaxTime(time) {
+    }
 
     /**
      * Sets the start time
      */
-    setStartTimestamp(timestamp) {}
+    setStartTimestamp(timestamp) {
+    }
 
     /**
      * Sets the end time
      */
-    setEndTimestamp(timestamp) {}
+    setEndTimestamp(timestamp) {
+    }
 
     /**
      * Gets the endTime
@@ -135,11 +139,13 @@ class TimeSeriesRealtimeDatasource extends DataSource {
         return 1.0;
     }
 
-    setReplaySpeed(replaySpeed) {}
+    setReplaySpeed(replaySpeed) {
+    }
 
     setVersion(version) {
         this.properties.version = version;
     }
+
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     /**
@@ -147,50 +153,48 @@ class TimeSeriesRealtimeDatasource extends DataSource {
      * @returns {Promise}
      */
     async setDataSynchronizer(dataSynchronizer) {
-        return new Promise(async (resolve, reject) => {
-            await this.checkInit();
-            const topic = DATA_SYNCHRONIZER_TOPIC + dataSynchronizer.id;
-            this.dataSynchronizer = dataSynchronizer;
-            this.properties.version = this.dataSynchronizer.version();
-            this.postMessage({
-                message: 'topics',
-                topics: {
-                    data: topic,
-                    time: this.getTimeTopicId(),
-                    sync: dataSynchronizer.getTimeTopicId()
-                },
-            }, () => resolve());
+        await this.checkInit();
+        const topic = DATA_SYNCHRONIZER_TOPIC + dataSynchronizer.id;
+        this.dataSynchronizer = dataSynchronizer;
+        this.properties.version = this.dataSynchronizer.version();
+        return this.dataSourceWorker.postMessageWithAck({
+            message: 'topics',
+            topics: {
+                data: topic,
+                time: this.getTimeTopicId(),
+                sync: dataSynchronizer.getTimeTopicId()
+            },
+            dsId: this.id
         });
     }
 
     async removeDataSynchronizer() {
-        if(this.dataSourceWorker) {
+        if (this.dataSourceWorker) {
             this.dataSourceWorker.terminate();
             this.dataSynchronizer = undefined;
         }
         // this.init = undefined;
-        await this.checkInit();
+        return this.checkInit();
 
     }
+
     /**
      * Disconnect the dataSource then the protocol will be closed as well.
      */
     async disconnect() {
-        return new Promise(async resolve => {
-            await this.checkInit();
-            this.postMessage({
-                message: 'disconnect'
-            }, resolve);
+        await this.checkInit();
+        return this.dataSourceWorker.postMessageWithAck({
+            message: 'disconnect',
+            dsId: this.id
         });
     }
 
     async doConnect() {
-        return new Promise(async resolve => {
-            this.postMessage({
-                message: 'connect',
-                startTime: 'now',
-                version: this.version()
-            }, resolve);
+        return this.dataSourceWorker.postMessageWithAck({
+            message: 'connect',
+            startTime: 'now',
+            version: this.version(),
+            dsId: this.id
         });
     }
 
@@ -201,26 +205,24 @@ class TimeSeriesRealtimeDatasource extends DataSource {
      */
     async initDataSource(properties) {
         await super.initDataSource(properties);
-        return new Promise(async (resolve, reject) => {
-            const topics =  {
-                data: this.getTopicId(),
-                time: this.getTimeTopicId()
-            };
-            if(this.dataSynchronizer) {
-                topics.sync = dataSynchronizer.getTimeTopicId()
-            }
+        const topics = {
+            data: this.getTopicId(),
+            time: this.getTimeTopicId()
+        };
+        if (this.dataSynchronizer) {
+            topics.sync = dataSynchronizer.getTimeTopicId()
+        }
 
-            this.postMessage({
-                message: 'topics',
-                topics:  topics,
-            }, async () => {
-                // listen for Events to callback to subscriptions
-                const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
-                datasourceBroadcastChannel.onmessage = async (message) => {
-                     await this.handleTimeMessage(message);
-                };
-                resolve();
-            });
+        return this.dataSourceWorker.postMessageWithAck({
+            message: 'topics',
+            topics: topics,
+            dsId: this.id
+        }).then(() => {
+            // listen for Events to callback to subscriptions
+            const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
+            datasourceBroadcastChannel.onmessage = async (message) => {
+                await this.handleTimeMessage(message);
+            };
         });
     }
 

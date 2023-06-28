@@ -48,7 +48,7 @@ class SweApi extends TimeSeriesDatasource {
             startTime: 'now',
             endTime: '2055-01-01T00:00:00Z',
             tls: false,
-            responseFormat: 'application/om+json',
+            responseFormat: 'application/swe+json',
             protocol: 'http',
             type: 'SweApiStream',
             mode: Mode.REAL_TIME,

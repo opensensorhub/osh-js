@@ -18,6 +18,7 @@
 
 import DataSource from "../../../core/datasource/DataSource.datasource";
 import FileDataSourceWorker from "../worker/DataSource.file.worker";
+import WorkerExt from "../../../core/worker/WorkerExt";
 
 /**
  * This datasource provides generic parsing for File input. It is agnostic of the content of the file.
@@ -48,7 +49,7 @@ class FileDataSource extends DataSource {
     }
 
     async createWorker(properties) {
-        return new FileDataSourceWorker();
+        return new WorkerExt(new FileDataSourceWorker());
     }
 }
 

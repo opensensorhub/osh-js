@@ -167,12 +167,15 @@ class WebCodecView extends CanvasView {
         const init = {
             output: async (videoFrame) => {
                 // check picture width
+                let isReconfigure = false;
                 if (this.width !== videoFrame.codedWidth || this.height !== videoFrame.codedHeight) {
                     this.width = videoFrame.codedWidth;
                     this.height = videoFrame.codedHeight;
 
                     this.updateCanvasSize(this.width ,this.height);
-
+                    isReconfigure = true;
+                }
+                if(this.videoDecoder.state === 'closed' || isReconfigure) {
                     this.videoDecoder.configure({
                         codec: this.codec,
                         codedWidth: this.width,
@@ -189,6 +192,9 @@ class WebCodecView extends CanvasView {
             error: (error) => {
                 this.queue.shift();
                 console.error(error);
+                if(this.videoDecoder.state === 'closed') {
+                    this.initDecoder();
+                }
             }
         };
         try {

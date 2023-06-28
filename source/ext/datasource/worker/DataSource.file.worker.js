@@ -21,45 +21,53 @@ import FileHandler from "../file/File.handler";
 let dataSourceHandler = undefined;
 
 self.onmessage = (event) => {
-    handleMessage(event.data, self);
+    handleMessage(event, self);
 };
 
 function handleMessage(event) {
-    let value;
-    if(!isDefined(dataSourceHandler)) {
-        if(event.message === 'init') {
-            dataSourceHandler = createHandlerFromProperties(event.properties);
-            dataSourceHandler.init(event.properties, event.topics, event.id);
-            value = dataSourceHandler.isInitialized();
-        }
-    } else {
-        if (event.message === 'connect') {
-            dataSourceHandler.connect();
-        } else if (event.message === 'disconnect') {
-            dataSourceHandler.disconnect();
-        } else if (event.message === 'topics') {
-            dataSourceHandler.setTopics(event.topics);
-        } else if (event.message === 'update-properties') {
-            dataSourceHandler.updateProperties(event.data);
-        } else if (event.message === 'is-connected') {
-            value = dataSourceHandler.isConnected();
-        } else if (event.message === 'is-init') {
-            value = dataSourceHandler.isInitialized();
-        }
-    }
+    const data = event.data;
 
-    // send back result or just return
-    postMessage({
-        message: event.message,
-        data: value,
-        messageId: event.messageId
-    });
+    let resp = {};
+    if (data.ackId) {
+        resp.ackId = data.ackId;
+    }
+    let value;
+    console.log(data);
+    try {
+        if (!isDefined(dataSourceHandler)) {
+            if (data.message === 'init') {
+                dataSourceHandler = createHandlerFromProperties(data.properties);
+                dataSourceHandler.init(data.properties, data.topics, data.id);
+                value = dataSourceHandler.isInitialized();
+            }
+        } else {
+            if (data.message === 'connect') {
+                dataSourceHandler.connect();
+            } else if (data.message === 'disconnect') {
+                dataSourceHandler.disconnect();
+            } else if (data.message === 'topics') {
+                dataSourceHandler.setTopics(data.topics);
+            } else if (data.message === 'update-properties') {
+                dataSourceHandler.updateProperties(data.data);
+            } else if (data.message === 'is-connected') {
+                value = dataSourceHandler.isConnected();
+            } else if (data.message === 'is-init') {
+                value = dataSourceHandler.isInitialized();
+            }
+        }
+    } catch (ex) {
+        console.error(ex);
+        resp.error = ex;
+    } finally {
+        resp.data = value;
+        self.postMessage(resp);
+    }
 }
 
 function createHandlerFromProperties(properties) {
     // create context to set to the DataSourceHandler
     let context;
-    if(properties.type === 'File') {
+    if (properties.type === 'File') {
         context = new FileContext();
         return new FileHandler(context);
     } else {

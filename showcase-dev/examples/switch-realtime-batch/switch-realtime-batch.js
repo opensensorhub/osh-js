@@ -77,11 +77,11 @@ async function startSosExample() {
 }
 
 const START_TIME = '2012-06-29T14:32:34.099333251Z';
-const END_TIME = '2012-06-29T14:36:54.033333251Z';
+const END_TIME = '2012-06-29T14:33:54.033333251Z';
 const MODE = Mode.REPLAY;
 
 const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
-const MAX_TIME = '2012-06-29T14:36:54.033333251Z';
+const MAX_TIME = '2012-06-29T14:33:54.033333251Z';
 const tls = true;
 
 const mqttProps = {
@@ -128,36 +128,32 @@ const sweapiDataSynchronizer = new DataSynchronizer({
 async function startSweApiExample() {
     await sosDataSynchronizer.disconnect();
     replayButtonElt.onclick = async () => {
-        await sweapiDataSynchronizer.setTimeRange(
-            START_TIME,
-            END_TIME,
-            2.0,
-            true,
-            Mode.REPLAY
-        );
+        await sweapiDataSynchronizer.setMode(Mode.REPLAY);
+        // await sweapiDataSynchronizer.setTimeRange(
+        //     START_TIME,
+        //     END_TIME,
+        //     2.0,
+        //     true,
+        //     Mode.REPLAY
+        // );
         replayButtonElt.disabled = true;
         realtimeButtonElt.disabled = false;
-        if (!initSweapi) {
-            await sweapiDataSynchronizer.connect();
-            initSweapi = true;
-        }
+        await sweapiDataSynchronizer.connect();
     }
 
     realtimeButtonElt.onclick = async () => {
-        await sweapiDataSynchronizer.setTimeRange(
-            'now',
-            '2055-01-01',
-            1.0,
-            true,
-            Mode.REAL_TIME
-        );
+        await sweapiDataSynchronizer.setMode(Mode.REAL_TIME);
+        // await sweapiDataSynchronizer.setTimeRange(
+        //     'now',
+        //     '2055-01-01',
+        //     1.0,
+        //     true,
+        //     Mode.REAL_TIME
+        // );
         realtimeButtonElt.disabled = true;
         replayButtonElt.disabled = false;
 
-        if (!initSweapi) {
-            await sweapiDataSynchronizer.connect();
-            initSweapi = true;
-        }
+        await sweapiDataSynchronizer.connect();
     }
 
     sweapiDataSynchronizer.subscribe(message => displayData(message), [EventType.DATA]);
@@ -182,5 +178,6 @@ function displayData(data) {
 }
 
 function displayMasterTime(message) {
+    console.log(message)
     masterTimeElt.innerText = new Date(message.timestamp).toISOString();
 }
