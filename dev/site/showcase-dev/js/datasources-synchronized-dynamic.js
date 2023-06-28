@@ -16,7 +16,7 @@ import {Mode} from 'osh-js/core/datasource/Mode';
 
 const START_TIME = '2015-12-19T21:04:29.231Z';
 const END_TIME = '2015-12-19T21:06:59.675Z';
-const REPLAY_SPEED = 5.0;
+const REPLAY_SPEED = 2.0;
 
 const videoDataSource = new SosGetResult("drone-Video", {
   endpointUrl: 'sensiasoft.net/sensorhub/sos',
@@ -80,6 +80,9 @@ const disconnectGpsButtonElt = document.getElementById("disconnect-gps-button");
 const connectVideButtonElt = document.getElementById("connect-video-button");
 const disconnectVideoButtonElt = document.getElementById("disconnect-video-button");
 
+const connectOrientationButtonElt = document.getElementById("connect-orientation-button");
+const disconnectOrientationButtonElt = document.getElementById("disconnect-orientation-button");
+
 connectGpsButtonElt.onclick = () => {
   platformLocationDataSource.connect();
 }
@@ -94,3 +97,9 @@ disconnectVideoButtonElt.onclick = () => {
   videoDataSource.disconnect();
 }
 
+connectOrientationButtonElt.onclick = () => {
+  platformOrientationDataSource.connect();
+}
+disconnectOrientationButtonElt.onclick = () => {
+  platformOrientationDataSource.disconnect();
+}

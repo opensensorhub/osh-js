@@ -54,102 +54,88 @@ let endTimestamp;
 let timerResolution;
 
 self.onmessage = async (event) => {
-    if(isDefined(promise)) {
-        await promise;
-    }
-    promise = handleMessage(event);
+    handleMessage(event);
 }
 
 async function handleMessage(event) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let sendResponse = true;
-            let data = undefined;
-            if (event.data.message === 'init') {
-                replaySpeed = event.data.replaySpeed;
-                startTimestamp = event.data.startTimestamp;
-                endTimestamp = event.data.endTimestamp;
-                version = event.data.version;
-                timerResolution = event.data.timerResolution;
+    let resp = {};
+    if (event.data.ackId) {
+        resp.ackId = event.data.ackId;
+    }
 
-                dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
-                    event.data.dataSources,
-                    replaySpeed,
-                    startTimestamp,
-                    endTimestamp,
-                    event.data.timerResolution,
-                    version
-                );
-                dataSynchronizerAlgo.onClose = onClose;
-                dataSynchronizerAlgo.onData = onData;
-                init = true;
-                addDataSources(event.data.dataSources);
-                topicData = event.data.topics.data;
-                topicTime = event.data.topics.time;
-                initBroadcastChannel(topicData, topicTime);
-                masterTimeRefreshRate = event.data.masterTimeRefreshRate;
-            } else if (event.data.message === 'add' &amp;&amp; event.data.dataSources) {
-                console.log('Add datasource to synchronizer..')
-                addDataSources(event.data.dataSources);
-            } else if (event.data.message === 'connect') {
-                startMasterTimeInterval(masterTimeRefreshRate);
-                dataSynchronizerAlgo.checkStart();
-                version = event.data.version;
-            } else if(event.data.message === 'is-connected') {
-                data = {
-                    message: 'is-connected',
-                    data: isDefined(masterTimeInterval) &amp;&amp; isDefined(dataSynchronizerAlgo) &amp;&amp; isDefined(dataSynchronizerAlgo.interval)
-                };
-            } else if (event.data.message === 'remove') {
-                console.log('Remove datasource from synchronizer algorithm..')
-                await removeDataSources(event.data.dataSourceIds);
-                if(dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay) {
-                    dataSynchronizerAlgo.endTimestamp = event.data.endTimestamp;
-                }
-            } else if (event.data.message === 'current-time') {
-                data = {
-                    message: 'current-time',
-                    data: dataSynchronizerAlgo.getCurrentTimestamp()
-                };
-            } else if (event.data.message === 'reset') {
+    let data = undefined;
+    try {
+        if (event.data.message === 'init') {
+            replaySpeed = event.data.replaySpeed;
+            startTimestamp = event.data.startTimestamp;
+            endTimestamp = event.data.endTimestamp;
+            version = event.data.version;
+            timerResolution = event.data.timerResolution;
+
+            dataSynchronizerAlgo = new DataSynchronizerAlgoReplay(
+                event.data.dataSources,
+                replaySpeed,
+                startTimestamp,
+                endTimestamp,
+                event.data.timerResolution,
+                version
+            );
+            dataSynchronizerAlgo.onClose = onClose;
+            dataSynchronizerAlgo.onData = onData;
+            init = true;
+            addDataSources(event.data.dataSources);
+            topicData = event.data.topics.data;
+            topicTime = event.data.topics.time;
+            initBroadcastChannel(topicData, topicTime);
+            masterTimeRefreshRate = event.data.masterTimeRefreshRate;
+        } else if (event.data.message === 'add' &amp;&amp; event.data.dataSources) {
+            console.log('Add datasource to synchronizer..')
+            addDataSources(event.data.dataSources);
+        } else if (event.data.message === 'connect') {
+            startMasterTimeInterval(masterTimeRefreshRate);
+            dataSynchronizerAlgo.checkStart();
+            version = event.data.version;
+        } else if (event.data.message === 'is-connected') {
+            data = isDefined(masterTimeInterval) &amp;&amp; isDefined(dataSynchronizerAlgo) &amp;&amp; isDefined(dataSynchronizerAlgo.interval);
+        } else if (event.data.message === 'remove') {
+            console.log('Remove datasource from synchronizer algorithm..')
+            await removeDataSources(event.data.dataSourceIds);
+            if (dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay) {
+                dataSynchronizerAlgo.endTimestamp = event.data.endTimestamp;
+            }
+        } else if (event.data.message === 'current-time') {
+            data = dataSynchronizerAlgo.getCurrentTimestamp();
+        } else if (event.data.message === 'reset') {
+            reset();
+        } else if (event.data.message === 'replay-speed') {
+            if (dataSynchronizerAlgo !== null) {
                 reset();
-            } else if (event.data.message === 'replay-speed') {
-                if (dataSynchronizerAlgo !== null) {
-                    reset();
-                    dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
-                }
-            }  else if (event.data.message === 'set-max-time') {
-                dataSynchronizerAlgo.setEndTimestamp(event.data.maxTimestamp);
-            } else if (event.data.message === 'time-range') {
-                setTimeRange(
-                    event.data.startTimestamp,
-                    event.data.endTimestamp,
-                    event.data.mode,
-                    event.data.replaySpeed,
-                    event.data.version,
-                    event.data.dataSources
-                )
-            } else if (event.data.message === 'data') {
-                checkMasterTime();
-                if (dataSynchronizerAlgo !== null) {
-                    dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
-                }
-            } else {
-                // skip response
-                sendResponse = false;
+                dataSynchronizerAlgo.replaySpeed = event.data.replaySpeed;
             }
-            if (sendResponse) {
-                self.postMessage({
-                    message: event.data.message,
-                    data: data,
-                    messageId: event.data.messageId
-                });
+        } else if (event.data.message === 'set-max-time') {
+            dataSynchronizerAlgo.setEndTimestamp(event.data.maxTimestamp);
+        } else if (event.data.message === 'time-range') {
+            setTimeRange(
+                event.data.startTimestamp,
+                event.data.endTimestamp,
+                event.data.mode,
+                event.data.replaySpeed,
+                event.data.version,
+                event.data.dataSources
+            )
+        } else if (event.data.message === 'data') {
+            checkMasterTime();
+            if (dataSynchronizerAlgo !== null) {
+                dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.data);
             }
-            resolve();
-        } catch (ex) {
-            reject(ex);
         }
-    });
+    } catch (ex) {
+        console.error(ex);
+        resp.error = ex;
+    } finally {
+        resp.data = data;
+        self.postMessage(resp);
+    }
 }
 function setTimeRange(startTimestamp, endTimestamp, mode, replaySpeed, newVersion, dsArray) {
     reset();
