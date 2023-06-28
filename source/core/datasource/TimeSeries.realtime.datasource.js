@@ -164,6 +164,7 @@ class TimeSeriesRealtimeDatasource extends DataSource {
                 time: this.getTimeTopicId(),
                 sync: dataSynchronizer.getTimeTopicId()
             },
+            dsId: this.id
         });
     }
 
@@ -183,7 +184,8 @@ class TimeSeriesRealtimeDatasource extends DataSource {
     async disconnect() {
         await this.checkInit();
         return this.dataSourceWorker.postMessageWithAck({
-            message: 'disconnect'
+            message: 'disconnect',
+            dsId: this.id
         });
     }
 
@@ -191,7 +193,8 @@ class TimeSeriesRealtimeDatasource extends DataSource {
         return this.dataSourceWorker.postMessageWithAck({
             message: 'connect',
             startTime: 'now',
-            version: this.version()
+            version: this.version(),
+            dsId: this.id
         });
     }
 
@@ -213,6 +216,7 @@ class TimeSeriesRealtimeDatasource extends DataSource {
         return this.dataSourceWorker.postMessageWithAck({
             message: 'topics',
             topics: topics,
+            dsId: this.id
         }).then(() => {
             // listen for Events to callback to subscriptions
             const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());

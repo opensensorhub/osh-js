@@ -198,6 +198,7 @@ class TimeSeriesReplayDatasource extends DataSource {
                 time: this.getTimeTopicId(),
                 sync: dataSynchronizer.getTimeTopicId()
             },
+            dsId: this.id
         });
     }
 
@@ -219,7 +220,8 @@ class TimeSeriesReplayDatasource extends DataSource {
         if (isDefined(this.init)) {
             try {
                 return this.dataSourceWorker.postMessageWithAck({
-                    message: 'disconnect'
+                    message: 'disconnect',
+                    dsId: this.id
                 });
             } catch (ex) {
                 console.error(ex);
@@ -231,7 +233,8 @@ class TimeSeriesReplayDatasource extends DataSource {
         return this.dataSourceWorker.postMessageWithAck({
             message: 'connect',
             startTime: this.getStartTimeAsIsoDate(),
-            version: this.version()
+            version: this.version(),
+            dsId: this.id
         });
     }
 
@@ -253,6 +256,7 @@ class TimeSeriesReplayDatasource extends DataSource {
         return this.dataSourceWorker.postMessageWithAck({
             message: 'topics',
             topics: topics,
+            dsId: this.id
         }).then(() => {
             // listen for Events to callback to subscriptions
             const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());

@@ -24,6 +24,12 @@ import WorkerExt from "../worker/WorkerExt";
  * The DataSource is the abstract class used to create different datasources.
  *
  */
+// global worker
+const maxPoolSize = 5;
+const workersPool = [];
+let currentInsertPoolIdx = 0;
+let dataSourceWorkers={};
+
 class DataSource {
     constructor(name, properties) {
         this.id = properties.id || "DataSource-" + randomUUID();
@@ -98,7 +104,8 @@ class DataSource {
         };
         return this.dataSourceWorker.postMessageWithAck({
             message: 'update-properties',
-            data: properties
+            data: properties,
+            dsId: this.id
         });
     }
 
@@ -110,15 +117,29 @@ class DataSource {
         return this.doConnect();
     }
 
+    async getWorker() {
+        if (!(this.id in dataSourceWorkers)) {
+            // create new worker for this DS
+            currentInsertPoolIdx = (currentInsertPoolIdx + 1) % maxPoolSize;
+            if (!isDefined(workersPool[currentInsertPoolIdx])) {
+                workersPool[currentInsertPoolIdx] = await this.createWorker();
+            }
+            dataSourceWorkers[this.id] = currentInsertPoolIdx;
+        }
+        // store worker idx into map for fast-mapping
+        return workersPool[dataSourceWorkers[this.id]];
+    }
+
     async initDataSource(properties = this.properties) {
-        this.dataSourceWorker = await this.createWorker(this.properties);
+        this.dataSourceWorker = await this.getWorker();
         return this.dataSourceWorker.postMessageWithAck({
             message: 'init',
             id: this.id,
             properties: properties,
             topics: {
                 data: this.getTopicId()
-            }
+            },
+            dsId: this.id
         }).then(() => {
             // listen for Events to callback to subscriptions
             const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
@@ -147,7 +168,8 @@ class DataSource {
 
     async doConnect() {
         return this.dataSourceWorker.postMessageWithAck({
-            message: 'connect'
+            message: 'connect',
+            dsId: this.id
         });
     }
 
@@ -157,7 +179,8 @@ class DataSource {
         } else {
             await this.checkInit();
             return this.dataSourceWorker.postMessageWithAck({
-                message: 'is-connected'
+                message: 'is-connected',
+                dsId: this.id
             });
         }
     }
@@ -168,7 +191,8 @@ class DataSource {
     async disconnect() {
         await this.checkInit();
         return this.dataSourceWorker.postMessageWithAck({
-            message: 'disconnect'
+            message: 'disconnect',
+            dsId: this.id
         });
     }
 

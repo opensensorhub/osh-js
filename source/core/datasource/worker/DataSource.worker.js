@@ -19,49 +19,59 @@ import SweApiHandler from "../sweapi/handler/SweApi.handler";
 import SosGetFoisHandler from "../sos/handler/SosGetFois.handler";
 import SosGetResultHandler from "../sos/handler/SosGetResult.handler";
 
-let dataSourceHandler = undefined;
+let dataSourceHandlers = {};
 
 self.onmessage = async (event) => {
     handleMessage(event);
 };
 
-async function handleMessage(event) {
+function handleMessage(event) {
     let resp = {};
     if (event.data.ackId) {
         resp.ackId = event.data.ackId;
     }
-    let returnValue;
     const eventData = event.data;
+    const dsId = eventData.dsId;
 
     try {
-        if (!isDefined(dataSourceHandler)) {
+        if (!(dsId in dataSourceHandlers)) {
             if (eventData.message === 'init') {
-                dataSourceHandler = createHandlerFromProperties(eventData.properties);
-                await dataSourceHandler.init(eventData.properties, eventData.topics, eventData.id);
-                console.log(dataSourceHandler.delegateHandler);
-                returnValue = dataSourceHandler.isInitialized();
+                dataSourceHandlers[dsId] = createHandlerFromProperties(eventData.properties);
+                dataSourceHandlers[dsId].init(eventData.properties, eventData.topics, eventData.id).then(() => {
+                    resp.data = dataSourceHandlers[dsId].isInitialized();
+                    self.postMessage(resp);
+                });
             }
         } else {
             if (eventData.message === 'connect') {
-                await dataSourceHandler.connect(eventData.startTime, eventData.version);
+                dataSourceHandlers[dsId].connect(eventData.startTime, eventData.version).then(() => {
+                    self.postMessage(resp);
+                });
             } else if (eventData.message === 'disconnect') {
-                await dataSourceHandler.disconnect();
+                dataSourceHandlers[dsId].disconnect().then(() => {
+                    self.postMessage(resp);
+                });
             } else if (eventData.message === 'topics') {
-                dataSourceHandler.setTopics(eventData.topics);
+                dataSourceHandlers[dsId].setTopics(eventData.topics);
+                self.postMessage(resp);
             } else if (eventData.message === 'update-properties') {
-                dataSourceHandler.updateProperties(eventData.data);
+                dataSourceHandlers[dsId].updateProperties(eventData.data);
+                self.postMessage(resp);
             } else if (eventData.message === 'is-connected') {
-                returnValue = dataSourceHandler.isConnected();
+                resp.data = dataSourceHandlers[dsId].isConnected();
+                self.postMessage(resp);
             } else if (eventData.message === 'is-init') {
-                returnValue = dataSourceHandler.isInitialized();
+                resp.data = dataSourceHandlers[dsId].isInitialized();
+                self.postMessage(resp);
             }
         }
     } catch (ex) {
         console.error(ex);
         resp.error = ex;
-    } finally {
-        resp.data = returnValue;
         self.postMessage(resp);
+    } finally {
+        // resp.data = returnValue;
+        // self.postMessage(resp);
     }
 }
 
