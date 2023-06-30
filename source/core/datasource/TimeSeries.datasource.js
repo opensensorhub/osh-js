@@ -204,6 +204,10 @@ class TimeSeriesDatasource {
         return this.timeSeriesDataSource.setDataSynchronizer(dataSynchronizer);
     }
 
+    getDataSynchronizer() {
+        return this.timeSeriesDataSource.dataSynchronizer;
+    }
+
     async removeDataSynchronizer() {
         return this.timeSeriesDataSource.removeDataSynchronizer();
 
@@ -318,6 +322,20 @@ class TimeSeriesDatasource {
 
     onTimeChanged(min, max, start, end) {
     }
+
+    async autoUpdateTime(activate) {
+        if(activate) {
+            return this.createTimeUpdater();
+        } else {
+            this.destroyTimeUpdater();
+        }
+    }
+
+    // abstract
+    async createTimeUpdater() {}
+
+    // abstract
+    destroyTimeUpdater() {}
 }
 
 export default TimeSeriesDatasource;

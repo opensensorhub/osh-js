@@ -112,7 +112,7 @@ function initBroadcastChannel(dataTopic, timeTopic) {
     console.log('listen on topic ', dataTopic)
 
     dataSynchronizerBroadCastChannel = new BroadcastChannel(dataTopic);
-    dataSynchronizerBroadCastChannel.onmessage = async (event) => {
+    dataSynchronizerBroadCastChannel.onmessage = (event) => {
         checkMasterTime();
         if (event.data.type === EventType.DATA) {
             dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.values);

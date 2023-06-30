@@ -285,12 +285,12 @@ export default {
 
         if (isDefined(this.dataSynchronizer)) {
           dataSourceObj.dataSynchronizer = this.dataSynchronizer;
-          this.dataSynchronizer.onTimeChanged = function(minTimestamp, maxTimestamp,startTimestamp, endTimestamp) {
+          this.dataSynchronizer.onTimeChanged = (minTimestamp, maxTimestamp,startTimestamp, endTimestamp) => {
             this.minTimestamp = minTimestamp;
             this.maxTimestamp = maxTimestamp;
             this.startTimestamp = startTimestamp? startTimestamp : minTimestamp;
             this.endTimestamp = endTimestamp? endTimestamp : maxTimestamp;
-          }.bind(this);
+          }
         } else {
           dataSourceObj.dataSource = this.dataSource;
         }

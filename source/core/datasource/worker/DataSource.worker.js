@@ -34,36 +34,33 @@ function handleMessage(event) {
     const dsId = eventData.dsId;
 
     try {
-        if (!(dsId in dataSourceHandlers)) {
-            if (eventData.message === 'init') {
-                dataSourceHandlers[dsId] = createHandlerFromProperties(eventData.properties);
-                dataSourceHandlers[dsId].init(eventData.properties, eventData.topics, eventData.id).then(() => {
-                    resp.data = dataSourceHandlers[dsId].isInitialized();
-                    self.postMessage(resp);
-                });
-            }
-        } else {
-            if (eventData.message === 'connect') {
-                dataSourceHandlers[dsId].connect(eventData.startTime, eventData.version).then(() => {
-                    self.postMessage(resp);
-                });
-            } else if (eventData.message === 'disconnect') {
-                dataSourceHandlers[dsId].disconnect().then(() => {
-                    self.postMessage(resp);
-                });
-            } else if (eventData.message === 'topics') {
-                dataSourceHandlers[dsId].setTopics(eventData.topics);
-                self.postMessage(resp);
-            } else if (eventData.message === 'update-properties') {
-                dataSourceHandlers[dsId].updateProperties(eventData.data);
-                self.postMessage(resp);
-            } else if (eventData.message === 'is-connected') {
-                resp.data = dataSourceHandlers[dsId].isConnected();
-                self.postMessage(resp);
-            } else if (eventData.message === 'is-init') {
+        if (eventData.message === 'init') {
+            dataSourceHandlers[dsId] = createHandlerFromProperties(eventData.properties);
+            dataSourceHandlers[dsId].init(eventData.properties, eventData.topics, eventData.id).then(() => {
                 resp.data = dataSourceHandlers[dsId].isInitialized();
                 self.postMessage(resp);
-            }
+            });
+        }
+        if (eventData.message === 'connect') {
+            dataSourceHandlers[dsId].connect(eventData.startTime, eventData.version).then(() => {
+                self.postMessage(resp);
+            });
+        } else if (eventData.message === 'disconnect') {
+            dataSourceHandlers[dsId].disconnect().then(() => {
+                self.postMessage(resp);
+            });
+        } else if (eventData.message === 'topics') {
+            dataSourceHandlers[dsId].setTopics(eventData.topics);
+            self.postMessage(resp);
+        } else if (eventData.message === 'update-properties') {
+            dataSourceHandlers[dsId].updateProperties(eventData.data);
+            self.postMessage(resp);
+        } else if (eventData.message === 'is-connected') {
+            resp.data = dataSourceHandlers[dsId].isConnected();
+            self.postMessage(resp);
+        } else if (eventData.message === 'is-init') {
+            resp.data = dataSourceHandlers[dsId].isInitialized();
+            self.postMessage(resp);
         }
     } catch (ex) {
         console.error(ex);
