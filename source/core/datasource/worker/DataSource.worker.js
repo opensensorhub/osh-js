@@ -14,72 +14,12 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils";
-import SweApiHandler from "../sweapi/handler/SweApi.handler";
-import SosGetFoisHandler from "../sos/handler/SosGetFois.handler";
-import SosGetResultHandler from "../sos/handler/SosGetResult.handler";
+import DataSourceWorker from "./DataSourceWorker";
 
-let dataSourceHandlers = {};
-
+const dataSourceWorker = new DataSourceWorker();
+dataSourceWorker.postMessage = (message) => {
+    self.postMessage(message);
+}
 self.onmessage = async (event) => {
-    handleMessage(event);
+    dataSourceWorker.handleMessage(event);
 };
-
-function handleMessage(event) {
-    let resp = {};
-    if (event.data.ackId) {
-        resp.ackId = event.data.ackId;
-    }
-    const eventData = event.data;
-    const dsId = eventData.dsId;
-
-    try {
-        if (eventData.message === 'init') {
-            dataSourceHandlers[dsId] = createHandlerFromProperties(eventData.properties);
-            dataSourceHandlers[dsId].init(eventData.properties, eventData.topics, eventData.id).then(() => {
-                resp.data = dataSourceHandlers[dsId].isInitialized();
-                self.postMessage(resp);
-            });
-        }
-        if (eventData.message === 'connect') {
-            dataSourceHandlers[dsId].connect(eventData.startTime, eventData.version).then(() => {
-                self.postMessage(resp);
-            });
-        } else if (eventData.message === 'disconnect') {
-            dataSourceHandlers[dsId].disconnect().then(() => {
-                self.postMessage(resp);
-            });
-        } else if (eventData.message === 'topics') {
-            dataSourceHandlers[dsId].setTopics(eventData.topics);
-            self.postMessage(resp);
-        } else if (eventData.message === 'update-properties') {
-            dataSourceHandlers[dsId].updateProperties(eventData.data);
-            self.postMessage(resp);
-        } else if (eventData.message === 'is-connected') {
-            resp.data = dataSourceHandlers[dsId].isConnected();
-            self.postMessage(resp);
-        } else if (eventData.message === 'is-init') {
-            resp.data = dataSourceHandlers[dsId].isInitialized();
-            self.postMessage(resp);
-        }
-    } catch (ex) {
-        console.error(ex);
-        resp.error = ex;
-        self.postMessage(resp);
-    } finally {
-        // resp.data = returnValue;
-        // self.postMessage(resp);
-    }
-}
-
-function createHandlerFromProperties(properties) {
-    if (properties.type === 'SosGetResult') {
-        return new SosGetResultHandler();
-    } else if (properties.type === 'SosGetFois') {
-        return new SosGetFoisHandler();
-    } else if (properties.type === 'SweApiStream') {
-        return new SweApiHandler();
-    } else {
-        throw Error('Unsupported SOS service Error');
-    }
-}

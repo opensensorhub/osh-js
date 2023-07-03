@@ -135,8 +135,17 @@ export default {
         this.timeNow = event.lastTimestamp;
         await this.dataSourceObject.disconnect();
         if(this.mode === Mode.BATCH) {
-          await this.dataSourceObject.setMode(Mode.BATCH);
-          this.dataSourceObject.connect(); // connect by default in batch mode
+          this.dataSourceObject.setMode(Mode.BATCH).then(() => {
+            this.checkMode();
+            this.dataSourceObject.connect().then(() => {
+              if (this.onControlEventFn) {
+                this.onControlEventFn('play'); // backward compatibility
+                this.onControlEventFn('mode', 'replay');
+              }
+              this.$emit('event', 'play'); // backward compatibility
+              this.$emit('mode', 'replay');
+            });
+          });
         } else if(this.mode === Mode.REPLAY || this.mode === Mode.REAL_TIME) {
           if(isDefined(this.trackRealtime)) {
             this.dataSourceObject.setMode(Mode.REPLAY).then(() => {
@@ -151,17 +160,18 @@ export default {
                   this.$emit('mode', 'replay');
                 });
               });
-              // this.getDataSourceObject().autoUpdateTime(true).then(() => {
-              //   this.dataSourceObject.connect().then(() => {
-              //     this.checkMode();
-              //     if(this.onControlEventFn) {
-              //       this.onControlEventFn('play'); // backward compatibility
-              //       this.onControlEventFn('mode', 'replay' );
-              //     }
-              //     this.$emit('event','play'); // backward compatibility
-              //     this.$emit('mode','replay');
-              //   });
-              // });
+            });
+          } else {
+            this.dataSourceObject.setMode(Mode.REPLAY).then(() => {
+              this.checkMode();
+              this.dataSourceObject.connect().then(() => {
+                if (this.onControlEventFn) {
+                  this.onControlEventFn('play'); // backward compatibility
+                  this.onControlEventFn('mode', 'replay');
+                }
+                this.$emit('event', 'play'); // backward compatibility
+                this.$emit('mode', 'replay');
+              });
             });
           }
         }

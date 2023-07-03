@@ -212,20 +212,23 @@ export default {
           this.endTimestamp = this.dataSourceObject.getEndTimeAsTimestamp() ? this.dataSourceObject.getEndTimeAsTimestamp() : this.maxTimestamp;
 
           // compute skip time
-          if ((this.skipTimeStep.endsWith('s'))) {
-            // time in second
-            this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1)) * 1000;
-          } else if (this.skipTimeStep.endsWith('%')) {
-            // compute percent on the whole period
-            const totalTime = this.maxTimestamp - this.minTimestamp;
-            const percent = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1));
-            this.skipTime = percent * totalTime / 100;
-          }
+          this.computeSkipTime();
           this.init = true;
           this.createRangeSlider();
         }catch (ex) {
           console.error(ex);
         }
+      }
+    },
+    computeSkipTime() {
+      if ((this.skipTimeStep.endsWith('s'))) {
+        // time in second
+        this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1)) * 1000;
+      } else if (this.skipTimeStep.endsWith('%')) {
+        // compute percent on the whole period
+        const totalTime = this.maxTimestamp - this.minTimestamp;
+        const percent = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1));
+        this.skipTime = percent * totalTime / 100;
       }
     },
     displayConsoleWarningIncompatibleVersionThrottle() {
@@ -290,6 +293,7 @@ export default {
             this.maxTimestamp = maxTimestamp;
             this.startTimestamp = startTimestamp? startTimestamp : minTimestamp;
             this.endTimestamp = endTimestamp? endTimestamp : maxTimestamp;
+            this.computeSkipTime();
           }
         } else {
           dataSourceObj.dataSource = this.dataSource;

@@ -187,20 +187,26 @@ class TimeSeriesReplayDatasource extends DataSource {
      * @returns {Promise}
      */
     async setDataSynchronizer(dataSynchronizer) {
-        this.checkInit().then(() => {
-            const topic = DATA_SYNCHRONIZER_TOPIC + dataSynchronizer.getId();
-            this.dataSynchronizer = dataSynchronizer;
+        this.dataSynchronizer = dataSynchronizer;
+        return this.initDataSynchronizerIfPresent();
+    }
+
+    async initDataSynchronizerIfPresent() {
+        if(this.dataSynchronizer) {
+            await this.checkInit();
+            const topic = DATA_SYNCHRONIZER_TOPIC + this.dataSynchronizer.getId();
             this.properties.version = this.dataSynchronizer.version();
             return this.dataSourceWorker.postMessageWithAck({
                 message: 'topics',
                 topics: {
                     data: topic,
                     time: this.getTimeTopicId(),
-                    sync: dataSynchronizer.getTimeTopicId()
+                    sync: this.dataSynchronizer.getTimeTopicId()
                 },
-                dsId: this.id
+                dsId: this.id,
+                mode: Mode.REPLAY,
             });
-        });
+        }
     }
 
     async removeDataSynchronizer() {
@@ -217,7 +223,8 @@ class TimeSeriesReplayDatasource extends DataSource {
             try {
                 return this.dataSourceWorker.postMessageWithAck({
                     message: 'disconnect',
-                    dsId: this.id
+                    dsId: this.id,
+                    mode: Mode.REPLAY,
                 });
             } catch (ex) {
                 console.error(ex);
@@ -230,7 +237,8 @@ class TimeSeriesReplayDatasource extends DataSource {
             message: 'connect',
             startTime: this.getStartTimeAsIsoDate(),
             version: this.version(),
-            dsId: this.id
+            dsId: this.id,
+            mode: Mode.REPLAY,
         });
     }
 
@@ -246,13 +254,14 @@ class TimeSeriesReplayDatasource extends DataSource {
             time: this.getTimeTopicId()
         };
         if (this.dataSynchronizer) {
-            topics.sync = dataSynchronizer.getTimeTopicId()
+            topics.sync = this.dataSynchronizer.getTimeTopicId()
         }
 
         return this.dataSourceWorker.postMessageWithAck({
             message: 'topics',
             topics: topics,
-            dsId: this.id
+            dsId: this.id,
+            mode: Mode.REPLAY,
         }).then(() => {
             // listen for Events to callback to subscriptions
             const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());

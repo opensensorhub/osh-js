@@ -17,6 +17,7 @@
 import WebSocketConnector from "../connector/WebSocketConnector";
 import {assertDefined, isDefined} from "../utils/Utils";
 import MqttTopicConnector from "../connector/MqttTopicConnector";
+import MqttConnector from "../connector/MqttConnector";
 
 class SensorWebApi {
 

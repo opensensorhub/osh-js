@@ -186,6 +186,10 @@ class DataSource {
         }
     }
 
+    resetInit() {
+        this.init = undefined;
+    }
+
     async checkInit() {
         if (!isDefined(this.init)) {
             this.init = this.initDataSource();

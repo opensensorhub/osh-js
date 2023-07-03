@@ -50,11 +50,16 @@ class TimeSeriesDatasource {
                 this.timeSeriesDataSource = this.timeSeriesReplayDataSource;
             }
 
+            this.timeSeriesDataSource.resetInit();
+
+
             // bind properties
             this.properties = this.timeSeriesDataSource.properties;
             this.id = this.timeSeriesDataSource.id;
             this.name = this.timeSeriesDataSource.name;
             this.properties.mode = mode;
+            return this.timeSeriesDataSource.initDataSynchronizerIfPresent();
+
         }
     }
 
@@ -336,6 +341,7 @@ class TimeSeriesDatasource {
 
     // abstract
     destroyTimeUpdater() {}
+
 }
 
 export default TimeSeriesDatasource;
