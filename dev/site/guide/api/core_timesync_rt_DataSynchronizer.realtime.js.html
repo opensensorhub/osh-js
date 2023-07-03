@@ -117,7 +117,7 @@ class DataSynchronizerRealtime {
                 dataSourcesForWorker.push(dataSourceForWorker);
             }
             this.synchronizerWorker = new WorkerExt(new DataSynchronizerWorker());
-            this.synchronizerWorker.postMessageWithAck({
+            return this.synchronizerWorker.postMessageWithAck({
                 message: 'init',
                 dataSources: dataSourcesForWorker,
                 timerResolution: this.timerResolution,
@@ -148,12 +148,7 @@ class DataSynchronizerRealtime {
             name: dataSource.name
         };
         // bind dataSource data onto dataSynchronizer data
-        try {
-            await dataSource.setDataSynchronizer(this.timeSync);
-        } catch (ex) {
-            console.error("Cannot set the synchronizer to this DataSource", ex);
-            throw ex;
-        }
+        await dataSource.setDataSynchronizer(this.timeSync);
         return obj;
     }
 
@@ -169,7 +164,7 @@ class DataSynchronizerRealtime {
         } else {
             const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
             // add dataSource to synchronizer algorithm
-            this.synchronizerWorker.postMessageWithAck({
+            return this.synchronizerWorker.postMessageWithAck({
                 message: 'add',
                 dataSources: [dataSourceForWorker]
             }).then(() => {
@@ -191,7 +186,7 @@ class DataSynchronizerRealtime {
         if (!this.initialized) {
             console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
         } else {
-            this.synchronizerWorker.postMessageWithAck({
+            return this.synchronizerWorker.postMessageWithAck({
                 message: 'remove',
                 dataSourceIds: [dataSource.getId()],
             }).then(() => {

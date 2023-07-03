@@ -45,6 +45,7 @@
 
 import TimeSeriesDatasource from "../TimeSeries.datasource";
 import {Mode} from "../Mode";
+import SweApiDatasourceUpdater from "./SweApi.datasource.updater";
 
 class SweApi extends TimeSeriesDatasource {
     /**
@@ -85,6 +86,30 @@ class SweApi extends TimeSeriesDatasource {
             connectorOpts: {},
             ...properties,
         });
+    }
+
+    async createTimeUpdater() {
+        this.timeUpdater = new SweApiDatasourceUpdater(this.properties);
+        let first = true;
+        this.timeUpdater.onTimeChanged = (min, max) => {
+            if (first) {
+                this.setMinTime(min);
+                first = false;
+            }
+            this.setMaxTime(max);
+            if (this.getDataSynchronizer()) {
+                this.getDataSynchronizer().minMaxChanged(first);
+            }
+        }
+        this.timeUpdater.onError = (err) => reject();
+
+        return this.timeUpdater.start();
+    }
+
+    destroyTimeUpdater() {
+        if(this.timeUpdater) {
+            this.timeUpdater.destroy();
+        }
     }
 }
 

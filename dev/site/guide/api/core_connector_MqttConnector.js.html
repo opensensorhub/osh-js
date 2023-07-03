@@ -74,6 +74,7 @@ const mqttProviders = {};
 class MqttConnector extends DataConnector {
     /**
      *
+     * @param url
      * @param properties -
      */
     constructor(url, properties) {
@@ -82,6 +83,26 @@ class MqttConnector extends DataConnector {
             ...properties
         });
         this.interval = -1;
+        this.id = `mqtt-connector-${randomUUID()}`;
+    }
+
+    initBc() {
+        this.onMessage = (data, topic) => {
+            this.broadcastChannel.postMessage({
+                data: data,
+                topic: topic
+            }, [data]);
+        }
+        this.broadcastChannel = new BroadcastChannel(this.id);
+        let queryString;
+        this.broadcastChannel.onmessage = (message) => {
+            if(message.data.message === 'subscribe') {
+                queryString = message.data.queryString;
+                this.doRequest(message.data.topic, message.data.queryString);
+            } else if(message.data.message === 'unsubscribe') {
+                this.disconnect(message.data.topic+'?'+queryString);
+            }
+        }
     }
 
     getMqttProvider() {
@@ -127,6 +148,7 @@ class MqttConnector extends DataConnector {
      */
     doRequest(topic = '',queryString= undefined) {
         const mqttProvider = this.getMqttProvider();
+
         mqttProvider.subscribe(`${topic}?${queryString}`, this.onMessage).then(() => {
             this.onChangeStatus(Status.CONNECTED);
         });
@@ -140,7 +162,7 @@ class MqttConnector extends DataConnector {
     /**
      * Disconnects and close the mqtt client.
      */
-    async disconnect() {
+    async disconnect(topic) {
         // does not call super to avoid reconnection logic and use the one of the mqtt.js lib
         // this.checkStatus(Status.DISCONNECTED);
         // this.init = false;
@@ -149,9 +171,13 @@ class MqttConnector extends DataConnector {
         const client = mqttProviders[this.getUrl()];
 
         if (isDefined(client) &amp;&amp; client.isConnected()) {
-            // unsubscribe all topics
-            await client.unsubscribeAll();
-            // client.disconnect();
+            if(!topic) {
+                // unsubscribe all topics
+                return client.unsubscribeAll();
+                // client.disconnect();
+            } else {
+                return client.unsubscribe(topic);
+            }
         }
         //delete mqttProviders[this.getUrl()];
         //console.warn(`Disconnected from ${this.getUrl()}`);

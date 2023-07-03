@@ -89,6 +89,7 @@ class DataSynchronizer {
         }
         if (mode === Mode.REPLAY) {
             this.dataSynchronizer = this.dataSynchronizerReplay;
+
         } else if (mode === Mode.REAL_TIME) {
             this.dataSynchronizer = this.dataSynchronizerRt;
         }
@@ -98,10 +99,15 @@ class DataSynchronizer {
         }
         this.initEventSubscription();
         this.broadcastChannels = [];
+        const promises=[];
         for(let ds of this.dataSynchronizer.getDataSources()) {
-            await ds.setMode(mode);
+            promises.push(ds.setMode(mode));
         }
-        this.onChangedMode(mode);
+        this.dataSynchronizer.onTimeChanged = (min, max, start, end) => this.onTimeChanged(min, max, start, end);
+        this.dataSynchronizer.onAddedDataSource = (dataSourceId) => this.onAddedDataSource(dataSourceId);
+        this.dataSynchronizer.onRemovedDataSource = (dataSourceId) => this.onRemovedDataSource(dataSourceId);
+
+        return Promise.all(promises).then(() => this.onChangedMode(mode));
     }
 
     initEventSubscription() {
@@ -226,13 +232,12 @@ class DataSynchronizer {
         return this.dataSynchronizer.terminate();
     }
 
-    // subscribe(fn, eventTypes) {
-    //     this.dataSynchronizerRt.subscribe(fn,eventTypes);
-    //     this.dataSynchronizerReplay.subscribe(fn,eventTypes);
-    // }
-
     getMode() {
         return this.dataSynchronizer.getMode();
+    }
+
+    async autoUpdateTime(activate) {
+        return this.dataSynchronizerReplay.autoUpdateTime(activate);
     }
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
@@ -275,7 +280,7 @@ class DataSynchronizer {
      * Connects all dataSources
      */
     async connect() {
-        await this.dataSynchronizer.connect()
+        return this.dataSynchronizer.connect()
     }
 
     async checkInit() {
@@ -352,8 +357,7 @@ class DataSynchronizer {
         this.dataSynchronizerReplay.computeMinMax();
         this.dataSynchronizerReplay.timeChanged();
     }
-    onTimeChanged(start, min) {
-    }
+    onTimeChanged(start, min) {}
 
     onRemovedDataSource(dataSourceId) {
     }

@@ -47,6 +47,7 @@ import {DATASOURCE_DATA_TOPIC} from "../Constants";
 import DataSourceWorker from './worker/DataSource.worker';
 import {Mode} from "./Mode";
 import WorkerExt from "../worker/WorkerExt";
+import MqttConnector from "../connector/MqttConnector";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -57,6 +58,28 @@ const maxPoolSize = 5;
 const workersPool = [];
 let currentInsertPoolIdx = 0;
 let dataSourceWorkers={};
+
+let mqttConnectors = {};
+
+export function getDataSourceWorkers() {
+    return dataSourceWorkers;
+}
+
+function createSharedMqttConnector(properties, topic) {
+    let endpoint = properties.mqttOpts.endpointUrl;
+
+    if (endpoint.endsWith('/')) {
+        endpoint = endpoint.substring(0, endpoint.length - 1);
+    }
+
+    const tls = (properties.tls) ? 's' : '';
+    const url =  'mqtt' + tls + '://' + endpoint;
+    if(!(url in mqttConnectors)) {
+        mqttConnectors[url] = new MqttConnector(url, properties);
+        mqttConnectors[url].initBc();
+    }
+    return mqttConnectors[url].id;
+}
 
 class DataSource {
     constructor(name, properties) {
@@ -69,6 +92,10 @@ class DataSource {
 
         if (isDefined(properties.mode)) {
             this.mode = properties.mode;
+        }
+
+        if(properties.protocol === 'mqtt') {
+            this.properties.mqttOpts.bcId = createSharedMqttConnector(properties);
         }
     }
 
@@ -109,7 +136,7 @@ class DataSource {
     }
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
-    async createWorker(properties) {
+    createWorker(properties) {
         return new WorkerExt(new DataSourceWorker());
     }
 
@@ -145,21 +172,21 @@ class DataSource {
         return this.doConnect();
     }
 
-    async getWorker() {
+    getWorker() {
         if (!(this.id in dataSourceWorkers)) {
             // create new worker for this DS
-            currentInsertPoolIdx = (currentInsertPoolIdx + 1) % maxPoolSize;
             if (!isDefined(workersPool[currentInsertPoolIdx])) {
-                workersPool[currentInsertPoolIdx] = await this.createWorker();
+                workersPool[currentInsertPoolIdx] = this.createWorker();
             }
             dataSourceWorkers[this.id] = currentInsertPoolIdx;
+            currentInsertPoolIdx = (currentInsertPoolIdx + 1) % maxPoolSize;
         }
         // store worker idx into map for fast-mapping
         return workersPool[dataSourceWorkers[this.id]];
     }
 
     async initDataSource(properties = this.properties) {
-        this.dataSourceWorker = await this.getWorker();
+        this.dataSourceWorker = this.getWorker();
         return this.dataSourceWorker.postMessageWithAck({
             message: 'init',
             id: this.id,
@@ -171,20 +198,24 @@ class DataSource {
         }).then(() => {
             // listen for Events to callback to subscriptions
             const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
-            datasourceBroadcastChannel.onmessage = async (message) => {
-                await this.handleMessage(message);
+            datasourceBroadcastChannel.onmessage = (message) => {
+                this.handleMessage(message);
             };
             this.isInitialized = true;
         });
     }
 
-    async handleMessage(message) {
+    handleMessage(message) {
         const type = message.data.type;
         if (type in this.eventSubscriptionMap) {
             for (let i = 0; i &lt; this.eventSubscriptionMap[type].length; i++) {
                 this.eventSubscriptionMap[type][i](message.data);
             }
         }
+    }
+
+    resetInit() {
+        this.init = undefined;
     }
 
     async checkInit() {
@@ -205,10 +236,11 @@ class DataSource {
         if (!this.init) {
             return false;
         } else {
-            await this.checkInit();
-            return this.dataSourceWorker.postMessageWithAck({
-                message: 'is-connected',
-                dsId: this.id
+            return this.checkInit().then(() => {
+                return this.dataSourceWorker.postMessageWithAck({
+                    message: 'is-connected',
+                    dsId: this.id
+                });
             });
         }
     }
