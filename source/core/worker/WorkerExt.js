@@ -1,3 +1,5 @@
+import {randomUUID} from "../utils/Utils";
+
 class WorkerExt {
     constructor(worker) {
         this.worker = worker;
@@ -11,7 +13,7 @@ class WorkerExt {
     }
 
     postMessageWithAck(message, transfer) {
-        const ackId = crypto.randomUUID();
+        const ackId = randomUUID();
         // console.log('post ack ' + ackId);
 
         return new Promise((resolve, reject) => {

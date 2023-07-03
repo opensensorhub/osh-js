@@ -50,11 +50,16 @@ class TimeSeriesDatasource {
                 this.timeSeriesDataSource = this.timeSeriesReplayDataSource;
             }
 
+            this.timeSeriesDataSource.resetInit();
+
+
             // bind properties
             this.properties = this.timeSeriesDataSource.properties;
             this.id = this.timeSeriesDataSource.id;
             this.name = this.timeSeriesDataSource.name;
             this.properties.mode = mode;
+            return this.timeSeriesDataSource.initDataSynchronizerIfPresent();
+
         }
     }
 
@@ -204,6 +209,10 @@ class TimeSeriesDatasource {
         return this.timeSeriesDataSource.setDataSynchronizer(dataSynchronizer);
     }
 
+    getDataSynchronizer() {
+        return this.timeSeriesDataSource.dataSynchronizer;
+    }
+
     async removeDataSynchronizer() {
         return this.timeSeriesDataSource.removeDataSynchronizer();
 
@@ -318,6 +327,21 @@ class TimeSeriesDatasource {
 
     onTimeChanged(min, max, start, end) {
     }
+
+    async autoUpdateTime(activate) {
+        if(activate) {
+            return this.createTimeUpdater();
+        } else {
+            this.destroyTimeUpdater();
+        }
+    }
+
+    // abstract
+    async createTimeUpdater() {}
+
+    // abstract
+    destroyTimeUpdater() {}
+
 }
 
 export default TimeSeriesDatasource;

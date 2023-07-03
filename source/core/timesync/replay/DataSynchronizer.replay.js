@@ -389,15 +389,11 @@ class DataSynchronizerReplay {
      * Connects all dataSources
      */
     async connect() {
-        if (this.dataSources.length === 0) {
-            return;
-        } else {
-            await this.checkInit();
-            const isConnected = await this.isConnected();
-            if (!isConnected) {
-                return this.doConnect();
-            }
-            return isConnected;
+        if (this.dataSources.length > 0) {
+            return this.checkInit().then(async () => {
+                const isConnected = await this.isConnected();
+                return isConnected? isConnected : this.doConnect();
+            });
         }
     }
 
@@ -418,11 +414,13 @@ class DataSynchronizerReplay {
     }
 
     async doConnect() {
+
         this.checkStartEndTime();
         await this.updateAlgo();
         for (let dataSource of this.dataSources) {
             await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true);
         }
+
 
         return this.synchronizerWorker.postMessageWithAck({
             message: 'connect',
@@ -527,9 +525,11 @@ class DataSynchronizerReplay {
     }
 
     async updateProperties(properties) {
+        const promises = [];
         for (let ds of this.dataSources) {
-            ds.updateProperties(properties);
+            promises.push(ds.updateProperties(properties));
         }
+        return Promise.all(promises);
     }
 
     resetTimes() {
@@ -562,12 +562,20 @@ class DataSynchronizerReplay {
             await this.checkInit();
             return this.synchronizerWorker.postMessageWithAck({
                 message: 'is-connected'
-            }).then( (message) => message.data);
+            }).then(v => v.data);
         }
     }
 
     incVersion() {
         this.properties.version++;
+    }
+
+    async autoUpdateTime(activate) {
+        const promises = [];
+        for (let ds of this.dataSources) {
+            promises.push(ds.autoUpdateTime(activate));
+        }
+        return Promise.all(promises);
     }
 
     onTimeChanged(min, max, start, end) {
