@@ -45,7 +45,7 @@ class DataSynchronizerAlgo {
             while (this.computeNextData(tsRef, clockTimeRef)) ;
 
         }, this.timerResolution);
-        console.warn(`Started Replay Algorithm with tsRef=${new Date(tsRef).toISOString()}`);
+        console.warn(`Started Algorithm ${this.constructor.name} with  tsRef=${new Date(tsRef).toISOString()}`);
     }
 
     /**
@@ -73,6 +73,8 @@ class DataSynchronizerAlgo {
     onData(dataSourceId, dataBlock) {
     }
 
+    checkStart() {}
+
     /**
      * Change the dataSource status
      * @param {Status} status - the new status
@@ -88,9 +90,11 @@ class DataSynchronizerAlgo {
             this.interval = undefined;
         }
         console.log("Data synchronizer terminated successfully");
+        this.onClose();
     }
 
     onStart()  {}
+    onClose() {}
 }
 
 export default DataSynchronizerAlgo;

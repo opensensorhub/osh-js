@@ -234,7 +234,7 @@ export default {
       this.droneOrientationDataSource.subscribe((message) => {
         if (message.status === Status.FETCH_STARTED || message.status === Status.FETCH_ENDED || message.status === Status.CONNECTED) {
           this.$store.dispatch('updateDroneStatus', {
-            platformOrientation: {
+            droneOrientationDataSource: {
               connected: (message.status === Status.FETCH_STARTED || message.status === Status.CONNECTED)
             }
           });

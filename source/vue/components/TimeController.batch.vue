@@ -1,17 +1,26 @@
 <template>
   <div :id="'control-component-'+this.id" class="control">
-    <div :id="id" class="range"></div>
+    <RangeSliderReplay
+        :update="update"
+        :interval="interval"
+        @event="onRangeSliderEvent"
+        :minTimestamp="minTimeStamp"
+        :maxTimestamp="maxTimeStamp"
+        :start-timestamp="startTimeStamp"
+        :end-timestamp="endTimeStamp"
+        ref="rangeSliderRef"
+        v-if="rangeSliderInit && init"
+    ></RangeSliderReplay>
     <div class="buttons">
       <div class="actions"> <!-- Next Page Buttons -->
         <div class="datasource-actions replay">
-          <a :id="'replay-btn-'+id" class="control-btn clicked" @click="toggleReplay">
+          <a :id="'replay-btn-'+id" class="control-btn clicked" @click="toggleRealtime">
             <i class="fa fa-history"></i>
           </a>
-          <div class="control-time">
-            <span :id="'current-time-'+id" v-html=parseTime(startTime)></span>
-            <span style="padding:0 10px 0 10px">/</span>
-            <span :id="'end-time-'+id" v-html=parseTime(endTime)></span>
-          </div>
+          <ControlTimeReplay
+              :htmlCurrentTime="htmlCurrentTime"
+              :htmlEndTime="htmlEndTime"
+          ></ControlTimeReplay>
         </div>
       </div>
     </div>
@@ -19,13 +28,13 @@
 </template>
 
 <script>
-import RangeSliderReplay from '../../ext/ui/view/rangeslider/RangeSliderView.replay.js';
 import {randomUUID} from '../../core/utils/Utils.js';
 import {isDefined} from '../../core/utils/Utils';
 import {Status as STATUS} from "../../core/connector/Status";
 import {assertDefined, throttle, debounce} from "../../core/utils/Utils";
 import {EventType} from "../../core/event/EventType";
-import {Mode} from "../../core/datasource/Mode";
+import ControlTimeReplay from "./ControlTime.replay.vue";
+import RangeSliderReplay from './RangeSlider.replay.vue';
 
 
 /**
@@ -37,11 +46,14 @@ import {Mode} from "../../core/datasource/Mode";
  * @vue-prop {Number} [replaySpeedStep=0.1] Time to decrease/increase replay speed value
  * @vue-prop {Number} [debounce=800] Debounce time before executing refresh while clicking on backward/forward/replaySpeed action. In millis
  * @vue-prop {Function} [parseTime] - Function used to parse the time and display next to the actions buttons. Return value can be text or HTML.
- * @vue-event {String} [event='change'/'slide'/'end'/'replaySpeed'/'toggle-replay'] - Emit event's name after time change
+ * @vue-event {String} [event='change'/'slide'/'end'/'replaySpeed'/'toggle-realtime'] - Emit event's name after time change
  */
 export default {
   name: "TimeControllerBatch",
-  components: {},
+  components: {
+    ControlTimeReplay,
+    RangeSliderReplay
+  },
   props: {
     dataSource: {
       type: Object
@@ -61,7 +73,10 @@ export default {
 
         return '<div class="box-time"><div><strong>' + smallTime + '</strong></div><div><i><small>(' + smallDate + ')</small></i></div></div>';
       }
-    }
+    },
+    startTimeAsTimestamp: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -69,24 +84,45 @@ export default {
       speedId: randomUUID(),
       event: null,
       connected: true,
-      startTime: null,
-      endTime: null,
-      minTime: null,
-      maxTime: null,
+      startTimestamp: null,
+      endTimestamp: null,
+      minTimestamp: null,
+      maxTimestamp: null,
       interval: false,
-      rangeSlider: null,
       bcTime: null,
       init: false,
-      waitForTimeChangedEvent: false
+      waitForTimeChangedEvent: false,
+      update: false,
+      rangeSliderInit: false,
     };
   },
   watch: {
     event(newValue) {
       this.$emit('event', {
         event: newValue,
-        startTime: this.startTime,
-        endTime: this.endTime
+        startTimestamp: this.startTimestamp,
+        endTimestamp: this.endTimestamp
       });
+    }
+  },
+  computed: {
+    minTimeStamp() {
+      return this.minTimestamp;
+    },
+    maxTimeStamp() {
+      return this.maxTimestamp;
+    },
+    startTimeStamp() {
+      return this.startTimestamp;
+    },
+    endTimeStamp() {
+      return this.endTimestamp;
+    },
+    htmlCurrentTime() {
+      return this.parseTime(this.startTimestamp);
+    },
+    htmlEndTime() {
+      return this.parseTime(this.endTimestamp);
     }
   },
   mounted() {
@@ -95,37 +131,14 @@ export default {
   methods: {
     async initComp() {
       if (!this.init) {
-        this.dataSource.isConnected().then(value => this.connected = value);
-        let stCurrentRefresh = this.dataSource.getStartTime() === 'now';
+        this.minTimestamp = this.dataSource.getMinTimeAsTimestamp();
+        this.maxTimestamp = this.dataSource.getMaxTimeAsTimestamp();
 
-        let minTime = this.dataSource.getMinTime();
-        let maxTime = this.dataSource.getMaxTime();
-
-        if (isDefined(minTime)) {
-          this.startTime = new Date(minTime).getTime();
-        } else {
-          this.startTime = new Date(this.dataSource.getStartTime()).getTime();
-        }
-        this.minTime = this.startTime;
-
-        if (isDefined(maxTime)) {
-          this.endTime = new Date(maxTime).getTime();
-        } else {
-          this.endTime = new Date(this.dataSource.getEndTime()).getTime();
-        }
-        this.maxTime = this.endTime;
-
-        if (stCurrentRefresh) {
-          await this.dataSource.setTimeRange(
-              new Date(this.minTime).toISOString(),
-              new Date(this.maxTime).toISOString(),
-              this.speed,
-              true,
-              Mode.BATCH
-          );
-        }
+        this.startTimestamp = this.dataSource.getStartTimeAsTimestamp()
+        this.endTimestamp = this.dataSource.getEndTimeAsTimestamp()
 
         this.createTimeBc();
+
         // listen for datasource status
         this.dataSource.subscribe(message => {
           if (message.status === STATUS.DISCONNECTED || message.status === STATUS.FETCH_ENDED) {
@@ -140,6 +153,7 @@ export default {
         this.updateTimeDebounce = debounce(this.updateTime.bind(this), this.debounce);
         this.setRangeSliderStartTimeThrottle = throttle(this.setRangeSliderStartTime.bind(this), this.debounce);
         this.init = true;
+        this.dataSource.connect();
       }
     },
     destroyBc() {
@@ -177,38 +191,33 @@ export default {
       }, [EventType.TIME_CHANGED, EventType.MASTER_TIME]);
     },
     setStartTime(timestamp) {
-      this.startTime = timestamp;
-      this.rangeSlider.setStartTime(this.startTime, this.endTime);
+      this.startTimestamp = timestamp;
+      this.rangeSlider.setStartTime(this.startTimestamp, this.endTimestamp);
     },
     createRangeSlider() {
-      if (!this.rangeSlider) {
-        this.rangeSlider = new RangeSliderReplay({
-          container: this.id,
-          startTime: this.minTime,
-          endTime: this.maxTime,
-          debounce: 200,
-          options: {}
-        });
+      if (!this.rangeSliderInit) {
+        let dataSourceObj = {};
 
-        this.update = false;
-        this.rangeSlider.onChange = (startTime, endTime, event) => {
-          if (event === 'slide') {
-            this.waitForTimeChanged = true;
-            this.update = true;
-          } else if (event === 'end') {
-            this.update = false;
-          }
-
-          if (!this.interval) {
-            this.startTime = startTime;
-            this.endTime = endTime;
-
-            this.on(event);
-          }
-          if (event === 'end') {
-            this.doPlay();
-          }
+        if (isDefined(this.dataSynchronizer)) {
+          dataSourceObj.dataSynchronizer = this.dataSynchronizer;
+          this.dataSynchronizer.onTimeChanged = function(minTime, maxTime) {
+            this.minTimestamp = new Date(minTime).getTime();
+            this.maxTimestamp = new Date(maxTime).getTime();
+            this.endTimestamp = new Date(maxTime).getTime();
+            if(new Date(minTime).getTime() > this.startTimestamp) {
+              this.startTimestamp = new Date(minTime).getTime();
+            }
+            this.rangeStartDate = this.parseTime(this.startTimestamp);
+            this.rangeEndDate = this.parseTime(this.maxTimestamp);
+            // in case where we click on Pause, remove the DataSource, and doPlay again
+            this.waitForTimeChangedEvent = false;
+          }.bind(this);
+        } else {
+          dataSourceObj.dataSource = this.dataSource;
         }
+
+        this.rangeSliderInit = true;
+        // HAS BEEN REPLACED
       }
     },
     doPlay() {
@@ -217,8 +226,8 @@ export default {
     },
     resetMasterTime() {
       // reset master time
+      this.waitForTimeChangedEvent = this.lastSynchronizedTimestamp !== -1;
       this.lastSynchronizedTimestamp = -1;
-      this.waitForTimeChangedEvent = true;
       this.on('time-changed');
       this.update = false;
     },
@@ -226,17 +235,13 @@ export default {
     async updateTime(event) {
       this.resetMasterTime();
       this.dataSource.setTimeRange(
-          new Date(this.startTime).toISOString(),
-          new Date(this.endTime).toISOString(),
+          new Date(this.startTimestamp).toISOString(),
+          new Date(this.endTimestamp).toISOString(),
           this.speed,
           true
       );
 
-      this.on(event, {
-        replaySpeed: this.speed,
-        startTime: this.startTime,
-        endTime: this.endTime
-      });
+      this.on(event);
     }
     ,
     updateTimeDebounce() {},
@@ -247,18 +252,34 @@ export default {
 
     setRangeSliderStartTimeThrottle() {},
 
-    async toggleReplay() {
-      this.on('toggle-history');
+    async toggleRealtime() {
+      this.on('toggle-realtime');
     },
-    on(eventName, props = {}) {
+    on(eventName, props={}) {
       this.$emit('event', {
         name: eventName,
         ...props
       });
-    }
-    ,
+    },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
+    },
+    onRangeSliderEvent(props) {
+      if('startTimestamp' in props) {
+        this.startTimestamp = props.startTimestamp;
+      }
+      if('endTimestamp' in props) {
+        this.endTimestamp = props.endTimestamp;
+      }
+      if('update' in props) {
+        this.update = props.update;
+      }
+      if('waitForTimeChangedEvent' in props) {
+        this.waitForTimeChangedEvent = props.waitForTimeChangedEvent;
+      }
+      if(props.name === 'doPlay') {
+        this.doPlay();
+      }
     },
   }
 }

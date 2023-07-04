@@ -1,0 +1,10 @@
+.ffmpeg-info{
+    position:absolute;
+    font-size: 12px;
+    color:#FFFFFF;
+    padding:2px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}

@@ -12,8 +12,6 @@
 import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import '../../../resources/css/ffmpegview.css';
 import CanvasView from "./CanvasView";
-import DecodeWorker from './workers/webapi.decode.worker.js';
-import YUVCanvas from "./YUVCanvas";
 import {FrameType} from "./FrameType";
 
 /**
@@ -60,11 +58,36 @@ class WebCodecView extends CanvasView {
             throw Error('WebCodec API is not supported');
         }
 
+        //https://developer.mozilla.org/en-US/docs/Web/Media/Formats/codecs_parameter
         // common VP8/ VP9/ H264 profiles. May not work depending on the video encoding profile
+        //        case "H264":
+        //           config.codec = "avc1.42002A";  // baseline profile, level 4.2
+        //           config.avc = { format: "annexb" };
+        //           config.pt = 1;
+        //           break;
+        //         case "H265":
+        //           config.codec = "hvc1.1.6.L123.00"; // Main profile, level 4.1, main Tier
+        //           config.hevc = { format: "annexb" };
+        //           config.pt = 2;
+        //           break;
+        //         case "VP8":
+        //           config.codec = "vp8";
+        //           config.pt = 3;
+        //           break;
+        //         case "VP9":
+        //           config.codec = "vp09.00.10.08"; //VP9, Profile 0, level 1, bit depth 8
+        //           config.pt = 4;
+        //           break;
+        //         case "AV1":
+        //           config.codec = "av01.0.08M.10.0.110.09" // AV1 Main Profile, level 4.0, Main tier, 10-bit content, non-monochrome, with 4:2:0 chroma subsampling
+        //           config.pt = 5;
+        //           break;
+        //       }
         this.codecMap = {
-            'vp9':'vp09.02.10.10.01.09.16.09.01',
-            'vp8': 'vp08.00.41.08',
-            'h264': 'avc1.42e01e'
+            'vp9':  'vp09.02.10.10.01.09.16.09.01',
+            'vp8':  'vp08.00.41.08',
+            'h264': 'avc1.42e01e',
+            'h265': 'hev1.1.6.L123.00'
         };
 
         // default use H264 codec
@@ -77,12 +100,14 @@ class WebCodecView extends CanvasView {
                 this.codec = this.codecMap[properties.codec];
             }
         }
+        this.compression = properties.codec;
 
         // create webGL canvas
         this.canvasElt = this.createCanvas(this.width, this.height);
         this.domNode.appendChild(this.canvasElt);
-    }
 
+        this.queue = [];
+    }
     /**
      * Create <canvas> DOM element with some height/width/style
      * @protected
@@ -101,26 +126,26 @@ class WebCodecView extends CanvasView {
     }
 
     updateCanvasSize(width, height) {
-        this.canvasElt.setAttribute('width', width);
-        this.canvasElt.setAttribute('height', height);
+        this.canvasElt.width = width;
+        this.canvasElt.height = height;
     }
 
     async setData(dataSourceId, data) {
         if(data.type === 'videoData') {
             const values = data.values;
             for(let i=0;i < values.length;i++) {
-                this.updateVideo(values[i]);
+                await this.updateVideo(values[i]);
             }
         }
     }
-    updateVideo(props) {
+    async updateVideo(props) {
         if (!this.skipFrame) {
             if (!this.codecConfigured) {
                 this.codec = this.codecMap[props.frameData.compression.toLowerCase()]
                 this.initDecoder();
             }
 
-            this.decode(
+            await this.decode(
                 props.frameData.data.length,
                 props.frameData.data,
                 props.timestamp,
@@ -139,60 +164,80 @@ class WebCodecView extends CanvasView {
     initDecoder() {
         this.gl = this.canvasElt.getContext("bitmaprenderer");
 
-        this.decodeWorker = new DecodeWorker();
-        this.decodeWorker.postMessage({
-            init: {
-                codec: this.codec,
-                width: this.width,
-                height: this.height
-            },
-        });
+        const init = {
+            output: async (videoFrame) => {
+                // check picture width
+                if (this.width !== videoFrame.codedWidth || this.height !== videoFrame.codedHeight) {
+                    this.width = videoFrame.codedWidth;
+                    this.height = videoFrame.codedHeight;
 
-        this.decodeWorker.onmessage = (event) => {
-            if(event.data.init) {
-                this.codecConfigured = true;
-            } else if(this.codecConfigured) {
-                const bitmap = event.data.bitmap;
-                const width = event.data.width;
-                const height = event.data.height;
+                    this.updateCanvasSize(this.width ,this.height);
 
-                // for some reason, the web worker failed to create the bitmal
-                if(!isDefined(bitmap)) {
-                    console.warn('Bitmap is undefined, skipping this frame..');
-                    return;
+                    this.videoDecoder.configure({
+                        codec: this.codec,
+                        codedWidth: this.width,
+                        codedHeight:this.height,
+                    });
                 }
-                this.handleDocodedFrame(bitmap, width, height);
+                const bitmap = await createImageBitmap(videoFrame);
+                try {
+                    await this.handleDocodedFrame(bitmap, this.width, this.height, videoFrame.timestamp, this.queue.shift());
+                } finally {
+                    videoFrame.close();
+                }
+            },
+            error: (error) => {
+                this.queue.shift();
+                console.error(error);
             }
+        };
+        try {
+            this.videoDecoder = new VideoDecoder(init);
+            this.videoDecoder.configure({
+                codec: this.codec,
+                codedWidth: this.width,
+                codedHeight: this.height,
+            });
+            this.codecConfigured = true;
+        }catch (ex) {
+            this.elementDiv.remove(); // remove reserved div element
+            throw Error('Cannot configure WebCodec API VideoDecoder');
         }
     }
 
-    async handleDocodedFrame(bitmap, width, height) {
+    async handleDocodedFrame(videoFrame, width, height, timestamp = 0, queueElt = null) {
         try {
-            if(this.width !== width || this.height !== height) {
-                this.width = width;
-                this.height = height;
-                //re-configure the canvas
-                this.updateCanvasSize(width,height);
-            }
             // draw image
-            this.gl.transferFromImageBitmap(bitmap);
+            let roll = Math.round(queueElt.roll/90) * 90;
+            if (roll > 180) roll -= 360;
+            let scale = 1.0;
+            if (Math.abs(roll) === 90) {
+                scale = this.height / this.width;
+            }
+            const angleRad = roll*Math.PI/180.;
+            if((this.angleRad && this.angleRad !== angleRad) || (this.scale && this.scale !== scale) || !this.angleRad || !this.scale) {
+                this.canvasElt.style = `transform:rotate(${angleRad}rad) scale(${scale})`;
+                this.angleRad = angleRad;
+                this.scale = scale;
+            }
+
+            this.gl.transferFromImageBitmap(videoFrame);
 
             // update stats
-            this.onAfterDecoded(bitmap, FrameType.ARRAY);
-            this.updateStatistics(event.data.pktSize);
+            this.onAfterDecoded(videoFrame, FrameType.ARRAY);
+            this.updateStatistics(queueElt.pktSize);
             if(this.showTime) {
-                this.textFpsDiv.innerText = new Date(event.data.timestamp).toISOString()+' ';
+                this.textFpsDiv.innerText = new Date(timestamp).toISOString()+' ';
             }
             if(this.showStats) {
                 this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
-                    (this.statistics.averageBitRate/1000).toFixed(2)+' kB/s @';
+                    (this.statistics.averageBitRate/1000).toFixed(2)+' kB/s @'+
+                    width+"x"+height+'\n '+this.compression;
             }
             this.onUpdated(this.statistics);
         } catch (exception) {
             console.error(exception);
             //continue;
-        } finally {
-            bitmap.close();
         }
     }
 
@@ -204,13 +249,23 @@ class WebCodecView extends CanvasView {
      */
     async decode(pktSize, pktData, timestamp, roll) {
         if (this.codecConfigured) {
-            this.decodeWorker.postMessage({
-                pktSize: pktSize,
-                pktData: pktData,
+            let key = false;
+            if(this.codec === this.codecMap['h264']) {
+                // optimize for H264
+                // H264 logic
+                key = pktData[26] === 101 && pktData[25] === 1 && pktData[24] === 0 && pktData[23] === 0;
+            }
+
+            this.queue.push({
                 roll: roll,
-                codec: this.codec,
+                pktSize: pktSize
+            });
+            let chunk = new EncodedVideoChunk({
                 timestamp: timestamp,
-            }, [pktData.buffer]);
+                type: key ? 'key' : 'delta',
+                data: pktData
+            });
+            this.videoDecoder.decode(chunk);
         } else {
             console.warn('decoder has not been initialized yet');
         }
@@ -222,10 +277,6 @@ class WebCodecView extends CanvasView {
 
     async getCanvas() {
         return this.canvasElt;
-    }
-
-    drawFrame(decodedFrame) {
-        throw Error('Not supported operation');
     }
 }
 

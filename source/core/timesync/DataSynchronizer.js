@@ -14,15 +14,16 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {assertDefined, isDefined, randomUUID} from "../utils/Utils.js";
-import DataSynchronizerWorker from './DataSynchronizer.worker.js';
-import {DATA_SYNCHRONIZER_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../Constants.js";
 import {Mode} from "../datasource/Mode";
+import DataSynchronizerReplay from "./replay/DataSynchronizer.replay";
+import DataSynchronizerRealtime from "./rt/DataSynchronizer.realtime";
+import {randomUUID} from "../utils/Utils";
 
 class DataSynchronizer {
     /**
      * Creates The dataSynchronizer.
      * @param {Object} properties - the property of the object
+     * @param {String} [properties.id=randomUUID] - id of the dataSynchronizer or random if not provided
      * @param {Number} [properties.replaySpeed=1] - replaySpeed value
      * @param {Number} [properties.timerResolution=5] - interval in which data is played (in milliseconds)
      * @param {Number} [properties.masterTimeRefreshRate=250] - interval in which time value is send through broadcast channel (in milliseconds)
@@ -32,113 +33,111 @@ class DataSynchronizer {
      * @param {Datasource[]} properties.dataSources - the dataSource array
      */
     constructor(properties) {
-        assertDefined(properties.startTime, 'startTime');
-        assertDefined(properties.startTime, 'endTime');
-        this.bufferingTime = 1000; // default
-        this.currentTime = Date.now();
-        this.id = randomUUID();
-        this.dataSources = properties.dataSources || [];
-        this.replaySpeed = properties.replaySpeed || 1;
-        this.timerResolution = properties.timerResolution || 5;
-        this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250,
-        this.mode = properties.mode || Mode.REPLAY;
-        this.initialized = false;
-        this.properties = {};
-        this.properties.replaySpeed = this.replaySpeed;
-        this.properties.startTime = properties.startTime;
-        this.properties.endTime = properties.endTime;
+        const id = properties.id || randomUUID();
+        this.dataSynchronizerReplay = new DataSynchronizerReplay({
+            ...properties,
+            id: id+'-replay'
+        }, this);
+        this.dataSynchronizerRt = new DataSynchronizerRealtime({
+            ...properties,
+            id: id+'-realtime'
+        }, this)
 
-        this.eventSubscriptionMap = {};
-        this.messagesMap = {};
-
+        this.setMode(properties.mode || Mode.REPLAY).then(() => {
+            this.dataSynchronizer.onTimeChanged = (min, max, start, end) => this.onTimeChanged(min, max, start, end);
+            this.dataSynchronizer.onAddedDataSource = (dataSourceId) => this.onAddedDataSource(dataSourceId);
+            this.dataSynchronizer.onRemovedDataSource = (dataSourceId) => this.onRemovedDataSource(dataSourceId);
+        });
     }
 
+    getId() {
+        return this.id;
+    }
+
+    async setMode(mode) {
+        if (this.dataSynchronizer) {
+            await this.dataSynchronizer.disconnect();
+        }
+        if (mode === Mode.REPLAY) {
+            this.dataSynchronizer = this.dataSynchronizerReplay;
+        } else if (mode === Mode.REAL_TIME) {
+            this.dataSynchronizer = this.dataSynchronizerRt;
+        }
+        this.id = this.dataSynchronizer.id;
+        for(let ds of this.dataSynchronizer.getDataSources()) {
+            await ds.setMode(mode);
+        }
+        this.onChangedMode(mode);
+    }
+    getDataSources() {
+        return this.dataSynchronizer.getDataSources();
+    }
     getTopicId() {
-        return DATA_SYNCHRONIZER_TOPIC+this.id;
+        return this.dataSynchronizer.getTopicId();
     }
 
     getTimeTopicId() {
-        return TIME_SYNCHRONIZER_TOPIC+this.id;
-    }
-
-    /**
-     * @private
-     */
-    initEventSubscription() {
-        // listen for Events to callback to subscriptions
-        new BroadcastChannel(this.getTopicId()).onmessage = (message) => {
-            const type = message.data.type;
-            if(type in this.eventSubscriptionMap){
-                for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
-
-        new BroadcastChannel(this.getTimeTopicId()).onmessage = (message) => {
-            const type = message.data.type;
-            if(type in this.eventSubscriptionMap){
-                for(let i=0;i < this.eventSubscriptionMap[type].length;i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
+        return this.dataSynchronizer.getTimeTopicId();
     }
 
     /**
      * Gets the startTime of the first DataSource objet
      * @returns {String} - startTime as ISO date
      */
-    getStartTime() {
-        if(this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
-        return this.dataSources[0].properties.startTime;
+    getStartTimeAsIsoDate() {
+        return this.dataSynchronizer.getStartTimeAsIsoDate();
+    }
+
+    /**
+     * Gets the startTime of the first DataSource objet
+     * @returns {String} - startTime as unix timestamp
+     */
+    getStartTimeAsTimestamp() {
+        return this.dataSynchronizer.getStartTimeAsTimestamp();
     }
 
     /**
      * Gets the endTime of the first DataSource objet
      * @returns {String} - endTime as ISO date
      */
-    getEndTime() {
-        if(this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
-        return this.dataSources[0].properties.endTime;
+    getEndTimeAsIsoDate() {
+        return this.dataSynchronizer.getEndTimeAsIsoDate();
+    }
+
+    getEndTimeAsTimestamp() {
+        return this.dataSynchronizer.getEndTimeAsTimestamp();
     }
 
     /**
      * Gets the minTime of the first DataSource objet
      * @returns {String} - startTime as ISO date
      */
-    getMinTime() {
-        if(this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
-        return isDefined(this.dataSources[0].properties.minTime) ? this.dataSources[0].properties.minTime : this.dataSources[0].properties.startTime;
+    getMinTimeAsIsoDate() {
+        return this.dataSynchronizer.getMinTimeAsIsoDate();
+    }
+
+    /**
+     * Gets the minTime of the first DataSource objet
+     * @returns {String} - startTime as unix timestamp
+     */
+    getMinTimeAsTimestamp() {
+        return this.dataSynchronizer.getMinTimeAsTimestamp();
     }
 
     /**
      * Gets the maxTime of the first DataSource objet
      * @returns {String} - endTime as ISO date
      */
-    getMaxTime() {
-        if(this.dataSources.length === 0) {
-            throw 'dataSource array is empty';
-        }
-        return isDefined(this.dataSources[0].properties.maxTime) ? this.dataSources[0].properties.maxTime : this.dataSources[0].properties.endTime;
+    getMaxTimeAsIsoDate() {
+        return this.dataSynchronizer.getMinTimeAsTimestamp();
     }
 
-    setMinTime(time) {
-        for(let ds of this.dataSources) {
-            ds.setMinTime(time);
-        }
-    }
-
-    setMaxTime(time) {
-        for(let ds of this.dataSources) {
-            ds.setMaxTime(time);
-        }
+    /**
+     * Gets the maxTime of the first DataSource objet
+     * @returns {String} - endTime as unix timestamp
+     */
+    getMaxTimeAsTimestamp() {
+        return this.dataSynchronizer.getMaxTimeAsTimestamp();
     }
 
     /**
@@ -146,135 +145,54 @@ class DataSynchronizer {
      * @returns {Number} - the replay speed
      */
     getReplaySpeed() {
-        return this.replaySpeed;
+        return this.dataSynchronizer.getReplaySpeed();
     }
 
     /**
      * Terminate the corresponding running WebWorker by calling terminate() on it.
      */
     terminate() {
-        if(this.synchronizerWorker !== null) {
-            this.synchronizerWorker.terminate();
-            this.synchronizerWorker = null;
-        }
-        for(let dataSource of this.dataSources) {
-            dataSource.terminate();
-        }
+        return this.dataSynchronizer.terminate();
     }
 
     subscribe(fn, eventTypes) {
-        // associate function to eventType
-        for(let i=0;i < eventTypes.length;i++) {
-            if (!(eventTypes[i] in this.eventSubscriptionMap)) {
-                this.eventSubscriptionMap[eventTypes[i]] = [];
-            }
-            this.eventSubscriptionMap[eventTypes[i]].push(fn);
-        }
+        this.dataSynchronizerRt.subscribe(fn,eventTypes);
+        this.dataSynchronizerReplay.subscribe(fn,eventTypes);
+    }
+
+    getMode() {
+        return this.dataSynchronizer.getMode();
     }
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     async initDataSources() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const dataSourcesForWorker = [];
-                let mode = this.mode;
-                for (let dataSource of this.dataSources) {
-                    const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-                    dataSourcesForWorker.push(dataSourceForWorker);
-                    mode = dataSource.mode;
-                }
-                this.synchronizerWorker = new DataSynchronizerWorker();
-                this.handleWorkerMessage();
-                await this.postMessage({
-                    message: 'init',
-                    dataSources: dataSourcesForWorker,
-                    replaySpeed: this.replaySpeed,
-                    timerResolution: this.timerResolution,
-                    masterTimeRefreshRate: this.masterTimeRefreshRate,
-                    startTime: this.properties.startTime,
-                    endTime: this.properties.endTime,
-                    mode: mode,
-                    topics:  {
-                        data: this.getTopicId(),
-                        time: this.getTimeTopicId()
-                    }
-                }, function (){
-                    this.initEventSubscription();
-                    this.initialized = true;
-                    resolve();
-                }.bind(this), false);
-            } catch (error) {
-                console.log(error)
-                reject(error);
-            }
+        return this.dataSynchronizer.initDataSources();
+    }
+
+    /**
+     * Adds a new DataSource object to the list of datasources to synchronize.
+     * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
+     * @param {TimeSeriesDataSource} dataSource - the new datasource to add
+     */
+    async addDataSource(dataSource) {
+        return new Promise(async resolve => {
+            await this.dataSynchronizerRt.addDataSource(dataSource);
+            await this.dataSynchronizerReplay.addDataSource(dataSource);
+            resolve();
         });
     }
 
     /**
-     * @private
-     * @param dataSource
-     */
-    async createDataSourceForWorker(dataSource) {
-        const obj = {
-            bufferingTime: dataSource.properties.bufferingTime || 0,
-            timeOut: dataSource.properties.timeOut || 0,
-            id: dataSource.id,
-            name: dataSource.name
-        };
-        // bind dataSource data onto dataSynchronizer data
-        try {
-            await dataSource.setDataSynchronizer(this);
-            dataSource.properties.replaySpeed = this.replaySpeed;
-        } catch (ex) {
-            console.error("Cannot set the synchronizer to this DataSource", ex);
-            throw ex;
-        }
-        return obj;
-    }
-
-     /**
-      * Adds a new DataSource object to the list of datasources to synchronize.
-      * note: don't forget to call reset() to be sure to re-init the synchronizer internal properties.
-      * @param {Datasource} dataSource - the new datasource to add
-      * @param [lazy=false] lazy - add to current running synchronizer
-      */
-    async addDataSource(dataSource, lazy = false) {
-        if(lazy) {
-            return new Promise(async resolve => {
-                const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-                this.dataSources.push(dataSource);
-                await this.postMessage({
-                    message: 'add',
-                    dataSources: [dataSourceForWorker]
-                });
-                await dataSource.connect();
-                resolve();
-            });
-        } else {
-            this.dataSources.push(dataSource);
-        }
-    }
-
-    /**
      * Removes a DataSource object from the list of datasources of the synchronizer.
-     * @param {DataSource} dataSource - the new datasource to add
-     * @param [lazy=false] lazy - remove from the current running synchronizer
+     * @param {TimeSeriesDatasource} dataSource - the new datasource to add
      */
-    async removeDataSource(dataSource, lazy = false) {
-        if(lazy) {
-            return new Promise(async resolve => {
-                this.dataSources = this.dataSources.filter( elt => elt.id !== dataSource.getId());
-                await this.postMessage({
-                    message: 'remove',
-                    dataSources: [dataSource.getId()]
-                });
-                await dataSource.disconnect();
-                resolve();
-            });
-        } else {
-            this.dataSources = this.dataSources.filter( elt => elt.id !== dataSource.getId());
-        }
+    async removeDataSource(dataSource) {
+        return new Promise(async resolve => {
+            await this.dataSynchronizerRt.removeDataSource(dataSource);
+            await this.dataSynchronizerReplay.removeDataSource(dataSource)
+            resolve();
+        });
     }
 
     /**
@@ -282,69 +200,39 @@ class DataSynchronizer {
      * @param {Object} data - the data to push into the data synchronizer
      */
     async push(dataSourceId, data) {
-        return new Promise(async (resolve, reject) => {
-            if (this.synchronizerWorker !== null) {
-                await this.postMessage({
-                    type: 'data',
-                    dataSourceId: dataSourceId,
-                    data: data
-                }, resolve);
-            }
-        });
+        return this.dataSynchronizer.push(dataSourceId, data);
     }
 
+    version() {
+        return this.dataSynchronizer.version()
+    }
     /**
      * Connects all dataSources
      */
     async connect() {
-        await this.checkInit();
-        await this.doConnect();
+        await this.dataSynchronizer.connect()
     }
 
     async checkInit() {
-        const that = this;
-        return new Promise(async (resolve, reject) => {
-            if(!isDefined(that.init)) {
-                that.init = that.initDataSources();
-            }
-            await that.init;
-            resolve();
-        });
+        return this.dataSynchronizer.checkInit()
     }
 
     async doConnect() {
-        return new Promise(async resolve => {
-            for (let dataSource of this.dataSources) {
-                await dataSource.connect();
-            }
-            await this.postMessage({
-                message: 'connect',
-            }, resolve);
-        });
+        return this.dataSynchronizer.doConnect()
     }
 
     /**
      * Disconnects all dataSources
      */
     async disconnect() {
-        await this.reset();
-        for (let dataSource of this.dataSources) {
-            await dataSource.disconnect();
-        }
+        return this.dataSynchronizer.disconnect()
     }
 
     /**
      * Sets the replaySpeed
      */
     async setReplaySpeed(replaySpeed) {
-        return new Promise(async resolve => {
-            this.replaySpeed = replaySpeed;
-            this.properties.replaySpeed = replaySpeed;
-            await this.postMessage({
-                message: 'replay-speed',
-                replaySpeed: replaySpeed,
-            }, resolve);
-        });
+        return this.dataSynchronizer.setReplaySpeed(replaySpeed)
     }
 
     /**
@@ -353,92 +241,62 @@ class DataSynchronizer {
      * @param {String} endTime - the startTime (in date ISO)
      * @param {Number} replaySpeed - the replay speed
      * @param {boolean} reconnect - reconnect if was connected
-     * @param {Mode} mode - default dataSource mode
      */
-    async setTimeRange(startTime= this.getStartTime(),
-                       endTime= this.getEndTime(),
-                       replaySpeed= this.getReplaySpeed(),
-                       reconnect= false,
-                       mode= this.mode) {
-        return new Promise(async resolve => {
-            this.properties.startTime = startTime;
-            this.properties.endTime = endTime;
-
-            await this.postMessage({
-                message: 'update-properties',
-                mode: mode,
-                replaySpeed: replaySpeed,
-                startTime: startTime,
-                endTime: endTime
-            }, () => {
-                for (let ds of this.dataSources) {
-                    ds.setTimeRange(startTime, endTime, replaySpeed, reconnect, mode);
-                }
-                this.mode = mode;
-                resolve();
-            });
-        });
+    async setTimeRange(startTime = this.getStartTimeAsIsoDate(),
+                       endTime = this.getEndTimeAsIsoDate(),
+                       replaySpeed = this.getReplaySpeed(),
+                       reconnect = false) {
+        return this.dataSynchronizer.setTimeRange(startTime,endTime, replaySpeed,reconnect);
     }
 
     async updateProperties(properties) {
-        for (let ds of this.dataSources) {
-            ds.updateProperties(properties);
-        }
+        return this.dataSynchronizer.updateProperties(properties);
     }
+
     /**
      * Resets reference time
      */
     async reset() {
-        return new Promise(async resolve => {
-            await this.checkInit();
-            await this.postMessage({
-                message: 'reset'
-            }, resolve);
-        });
+        return this.dataSynchronizer.reset();
     }
 
     async getCurrentTime() {
-        return new Promise(async resolve => {
-            await this.postMessage({
-                message: 'current-time'
-            }, resolve);
-        });
+        return this.dataSynchronizer.getCurrentTime();
     }
 
-    /**
+    setMinTime(minTime) {
+        this.dataSynchronizer.setMinTime(minTime);
+    }
+
+    setMaxTime(maxTime) {
+        this.dataSynchronizer.setMaxTime(maxTime);
+    }
+
+        /**
      * Connect the dataSource then the protocol will be opened as well.
      */
     async isConnected() {
-        for (let ds of this.dataSources) {
-            if (!(await ds.isConnected())) {
-                return false;
-            }
-        }
-        return true;
+        return this.dataSynchronizer.isConnected();
     }
 
-    async postMessage(props, Fn, checkInit = true) {
-        if(checkInit) {
-            await this.checkInit();
+    minMaxChanged(resetStartTimestamp = false) {
+        if(resetStartTimestamp) {
+            this.dataSynchronizerReplay.properties.startTimestamp = undefined;
+            this.dataSynchronizerReplay.properties.endTimestamp = undefined;
         }
-        const messageId = randomUUID();
-        this.synchronizerWorker.postMessage({
-            ...props,
-            messageId: messageId
-        });
-        if(isDefined(Fn)) {
-            this.messagesMap[messageId] = Fn;
-        }
+        this.dataSynchronizerReplay.computeMinMax();
+        this.dataSynchronizerReplay.timeChanged();
+    }
+    onTimeChanged(start, min) {
     }
 
-    handleWorkerMessage() {
-        this.synchronizerWorker.onmessage = (event) => {
-            const id = event.data.messageId;
-            if(id in this.messagesMap){
-                this.messagesMap[id](event.data.data);
-                delete this.messagesMap[id];
-            }
-        }
+    onRemovedDataSource(dataSourceId) {
     }
+
+    onAddedDataSource(dataSourceId) {
+    }
+
+    onChangedMode(mode) {}
 }
-export default  DataSynchronizer;
+
+export default DataSynchronizer;

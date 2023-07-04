@@ -10,7 +10,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {assertDefined, isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
-import DecodeWorker from './workers/ffmpeg.decode.worker.js';
+import DecodeWorker from './workers/ffmpeg.decode.video.worker.js';
 import '../../../resources/css/ffmpegview.css';
 import YUVCanvas from "./YUVCanvas";
 import CanvasView from "./CanvasView";
@@ -70,6 +70,7 @@ class FFMPEGView extends CanvasView {
 
         this.buf = [];
         this.bufferingTime = 2 * 1000;
+
     }
 
     createCanvas(width, height, style) {
@@ -147,7 +148,7 @@ class FFMPEGView extends CanvasView {
         this.decodeWorker.postMessage({
             'message': 'init',
             'codec' : codec.toLowerCase()
-        })
+        });
         // const offscreenCanvas = this.canvas.transferControlToOffscreen();
         // let canvas = document.createElement('canvas');
         // canvas.setAttribute('width', this.width);
@@ -232,9 +233,6 @@ class FFMPEGView extends CanvasView {
 
     destroy() {
         super.destroy();
-        if(isDefined(this.interval)) {
-            clearInterval(this.interval);
-        }
         if(isDefined(this.decodeWorker)) {
             this.decodeWorker.postMessage({
                 message: 'release'
@@ -245,6 +243,21 @@ class FFMPEGView extends CanvasView {
 
     async getCanvas() {
         return this.yuvCanvas.canvasElement;
+    }
+
+    drawBlank() {
+        let nodata = new Uint8Array(1);
+        this.yuvCanvas.drawNextOuptutPictureGL({
+            yData: nodata,
+            yDataPerRow: 1,
+            yRowCnt: 1,
+            uData: nodata,
+            uDataPerRow: 1,
+            uRowCnt: 1,
+            vData: nodata,
+            vDataPerRow: 1,
+            vRowCnt: 1
+        });
     }
 }
 

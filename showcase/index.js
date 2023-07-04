@@ -143,6 +143,12 @@ var samples = [{
         code: 'vue/App_examples/chart-archive-realtime-synchronized.vue'
     },
     {
+        name: "Chart with Time controller and Synchronizer using 'trackRealtime' option(Chart.js)",
+        description: "Display a chart with time series of weather measurements and time controller and tracking realtime.",
+        url: "chart-archive-realtime-synchronized-sweapi",
+        code: 'vue/App_examples/chart-archive-realtime-synchronized-sweapi.vue'
+    },
+    {
         name: "Audio WebCodec/FFmpeg.js decoding",
         description: "Listen audio stream using WebCodec/FFmpeg.js",
         url: "audio"
@@ -158,11 +164,6 @@ var samples = [{
         description: "Listen audio stream using WebCodec/FFmpeg.js with time controller and associated Video",
         url: 'audio-video-synchronized-with-control-vuejs',
         code: 'vue/App_examples/audio-video-synchronized-with-control-vuejs.vue'
-    },
-    {
-        name: "Tasking simulated drone using SweApi",
-        description: "Tasking simulated drone using SweApi, display drone position and control status",
-        url: 'tasking',
     },
 ];
 

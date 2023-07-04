@@ -25,7 +25,7 @@ import {Mode} from "./Mode";
  */
 class DataSource {
     constructor(name, properties) {
-        this.id = "DataSource-" + randomUUID();
+        this.id = properties.id || "DataSource-" + randomUUID();
         this.name = name;
         this.properties = properties;
         this.eventSubscriptionMap = {};
@@ -62,10 +62,6 @@ class DataSource {
 
     getTopicId() {
         return DATASOURCE_DATA_TOPIC + this.id;
-    }
-
-    getVersion() {
-        return 0;
     }
 
     subscribe(fn, eventTypes) {
@@ -116,14 +112,14 @@ class DataSource {
         await this.doConnect();
     }
 
-     async initDataSource() {
+    async initDataSource(properties=this.properties) {
         return new Promise(async (resolve, reject) => {
             this.dataSourceWorker = await this.createWorker(this.properties);
             this.handleWorkerMessage();
             this.postMessage({
                 message: 'init',
                 id: this.id,
-                properties: this.properties,
+                properties: properties,
                 topics:  {
                     data: this.getTopicId()
                 }
@@ -131,7 +127,7 @@ class DataSource {
                 // listen for Events to callback to subscriptions
                 const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
                 datasourceBroadcastChannel.onmessage = async (message) => {
-                   await this.handleMessage(message);
+                    await this.handleMessage(message);
                 };
                 resolve(message);
             });
@@ -165,10 +161,14 @@ class DataSource {
     }
     async isConnected() {
         return new Promise(async resolve => {
-            await this.checkInit();
-            this.postMessage({
-                message: 'is-connected'
-            }, resolve);
+            if(!this.init) {
+                resolve(false);
+            } else {
+                await this.checkInit();
+                this.postMessage({
+                    message: 'is-connected'
+                }, resolve);
+            }
         });
     }
 
@@ -207,7 +207,16 @@ class DataSource {
 
     async onDisconnect(){}
 
-    reset() {}
+    reset() {
+        this.init = undefined;
+    }
+
+    onRemovedDataSource(dataSourceId) {
+    }
+
+    onAddedDataSource(dataSourceId) {
+    }
+
 }
 
 export default DataSource;

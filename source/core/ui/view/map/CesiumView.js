@@ -117,6 +117,13 @@ class CesiumView extends MapView {
      * @param {Object} [properties.options={}] - Properties which can override the default framework ones
      * @param {Object} [properties.options.viewer=undefined] - the Viewer object to pass [Cesium]{@link https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer} Viewer object
      * @param {Object} [properties.options.viewerProps={}] - the properties of the [Cesium]{@link https://cesium.com/docs/cesiumjs-ref-doc/Viewer.html?classFilter=Viewer} Viewer object
+     * @param {Object} [properties.options.location] - the default location to set
+     * @param {Number} properties.options.location.longitude - the default location longitude (degree)
+     * @param {Number} properties.options.location.latitude - the default location latitude (degree)
+     * @param {Number} properties.options.location.altitude - the default location altitude (meter)
+     * @param {Object} properties.options.orientation - the default map orientation
+     * @param {Object} properties.options.orientation.heading - the default map orientation heading (degree)
+     * @param {Object} properties.options.orientation.pitch - the default map orientation pitch (degree)
      */
     constructor(properties) {
         super({
@@ -150,11 +157,15 @@ class CesiumView extends MapView {
 
         // #region snippet_cesiumview_default_cesiumprops_viewer_props
 
-        const imageryProviders = createDefaultImageryProviderViewModels();
+        let imageryProviders = createDefaultImageryProviderViewModels();
+        if(options && options.options && options.options.layers) {
+            const imageryFilter = options.options.layers;
+            imageryProviders = imageryProviders.filter(el => imageryFilter.includes(el.name));
+        }
         let viewerProps = {
             baseLayerPicker: true,
             imageryProviderViewModels: imageryProviders,
-            selectedImageryProviderViewModel: imageryProviders[6],
+            selectedImageryProviderViewModel: imageryProviders[0],
             timeline: false,
             homeButton: false,
             navigationInstructionsInitiallyVisible: false,
@@ -183,7 +194,6 @@ class CesiumView extends MapView {
                 customViewer = options.options.viewer;
             }
         }
-
         this.viewer = (isDefined(customViewer)) ? customViewer :  new Viewer(this.divId, viewerProps);
 
         this.viewer.terrainProvider = new EllipsoidTerrainProvider();
@@ -210,6 +220,42 @@ class CesiumView extends MapView {
                 that.changeToPromptRender = false;
             }
         });
+
+        let cameraOpts;
+        if(options && options.options) {
+            if(options.options.location &&
+                options.options.location.longitude &&
+                options.options.location.latitude &&
+                options.options.location.altitude
+            ) {
+                if (!cameraOpts) {
+                    cameraOpts = {};
+                }
+                cameraOpts.destination = Cartesian3.fromDegrees(
+                    options.options.location.longitude,
+                    options.options.location.latitude,
+                    options.options.location.altitude);
+            }
+            if(options.options.orientation && options.options.orientation.heading ) {
+                if(!cameraOpts) {
+                    cameraOpts = {};
+                }
+                cameraOpts.orientation = {
+                    heading : Math.toRadians(options.options.orientation.heading),
+                    pitch : Math.toRadians(options.options.orientation.pitch),
+                    roll : 0.0
+                }
+                console.log(cameraOpts.orientation)
+            }
+
+        }
+
+        if(cameraOpts) {
+            this.viewer.camera.flyTo({
+                ...cameraOpts,
+                duration: 1.0
+            });
+        }
     }
 
     render() {
@@ -523,7 +569,7 @@ class CesiumView extends MapView {
         // zoom map if first marker update
         if (this.first && this.properties.autoZoomOnFirstMarker) {
             this.viewer.camera.flyTo({
-                destination : Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], 1000),
+                destination : Cartesian3.fromDegrees(lonLatAlt[0], lonLatAlt[1], (lonLatAlt[2] && lonLatAlt[2] + 1000 )|| 1000),
                 duration : 1.0
             });
             this.first = false;
@@ -1128,11 +1174,7 @@ class CesiumView extends MapView {
                 appearance: appearance,
                 show: props.visible
             });
-            this.viewer.scene.primitives.add(drapedImagePrimitive);
-
-            if (!snapshot) {
-                this.viewer.scene.primitives.raiseToTop(drapedImagePrimitive);
-            }
+            this.viewer.scene.primitives.add(drapedImagePrimitive,0);
             return drapedImagePrimitive;
         } else {
             existingDrapedImagePrimitive.appearance = appearance;

@@ -19,6 +19,7 @@ import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js'
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {isDefined} from "osh-js/core/utils/Utils";
 
 export default {
   components: {
@@ -47,6 +48,7 @@ export default {
       tls: true
     });
 
+    console.log('chart dataSource: '+chartDataSource.id);
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.5,
       startTime: startTime,
@@ -79,7 +81,7 @@ export default {
       },
       fill: true,
       backgroundColor: 'rgba(169,212,255,0.5)',
-      maxValues: 25,
+      maxValues: 20,
       getBackgroundColor: (rec) => {
         const randomNumber = getRandomArbitrary(0,1);
         if(randomNumber > 0.5) {
@@ -120,6 +122,11 @@ export default {
   },
   methods: {
     onControlEvent(eventName) {
+      if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
+          || eventName === 'replaySpeed'
+          || (eventName === 'play')) {
+        this.view.reset();
+      }
     }
   }
 };

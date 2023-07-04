@@ -16,7 +16,7 @@
 
 
 import View from "../View.js";
-import {hex2rgb, isDefined, merge, randomUUID} from "../../../utils/Utils.js";
+import {hex2rgb, hex2rgba, isDefined, merge, randomUUID} from "../../../utils/Utils.js";
 import { Chart, registerables } from 'chart.js';
 import 'chartjs-adapter-moment';
 
@@ -33,6 +33,7 @@ class ChartJsView extends View {
      * @param {Object} [properties.options={}] - Properties which can override the default framework ones
      * @param {Object} [properties.datasetOptions={}] - Properties which can override the default framework ones (as defined [dataset]{@link https://www.chartjs.org/docs/latest/configuration/#dataset-configuration}
      * @param {boolean} [properties.override=false] - Defines if options (as defined [Chart options]{@link https://www.chartjs.org/docs/3.5.1/general/options.html}) are completely overridden or merge only. Default is merge
+     @param {boolean} [properties.refreshRate=1000] - Defines the refresh data rate (in millis)
      */
     constructor(properties) {
         super({
@@ -48,12 +49,18 @@ class ChartJsView extends View {
             maintainAspectRatio: false,
             normalized : true,
             scales: {
+                y: {
+                    title: {
+                        display: true,
+                        text: ''
+                    }
+                },
                 x: {
                     type: 'time',
                     time: {
                         unit: 'second',
                     },
-                }
+                },
             },
             plugins: {},
             datasets: {},
@@ -63,6 +70,7 @@ class ChartJsView extends View {
             elements: {}
         };
 
+        this.refreshRate = 1000;
         // #endregion snippet_chartjsview_default_chartprops
         if (isDefined(properties)) {
             if(properties.hasOwnProperty('options')){
@@ -74,23 +82,32 @@ class ChartJsView extends View {
             if(properties.hasOwnProperty('datasetOptions')){
                 this.datasetOptions = properties.datasetOptions;
             }
+            if(properties.hasOwnProperty('refreshRate')) {
+                this.refreshRate = properties.refreshRate;
+            }
         }
 
+        this.type = type;
         let domNode = document.getElementById(this.divId);
 
+        this.id = randomUUID();
         let ctx = document.createElement("canvas");
-        ctx.setAttribute("id", randomUUID());
+        ctx.setAttribute("id", this.id);
         domNode.appendChild(ctx);
 
+        this.ctx = ctx;
         this.resetting = false;
 
         this.chart = new Chart(
-            ctx, {
+            this.ctx, {
                 type: type,
                 options: this.options
             });
 
         this.datasets = {};
+
+        this.buffer = {}
+        this.lastTimestamp = -1;
     }
 
     async setData(dataSourceId, data) {
@@ -117,7 +134,9 @@ class ChartJsView extends View {
         if(this.resetting) {
             return;
         }
-        let currentDataset = this.datasets[props[0].curveId];
+        const curveId = props[0].curveId;
+        this.chart.options.scales.y.title.text = props[0].yLabel;
+        let currentDataset = this.datasets[curveId];
         const values = props.map(item => ({'x': item.x, 'y': item.y}));
 
         let lineColor = this.getColor(props[0].lineColor);
@@ -130,46 +149,57 @@ class ChartJsView extends View {
                 fill:  props[0].fill,
                 backgroundColor: bgColor,
                 borderColor: lineColor,
+                borderWidth: props[0].stroke,
                 data: values
             };
             currentDataset = {...this.datasetsProps, ...currentDataset};
-            this.datasets[props[0].curveId] = currentDataset;
+            this.datasets[curveId] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
+            this.buffer[curveId] = [];
         } else {
-            this.datasets[props[0].curveId].backgroundColor = bgColor;
-            this.datasets[props[0].curveId].borderColor = lineColor;
-
-            values.forEach(value => {
-                this.datasets[props[0].curveId].data.push(value);
-            });
+            this.datasets[curveId].backgroundColor = bgColor;
+            this.datasets[curveId].borderColor = lineColor;
         }
-        //TODO: max points with multiple dataset won't work
-        if((currentDataset.data.length > props[0].maxValues)) {
-            this.chart.data.labels.shift();
-            currentDataset.data.shift();
-        }
+        this.buffer[curveId] = this.buffer[curveId].concat(values);
+        if(this.lastTimestamp === -1 || Date.now() - this.lastTimestamp >= this.refreshRate) {
+            for(let bufferKey in this.buffer) {
+                const currentBuffer = this.buffer[bufferKey];
+                const nbToShift = currentBuffer.length - props[0].maxValues;
+                if(nbToShift > 0) {
+                    // double buffering
+                    this.buffer[bufferKey] = currentBuffer.slice(nbToShift);
+                }
+                this.datasets[bufferKey].data = this.buffer[bufferKey];
+            }
 
-        this.chart.update('none');
+            this.lastTimestamp = Date.now();
+            this.chart.update('none');
+        }
     }
 
     getColor(value) {
         let v = value;
         if(v.length > 0 && v.charAt(0) === '#') {
-            const rgb = hex2rgb(value);
-            v = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0.2)';
+            if(value.length === 9) {
+                const rgba = hex2rgba(value);
+                v = 'rgba(' + rgba[0] + ',' + rgba[1] + ',' + rgba[2] + ',' + rgba[3] + ')';
+            } else {
+                const rgb = hex2rgb(value);
+                v = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1.0)';
+            }
         }
         return v;
     }
+
     reset() {
         this.resetting = true;
         super.reset();
         this.datasets = {};
         this.chart.data.datasets = [];
-        this.chart.data.labels = [];
-        this.chart.update(0);
+        this.buffer = {};
+        //
+        this.lastTimestamp = -1;
         this.resetting = false;
-        // this.chart.data.datasets = [];
-        // this.chart.update();
     }
 }
 

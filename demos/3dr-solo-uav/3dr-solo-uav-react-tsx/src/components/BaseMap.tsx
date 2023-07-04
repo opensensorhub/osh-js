@@ -93,7 +93,8 @@ class BaseMap extends React.PureComponent {
         }
       },
       icon: "./models/Drone+06B.glb",
-      name: 'Solo draping marker'
+      name: 'Solo draping marker',
+      iconScale: 12.0,
     });
 
     // style it with a moving point marker

@@ -14,76 +14,169 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_TIME_TOPIC} from "../Constants";
-import {assertDefined, isDefined} from "../utils/Utils";
-import DataSource from "./DataSource.datasource";
+import {Mode} from './Mode';
+import TimeSeriesRealtimeDatasource from "./TimeSeries.realtime.datasource";
+import TimeSeriesReplayDatasource from "./TimeSeries.replay.datasource";
+import {randomUUID} from "../utils/Utils";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
  *
  */
-class TimeSeriesDatasource extends DataSource {
+class TimeSeriesDatasource {
     constructor(name, properties) {
-        super(name, properties);
+        const id = randomUUID();
+        this.timeSeriesRealtimeDataSource = new TimeSeriesRealtimeDatasource(name,{
+            id: id,
+            ...properties
+        });
+        this.timeSeriesReplayDataSource = new TimeSeriesReplayDatasource(name,{
+            id: id,
+            ...properties
+        });
 
-        assertDefined(properties,'Some properties must be defined');
-        this.dataSynchronizer = undefined;
+        this.setMode(properties.mode);
+    }
+
+    async setMode(mode) {
+        if (this.timeSeriesDataSource) {
+            await this.timeSeriesDataSource.disconnect();
+        }
+
+        if (!this.timeSeriesDataSource || mode !== this.timeSeriesDataSource.getMode()) {
+            if (mode === Mode.REAL_TIME) {
+                this.timeSeriesDataSource = this.timeSeriesRealtimeDataSource;
+            } else {
+                this.timeSeriesDataSource = this.timeSeriesReplayDataSource;
+            }
+
+            // bind properties
+            this.properties = this.timeSeriesDataSource.properties;
+            this.id = this.timeSeriesDataSource.id;
+            this.name = this.timeSeriesDataSource.name;
+            this.properties.mode = mode;
+        }
     }
 
     getTimeTopicId() {
-        return DATASOURCE_TIME_TOPIC + this.id;
+        return this.timeSeriesDataSource.getTimeTopicId();
     }
 
-    /**
-     * Gets the startTime
-     * @returns {String} - startTime as ISO date
-     */
-    getStartTime() {
-        return this.properties.startTime;
-    }
     /**
      * Gets the mode
      * @returns {Mode} - Datasource mode
      */
     getMode() {
-        return this.properties.mode;
+        return this.timeSeriesDataSource.getMode();
     }
+
+    setVersion(version) {
+        this.timeSeriesDataSource.setVersion(version);
+    }
+    /**
+     * Gets the startTime
+     * @returns {String} - startTime as ISO date
+     */
+    getStartTimeAsIsoDate() {
+        return this.timeSeriesDataSource.getStartTimeAsIsoDate();
+    }
+
+    /**
+     * Gets the startTime
+     * @returns {String} - startTime as unix timestamp
+     */
+    getStartTimeAsTimestamp() {
+        return this.timeSeriesDataSource.getStartTimeAsTimestamp();
+    }
+
     /**
      * Gets the endTime
      * @returns {String} - endTime as ISO date
      */
-    getEndTime() {
-        return this.properties.endTime;
+    getEndTimeAsIsoDate() {
+        return this.timeSeriesDataSource.getEndTimeAsIsoDate();
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as unix timestamp
+     */
+    getEndTimeAsTimestamp() {
+        return this.timeSeriesDataSource.getEndTimeAsTimestamp();
     }
 
     /**
      * Gets the startTime
      * @returns {String} - startTime as ISO date
      */
-    getMinTime() {
-        return this.properties.minTime;
+    getMinTimeAsIsoDate() {
+        return this.timeSeriesDataSource.getMinTimeAsIsoDate();
     }
 
     /**
      * Gets the endTime
      * @returns {String} - endTime as ISO date
      */
-    getMaxTime() {
-        return this.properties.maxTime;
+    getMaxTimeAsIsoDate() {
+        return this.timeSeriesDataSource.getMaxTimeAsIsoDate();
+    }
+
+    /**
+     * Gets the startTime
+     * @returns {String} - startTime as unix timestamp
+     */
+    getMinTimeAsTimestamp() {
+        return this.timeSeriesDataSource.getMinTimeAsTimestamp();
+    }
+
+    /**
+     * Gets the endTime
+     * @returns {String} - endTime as unix timestamp
+     */
+    getMaxTimeAsTimestamp() {
+        return this.timeSeriesDataSource.getMaxTimeAsTimestamp();
     }
 
     /**
      * Sets the min time
      */
     setMinTime(time) {
-        this.properties.minTime = time;
+        this.timeSeriesDataSource.setMinTime(time);
     }
 
     /**
      * Sets the max time
      */
     setMaxTime(time) {
-        this.properties.maxTime = time;
+        this.timeSeriesDataSource.setMaxTime(time);
+    }
+
+    /**
+     * Sets the start time
+     */
+    setStartTimestamp(timestamp) {
+        this.timeSeriesDataSource.setStartTimestamp(timestamp);
+    }
+
+    /**
+     * Sets the end time
+     */
+    setEndTimestamp(timestamp) {
+        this.timeSeriesDataSource.setEndTimestamp(timestamp);
+    }
+
+    /**
+     * Sets the start time
+     */
+    setStartTime(time) {
+        this.timeSeriesDataSource.setStartTime(time);
+    }
+
+    /**
+     * Sets the end time
+     */
+    setEndTime(time) {
+        this.timeSeriesDataSource.setEndTime(time);
     }
 
     /**
@@ -91,7 +184,7 @@ class TimeSeriesDatasource extends DataSource {
      * @returns {String} - endTime as ISO date
      */
     getReplaySpeed() {
-        return this.properties.replaySpeed;
+        return this.timeSeriesDataSource.getReplaySpeed();
     }
 
     /**
@@ -99,57 +192,31 @@ class TimeSeriesDatasource extends DataSource {
      * @returns {String} - endTime as ISO date
      */
     setReplaySpeed(replaySpeed) {
-        this.properties.replaySpeed = replaySpeed;
+        this.timeSeriesDataSource.setReplaySpeed(replaySpeed);
     }
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     /**
-     * @private
      * @param dataSynchronizer
      * @returns {Promise}
      */
     async setDataSynchronizer(dataSynchronizer) {
-        return new Promise(async (resolve, reject) => {
-            await this.checkInit();
-            const topic = DATA_SYNCHRONIZER_TOPIC + dataSynchronizer.id;
-            this.dataSynchronizer = dataSynchronizer;
-            this.postMessage({
-                message: 'topics',
-                topics: {
-                    data: topic,
-                    time: this.getTimeTopicId(),
-                    sync: dataSynchronizer.getTimeTopicId()
-                },
-            }, resolve);
-        });
+        return this.timeSeriesDataSource.setDataSynchronizer(dataSynchronizer);
     }
 
+    async removeDataSynchronizer() {
+        return this.timeSeriesDataSource.removeDataSynchronizer();
+
+    }
     /**
      * Disconnect the dataSource then the protocol will be closed as well.
      */
     async disconnect() {
-        return new Promise(async resolve => {
-            await this.checkInit();
-            this.postMessage({
-                message: 'disconnect'
-            }, resolve);
-        });
+        return this.timeSeriesDataSource.disconnect();
     }
 
     async doConnect() {
-        return new Promise(async resolve => {
-            let startTime = this.properties.startTime;
-            if(isDefined(this.dataSynchronizer)) {
-                let st = (await this.dataSynchronizer.getCurrentTime()).data; // add 1 sec threshold
-                if(isDefined(st)) {
-                    startTime = new Date(st).toISOString();
-                }
-            }
-            this.postMessage({
-                message: 'connect',
-                startTime: startTime
-            }, resolve);
-        });
+        return this.timeSeriesDataSource.doConnect();
     }
 
     /**
@@ -158,34 +225,12 @@ class TimeSeriesDatasource extends DataSource {
      * @param properties
      */
     async initDataSource(properties) {
-        await super.initDataSource(properties);
-        return new Promise(async (resolve, reject) => {
-            this.postMessage({
-                message: 'topics',
-                topics:  {
-                    data: this.getTopicId(),
-                    time: this.getTimeTopicId()
-                },
-            }, async () => {
-                // listen for Events to callback to subscriptions
-                const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
-                datasourceBroadcastChannel.onmessage = async (message) => {
-                     await this.handleTimeMessage(message);
-                };
-                resolve();
-            });
-        });
+        return this.timeSeriesDataSource.initDataSource(properties);
     }
 
-    async handleTimeMessage(message) {
-        const type = message.data.type;
-        if (type in this.eventSubscriptionMap) {
-            for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                this.eventSubscriptionMap[type][i](message.data);
-            }
-        }
+    version() {
+        return this.timeSeriesDataSource.version();
     }
-
     /**
      * Sets the data source time range
      * @param {String} startTime - the startTime (in date ISO)
@@ -193,19 +238,85 @@ class TimeSeriesDatasource extends DataSource {
      * @param {Number} replaySpeed - the replay speed
      * @param {boolean} reconnect - reconnect if was connected
      * @param {Mode} mode - default dataSource mode
+     * @param {Number} version - version of data
      */
-    async setTimeRange(startTime= this.getStartTime(),
-                       endTime= this.getEndTime(),
+    async setTimeRange(startTime= this.getStartTimeAsIsoDate(),
+                       endTime= this.getEndTimeAsIsoDate(),
                        replaySpeed= this.getReplaySpeed(),
                        reconnect= false,
-                       mode= this.getMode()) {
-        return this.updateProperties({
-            startTime: startTime,
-            endTime: endTime,
-            replaySpeed: replaySpeed,
-            reconnect : reconnect,
-            mode: mode
-        });
+                       mode= this.getMode(),
+                       version = this.version()
+                       ) {
+
+        return this.timeSeriesDataSource.setTimeRange(startTime,endTime,replaySpeed,reconnect,mode,version);
+    }
+
+    /***********************************/
+    /**
+     * Gets the datasource id.
+     * @return {String} the datasource id
+     */
+    getId() {
+        return this.timeSeriesDataSource.getId();
+    }
+
+    /**
+     * Gets the datasource name.
+     * @return {String} the datasource name
+     */
+    getName() {
+        return this.timeSeriesDataSource.getName();
+    }
+
+    terminate() {
+        this.timeSeriesDataSource.terminate();
+    }
+
+    getTopicId() {
+        return this.timeSeriesDataSource.getTopicId();
+    }
+
+    subscribe(fn, eventTypes) {
+        this.timeSeriesDataSource.subscribe(fn, eventTypes);
+    }
+
+    /**
+     * Update properties
+     * @param {String} name - the datasource name
+     * @param {Object} properties - the datasource properties
+     * @param {Number} properties.bufferingTime - defines the time during the data has to be buffered
+     * @param {Number} properties.timeOut - defines the limit time before data has to be skipped
+     * @param {String} properties.protocol - defines the protocol of the datasource. @see {@link DataConnector}
+     * @param {String} properties.endpointUrl the endpoint url
+     * @param {String} properties.service the service
+     * @param {Number} properties.responseFormat the response format (e.g video/mp4)
+     * @param {Number} properties.reconnectTimeout - the timeout before reconnecting
+     */
+    async updateProperties(properties) {
+        return this.timeSeriesDataSource.updateProperties(properties);
+    }
+
+    /**
+     * Connect the dataSource then the protocol will be opened as well.
+     */
+    async connect() {
+        return this.timeSeriesDataSource.connect();
+    }
+
+    async checkInit() {
+        return this.timeSeriesDataSource.checkInit();
+    }
+
+    async isConnected() {
+        return this.timeSeriesDataSource.isConnected();
+    }
+
+    reset() {
+        this.timeSeriesDataSource.reset();
+    }
+
+
+    onTimeChanged(min, max, start, end) {
     }
 }
 
