@@ -41,7 +41,7 @@ import TimeControllerBatch from "./TimeController.batch.vue";
  * @vue-prop {DataSource}  [dataSource] - DataSource object
  * @vue-prop {DataSynchronizer} [dataSynchronizer] - DataSynchronizer object
  * @vue-prop {Number} [replaySpeedStep=0.1] - Time to decrease/increase replay speed value
- * @vue-prop {String} trackRealtime - Track time before the given time (HH:MM:SS)
+ * @vue-prop {Boolean} trackRealtime - Track real time
  * @vue-prop {Number} [debounce=800] - Debounce time before executing refresh while clicking on backward/forward/replaySpeed action. In millis
  * @vue-prop {Function} [parseTime] - Function used to parse the time and display next to the actions buttons. Return value can be text or HTML.
  * @vue-event {String} [event='change'/'slide'/'end'/'replaySpeed'] - Emit event's name after time change
@@ -80,7 +80,8 @@ export default {
       default: () => 800 // 800ms
     },
     trackRealtime: {
-      type: String
+      type: Boolean,
+      default: () => false
     },
     parseTime: {
       type: Function,
@@ -111,6 +112,18 @@ export default {
     this.dataSourceObject = this.getDataSourceObject();
     this.mode = this.dataSourceObject.getMode();
     this.checkMode();
+  },
+  watch: {
+    trackRealtime:  {
+      immediate: true,
+      deep: true,
+      handler (val, oldVal) {
+        // do your stuff
+        if(isDefined(oldVal) && val !== oldVal) {
+          this.getDataSourceObject().autoUpdateTime(val);
+        }
+      }
+    }
   },
   methods: {
     getDataSourceObject() {
