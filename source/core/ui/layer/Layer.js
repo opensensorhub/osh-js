@@ -54,7 +54,7 @@ class Layer {
         this.data = [];
         this.propsById = {};
         this.dataSourcesToFn = undefined;
-
+        this.noDataSourcesFn = undefined;
         this.props = {
             id: "layer-" + randomUUID(),
             filter: true,
@@ -225,6 +225,16 @@ class Layer {
                 this.dataSourcesToFn[dataSourceId].push(fn);
             }
         }
+        if(dataSourceIds.length === 0) {
+            if(!this.noDataSourcesFn) {
+                this.noDataSourcesFn = [];
+            }
+            if(first) {
+                this.noDataSourcesFn.unshift(fn);
+            } else {
+                this.noDataSourcesFn.push(fn);
+            }
+        }
     }
 
     /**
@@ -254,6 +264,24 @@ class Layer {
                             ...this.propsById[this.getId()]
                         });
                     }
+                }
+            }
+        }
+        if (isDefined(this.noDataSourcesFn)) {
+            let fnArr = this.noDataSourcesFn;
+            this.props.filter = true;
+            for (let j = 0; j < records.length; j++) {
+                for (let i = 0; i < fnArr.length; i++) {
+                    await fnArr[i](records[j].data, records[j].data.timestamp, options);
+                    if (!this.props.filter) {
+                        break;
+                    }
+                }
+                if(this.props.filter) {
+                    this.data.push({
+                        ...this.props,
+                        ...this.propsById[this.getId()]
+                    });
                 }
             }
         }
