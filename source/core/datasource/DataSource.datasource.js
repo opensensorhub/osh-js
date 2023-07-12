@@ -31,26 +31,8 @@ const workersPool = [];
 let currentInsertPoolIdx = 0;
 let dataSourceWorkers={};
 
-let mqttConnectors = {};
-
 export function getDataSourceWorkers() {
     return dataSourceWorkers;
-}
-
-function createSharedMqttConnector(properties, topic) {
-    let endpoint = properties.mqttOpts.endpointUrl;
-
-    if (endpoint.endsWith('/')) {
-        endpoint = endpoint.substring(0, endpoint.length - 1);
-    }
-
-    const tls = (properties.tls) ? 's' : '';
-    const url =  'mqtt' + tls + '://' + endpoint;
-    if(!(url in mqttConnectors)) {
-        mqttConnectors[url] = new MqttConnector(url, properties);
-        mqttConnectors[url].initBc();
-    }
-    return mqttConnectors[url].id;
 }
 
 class DataSource {
@@ -64,10 +46,6 @@ class DataSource {
 
         if (isDefined(properties.mode)) {
             this.mode = properties.mode;
-        }
-
-        if(properties.protocol === 'mqtt') {
-            this.properties.mqttOpts.bcId = createSharedMqttConnector(properties);
         }
     }
 

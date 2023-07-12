@@ -28,10 +28,9 @@ class MqttTopicConnector extends DataConnector {
         this.broadcastChannel.postMessage({
             message: 'subscribe',
             connectorId: this.id,
-            topic: topic,
-            queryString: queryString
+            topic: this.fullTopic
         });
-        this.topics.push(topic);
+        this.topics.push(this.fullTopic);
         this.onChangeStatus(Status.CONNECTED);
     }
     /**
