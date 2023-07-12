@@ -135,7 +135,7 @@ class MqttProvider {
      */
     async unsubscribe(topic) {
         const topicQuery = `${this.mqttPrefix}${topic}`;
-        return this.client.unsubscribe(topicQuery, err => {
+        return this.client.unsubscribe(topicQuery, {}, err => {
             delete mqttCallbacks[topicQuery];
             if (err) {
                 const messageErr = `Cannot Unsubscribed topic: ${topicQuery} : ${err}`;
@@ -175,10 +175,6 @@ class MqttProvider {
     }
 
     async onMessage(topic, message) {
-        // console.log(topic)
-        // console.log(new DataView(message.buffer, message.byteOffset).getFloat64(0, false) * 1000)
-        // console.log(new DataView(new Uint8Array(message).subarray(message.byteOffset).buffer).getFloat64(0, false) * 1000)
-        // console.log(String.fromCharCode.apply(null, new Uint8Array(message)));
         if (topic in mqttCallbacks) {
             // callback for the corresponding topic
             for (let callback of mqttCallbacks[topic]) {
@@ -201,6 +197,8 @@ class MqttProvider {
     isConnected() {
         return isDefined(this.client) && this.client.connected;
     }
+
+    reset() {}
 }
 
 export default MqttProvider;
