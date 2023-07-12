@@ -289,11 +289,13 @@ export default {
         if (isDefined(this.dataSynchronizer)) {
           dataSourceObj.dataSynchronizer = this.dataSynchronizer;
           this.dataSynchronizer.onTimeChanged = (minTimestamp, maxTimestamp,startTimestamp, endTimestamp) => {
-            this.minTimestamp = minTimestamp;
-            this.maxTimestamp = maxTimestamp;
-            this.startTimestamp = startTimestamp? startTimestamp : minTimestamp;
-            this.endTimestamp = endTimestamp? endTimestamp : maxTimestamp;
-            this.computeSkipTime();
+            if(!this.update) {
+              this.minTimestamp = minTimestamp;
+              this.maxTimestamp = maxTimestamp;
+              this.startTimestamp = startTimestamp ? startTimestamp : minTimestamp;
+              this.endTimestamp = endTimestamp ? endTimestamp : maxTimestamp;
+              this.computeSkipTime();
+            }
           }
         } else {
           dataSourceObj.dataSource = this.dataSource;
