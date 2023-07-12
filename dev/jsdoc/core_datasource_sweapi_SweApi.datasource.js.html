@@ -92,27 +92,30 @@ class SweApi extends TimeSeriesDatasource {
     }
 
     async createTimeUpdater() {
-        this.timeUpdater = new SweApiDatasourceUpdater(this.properties);
-        let first = true;
-        this.timeUpdater.onTimeChanged = (min, max) => {
-            if (first) {
-                this.setMinTime(min);
-                first = false;
+        if(!this.timeUpdater) {
+            this.timeUpdater = new SweApiDatasourceUpdater(this.properties);
+            let first = true;
+            this.timeUpdater.onTimeChanged = (min, max) => {
+                if (first) {
+                    this.setMinTime(min);
+                    first = false;
+                }
+                this.setMaxTime(max);
+                if (this.getDataSynchronizer()) {
+                    this.getDataSynchronizer().minMaxChanged(first);
+                }
             }
-            this.setMaxTime(max);
-            if (this.getDataSynchronizer()) {
-                this.getDataSynchronizer().minMaxChanged(first);
-            }
-        }
-        this.timeUpdater.onError = (err) => reject();
+            this.timeUpdater.onError = (err) => reject();
 
-        return this.timeUpdater.start();
+            return this.timeUpdater.start();
+        } // TO CHECK: if timeUpdater has been created multiple times. Start() should not return anything
     }
 
     destroyTimeUpdater() {
         if(this.timeUpdater) {
             this.timeUpdater.destroy();
         }
+        this.timeUpdater = undefined;
     }
 }
 
