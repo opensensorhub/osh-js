@@ -45,17 +45,42 @@
 import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_TIME_TOPIC} from "../Constants";
 import DataSource from "./DataSource.datasource";
 import {Mode} from './Mode';
+import MqttConnector from "../connector/MqttConnector";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
  *
  */
+let mqttConnectors = {};
+
+function createSharedMqttConnector(properties, topic) {
+    let endpoint = properties.mqttOpts.endpointUrl;
+
+    if (endpoint.endsWith('/')) {
+        endpoint = endpoint.substring(0, endpoint.length - 1);
+    }
+
+    const tls = (properties.tls) ? 's' : '';
+    const url =  'mqtt' + tls + '://' + endpoint;
+    if(!(url in mqttConnectors)) {
+        mqttConnectors[url] = new MqttConnector(url, properties);
+        mqttConnectors[url].initBc();
+    } else {
+        console.log(`Reuse shared MqttConnector instance for ${url}`);
+    }
+    return mqttConnectors[url].id;
+}
+
 class TimeSeriesRealtimeDatasource extends DataSource {
     constructor(name, properties) {
         super(name, properties);
 
         this.dataSynchronizer = undefined;
         this.properties.version = 0;
+
+        if(properties.protocol === 'mqtt') {
+            this.properties.mqttOpts.bcId = createSharedMqttConnector(properties);
+        }
     }
 
     getTimeTopicId() {
