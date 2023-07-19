@@ -165,6 +165,11 @@ var samples = [{
         url: 'audio-video-synchronized-with-control-vuejs',
         code: 'vue/App_examples/audio-video-synchronized-with-control-vuejs.vue'
     },
+    {
+        name: "Nexrad Point cloud (CesiumJS)",
+        description: "Display Nexrad Doppler data using point cloud visualization.",
+        url: "cesium-nexrad"
+    }
 ];
 
 // load sample cards
