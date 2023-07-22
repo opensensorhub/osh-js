@@ -234,6 +234,10 @@ class Layer {
             } else {
                 this.noDataSourcesFn.push(fn);
             }
+        } else {
+            if(this.noDataSourcesFn) {
+                this.noDataSourcesFn = undefined;
+            }
         }
     }
 
