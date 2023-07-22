@@ -30,6 +30,8 @@ class DataSourceWorker {
                 this.handleIsConnected(eventData, resp);
             } else if (eventData.message === 'is-init') {
                 this.handleIsInit(eventData, resp);
+            } else if (eventData.message === 'remove-handler') {
+                this.handleRemoveHandler(eventData, resp);
             }
         } catch (ex) {
             console.error(ex);
@@ -79,6 +81,12 @@ class DataSourceWorker {
     handleIsConnected(eventData, resp) {
         const dsId = eventData.dsId;
         resp.data = this.dataSourceHandlers[dsId].isConnected();
+        this.postMessage(resp);
+    }
+
+    handleRemoveHandler(eventData, resp) {
+        const dsId = eventData.dsId;
+        delete this.dataSourceHandlers[dsId];
         this.postMessage(resp);
     }
 

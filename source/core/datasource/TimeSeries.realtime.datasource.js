@@ -18,6 +18,7 @@ import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_TIME_TOPIC} from "../Constants";
 import DataSource from "./DataSource.datasource";
 import {Mode} from './Mode';
 import MqttConnector from "../connector/MqttConnector";
+import {isDefined} from "../utils/Utils";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -186,7 +187,7 @@ class TimeSeriesRealtimeDatasource extends DataSource {
             await this.checkInit();
             const topic = DATA_SYNCHRONIZER_TOPIC + this.dataSynchronizer.id;
             this.properties.version = this.dataSynchronizer.version();
-            return this.dataSourceWorker.postMessageWithAck({
+            return this.getWorker().postMessageWithAck({
                 message: 'topics',
                 topics: {
                     data: topic,
@@ -201,29 +202,32 @@ class TimeSeriesRealtimeDatasource extends DataSource {
     }
 
     async removeDataSynchronizer() {
-        if (this.dataSourceWorker) {
-            this.dataSourceWorker.terminate();
-            this.dataSynchronizer = undefined;
-        }
+        await this.removeWorker();
+        this.dataSynchronizer = undefined;
         // this.init = undefined;
         return this.checkInit();
-
     }
 
     /**
      * Disconnect the dataSource then the protocol will be closed as well.
      */
     async disconnect() {
-        await this.checkInit();
-        return this.dataSourceWorker.postMessageWithAck({
-            message: 'disconnect',
-            dsId: this.id,
-            mode: Mode.REAL_TIME,
-        });
+        if (isDefined(this.init)) {
+            try {
+                return this.getWorker().postMessageWithAck({
+                    message: 'disconnect',
+                    dsId: this.id,
+                    mode: Mode.REAL_TIME,
+                });
+            } catch (ex) {
+                console.error(ex);
+            }
+        }
     }
 
     async doConnect() {
-        return this.dataSourceWorker.postMessageWithAck({
+        await this.checkInit();
+        return this.getWorker().postMessageWithAck({
             message: 'connect',
             startTime: 'now',
             version: this.version(),
@@ -247,7 +251,7 @@ class TimeSeriesRealtimeDatasource extends DataSource {
             topics.sync = this.dataSynchronizer.getTimeTopicId()
         }
 
-        return this.dataSourceWorker.postMessageWithAck({
+        return this.getWorker().postMessageWithAck({
             message: 'topics',
             topics: topics,
             dsId: this.id,
@@ -272,6 +276,12 @@ class TimeSeriesRealtimeDatasource extends DataSource {
 
     version() {
         return this.properties.version;
+    }
+
+    async reset() {
+        console.warn(`dataSource ${this.id} has been reset`);
+        await super.reset();
+        return this.doConnect();
     }
 }
 

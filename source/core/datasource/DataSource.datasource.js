@@ -66,8 +66,8 @@ class DataSource {
     }
 
     terminate() {
-        if (this.dataSourceWorker !== null) {
-            this.dataSourceWorker.terminate();
+        if (this.getWorker() !== null) {
+            this.getWorker().terminate();
         }
     }
 
@@ -107,7 +107,7 @@ class DataSource {
             ...this.properties,
             ...properties
         };
-        return this.dataSourceWorker.postMessageWithAck({
+        return this.getWorker().postMessageWithAck({
             message: 'update-properties',
             data: properties,
             dsId: this.id
@@ -136,8 +136,7 @@ class DataSource {
     }
 
     async initDataSource(properties = this.properties) {
-        this.dataSourceWorker = this.getWorker();
-        return this.dataSourceWorker.postMessageWithAck({
+        return this.getWorker().postMessageWithAck({
             message: 'init',
             id: this.id,
             properties: properties,
@@ -176,7 +175,7 @@ class DataSource {
     }
 
     async doConnect() {
-        return this.dataSourceWorker.postMessageWithAck({
+        return this.getWorker().postMessageWithAck({
             message: 'connect',
             dsId: this.id
         });
@@ -187,7 +186,7 @@ class DataSource {
             return false;
         } else {
             return this.checkInit().then(() => {
-                return this.dataSourceWorker.postMessageWithAck({
+                return this.getWorker().postMessageWithAck({
                     message: 'is-connected',
                     dsId: this.id
                 });
@@ -200,7 +199,7 @@ class DataSource {
      */
     async disconnect() {
         await this.checkInit();
-        return this.dataSourceWorker.postMessageWithAck({
+        return this.getWorker().postMessageWithAck({
             message: 'disconnect',
             dsId: this.id
         });
@@ -209,8 +208,21 @@ class DataSource {
     async onDisconnect() {
     }
 
-    reset() {
-        this.init = undefined;
+    async reset() {
+        await this.disconnect();
+        this.resetInit();
+        return this.removeWorker();
+    }
+
+    async removeWorker() {
+        if (this.id in dataSourceWorkers) {
+            return this.getWorker().postMessageWithAck({
+                message: 'remove-handler',
+                dsId: this.id
+            }).then(() => {
+                delete dataSourceWorkers[this.id]; // delete index from pool
+            });
+        }
     }
 
     onRemovedDataSource(dataSourceId) {

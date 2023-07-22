@@ -44,7 +44,7 @@ class DataSynchronizer {
             id: id+'-realtime'
         }, this)
         this.broadcastChannels = [];
-        this.setMode(properties.mode || Mode.REPLAY).then(() => {
+        this.setMode(properties.mode || Mode.REPLAY, false).then(() => {
             this.dataSynchronizer.onTimeChanged = (min, max, start, end) => this.onTimeChanged(min, max, start, end);
             this.dataSynchronizer.onAddedDataSource = (dataSourceId) => this.onAddedDataSource(dataSourceId);
             this.dataSynchronizer.onRemovedDataSource = (dataSourceId) => this.onRemovedDataSource(dataSourceId);
@@ -55,8 +55,8 @@ class DataSynchronizer {
         return this.id;
     }
 
-    async setMode(mode) {
-        if (this.dataSynchronizer) {
+    async setMode(mode, disconnect = true) {
+        if (this.dataSynchronizer && disconnect) {
             await this.dataSynchronizer.disconnect();
         }
         if (mode === Mode.REPLAY) {
@@ -73,7 +73,7 @@ class DataSynchronizer {
         this.broadcastChannels = [];
         const promises=[];
         for(let ds of this.dataSynchronizer.getDataSources()) {
-            promises.push(ds.setMode(mode));
+            promises.push(ds.setMode(mode, disconnect));
         }
         this.dataSynchronizer.onTimeChanged = (min, max, start, end) => this.onTimeChanged(min, max, start, end);
         this.dataSynchronizer.onAddedDataSource = (dataSourceId) => this.onAddedDataSource(dataSourceId);

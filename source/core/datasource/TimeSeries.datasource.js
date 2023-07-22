@@ -35,11 +35,11 @@ class TimeSeriesDatasource {
             ...properties
         });
 
-        this.setMode(properties.mode);
+        this.setMode(properties.mode, false);
     }
 
-    async setMode(mode) {
-        if (this.timeSeriesDataSource) {
+    async setMode(mode, disconnect = true) {
+        if (disconnect && this.timeSeriesDataSource) {
             await this.timeSeriesDataSource.disconnect();
         }
 
@@ -320,10 +320,9 @@ class TimeSeriesDatasource {
         return this.timeSeriesDataSource.isConnected();
     }
 
-    reset() {
-        this.timeSeriesDataSource.reset();
+    async reset() {
+        return this.timeSeriesDataSource.reset();
     }
-
 
     onTimeChanged(min, max, start, end) {
     }

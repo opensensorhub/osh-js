@@ -333,6 +333,11 @@ class TimeSeriesReplayDatasource extends DataSource {
             version: version
         });
     }
+    async reset() {
+        console.warn(`dataSource ${this.id} has been reset`);
+        await super.reset();
+        return this.doConnect();
+    }
 }
 
 export default TimeSeriesReplayDatasource;

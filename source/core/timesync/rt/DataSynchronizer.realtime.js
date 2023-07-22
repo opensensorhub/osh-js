@@ -214,6 +214,7 @@ class DataSynchronizerRealtime {
      * Disconnects all dataSources
      */
     async disconnect() {
+        console.log('disconnect')
         await this.reset();
         const promises = [];
         for (let dataSource of this.dataSources) {
