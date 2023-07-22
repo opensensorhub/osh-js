@@ -279,6 +279,9 @@ class WebCodecView extends CanvasView {
 
     destroy() {
         super.destroy();
+        if(this.videoDecoder) {
+            this.videoDecoder.close();
+        }
     }
 
     async getCanvas() {
