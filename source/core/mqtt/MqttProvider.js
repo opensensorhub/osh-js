@@ -76,7 +76,7 @@ class MqttProvider {
 
 
     async subscribe(topic, callback) {
-        if(topic in this.topics) {
+        if(this.topics.includes(topic)) {
             // already subscribed, skipping
             return;
         }
