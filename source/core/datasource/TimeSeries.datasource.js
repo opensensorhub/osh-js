@@ -206,6 +206,7 @@ class TimeSeriesDatasource {
      * @returns {Promise}
      */
     async setDataSynchronizer(dataSynchronizer) {
+        await this.setMode(dataSynchronizer.getMode(),false);
         return this.timeSeriesDataSource.setDataSynchronizer(dataSynchronizer);
     }
 
