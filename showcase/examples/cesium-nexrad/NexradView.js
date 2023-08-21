@@ -1,5 +1,5 @@
 import CesiumView from "osh-js/core/ui/view/map/CesiumView";
-import {isDefined} from "../../source/core/utils/Utils";
+import {isDefined} from "osh-js/core/utils/Utils";
 import {PointPrimitiveCollection} from "cesium";
 
 import {

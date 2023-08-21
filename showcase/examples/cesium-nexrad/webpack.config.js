@@ -15,11 +15,10 @@ const cesiumWorkers = '../Build/Cesium/Workers';
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    // entry: path.resolve(__dirname,'cesium-nexrad.js'),
-    entry: path.resolve(__dirname,'NexradView.js'),
+    entry: path.resolve(__dirname,'cesium-nexrad.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.cesium.nexrad.js', // ???
+        filename: 'bundle.cesium.nexrad.js',
         path: path.resolve(__dirname, 'dist'),
         // Needed to compile multiline strings in Cesium
         sourcePrefix: ''
@@ -71,7 +70,7 @@ module.exports = {
         port: 9000,
         hot: true,
         index: 'cesium-nexrad.html',
-        https: false
+        https:true
     },
     devtool: 'source-map',
     plugins: [
