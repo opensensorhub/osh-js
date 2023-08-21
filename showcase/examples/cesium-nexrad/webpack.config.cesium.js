@@ -19,7 +19,7 @@ module.exports = {
     entry: path.resolve(__dirname,'NexradView.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.cesium.nexrad.js', // ???
+        filename: 'bundle.cesium.nexrad.js',
         path: path.resolve(__dirname, 'dist'),
         // Needed to compile multiline strings in Cesium
         sourcePrefix: ''
