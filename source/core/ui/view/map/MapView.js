@@ -153,6 +153,13 @@ class MapView extends View {
         return array;
     }
 
+    listMarkers() {
+        console.log('---- Markers ----');
+        for(let id in this.layerIdToMarkers) {
+            console.log('mv: ' + id);
+        }
+    }
+
     /**
      * Get all polylines contained in this view
      * @protected
@@ -248,11 +255,33 @@ class MapView extends View {
     getLayer(layerId) {
         // find corresponding layer
         for (let currentLayer of this.layers) {
-            if (currentLayer.props.id === layerId) {
+            if (layerId in currentLayer.propsById) {
                 return currentLayer;
             }
         }
+
         return null;
+    }
+
+    getLayerObject(id) {
+         if((id in  this.layerIdToMarkers)) {
+            return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToPolylines)) {
+              return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToEllipsoids)) {
+              return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToPolygon)) {
+              return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToFrustum)) {
+              return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToDrapedImage)) {
+              return this.layerIdToDrapedImage[id];
+          }
     }
 
     /**
@@ -415,8 +444,8 @@ class MapView extends View {
      * @param {Object} event - the original Map View event
      */
     onMarkerLeftClick(markerId, markerObject, layer, event) {
-        if (isDefined(layer.onLeftClick)) {
-            layer.onLeftClick.call(layer,markerId, markerObject, event);
+        if (isDefined(layer.props.onLeftClick)) {
+            layer.props.onLeftClick.call(layer,markerId, markerObject, event);
         }
     }
 
@@ -428,8 +457,8 @@ class MapView extends View {
      * @param {Object} event - the original Map View event
      */
     onMarkerRightClick(markerId, markerObject, layer, event) {
-        if (isDefined(layer.onRightClick)) {
-            layer.onRightClick.call(layer,markerId, markerObject, event);
+        if (isDefined(layer.props.onRightClick)) {
+            layer.props.onRightClick.call(layer,markerId, markerObject, event);
         }
     }
 
@@ -454,8 +483,8 @@ class MapView extends View {
      * @param {Object} event - the original Map View event
      */
     onMarkerHover(markerId, markerObject, layer, event) {
-        if (isDefined(layer.onHover)) {
-            layer.onHover.call(layer,markerId, markerObject, event);
+        if (isDefined(layer.props.onHover)) {
+            layer.props.onHover.call(layer,markerId, markerObject, event);
         }
     }
 

@@ -257,7 +257,7 @@ class Layer {
                 this.props.filter = true;
                 for (let j = 0; j < records.length; j++) {
                     for (let i = 0; i < fnArr.length; i++) {
-                        await fnArr[i](records[j].data, records[j].data.timestamp, options);
+                        await fnArr[i](records[j].data, records[j].data.timestamp, options, this);
                         if (!this.props.filter) {
                             break;
                         }

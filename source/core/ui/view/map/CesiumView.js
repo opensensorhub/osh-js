@@ -148,6 +148,7 @@ class CesiumView extends MapView {
             [0, 0, 1,
                 1, 0, 0,
                 0, 1, 0])); // frustum is along Z
+
     }
 
     //---------- MAP SETUP
@@ -295,12 +296,14 @@ class CesiumView extends MapView {
                 let featureId = entity && entity._id || primitive && primitive.id;
 
                 const layerId = that.getLayerId(featureId);
+                console.log ('featureId , layerId: ' + featureId + " , " + layerId  );
                 const layer = that.getLayer(layerId);
+                const layerObject = that.getLayerObject(layerId);
 
                 if(isDefined(entity)) {
-                    that.viewer.selectedEntity = entity;
+                    that.viewer.selectedEntity = layerObject;
                     pickedFeature.pixel = movement.position;
-                    that.onMarkerRightClick(layerId, pickedFeature, layer.props, {});
+                    that.onMarkerLeftClick(layerId, pickedFeature, layer, movement);
                 } else {
                     // is primitive
                     //TODO: support primitive selection using tracking tool
@@ -344,7 +347,7 @@ class CesiumView extends MapView {
 
             that.viewer.selectedEntity = pickedFeature.id;
             pickedFeature.pixel = movement.position;
-            that.onMarkerRightClick(mId, pickedFeature, layer.props, {});
+            that.onMarkerRightClick(mId, pickedFeature, layer, movement);
         };
 
         const onHover = (movement) => {
@@ -365,13 +368,15 @@ class CesiumView extends MapView {
                 return;
             }
             pickedFeature.pixel = movement.endPosition;
-            that.onMarkerHover(mId, pickedFeature, layer.props, {});
+            that.onMarkerHover(mId, pickedFeature, layer, movement);
         };
 
         this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
         this.viewer.screenSpaceEventHandler.setInputAction(onRightClick, ScreenSpaceEventType.RIGHT_CLICK);
         this.viewer.screenSpaceEventHandler.setInputAction(onHover, ScreenSpaceEventType.MOUSE_MOVE);
     }
+
+
     /**
      *
      * @private
@@ -434,7 +439,6 @@ class CesiumView extends MapView {
 
     // ----- MARKER
     addMarker(properties, entity= undefined) {
-        // console.log(properties);
         const id = properties.id + "$" + properties.markerId;
         const isModel = properties.icon && properties.icon.endsWith(".glb") || false;
         const label = properties.hasOwnProperty("label") && properties.label != null ? properties.label : '';
@@ -620,8 +624,9 @@ class CesiumView extends MapView {
         this.render();
     }
 
-    removeMarkerFromLayer(marker) {
-        this.viewer.entities.remove(marker);
+    removeMarkerFromLayer(entity, markerId) {
+        this.viewer.entities.remove(entity);
+        delete this.layerIdToMarkers[markerId]; // Added by TC- check with Mathieu
         this.render();
     }
 

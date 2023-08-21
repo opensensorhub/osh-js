@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {
+ import {
     assertArray,
     assertFunction, assertNumber,
     assertObject,

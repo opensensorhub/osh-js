@@ -305,6 +305,8 @@ class LeafletView extends MapView {
             }
         }
 
+        // console.log(`${marker.id} => ${props.orientation.heading}`);
+
         // updates orientation
         if(isDefined(props.orientation)) {
             marker.setRotationAngle(props.orientation.heading);
