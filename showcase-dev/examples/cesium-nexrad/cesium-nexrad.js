@@ -20,7 +20,6 @@ function createDataSource() {
         offeringID: 'urn:osh:sensor:weather:nexrad',
         observedProperty: 'http://sensorml.com/ont/swe/propertyx/NexradRadial',
         mode: 'realTime', // default is REAL_TIME
-        responseFormat: 'application/json',
         replaySpeed: 1
     })
 }
