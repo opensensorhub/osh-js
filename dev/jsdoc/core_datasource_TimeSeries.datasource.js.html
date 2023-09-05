@@ -66,11 +66,11 @@ class TimeSeriesDatasource {
             ...properties
         });
 
-        this.setMode(properties.mode);
+        this.setMode(properties.mode, false);
     }
 
-    async setMode(mode) {
-        if (this.timeSeriesDataSource) {
+    async setMode(mode, disconnect = true) {
+        if (disconnect &amp;&amp; this.timeSeriesDataSource) {
             await this.timeSeriesDataSource.disconnect();
         }
 
@@ -237,6 +237,7 @@ class TimeSeriesDatasource {
      * @returns {Promise}
      */
     async setDataSynchronizer(dataSynchronizer) {
+        await this.setMode(dataSynchronizer.getMode(),false);
         return this.timeSeriesDataSource.setDataSynchronizer(dataSynchronizer);
     }
 
@@ -351,10 +352,9 @@ class TimeSeriesDatasource {
         return this.timeSeriesDataSource.isConnected();
     }
 
-    reset() {
-        this.timeSeriesDataSource.reset();
+    async reset() {
+        return this.timeSeriesDataSource.reset();
     }
-
 
     onTimeChanged(min, max, start, end) {
     }

@@ -262,6 +262,10 @@ class Layer {
             } else {
                 this.noDataSourcesFn.push(fn);
             }
+        } else {
+            if(this.noDataSourcesFn) {
+                this.noDataSourcesFn = undefined;
+            }
         }
     }
 
@@ -281,7 +285,7 @@ class Layer {
                 this.props.filter = true;
                 for (let j = 0; j &lt; records.length; j++) {
                     for (let i = 0; i &lt; fnArr.length; i++) {
-                        await fnArr[i](records[j].data, records[j].data.timestamp, options);
+                        await fnArr[i](records[j].data, records[j].data.timestamp, options, this);
                         if (!this.props.filter) {
                             break;
                         }
