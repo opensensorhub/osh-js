@@ -164,11 +164,6 @@ var samples = [{
         description: "Listen audio stream using WebCodec/FFmpeg.js with time controller and associated Video",
         url: 'audio-video-synchronized-with-control-vuejs',
         code: 'vue/App_examples/audio-video-synchronized-with-control-vuejs.vue'
-    },
-    {
-        name: "Nexrad Point cloud (CesiumJS)",
-        description: "Display Nexrad Doppler data using point cloud visualization.",
-        url: "cesium-nexrad"
     }
 ];
 
