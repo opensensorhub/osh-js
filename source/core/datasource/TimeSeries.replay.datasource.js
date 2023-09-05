@@ -196,7 +196,7 @@ class TimeSeriesReplayDatasource extends DataSource {
             await this.checkInit();
             const topic = DATA_SYNCHRONIZER_TOPIC + this.dataSynchronizer.getId();
             this.properties.version = this.dataSynchronizer.version();
-            return this.dataSourceWorker.postMessageWithAck({
+            return this.getWorker().postMessageWithAck({
                 message: 'topics',
                 topics: {
                     data: topic,
@@ -221,7 +221,7 @@ class TimeSeriesReplayDatasource extends DataSource {
     async disconnect() {
         if (isDefined(this.init)) {
             try {
-                return this.dataSourceWorker.postMessageWithAck({
+                return this.getWorker().postMessageWithAck({
                     message: 'disconnect',
                     dsId: this.id,
                     mode: Mode.REPLAY,
@@ -233,7 +233,7 @@ class TimeSeriesReplayDatasource extends DataSource {
     }
 
     async doConnect() {
-        return this.dataSourceWorker.postMessageWithAck({
+        return this.getWorker().postMessageWithAck({
             message: 'connect',
             startTime: this.getStartTimeAsIsoDate(),
             version: this.version(),
@@ -257,7 +257,7 @@ class TimeSeriesReplayDatasource extends DataSource {
             topics.sync = this.dataSynchronizer.getTimeTopicId()
         }
 
-        return this.dataSourceWorker.postMessageWithAck({
+        return this.getWorker().postMessageWithAck({
             message: 'topics',
             topics: topics,
             dsId: this.id,
