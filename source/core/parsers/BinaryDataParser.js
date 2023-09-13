@@ -1,5 +1,4 @@
 import GenericParser from "./GenericParser";
-import SkipParser from "./common/SkipParser";
 import BinaryEncodingParser from "./binary/BinaryEncodingParser";
 import MemberParser from "./binary/MemberParser";
 import ComponentParser from "./binary/ComponentParser";
@@ -52,7 +51,6 @@ class BinaryDataParser extends GenericParser {
             'Count': () => new CountParser(),
             'Boolean': () => new BooleanParser(),
             'DataChoice': () => new DataChoiceParser(),
-            'href': () => new SkipParser()
         };
         //
         this.parser.init(rootElement, {
@@ -69,6 +67,7 @@ class BinaryDataParser extends GenericParser {
             this.parser.parse(this.binaryDataTypeDecoder, {}, res);
             res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime() + this.props.timeShift;
             results.push(res);
+            break;
         }
         return results;
     }

@@ -76,7 +76,7 @@ class MqttProvider {
 
 
     async subscribe(topic, callback) {
-        if(topic in this.topics) {
+        if(this.topics.includes(topic)) {
             // already subscribed, skipping
             return;
         }
@@ -97,7 +97,10 @@ class MqttProvider {
                             mqttCallbacks[topicQuery] = [];
                         }
 
-                        mqttCallbacks[topicQuery].push(callback);
+                        mqttCallbacks[topicQuery].push({
+                            callbackFn: callback,
+                            topic: topic
+                        });
 
                         this.client.subscribe(`${topicQuery}`, function (err) {
                             if (err) {
@@ -132,18 +135,15 @@ class MqttProvider {
      */
     async unsubscribe(topic) {
         const topicQuery = `${this.mqttPrefix}${topic}`;
-        return new Promise((resolve, error) => {
-            this.client.unsubscribe(topicQuery, err => {
-                delete mqttCallbacks[topicQuery];
-                if (err) {
-                    const messageErr = `Cannot Unsubscribed topic: ${topicQuery} : ${err}`;
-                    console.error(messageErr);
-                    error(messageErr);
-                } else {
-                    console.warn(`Unsubscribed topic: ${topicQuery}`);
-                    resolve();
-                }
-            });
+        return this.client.unsubscribe(topicQuery, {}, err => {
+            delete mqttCallbacks[topicQuery];
+            if (err) {
+                const messageErr = `Cannot Unsubscribed topic: ${topicQuery} : ${err}`;
+                console.error(messageErr);
+                throw Error(messageErr);
+            } else {
+                console.warn(`Unsubscribed topic: ${topicQuery}`);
+            }
         });
     }
 
@@ -175,14 +175,11 @@ class MqttProvider {
     }
 
     async onMessage(topic, message) {
-        // console.log(new DataView(message.buffer, message.byteOffset).getFloat64(0, false) * 1000)
-        // console.log(new DataView(new Uint8Array(message).subarray(message.byteOffset).buffer).getFloat64(0, false) * 1000)
-        // console.log(String.fromCharCode.apply(null, new Uint8Array(message)));
         if (topic in mqttCallbacks) {
             // callback for the corresponding topic
-            for (let callbackFn of mqttCallbacks[topic]) {
+            for (let callback of mqttCallbacks[topic]) {
                 // callback to all subscription registered
-                callbackFn(new Uint8Array(message).subarray(message.byteOffset).buffer);
+                callback.callbackFn(new Uint8Array(message).subarray(message.byteOffset).buffer, callback.topic);
             }
         }
     }
@@ -200,6 +197,8 @@ class MqttProvider {
     isConnected() {
         return isDefined(this.client) && this.client.connected;
     }
+
+    reset() {}
 }
 
 export default MqttProvider;

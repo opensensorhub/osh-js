@@ -46,6 +46,7 @@ const mqttProviders = {};
 class MqttConnector extends DataConnector {
     /**
      *
+     * @param url
      * @param properties -
      */
     constructor(url, properties) {
@@ -54,13 +55,32 @@ class MqttConnector extends DataConnector {
             ...properties
         });
         this.interval = -1;
+        this.id = `mqtt-connector-${randomUUID()}`;
+        this.mqttProvider = undefined;
+    }
+
+    initBc() {
+        this.onMessage = (data, topic) => {
+            this.broadcastChannel.postMessage({
+                data: data,
+                topic: topic
+            }, [data]);
+        }
+        this.broadcastChannel = new BroadcastChannel(this.id);
+        this.broadcastChannel.onmessage = (message) => {
+            if(message.data.message === 'subscribe') {
+                this.doRequest(message.data.topic);
+            } else if(message.data.message === 'unsubscribe') {
+                this.disconnect(message.data.topic);
+            }
+        }
     }
 
     getMqttProvider() {
         let fullUrl = this.getUrl() ;
 
         // only 1 provider by URL
-        if(!(fullUrl in mqttProviders)) {
+        if(!this.mqttProvider) {
             let options = {
                 reconnectPeriod: this.reconnectTimeout,
                 connectTimeout: 30 * 1000
@@ -73,20 +93,20 @@ class MqttConnector extends DataConnector {
                 };
             }
 
-            mqttProviders[fullUrl] = new MqttProvider({
+            this.mqttProvider = new MqttProvider({
                 endpoint: fullUrl,
                 clientId: randomUUID(),
                 options: options,
                 mqttPrefix: this.properties.mqttPrefix
             });
             console.warn(`Stored MQTT provider into cache: ${fullUrl}`);
-            mqttProviders[fullUrl].connect();
-            mqttProviders[fullUrl].checkStatus = this.checkStatus;
+            this.mqttProvider.connect();
+            this.mqttProvider.checkStatus = this.checkStatus;
             this.checkStatus(Status.CONNECTED);
         } else {
             console.warn(`Getting MQTT provider from cache: ${fullUrl}`);
         }
-        return mqttProviders[fullUrl];
+        return this.mqttProvider;
     }
 
     checkStatus(status) {
@@ -99,7 +119,8 @@ class MqttConnector extends DataConnector {
      */
     doRequest(topic = '',queryString= undefined) {
         const mqttProvider = this.getMqttProvider();
-        mqttProvider.subscribe(`${topic}?${queryString}`, this.onMessage).then(() => {
+
+        mqttProvider.subscribe(topic, this.onMessage).then(() => {
             this.onChangeStatus(Status.CONNECTED);
         });
     }
@@ -112,18 +133,22 @@ class MqttConnector extends DataConnector {
     /**
      * Disconnects and close the mqtt client.
      */
-    async disconnect() {
+    async disconnect(topic) {
         // does not call super to avoid reconnection logic and use the one of the mqtt.js lib
         // this.checkStatus(Status.DISCONNECTED);
         // this.init = false;
         // this.closed = true;
         // find the client
-        const client = mqttProviders[this.getUrl()];
+        const client = this.mqttProvider;
 
         if (isDefined(client) && client.isConnected()) {
-            // unsubscribe all topics
-            await client.unsubscribeAll();
-            // client.disconnect();
+            if(!topic) {
+                // unsubscribe all topics
+                return client.unsubscribeAll();
+                // client.disconnect();
+            } else {
+                return client.unsubscribe(topic);
+            }
         }
         //delete mqttProviders[this.getUrl()];
         //console.warn(`Disconnected from ${this.getUrl()}`);
@@ -142,13 +167,13 @@ class MqttConnector extends DataConnector {
     }
 
     isConnected() {
-        return isDefined(mqttProviders[this.getUrl()]) && mqttProviders[this.getUrl()].isConnected();
+        return isDefined(this.mqttProvider) && this.mqttProvider.isConnected();
     }
 
     reset() {
         this.disconnect();
         console.log(`Remove provider from cache: ${this.getUrl()}`)
-        delete mqttProviders[this.getUrl()];
+        this.mqttProvider.reset();
     }
 }
 

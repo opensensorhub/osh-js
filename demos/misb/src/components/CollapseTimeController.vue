@@ -9,6 +9,7 @@
         <TimeController
             :dataSynchronizer="dataSynchronizer"
             @event='onControlEvent'
+            trackRealtime=""
             :skipTimeStep="'5%'"
         ></TimeController>
         <v-btn

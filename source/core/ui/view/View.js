@@ -242,7 +242,6 @@ class View {
                 if (event.data.type === EventType.STATUS && event.data.status === Status.CLOSED_ERROR) {
                     self.reset();
                 } else if (event.data.type === EventType.DATA) {
-
                     const that = this;
 
                     // transform the data

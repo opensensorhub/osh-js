@@ -19,6 +19,7 @@ import DataSynchronizerWorker from './DataSynchronizer.replay.worker.js';
 import {DATA_SYNCHRONIZER_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../../Constants.js";
 import {Mode} from "../../datasource/Mode";
 import {EventType} from "../../event/EventType";
+import WorkerExt from "../../worker/WorkerExt";
 
 class DataSynchronizerReplay {
     /**
@@ -52,23 +53,21 @@ class DataSynchronizerReplay {
         this.properties.maxTimestamp = undefined;
         this.properties.version = 0;
 
-        if(isDefined(properties)) {
-            if(isDefined(properties.minTime)) {
+        if (isDefined(properties)) {
+            if (isDefined(properties.minTime)) {
                 this.minTimestamp = new Date(properties.minTime).getTime();
             }
-            if(isDefined(properties.maxTime)) {
+            if (isDefined(properties.maxTime)) {
                 this.maxTimestamp = new Date(properties.maxTime).getTime();
             }
         }
-        this.eventSubscriptionMap = {};
-        this.messagesMap = {};
-
         this.computeMinMax();
     }
 
     getId() {
         return this.id;
     }
+
     getTopicId() {
         return DATA_SYNCHRONIZER_TOPIC + this.id;
     }
@@ -90,7 +89,7 @@ class DataSynchronizerReplay {
                 let dsMinTimestamp = ds.getMinTimeAsTimestamp();
                 let dsMaxTimestamp = ds.getMaxTimeAsTimestamp();
 
-                if (dsMinTimestamp < minTimestamp ) {
+                if (dsMinTimestamp < minTimestamp) {
                     minTimestamp = dsMinTimestamp;
                 }
 
@@ -100,12 +99,12 @@ class DataSynchronizerReplay {
             }
 
             // check if a default Min/Max has been defined into DataSynchronizer forcing intersection with current computed ones
-            if(isDefined(this.minTimestamp) && this.minTimestamp > minTimestamp) {
+            if (isDefined(this.minTimestamp) && this.minTimestamp > minTimestamp) {
                 // intersect and takes the min of dataSynchronizer
                 minTimestamp = this.minTimestamp;
             }
 
-            if(isDefined(this.maxTimestamp) && this.maxTimestamp > maxTimestamp) {
+            if (isDefined(this.maxTimestamp) && this.maxTimestamp > maxTimestamp) {
                 // intersect and takes the min of dataSynchronizer
                 maxTimestamp = this.maxTimestamp;
             }
@@ -121,38 +120,11 @@ class DataSynchronizerReplay {
     }
 
     /**
-     * @private
-     */
-    initEventSubscription() {
-        // listen for Events to callback to subscriptions
-        new BroadcastChannel(this.getTopicId()).onmessage = (message) => {
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
-
-        new BroadcastChannel(this.getTimeTopicId()).onmessage = (message) => {
-            if (message.data.type === EventType.MASTER_TIME) {
-                this.properties.startTimestamp = message.data.timestamp; // save as last timestamp
-            }
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
-    }
-
-    /**
      * Gets the startTime of the first DataSource objet
      * @returns {String} - startTime as ISO date
      */
     getStartTimeAsIsoDate() {
-        if(this.properties.startTimestamp) {
+        if (this.properties.startTimestamp) {
             return new Date(this.properties.startTimestamp).toISOString();
         } else {
             return this.getMinTimeAsIsoDate();
@@ -172,7 +144,7 @@ class DataSynchronizerReplay {
      * @returns {String} - endTime as ISO date
      */
     getEndTimeAsIsoDate() {
-        if(this.properties.endTimestamp) {
+        if (this.properties.endTimestamp) {
             return new Date(this.properties.endTimestamp).toISOString();
         } else {
             return this.getMaxTimeAsIsoDate();
@@ -218,14 +190,14 @@ class DataSynchronizerReplay {
 
     async setStartTime(time, lazy = false) {
         this.properties.startTimestamp = new Date(time).getTime();
-        if(!lazy) {
+        if (!lazy) {
             await this.updateAlgo();
         }
     }
 
     async setEndTime(time, lazy = false) {
         this.properties.endTimestamp = new Date(time).getTime();
-        if(!lazy) {
+        if (!lazy) {
             await this.updateAlgo();
         }
     }
@@ -263,16 +235,6 @@ class DataSynchronizerReplay {
         }
     }
 
-    subscribe(fn, eventTypes) {
-        // associate function to eventType
-        for (let i = 0; i < eventTypes.length; i++) {
-            if (!(eventTypes[i] in this.eventSubscriptionMap)) {
-                this.eventSubscriptionMap[eventTypes[i]] = [];
-            }
-            this.eventSubscriptionMap[eventTypes[i]].push(fn);
-        }
-    }
-
     getMode() {
         return Mode.REPLAY;
     }
@@ -280,39 +242,33 @@ class DataSynchronizerReplay {
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     async initDataSources() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const dataSourcesForWorker = [];
-                for (let dataSource of this.dataSources) {
-                    const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-                    dataSourcesForWorker.push(dataSourceForWorker);
-                }
-                this.synchronizerWorker = new DataSynchronizerWorker();
-                this.handleWorkerMessage();
-                await this.postMessage({
-                    message: 'init',
-                    dataSources: dataSourcesForWorker,
-                    replaySpeed: this.replaySpeed,
-                    timerResolution: this.timerResolution,
-                    masterTimeRefreshRate: this.masterTimeRefreshRate,
-                    startTimestamp: this.getStartTimeAsTimestamp(),
-                    endTimestamp: this.getEndTimeAsTimestamp(),
-                    mode: this.getMode(),
-                    version: this.version(),
-                    topics: {
-                        data: this.getTopicId(),
-                        time: this.getTimeTopicId()
-                    }
-                }, function () {
-                    this.initEventSubscription();
-                    this.initialized = true;
-                    resolve();
-                }.bind(this), false);
-            } catch (error) {
-                console.error(error)
-                reject(error);
+        try {
+            const dataSourcesForWorker = [];
+            for (let dataSource of this.dataSources) {
+                const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
+                dataSourcesForWorker.push(dataSourceForWorker);
             }
-        });
+            this.synchronizerWorker = new WorkerExt(new DataSynchronizerWorker());
+            return this.synchronizerWorker.postMessageWithAck({
+                message: 'init',
+                dataSources: dataSourcesForWorker,
+                replaySpeed: this.replaySpeed,
+                timerResolution: this.timerResolution,
+                masterTimeRefreshRate: this.masterTimeRefreshRate,
+                startTimestamp: this.getStartTimeAsTimestamp(),
+                endTimestamp: this.getEndTimeAsTimestamp(),
+                mode: this.getMode(),
+                version: this.version(),
+                topics: {
+                    data: this.getTopicId(),
+                    time: this.getTimeTopicId()
+                }
+            }).then(() => {
+                this.initialized = true;
+            });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     /**
@@ -364,19 +320,17 @@ class DataSynchronizerReplay {
             dataSource.setStartTime(this.getStartTimeAsIsoDate());
             dataSource.setEndTime(this.getEndTimeAsIsoDate());
             const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-            return new Promise(async resolve => {
-                // add dataSource to synchronizer algorithm
-                await this.postMessage({
-                    message: 'add',
-                    dataSources: [dataSourceForWorker]
-                }, async () => {
-                    if(await this.isConnected()) {
-                        await dataSource.connect()
-                    }
-                    this.onAddedDataSource(dataSource.id);
-                    this.timeChanged();
-                    resolve();
-                });
+
+            // add dataSource to synchronizer algorithm
+            return this.synchronizerWorker.postMessageWithAck({
+                message: 'add',
+                dataSources: [dataSourceForWorker]
+            }).then(async () => {
+                if (await this.isConnected()) {
+                    await dataSource.connect()
+                }
+                this.onAddedDataSource(dataSource.id);
+                this.timeChanged();
             });
         }
     }
@@ -386,35 +340,31 @@ class DataSynchronizerReplay {
      * @param {TimeSeriesDatasource} dataSource - the new datasource to add
      */
     async removeDataSource(dataSource) {
-        return new Promise(async resolve => {
-            this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
-            if(this.dataSources.length === 0) {
-                await this.reset();
-            }
-            this.computeMinMax();
+        this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+        if (this.dataSources.length === 0) {
+            await this.reset();
+        }
+        this.computeMinMax();
 
-            if (!this.initialized) {
-                console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
-                await dataSource.removeDataSynchronizer();
+        if (!this.initialized) {
+            console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
+            await dataSource.removeDataSynchronizer();
+            this.timeChanged();
+            this.onRemovedDataSource(dataSource.id);
+        } else {
+            await dataSource.disconnect();
+            await dataSource.removeDataSynchronizer();
+
+            return this.synchronizerWorker.postMessageWithAck({
+                message: 'remove',
+                dataSourceIds: [dataSource.getId()],
+                startTimestamp: this.getStartTimeAsTimestamp(),
+                endTimestamp: this.getEndTimeAsTimestamp()
+            }).then(() => {
                 this.timeChanged();
                 this.onRemovedDataSource(dataSource.id);
-                resolve();
-            } else {
-                await dataSource.disconnect();
-                await dataSource.removeDataSynchronizer();
-
-                await this.postMessage({
-                    message: 'remove',
-                    dataSourceIds: [dataSource.getId()],
-                    startTimestamp: this.getStartTimeAsTimestamp(),
-                    endTimestamp: this.getEndTimeAsTimestamp()
-                }, async () => {
-                    this.timeChanged();
-                    this.onRemovedDataSource(dataSource.id);
-                    resolve();
-                });
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -422,65 +372,59 @@ class DataSynchronizerReplay {
      * @param {Object} data - the data to push into the data synchronizer
      */
     async push(dataSourceId, data) {
-        return new Promise(async (resolve, reject) => {
-            if (this.synchronizerWorker !== null) {
-                await this.postMessage({
-                    type: 'data',
-                    dataSourceId: dataSourceId,
-                    data: data
-                }, resolve);
-            }
-        });
+        if (this.synchronizerWorker) {
+            return this.synchronizerWorker.postMessageWithAck({
+                type: 'data',
+                dataSourceId: dataSourceId,
+                data: data
+            });
+        }
     }
 
     version() {
         return this.properties.version;
     }
+
     /**
      * Connects all dataSources
      */
     async connect() {
-        if (this.dataSources.length === 0) {
-            return;
-        } else {
-            await this.checkInit();
-            if(!(await this.isConnected())) {
-                await this.doConnect();
-            }
+        if (this.dataSources.length > 0) {
+            return this.checkInit().then(async () => {
+                const isConnected = await this.isConnected();
+                return isConnected? isConnected : this.doConnect();
+            });
         }
     }
 
     async checkInit() {
-        const that = this;
-        return new Promise(async (resolve, reject) => {
-            if (!isDefined(that.init)) {
-                that.init = that.initDataSources();
-            }
-            await that.init;
-            resolve();
-        });
+        if (!isDefined(this.init)) {
+            this.init = this.initDataSources();
+        }
+        return this.init;
     }
 
     checkStartEndTime() {
-        if(!this.properties.startTimestamp) {
+        if (!this.properties.startTimestamp) {
             this.properties.startTimestamp = this.properties.minTimestamp;
         }
-        if(!this.properties.endTimestamp) {
+        if (!this.properties.endTimestamp) {
             this.properties.endTimestamp = this.properties.maxTimestamp;
         }
     }
-    async doConnect() {
-        return new Promise(async resolve => {
-            this.checkStartEndTime();
-            await this.updateAlgo();
-            for (let dataSource of this.dataSources) {
-                await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true);
-            }
 
-            await this.postMessage({
-                message: 'connect',
-                version: this.version()
-            }, resolve);
+    async doConnect() {
+
+        this.checkStartEndTime();
+        await this.updateAlgo();
+        for (let dataSource of this.dataSources) {
+            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true);
+        }
+
+
+        return this.synchronizerWorker.postMessageWithAck({
+            message: 'connect',
+            version: this.version()
         });
     }
 
@@ -489,22 +433,22 @@ class DataSynchronizerReplay {
      */
     async disconnect() {
         await this.reset();
+        const promises = [];
         for (let dataSource of this.dataSources) {
-            await dataSource.disconnect();
+            promises.push(dataSource.disconnect());
         }
+        return Promise.all(promises);
     }
 
     /**
      * Sets the replaySpeed
      */
     async setReplaySpeed(replaySpeed) {
-        return new Promise(async resolve => {
-            this.replaySpeed = replaySpeed;
-            this.properties.replaySpeed = replaySpeed;
-            await this.postMessage({
-                message: 'replay-speed',
-                replaySpeed: replaySpeed,
-            }, resolve);
+        this.replaySpeed = replaySpeed;
+        this.properties.replaySpeed = replaySpeed;
+        return this.synchronizerWorker.postMessageWithAck({
+            message: 'replay-speed',
+            replaySpeed: replaySpeed,
         });
     }
 
@@ -520,35 +464,31 @@ class DataSynchronizerReplay {
                        endTime = this.getEndTimeAsIsoDate(),
                        replaySpeed = this.getReplaySpeed(),
                        reconnect = false) {
-        return new Promise(async resolve => {
-            await this.disconnect();
-            this.incVersion();
-            // update properties of DataSynchronizer
-            this.replaySpeed = replaySpeed;
+        await this.disconnect();
+        this.incVersion();
+        // update properties of DataSynchronizer
+        this.replaySpeed = replaySpeed;
 
-            await this.setStartTime(startTime, false);
-            await this.setEndTime(endTime, false);
+        await this.setStartTime(startTime, false);
+        await this.setEndTime(endTime, false);
 
-            // update properties of each DataSource
-            for (let ds of this.dataSources) {
-                await ds.setTimeRange(
-                    this.getStartTimeAsIsoDate(),
-                    this.getEndTimeAsIsoDate(),
-                    this.getReplaySpeed(),
-                    false,
-                    this.getMode(),
-                    this.version()
-                )
-            }
-            /*
-            this.computeMinMax();
-            // update algo using these new properties
-            await this.updateAlgo();
-            if(reconnect) {
-                await this.connect();
-            }*/
-            resolve();
-        });
+        const promises = [];
+        // update properties of each DataSource
+        for (let ds of this.dataSources) {
+            promises.push(ds.setTimeRange(
+                this.getStartTimeAsIsoDate(),
+                this.getEndTimeAsIsoDate(),
+                this.getReplaySpeed(),
+                false,
+                this.getMode(),
+                this.version()
+            ));
+        }
+        return Promise.all(promises);
+    }
+
+    setStartTimestamp(timestamp){
+        this.properties.startTimestamp = timestamp;
     }
 
     async updateAlgo() {
@@ -573,23 +513,23 @@ class DataSynchronizerReplay {
             dataSourcesForWorker.push(obj);
         }
 
-        return new Promise(resolve => {
-            return this.postMessage({
-                message: 'time-range',
-                mode: this.getMode(),
-                replaySpeed: this.getReplaySpeed(),
-                startTimestamp: this.getStartTimeAsTimestamp(),
-                endTimestamp: this.getEndTimeAsTimestamp(),
-                version: this.version(),
-                dataSources: dataSourcesForWorker
-            }, resolve);
+        return this.synchronizerWorker.postMessageWithAck({
+            message: 'time-range',
+            mode: this.getMode(),
+            replaySpeed: this.getReplaySpeed(),
+            startTimestamp: this.getStartTimeAsTimestamp(),
+            endTimestamp: this.getEndTimeAsTimestamp(),
+            version: this.version(),
+            dataSources: dataSourcesForWorker
         });
     }
 
     async updateProperties(properties) {
+        const promises = [];
         for (let ds of this.dataSources) {
-            ds.updateProperties(properties);
+            promises.push(ds.updateProperties(properties));
         }
+        return Promise.all(promises);
     }
 
     resetTimes() {
@@ -600,21 +540,15 @@ class DataSynchronizerReplay {
      * Resets reference time
      */
     async reset() {
-        return new Promise(async resolve => {
-            await this.checkInit();
-            await this.postMessage({
-                message: 'reset'
-            });
-            this.resetTimes();
-            resolve();
-        });
+        await this.checkInit();
+        return this.synchronizerWorker.postMessageWithAck({
+            message: 'reset'
+        }).then(() => this.resetTimes());
     }
 
     async getCurrentTime() {
-        return new Promise(async resolve => {
-            await this.postMessage({
-                message: 'current-time'
-            }, resolve);
+        return this.synchronizerWorker.postMessageWithAck({
+            message: 'current-time'
         });
     }
 
@@ -626,40 +560,22 @@ class DataSynchronizerReplay {
             return false;
         } else {
             await this.checkInit();
-            return new Promise(async resolve => {
-                await this.postMessage({
-                    message: 'is-connected'
-                }, (message) => resolve(message.data));
-            });
-        }
-    }
-
-    async postMessage(props, Fn, checkInit = true) {
-        if (checkInit) {
-            await this.checkInit();
-        }
-        const messageId = randomUUID();
-        this.synchronizerWorker.postMessage({
-            ...props,
-            messageId: messageId
-        });
-        if (isDefined(Fn)) {
-            this.messagesMap[messageId] = Fn;
-        }
-    }
-
-    handleWorkerMessage() {
-        this.synchronizerWorker.onmessage = (event) => {
-            const id = event.data.messageId;
-            if (id in this.messagesMap) {
-                this.messagesMap[id](event.data.data);
-                delete this.messagesMap[id];
-            }
+            return this.synchronizerWorker.postMessageWithAck({
+                message: 'is-connected'
+            }).then(v => v.data);
         }
     }
 
     incVersion() {
         this.properties.version++;
+    }
+
+    async autoUpdateTime(activate) {
+        const promises = [];
+        for (let ds of this.dataSources) {
+            promises.push(ds.autoUpdateTime(activate));
+        }
+        return Promise.all(promises);
     }
 
     onTimeChanged(min, max, start, end) {

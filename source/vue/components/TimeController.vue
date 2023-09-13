@@ -41,7 +41,7 @@ import TimeControllerBatch from "./TimeController.batch.vue";
  * @vue-prop {DataSource}  [dataSource] - DataSource object
  * @vue-prop {DataSynchronizer} [dataSynchronizer] - DataSynchronizer object
  * @vue-prop {Number} [replaySpeedStep=0.1] - Time to decrease/increase replay speed value
- * @vue-prop {String} trackRealtime - Track time before the given time (HH:MM:SS)
+ * @vue-prop {Boolean} trackRealtime - Track real time
  * @vue-prop {Number} [debounce=800] - Debounce time before executing refresh while clicking on backward/forward/replaySpeed action. In millis
  * @vue-prop {Function} [parseTime] - Function used to parse the time and display next to the actions buttons. Return value can be text or HTML.
  * @vue-event {String} [event='change'/'slide'/'end'/'replaySpeed'] - Emit event's name after time change
@@ -80,7 +80,8 @@ export default {
       default: () => 800 // 800ms
     },
     trackRealtime: {
-      type: String
+      type: Boolean,
+      default: () => false
     },
     parseTime: {
       type: Function,
@@ -112,6 +113,18 @@ export default {
     this.mode = this.dataSourceObject.getMode();
     this.checkMode();
   },
+  watch: {
+    trackRealtime:  {
+      immediate: true,
+      deep: true,
+      handler (val, oldVal) {
+        // do your stuff
+        if(isDefined(oldVal) && val !== oldVal) {
+          this.getDataSourceObject().autoUpdateTime(val);
+        }
+      }
+    }
+  },
   methods: {
     getDataSourceObject() {
       return (isDefined(this.dataSynchronizer)) ? this.dataSynchronizer : this.dataSource;
@@ -129,33 +142,52 @@ export default {
         this.realTime = true;
       }
     },
-    async trackRt() {
-      // const maxTime = new Date(Date.now()).toISOString();
-      // await this.getDataSourceObject().disconnect();
-      // await this.getDataSourceObject().setMaxTime(maxTime);
 
-    },
     async onControlEvent(event) {
       if (event.name === 'toggle-replay') {
         this.timeNow = event.lastTimestamp;
         await this.dataSourceObject.disconnect();
         if(this.mode === Mode.BATCH) {
-          await this.dataSourceObject.setMode(Mode.BATCH);
-          this.dataSourceObject.connect(); // connect by default in batch mode
-        } else if(this.mode === Mode.REPLAY) {
-          await this.dataSourceObject.setMode(Mode.REPLAY);
+          this.dataSourceObject.setMode(Mode.BATCH).then(() => {
+            this.checkMode();
+            this.dataSourceObject.connect().then(() => {
+              if (this.onControlEventFn) {
+                this.onControlEventFn('play'); // backward compatibility
+                this.onControlEventFn('mode', 'replay');
+              }
+              this.$emit('event', 'play'); // backward compatibility
+              this.$emit('mode', 'replay');
+            });
+          });
+        } else if(this.mode === Mode.REPLAY || this.mode === Mode.REAL_TIME) {
           if(isDefined(this.trackRealtime)) {
-            await this.trackRt();
+            this.dataSourceObject.setMode(Mode.REPLAY).then(() => {
+              this.checkMode();
+              this.getDataSourceObject().autoUpdateTime(true).then(() => {
+                this.dataSourceObject.connect().then(() => {
+                  if (this.onControlEventFn) {
+                    this.onControlEventFn('play'); // backward compatibility
+                    this.onControlEventFn('mode', 'replay');
+                  }
+                  this.$emit('event', 'play'); // backward compatibility
+                  this.$emit('mode', 'replay');
+                });
+              });
+            });
+          } else {
+            this.dataSourceObject.setMode(Mode.REPLAY).then(() => {
+              this.checkMode();
+              this.dataSourceObject.connect().then(() => {
+                if (this.onControlEventFn) {
+                  this.onControlEventFn('play'); // backward compatibility
+                  this.onControlEventFn('mode', 'replay');
+                }
+                this.$emit('event', 'play'); // backward compatibility
+                this.$emit('mode', 'replay');
+              });
+            });
           }
-          this.dataSourceObject.connect(); // connect by default in replay mode
         }
-        this.checkMode();
-        if(this.onControlEventFn) {
-          this.onControlEventFn('play'); // backward compatibility
-          this.onControlEventFn('mode', 'replay' );
-        }
-        this.$emit('event','play'); // backward compatibility
-        this.$emit('mode','replay');
       } else if(event.name === 'toggle-realtime') {
         await this.dataSourceObject.disconnect();
         await this.dataSourceObject.setMode(Mode.REAL_TIME);

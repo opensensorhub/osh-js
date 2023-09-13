@@ -15,20 +15,45 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {DATA_SYNCHRONIZER_TOPIC, DATASOURCE_TIME_TOPIC} from "../Constants";
-import {assertDefined, isDefined} from "../utils/Utils";
 import DataSource from "./DataSource.datasource";
 import {Mode} from './Mode';
+import MqttConnector from "../connector/MqttConnector";
+import {isDefined} from "../utils/Utils";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
  *
  */
+let mqttConnectors = {};
+
+function createSharedMqttConnector(properties, topic) {
+    let endpoint = properties.mqttOpts.endpointUrl;
+
+    if (endpoint.endsWith('/')) {
+        endpoint = endpoint.substring(0, endpoint.length - 1);
+    }
+
+    const tls = (properties.tls) ? 's' : '';
+    const url =  'mqtt' + tls + '://' + endpoint;
+    if(!(url in mqttConnectors)) {
+        mqttConnectors[url] = new MqttConnector(url, properties);
+        mqttConnectors[url].initBc();
+    } else {
+        console.log(`Reuse shared MqttConnector instance for ${url}`);
+    }
+    return mqttConnectors[url].id;
+}
+
 class TimeSeriesRealtimeDatasource extends DataSource {
     constructor(name, properties) {
         super(name, properties);
 
         this.dataSynchronizer = undefined;
         this.properties.version = 0;
+
+        if(properties.protocol === 'mqtt') {
+            this.properties.mqttOpts.bcId = createSharedMqttConnector(properties);
+        }
     }
 
     getTimeTopicId() {
@@ -110,22 +135,26 @@ class TimeSeriesRealtimeDatasource extends DataSource {
     /**
      * Sets the min time
      */
-    setMinTime(time) {}
+    setMinTime(time) {
+    }
 
     /**
      * Sets the max time
      */
-    setMaxTime(time) {}
+    setMaxTime(time) {
+    }
 
     /**
      * Sets the start time
      */
-    setStartTimestamp(timestamp) {}
+    setStartTimestamp(timestamp) {
+    }
 
     /**
      * Sets the end time
      */
-    setEndTimestamp(timestamp) {}
+    setEndTimestamp(timestamp) {
+    }
 
     /**
      * Gets the endTime
@@ -135,11 +164,13 @@ class TimeSeriesRealtimeDatasource extends DataSource {
         return 1.0;
     }
 
-    setReplaySpeed(replaySpeed) {}
+    setReplaySpeed(replaySpeed) {
+    }
 
     setVersion(version) {
         this.properties.version = version;
     }
+
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     /**
@@ -147,50 +178,61 @@ class TimeSeriesRealtimeDatasource extends DataSource {
      * @returns {Promise}
      */
     async setDataSynchronizer(dataSynchronizer) {
-        return new Promise(async (resolve, reject) => {
+        this.dataSynchronizer = dataSynchronizer;
+        return this.initDataSynchronizerIfPresent();
+    }
+
+    async initDataSynchronizerIfPresent() {
+        if(this.dataSynchronizer) {
             await this.checkInit();
-            const topic = DATA_SYNCHRONIZER_TOPIC + dataSynchronizer.id;
-            this.dataSynchronizer = dataSynchronizer;
+            const topic = DATA_SYNCHRONIZER_TOPIC + this.dataSynchronizer.id;
             this.properties.version = this.dataSynchronizer.version();
-            this.postMessage({
+            return this.getWorker().postMessageWithAck({
                 message: 'topics',
                 topics: {
                     data: topic,
                     time: this.getTimeTopicId(),
-                    sync: dataSynchronizer.getTimeTopicId()
+                    mode: Mode.REAL_TIME,
+                    sync: this.dataSynchronizer.getTimeTopicId()
                 },
-            }, () => resolve());
-        });
+                dsId: this.id,
+                mode: Mode.REAL_TIME,
+            });
+        }
     }
 
     async removeDataSynchronizer() {
-        if(this.dataSourceWorker) {
-            this.dataSourceWorker.terminate();
-            this.dataSynchronizer = undefined;
-        }
+        await this.removeWorker();
+        this.dataSynchronizer = undefined;
         // this.init = undefined;
-        await this.checkInit();
-
+        return this.checkInit();
     }
+
     /**
      * Disconnect the dataSource then the protocol will be closed as well.
      */
     async disconnect() {
-        return new Promise(async resolve => {
-            await this.checkInit();
-            this.postMessage({
-                message: 'disconnect'
-            }, resolve);
-        });
+        if (isDefined(this.init)) {
+            try {
+                return this.getWorker().postMessageWithAck({
+                    message: 'disconnect',
+                    dsId: this.id,
+                    mode: Mode.REAL_TIME,
+                });
+            } catch (ex) {
+                console.error(ex);
+            }
+        }
     }
 
     async doConnect() {
-        return new Promise(async resolve => {
-            this.postMessage({
-                message: 'connect',
-                startTime: 'now',
-                version: this.version()
-            }, resolve);
+        await this.checkInit();
+        return this.getWorker().postMessageWithAck({
+            message: 'connect',
+            startTime: 'now',
+            version: this.version(),
+            dsId: this.id,
+            mode: Mode.REAL_TIME,
         });
     }
 
@@ -201,26 +243,25 @@ class TimeSeriesRealtimeDatasource extends DataSource {
      */
     async initDataSource(properties) {
         await super.initDataSource(properties);
-        return new Promise(async (resolve, reject) => {
-            const topics =  {
-                data: this.getTopicId(),
-                time: this.getTimeTopicId()
-            };
-            if(this.dataSynchronizer) {
-                topics.sync = dataSynchronizer.getTimeTopicId()
-            }
+        const topics = {
+            data: this.getTopicId(),
+            time: this.getTimeTopicId()
+        };
+        if (this.dataSynchronizer) {
+            topics.sync = this.dataSynchronizer.getTimeTopicId()
+        }
 
-            this.postMessage({
-                message: 'topics',
-                topics:  topics,
-            }, async () => {
-                // listen for Events to callback to subscriptions
-                const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
-                datasourceBroadcastChannel.onmessage = async (message) => {
-                     await this.handleTimeMessage(message);
-                };
-                resolve();
-            });
+        return this.getWorker().postMessageWithAck({
+            message: 'topics',
+            topics: topics,
+            dsId: this.id,
+            mode: Mode.REAL_TIME,
+        }).then(() => {
+            // listen for Events to callback to subscriptions
+            const datasourceBroadcastChannel = new BroadcastChannel(this.getTimeTopicId());
+            datasourceBroadcastChannel.onmessage = async (message) => {
+                await this.handleTimeMessage(message);
+            };
         });
     }
 
@@ -235,6 +276,12 @@ class TimeSeriesRealtimeDatasource extends DataSource {
 
     version() {
         return this.properties.version;
+    }
+
+    async reset() {
+        console.warn(`dataSource ${this.id} has been reset`);
+        await super.reset();
+        return this.doConnect();
     }
 }
 

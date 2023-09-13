@@ -18,6 +18,7 @@ import {Mode} from "../datasource/Mode";
 import DataSynchronizerReplay from "./replay/DataSynchronizer.replay";
 import DataSynchronizerRealtime from "./rt/DataSynchronizer.realtime";
 import {randomUUID} from "../utils/Utils";
+import {EventType} from "../event/EventType";
 
 class DataSynchronizer {
     /**
@@ -42,8 +43,8 @@ class DataSynchronizer {
             ...properties,
             id: id+'-realtime'
         }, this)
-
-        this.setMode(properties.mode || Mode.REPLAY).then(() => {
+        this.broadcastChannels = [];
+        this.setMode(properties.mode || Mode.REPLAY, false).then(() => {
             this.dataSynchronizer.onTimeChanged = (min, max, start, end) => this.onTimeChanged(min, max, start, end);
             this.dataSynchronizer.onAddedDataSource = (dataSourceId) => this.onAddedDataSource(dataSourceId);
             this.dataSynchronizer.onRemovedDataSource = (dataSourceId) => this.onRemovedDataSource(dataSourceId);
@@ -54,21 +55,69 @@ class DataSynchronizer {
         return this.id;
     }
 
-    async setMode(mode) {
-        if (this.dataSynchronizer) {
+    async setMode(mode, disconnect = true) {
+        if (this.dataSynchronizer && disconnect) {
             await this.dataSynchronizer.disconnect();
         }
         if (mode === Mode.REPLAY) {
             this.dataSynchronizer = this.dataSynchronizerReplay;
+
         } else if (mode === Mode.REAL_TIME) {
             this.dataSynchronizer = this.dataSynchronizerRt;
         }
         this.id = this.dataSynchronizer.id;
-        for(let ds of this.dataSynchronizer.getDataSources()) {
-            await ds.setMode(mode);
+        for(let bc of this.broadcastChannels) {
+            bc.close();
         }
-        this.onChangedMode(mode);
+        this.initEventSubscription();
+        this.broadcastChannels = [];
+        const promises=[];
+        for(let ds of this.dataSynchronizer.getDataSources()) {
+            promises.push(ds.setMode(mode, disconnect));
+        }
+        this.dataSynchronizer.onTimeChanged = (min, max, start, end) => this.onTimeChanged(min, max, start, end);
+        this.dataSynchronizer.onAddedDataSource = (dataSourceId) => this.onAddedDataSource(dataSourceId);
+        this.dataSynchronizer.onRemovedDataSource = (dataSourceId) => this.onRemovedDataSource(dataSourceId);
+
+        return Promise.all(promises).then(() => this.onChangedMode(mode));
     }
+
+    initEventSubscription() {
+        this.eventSubscriptionMap = {};
+        // listen for Events to callback to subscriptions
+        this.broadcastChannels.push(new BroadcastChannel(this.getTopicId()).onmessage = (message) => {
+            const type = message.data.type;
+            if (type in this.eventSubscriptionMap) {
+                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
+                    this.eventSubscriptionMap[type][i](message.data);
+                }
+            }
+        });
+
+        this.broadcastChannels.push(new BroadcastChannel(this.getTimeTopicId()).onmessage = (message) => {
+            if (message.data.type === EventType.MASTER_TIME) {
+                // this.properties.startTimestamp = message.data.timestamp; // save as last timestamp
+                this.dataSynchronizer.setStartTimestamp(message.data.timestamp);
+            }
+            const type = message.data.type;
+            if (type in this.eventSubscriptionMap) {
+                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
+                    this.eventSubscriptionMap[type][i](message.data);
+                }
+            }
+        });
+    }
+
+    subscribe(fn, eventTypes) {
+        // associate function to eventType
+        for (let i = 0; i < eventTypes.length; i++) {
+            if (!(eventTypes[i] in this.eventSubscriptionMap)) {
+                this.eventSubscriptionMap[eventTypes[i]] = [];
+            }
+            this.eventSubscriptionMap[eventTypes[i]].push(fn);
+        }
+    }
+
     getDataSources() {
         return this.dataSynchronizer.getDataSources();
     }
@@ -155,13 +204,12 @@ class DataSynchronizer {
         return this.dataSynchronizer.terminate();
     }
 
-    subscribe(fn, eventTypes) {
-        this.dataSynchronizerRt.subscribe(fn,eventTypes);
-        this.dataSynchronizerReplay.subscribe(fn,eventTypes);
-    }
-
     getMode() {
         return this.dataSynchronizer.getMode();
+    }
+
+    async autoUpdateTime(activate) {
+        return this.dataSynchronizerReplay.autoUpdateTime(activate);
     }
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
@@ -176,11 +224,8 @@ class DataSynchronizer {
      * @param {TimeSeriesDataSource} dataSource - the new datasource to add
      */
     async addDataSource(dataSource) {
-        return new Promise(async resolve => {
-            await this.dataSynchronizerRt.addDataSource(dataSource);
-            await this.dataSynchronizerReplay.addDataSource(dataSource);
-            resolve();
-        });
+        await this.dataSynchronizerRt.addDataSource(dataSource);
+        return this.dataSynchronizerReplay.addDataSource(dataSource);
     }
 
     /**
@@ -188,11 +233,8 @@ class DataSynchronizer {
      * @param {TimeSeriesDatasource} dataSource - the new datasource to add
      */
     async removeDataSource(dataSource) {
-        return new Promise(async resolve => {
-            await this.dataSynchronizerRt.removeDataSource(dataSource);
-            await this.dataSynchronizerReplay.removeDataSource(dataSource)
-            resolve();
-        });
+        await this.dataSynchronizerRt.removeDataSource(dataSource);
+        return this.dataSynchronizerReplay.removeDataSource(dataSource)
     }
 
     /**
@@ -210,7 +252,7 @@ class DataSynchronizer {
      * Connects all dataSources
      */
     async connect() {
-        await this.dataSynchronizer.connect()
+        return this.dataSynchronizer.connect()
     }
 
     async checkInit() {
@@ -287,8 +329,7 @@ class DataSynchronizer {
         this.dataSynchronizerReplay.computeMinMax();
         this.dataSynchronizerReplay.timeChanged();
     }
-    onTimeChanged(start, min) {
-    }
+    onTimeChanged(start, min) {}
 
     onRemovedDataSource(dataSourceId) {
     }

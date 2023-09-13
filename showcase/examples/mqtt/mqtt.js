@@ -17,7 +17,7 @@ const mqttProps = {
 
 let gpsDataSource = new SweApiFetch("android-GPS", {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
-    resource: '/datastreams/fled6eics1cl4/observations',
+    resource: '/datastreams/rbnag2hrc04mm/observations',
     tls: true,
     protocol: 'mqtt',
     mqttOpts: mqttProps,
@@ -40,9 +40,9 @@ const isaDataSource = new SweApiFetch("ISA-bio-sensor", {
 const pointMarkerLayer = new PointMarkerLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => ({
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: rec.location.alt
+        x: rec.pos.lon,
+        y: rec.pos.lat,
+        z: rec.pos.alt
     }),
     icon: './images/drone-mqtt.png',
     iconSize: [32, 32],

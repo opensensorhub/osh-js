@@ -18,11 +18,23 @@ import {isDefined, randomUUID} from '../utils/Utils.js';
 import {DATASOURCE_DATA_TOPIC} from "../Constants";
 import DataSourceWorker from './worker/DataSource.worker';
 import {Mode} from "./Mode";
+import WorkerExt from "../worker/WorkerExt";
+import MqttConnector from "../connector/MqttConnector";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
  *
  */
+// global worker
+const maxPoolSize = 5;
+const workersPool = [];
+let currentInsertPoolIdx = 0;
+let dataSourceWorkers={};
+
+export function getDataSourceWorkers() {
+    return dataSourceWorkers;
+}
+
 class DataSource {
     constructor(name, properties) {
         this.id = properties.id || "DataSource-" + randomUUID();
@@ -30,10 +42,9 @@ class DataSource {
         this.properties = properties;
         this.eventSubscriptionMap = {};
         this.init = undefined;
-        this.messagesMap = {};
         this.mode = Mode.REAL_TIME;
 
-        if(isDefined(properties.mode)) {
+        if (isDefined(properties.mode)) {
             this.mode = properties.mode;
         }
     }
@@ -55,8 +66,8 @@ class DataSource {
     }
 
     terminate() {
-        if(this.dataSourceWorker !== null) {
-            this.dataSourceWorker.terminate();
+        if (this.getWorker() !== null) {
+            this.getWorker().terminate();
         }
     }
 
@@ -66,7 +77,7 @@ class DataSource {
 
     subscribe(fn, eventTypes) {
         // associate function to eventType
-        for(let i=0;i < eventTypes.length;i++) {
+        for (let i = 0; i < eventTypes.length; i++) {
             if (!(eventTypes[i] in this.eventSubscriptionMap)) {
                 this.eventSubscriptionMap[eventTypes[i]] = [];
             }
@@ -75,8 +86,8 @@ class DataSource {
     }
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
-    async createWorker(properties) {
-        return new DataSourceWorker();
+    createWorker(properties) {
+        return new WorkerExt(new DataSourceWorker());
     }
 
     /**
@@ -96,11 +107,10 @@ class DataSource {
             ...this.properties,
             ...properties
         };
-        return new Promise(resolve => {
-            this.postMessage({
-                message: 'update-properties',
-                data: properties
-            }, resolve);
+        return this.getWorker().postMessageWithAck({
+            message: 'update-properties',
+            data: properties,
+            dsId: this.id
         });
     }
 
@@ -109,31 +119,42 @@ class DataSource {
      */
     async connect() {
         await this.checkInit();
-        await this.doConnect();
+        return this.doConnect();
     }
 
-    async initDataSource(properties=this.properties) {
-        return new Promise(async (resolve, reject) => {
-            this.dataSourceWorker = await this.createWorker(this.properties);
-            this.handleWorkerMessage();
-            this.postMessage({
-                message: 'init',
-                id: this.id,
-                properties: properties,
-                topics:  {
-                    data: this.getTopicId()
-                }
-            }, async (message) => {
-                // listen for Events to callback to subscriptions
-                const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
-                datasourceBroadcastChannel.onmessage = async (message) => {
-                    await this.handleMessage(message);
-                };
-                resolve(message);
-            });
+    getWorker() {
+        if (!(this.id in dataSourceWorkers)) {
+            // create new worker for this DS
+            if (!isDefined(workersPool[currentInsertPoolIdx])) {
+                workersPool[currentInsertPoolIdx] = this.createWorker();
+            }
+            dataSourceWorkers[this.id] = currentInsertPoolIdx;
+            currentInsertPoolIdx = (currentInsertPoolIdx + 1) % maxPoolSize;
+        }
+        // store worker idx into map for fast-mapping
+        return workersPool[dataSourceWorkers[this.id]];
+    }
+
+    async initDataSource(properties = this.properties) {
+        return this.getWorker().postMessageWithAck({
+            message: 'init',
+            id: this.id,
+            properties: properties,
+            topics: {
+                data: this.getTopicId()
+            },
+            dsId: this.id
+        }).then(() => {
+            // listen for Events to callback to subscriptions
+            const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
+            datasourceBroadcastChannel.onmessage = (message) => {
+                this.handleMessage(message);
+            };
+            this.isInitialized = true;
         });
     }
-    async handleMessage(message) {
+
+    handleMessage(message) {
         const type = message.data.type;
         if (type in this.eventSubscriptionMap) {
             for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
@@ -142,73 +163,66 @@ class DataSource {
         }
     }
 
+    resetInit() {
+        this.init = undefined;
+    }
+
     async checkInit() {
-        return new Promise(async (resolve, reject) => {
-            if(!isDefined(this.init)) {
-                this.init = this.initDataSource();
-            }
-            await this.init;
-            resolve();
-        });
+        if (!isDefined(this.init)) {
+            this.init = this.initDataSource();
+        }
+        return this.init;
     }
 
     async doConnect() {
-        return new Promise(async resolve => {
-            this.postMessage({
-                message: 'connect'
-            }, resolve);
+        return this.getWorker().postMessageWithAck({
+            message: 'connect',
+            dsId: this.id
         });
     }
+
     async isConnected() {
-        return new Promise(async resolve => {
-            if(!this.init) {
-                resolve(false);
-            } else {
-                await this.checkInit();
-                this.postMessage({
-                    message: 'is-connected'
-                }, resolve);
-            }
-        });
+        if (!this.init) {
+            return false;
+        } else {
+            return this.checkInit().then(() => {
+                return this.getWorker().postMessageWithAck({
+                    message: 'is-connected',
+                    dsId: this.id
+                });
+            });
+        }
     }
 
     /**
      * Disconnect the dataSource then the protocol will be closed as well.
      */
     async disconnect() {
-        return new Promise(async resolve => {
-            await this.checkInit();
-            this.postMessage({
-                message: 'disconnect'
-            }, resolve);
+        await this.checkInit();
+        return this.getWorker().postMessageWithAck({
+            message: 'disconnect',
+            dsId: this.id
         });
     }
 
-    postMessage(props, Fn) {
-        const messageId = randomUUID();
-        this.dataSourceWorker.postMessage({
-            ...props,
-            messageId: messageId
-        });
-        if(isDefined(Fn)) {
-            this.messagesMap[messageId] = Fn;
+    async onDisconnect() {
+    }
+
+    async reset() {
+        await this.disconnect();
+        this.resetInit();
+        return this.removeWorker();
+    }
+
+    async removeWorker() {
+        if (this.id in dataSourceWorkers) {
+            return this.getWorker().postMessageWithAck({
+                message: 'remove-handler',
+                dsId: this.id
+            }).then(() => {
+                delete dataSourceWorkers[this.id]; // delete index from pool
+            });
         }
-    }
-
-    handleWorkerMessage() {
-        this.dataSourceWorker.onmessage = (event) => {
-            const id = event.data.messageId;
-            if(id in this.messagesMap){
-                this.messagesMap[id](event.data.data);
-                delete this.messagesMap[id];
-            }
-        };
-    }
-
-    async onDisconnect(){}
-
-    reset() {
-        this.init = undefined;
     }
 
     onRemovedDataSource(dataSourceId) {

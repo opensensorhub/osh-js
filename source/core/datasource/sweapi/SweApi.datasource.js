@@ -17,6 +17,7 @@
 
 import TimeSeriesDatasource from "../TimeSeries.datasource";
 import {Mode} from "../Mode";
+import SweApiDatasourceUpdater from "./SweApi.datasource.updater";
 
 class SweApi extends TimeSeriesDatasource {
     /**
@@ -48,7 +49,7 @@ class SweApi extends TimeSeriesDatasource {
             startTime: 'now',
             endTime: '2055-01-01T00:00:00Z',
             tls: false,
-            responseFormat: 'application/om+json',
+            responseFormat: 'application/swe+json',
             protocol: 'http',
             type: 'SweApiStream',
             mode: Mode.REAL_TIME,
@@ -57,6 +58,33 @@ class SweApi extends TimeSeriesDatasource {
             connectorOpts: {},
             ...properties,
         });
+    }
+
+    async createTimeUpdater() {
+        if(!this.timeUpdater) {
+            this.timeUpdater = new SweApiDatasourceUpdater(this.properties);
+            let first = true;
+            this.timeUpdater.onTimeChanged = (min, max) => {
+                if (first) {
+                    this.setMinTime(min);
+                    first = false;
+                }
+                this.setMaxTime(max);
+                if (this.getDataSynchronizer()) {
+                    this.getDataSynchronizer().minMaxChanged(first);
+                }
+            }
+            this.timeUpdater.onError = (err) => reject();
+
+            return this.timeUpdater.start();
+        } // TO CHECK: if timeUpdater has been created multiple times. Start() should not return anything
+    }
+
+    destroyTimeUpdater() {
+        if(this.timeUpdater) {
+            this.timeUpdater.destroy();
+        }
+        this.timeUpdater = undefined;
     }
 }
 

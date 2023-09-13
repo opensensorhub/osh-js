@@ -14,68 +14,12 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils";
-import SweApiHandler from "../sweapi/handler/SweApi.handler";
-import SosGetFoisHandler from "../sos/handler/SosGetFois.handler";
-import SosGetResultHandler from "../sos/handler/SosGetResult.handler";
+import DataSourceWorker from "./DataSourceWorker";
 
-let dataSourceHandler = undefined;
-
+const dataSourceWorker = new DataSourceWorker();
+dataSourceWorker.postMessage = (message) => {
+    self.postMessage(message);
+}
 self.onmessage = async (event) => {
-    handleMessage(event.data, self);
+    dataSourceWorker.handleMessage(event);
 };
-
-let promise = new Promise(resolve => {resolve()});
-
-async function checkPerformingAction() {
-    await promise;
-}
-async function handleMessage(event) {
-    // await checkPerformingAction();
-    // ensure the right order of the actions
-    // promise = new Promise(async resolve => {
-    let value;
-    if (!isDefined(dataSourceHandler)) {
-        if (event.message === 'init') {
-            dataSourceHandler = createHandlerFromProperties(event.properties);
-            await dataSourceHandler.init(event.properties, event.topics, event.id);
-            value = dataSourceHandler.isInitialized();
-        }
-    } else {
-        if (event.message === 'connect') {
-            await dataSourceHandler.connect(event.startTime, event.version);
-        } else if (event.message === 'disconnect') {
-            await dataSourceHandler.disconnect();
-        } else if (event.message === 'topics') {
-            dataSourceHandler.setTopics(event.topics);
-        } else if (event.message === 'update-properties') {
-            dataSourceHandler.updateProperties(event.data);
-        } else if (event.message === 'is-connected') {
-            value = dataSourceHandler.isConnected();
-        } else if (event.message === 'is-init') {
-            value = dataSourceHandler.isInitialized();
-        }
-    }
-
-    // send back result or just return
-    postMessage({
-        message: event.message,
-        data: value,
-        messageId: event.messageId
-    });
-    // resolve();
-    // });
-    // return promise;
-}
-
-function createHandlerFromProperties(properties) {
-    if(properties.type === 'SosGetResult') {
-        return new SosGetResultHandler();
-    } else if(properties.type === 'SosGetFois') {
-        return new SosGetFoisHandler();
-    } else if(properties.type === 'SweApiStream') {
-        return new SweApiHandler();
-    } else {
-        throw Error('Unsupported SOS service Error');
-    }
-}

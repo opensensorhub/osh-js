@@ -149,20 +149,26 @@ class DataRecordParser extends AbstractParser {
 class DataArrayParser extends AbstractParser {
     build(element) {
         // find elementCount parser
-        this.parseElement(element['elementCount']);
-        this.parseElement(element['elementType']);
+        let currentPath = this.path;
+        if('name' in element) {
+            currentPath = (this.path) ? this.path + '/' : '/';
+            currentPath += element['name'];
+        }
+
+        this.parseElement(element['elementCount'], currentPath);
+        this.parseElement(element['elementType'], currentPath);
     }
     parse(dataTypeParser, props, resultParent) {
         // parse size of the array
         const objectSize = {};
         this.stack[0].parse(dataTypeParser, props, objectSize);
-        const size = Object.values(objectSize)[0];
+        let size = Object.values(objectSize)[0];
         const elementTypeParser =  this.stack[1];
         let dataarrayResults = [];
         for(let i=0;i < size; i++) {
             const subResult = {};
             elementTypeParser.parse(dataTypeParser, props, subResult);
-            dataarrayResults.push(subResult);
+            dataarrayResults.push(subResult[elementTypeParser.name]);
         }
         resultParent[this.name] = dataarrayResults;
     }

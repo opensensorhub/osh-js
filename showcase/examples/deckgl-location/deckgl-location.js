@@ -36,7 +36,7 @@ let pointMarker = new PointMarkerLayer({
   icon: './images/car-location.png',
   iconAnchor: [16, 64],
   iconSize: [32, 65],
-  iconScale: 10,
+  iconScale: 1.5,
   label: 'GPS Toulouse'
 });
 

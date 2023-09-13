@@ -71,7 +71,7 @@ export default {
   beforeMount() {
     const START_TIME = '2012-06-29T14:32:34.099333251Z';
     const END_TIME = '2012-06-29T14:36:54.033333251Z';
-    const MODE = Mode.REPLAY;
+    const MODE = Mode.REAL_TIME;
     //
 
     // const START_TIME = 'now';
@@ -79,7 +79,7 @@ export default {
     // const MODE = Mode.REAL_TIME;
 
     const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
-    const MAX_TIME = '2012-06-29T14:36:54.033333251Z';
+    const MAX_TIME = '2055-06-29T14:36:54.033333251Z';
     const tls = true;
 
     const dsReplaySpeed = 2.6;
@@ -96,7 +96,7 @@ export default {
       endTime: END_TIME,
       minTime: MIN_TIME,
       maxTime: MAX_TIME,
-      mode: MODE,
+      mode: Mode.REAL_TIME,
       replaySpeed: dsReplaySpeed,
       prefetchBatchDuration: 10000,
       prefetchBatchSize: 250
@@ -104,7 +104,7 @@ export default {
 
     const droneVideoDataSource = new SweApiDatasource('MISB Drone - Video', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/8ni90dbu4uf0g/observations',
+      resource: '/datastreams/h225hesual08g/observations',
       responseFormat: 'application/swe+binary',
     });
 
@@ -113,37 +113,37 @@ export default {
 
     const droneLocationDataSource = new SweApiDatasource('MISB UAS - Platform Location', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/fled6eics1cl4/observations',
+      resource: '/datastreams/o7pce3e60s0ie/observations',
       responseFormat: 'application/swe+json',
     });
 
     const droneOrientationDataSource = new SweApiDatasource('MISB UAS - Platform Attitude', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/adheadf9nghts/observations',
+      resource: '/datastreams/mlme3gtdfepvc/observations',
       responseFormat: 'application/swe+json',
     });
 
     const droneCameraOrientationDataSource = new SweApiDatasource('MISB UAS - Gimbal Attitude', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/hrpo1u6r5096i/observations',
+      resource: '/datastreams/h75dmug8e3sae/observations',
       responseFormat: 'application/swe+binary',
     });
 
     const droneHFovDataSource = new SweApiDatasource('MISB UAS - Horizontal FoV', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/d962edate9okm/observations',
+      resource: '/datastreams/nhcs9rp6713ka/observations',
       responseFormat: 'application/swe+binary',
     });
 
     const droneVFovDataSource = new SweApiDatasource('MISB UAS - Vertical FoV', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/d962edate9okm/observations',
+      resource: '/datastreams/nhcs9rp6713ka/observations',
       responseFormat: 'application/swe+binary',
     });
 
     const geoRefImageFrameDataSource = new SweApiDatasource('MISB UAS - GeoReferenced Image Frame', {
       ...commonDatasourceOpts,
-      resource: '/datastreams/p3mp2peibksl4/observations',
+      resource: '/datastreams/iabpf1ivua1qm/observations',
       responseFormat: 'application/swe+csv',
     });
 
@@ -166,13 +166,14 @@ export default {
       masterTimeRefreshRate: 250,
       startTime: START_TIME,
       endTime: END_TIME,
+      mode: Mode.REAL_TIME,
       dataSources: [
         droneLocationDataSource,
         droneVideoDataSource,
         droneOrientationDataSource,
         droneCameraOrientationDataSource,
         geoRefImageFrameDataSource,
-        targetLocationDataSource,
+        // targetLocationDataSource,
         droneVFovDataSource,
         droneHFovDataSource
       ]

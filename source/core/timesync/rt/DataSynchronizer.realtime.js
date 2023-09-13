@@ -18,6 +18,7 @@ import {assertDefined, isDefined, randomUUID} from "../../utils/Utils.js";
 import DataSynchronizerWorker from './DataSynchronizer.realtime.worker.js';
 import {DATA_SYNCHRONIZER_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../../Constants.js";
 import {Mode} from "../../datasource/Mode";
+import WorkerExt from "../../worker/WorkerExt";
 
 class DataSynchronizerRealtime {
     /**
@@ -39,9 +40,6 @@ class DataSynchronizerRealtime {
         this.timeSync = timeSync;
         this.properties = {};
         this.properties.version = 0;
-
-        this.eventSubscriptionMap = {};
-        this.messagesMap = {};
     }
 
     getId() {
@@ -60,28 +58,8 @@ class DataSynchronizerRealtime {
         return TIME_SYNCHRONIZER_TOPIC + this.id;
     }
 
-    /**
-     * @private
-     */
-    initEventSubscription() {
-        // listen for Events to callback to subscriptions
-        new BroadcastChannel(this.getTopicId()).onmessage = (message) => {
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
-
-        new BroadcastChannel(this.getTimeTopicId()).onmessage = (message) => {
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        };
+    setStartTimestamp(timestamp){
+        this.properties.startTimestamp = timestamp;
     }
 
     /**
@@ -97,16 +75,6 @@ class DataSynchronizerRealtime {
         }
     }
 
-    subscribe(fn, eventTypes) {
-        // associate function to eventType
-        for (let i = 0; i < eventTypes.length; i++) {
-            if (!(eventTypes[i] in this.eventSubscriptionMap)) {
-                this.eventSubscriptionMap[eventTypes[i]] = [];
-            }
-            this.eventSubscriptionMap[eventTypes[i]].push(fn);
-        }
-    }
-
     getMode() {
         return Mode.REAL_TIME;
     }
@@ -114,36 +82,30 @@ class DataSynchronizerRealtime {
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     async initDataSources() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const dataSourcesForWorker = [];
-                for (let dataSource of this.dataSources) {
-                    const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-                    dataSourcesForWorker.push(dataSourceForWorker);
-                }
-                this.synchronizerWorker = new DataSynchronizerWorker();
-                this.handleWorkerMessage();
-                await this.postMessage({
-                    message: 'init',
-                    dataSources: dataSourcesForWorker,
-                    timerResolution: this.timerResolution,
-                    masterTimeRefreshRate: this.masterTimeRefreshRate,
-                    mode: Mode.REAL_TIME,
-                    version: this.version(),
-                    topics: {
-                        data: this.getTopicId(),
-                        time: this.getTimeTopicId()
-                    }
-                }, function () {
-                    this.initEventSubscription();
-                    this.initialized = true;
-                    resolve();
-                }.bind(this), false);
-            } catch (error) {
-                console.log(error)
-                reject(error);
+        try {
+            const dataSourcesForWorker = [];
+            for (let dataSource of this.dataSources) {
+                const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
+                dataSourcesForWorker.push(dataSourceForWorker);
             }
-        });
+            this.synchronizerWorker = new WorkerExt(new DataSynchronizerWorker());
+            return this.synchronizerWorker.postMessageWithAck({
+                message: 'init',
+                dataSources: dataSourcesForWorker,
+                timerResolution: this.timerResolution,
+                masterTimeRefreshRate: this.masterTimeRefreshRate,
+                mode: Mode.REAL_TIME,
+                version: this.version(),
+                topics: {
+                    data: this.getTopicId(),
+                    time: this.getTimeTopicId()
+                }
+            }).then(() => {
+                this.initialized = true;
+            });
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     /**
@@ -158,12 +120,7 @@ class DataSynchronizerRealtime {
             name: dataSource.name
         };
         // bind dataSource data onto dataSynchronizer data
-        try {
-            await dataSource.setDataSynchronizer(this.timeSync);
-        } catch (ex) {
-            console.error("Cannot set the synchronizer to this DataSource", ex);
-            throw ex;
-        }
+        await dataSource.setDataSynchronizer(this.timeSync);
         return obj;
     }
 
@@ -173,23 +130,19 @@ class DataSynchronizerRealtime {
      * @param {TimeSeriesDataSource} dataSource - the new datasource to add
      */
     async addDataSource(dataSource) {
-        return new Promise(async resolve => {
-            this.dataSources.push(dataSource);
-            if (!this.initialized) {
-                console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
-                resolve();
-            } else {
-                const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-                // add dataSource to synchronizer algorithm
-                await this.postMessage({
-                    message: 'add',
-                    dataSources: [dataSourceForWorker]
-                }, async () => {
-                    this.onAddedDataSource(dataSource.id);
-                    resolve();
-                });
-            }
-        });
+        this.dataSources.push(dataSource);
+        if (!this.initialized) {
+            console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
+        } else {
+            const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
+            // add dataSource to synchronizer algorithm
+            return this.synchronizerWorker.postMessageWithAck({
+                message: 'add',
+                dataSources: [dataSourceForWorker]
+            }).then(() => {
+                this.onAddedDataSource(dataSource.id);
+            });
+        }
     }
 
     /**
@@ -197,25 +150,21 @@ class DataSynchronizerRealtime {
      * @param {TimeSeriesDatasource} dataSource - the new datasource to add
      */
     async removeDataSource(dataSource) {
-        return new Promise(async resolve => {
-            await dataSource.removeDataSynchronizer();
-            this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
-            if(this.dataSources.length === 0) {
-                await this.reset();
-            }
-            if (!this.initialized) {
-                console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
-                resolve();
-            } else {
-                await this.postMessage({
-                    message: 'remove',
-                    dataSourceIds: [dataSource.getId()],
-                }, async () => {
-                    this.onRemovedDataSource(dataSource.id);
-                    resolve();
-                });
-            }
-        });
+        await dataSource.removeDataSynchronizer();
+        this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+        if (this.dataSources.length === 0) {
+            await this.reset();
+        }
+        if (!this.initialized) {
+            console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
+        } else {
+            return this.synchronizerWorker.postMessageWithAck({
+                message: 'remove',
+                dataSourceIds: [dataSource.getId()],
+            }).then(() => {
+                this.onRemovedDataSource(dataSource.id);
+            });
+        }
     }
 
     /**
@@ -223,48 +172,41 @@ class DataSynchronizerRealtime {
      * @param {Object} data - the data to push into the data synchronizer
      */
     async push(dataSourceId, data) {
-        return new Promise(async (resolve, reject) => {
-            if (this.synchronizerWorker !== null) {
-                await this.postMessage({
-                    type: 'data',
-                    dataSourceId: dataSourceId,
-                    data: data
-                }, resolve);
-            }
-        });
+        if (this.synchronizerWorker !== null) {
+            return this.synchronizerWorker.postMessageWithAck({
+                type: 'data',
+                dataSourceId: dataSourceId,
+                data: data
+            });
+        }
     }
 
     version() {
         return this.properties.version;
     }
+
     /**
      * Connects all dataSources
      */
     async connect() {
         await this.checkInit();
-        await this.doConnect();
+        return this.doConnect();
     }
 
     async checkInit() {
-        const that = this;
-        return new Promise(async (resolve, reject) => {
-            if (!isDefined(that.init)) {
-                that.init = that.initDataSources();
-            }
-            await that.init;
-            resolve();
-        });
+        if (!isDefined(this.init)) {
+            this.init = this.initDataSources();
+        }
+        return this.init;
     }
 
     async doConnect() {
-        return new Promise(async resolve => {
-            for (let dataSource of this.dataSources) {
-                await dataSource.connect();
-            }
-            await this.postMessage({
-                message: 'connect',
-                version: this.version()
-            }, resolve);
+        for (let dataSource of this.dataSources) {
+            await dataSource.connect();
+        }
+        return this.synchronizerWorker.postMessageWithAck({
+            message: 'connect',
+            version: this.version()
         });
     }
 
@@ -272,10 +214,13 @@ class DataSynchronizerRealtime {
      * Disconnects all dataSources
      */
     async disconnect() {
+        console.log('disconnect')
         await this.reset();
+        const promises = [];
         for (let dataSource of this.dataSources) {
-            await dataSource.disconnect();
+            promises.push(dataSource.disconnect());
         }
+        return Promise.all(promises);
     }
 
     async updateProperties(properties) {
@@ -288,20 +233,15 @@ class DataSynchronizerRealtime {
      * Resets reference time
      */
     async reset() {
-        return new Promise(async resolve => {
-            await this.checkInit();
-            await this.postMessage({
-                message: 'reset'
-            });
-            resolve();
+        await this.checkInit();
+        return this.synchronizerWorker.postMessageWithAck({
+            message: 'reset'
         });
     }
 
     async getCurrentTime() {
-        return new Promise(async resolve => {
-            await this.postMessage({
-                message: 'current-time'
-            }, resolve);
+        return this.synchronizerWorker.postMessageWithAck({
+            message: 'current-time'
         });
     }
 
@@ -313,44 +253,22 @@ class DataSynchronizerRealtime {
             return false;
         } else {
             await this.checkInit();
-            return new Promise(async resolve => {
-                await this.postMessage({
-                    message: 'is-connected'
-                }, (message) => resolve(message.data));
-            });
+            return this.synchronizerWorker.postMessageWithAck({
+                message: 'is-connected'
+            }).then((message) => message.data);
         }
     }
 
-    setMinTime(minTime) {}
-    setMaxTime(maxTime) {}
-
-    async postMessage(props, Fn, checkInit = true) {
-        if (checkInit) {
-            await this.checkInit();
-        }
-        const messageId = randomUUID();
-        this.synchronizerWorker.postMessage({
-            ...props,
-            messageId: messageId
-        });
-        if (isDefined(Fn)) {
-            this.messagesMap[messageId] = Fn;
-        }
+    setMinTime(minTime) {
     }
 
-    handleWorkerMessage() {
-        this.synchronizerWorker.onmessage = (event) => {
-            const id = event.data.messageId;
-            if (id in this.messagesMap) {
-                this.messagesMap[id](event.data.data);
-                delete this.messagesMap[id];
-            }
-        }
+    setMaxTime(maxTime) {
     }
 
     incVersion() {
         this.properties.version++;
     }
+
     onTimeChanged(start, min) {
     }
 

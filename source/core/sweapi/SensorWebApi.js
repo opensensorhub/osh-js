@@ -16,6 +16,7 @@
 
 import WebSocketConnector from "../connector/WebSocketConnector";
 import {assertDefined, isDefined} from "../utils/Utils";
+import MqttTopicConnector from "../connector/MqttTopicConnector";
 import MqttConnector from "../connector/MqttConnector";
 
 class SensorWebApi {
@@ -86,7 +87,8 @@ class SensorWebApi {
         const url = networkProperties.streamProtocol + tls + '://' + endpoint;
 
         if(networkProperties.streamProtocol === 'mqtt') {
-            return new MqttConnector(url, networkProperties);
+            // return new MqttConnector(url, networkProperties);
+            return new MqttTopicConnector(networkProperties.mqttOpts.bcId, networkProperties);
         } else if(networkProperties.streamProtocol === 'ws') {
             return new WebSocketConnector(url);
         }

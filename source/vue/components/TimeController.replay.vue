@@ -212,20 +212,23 @@ export default {
           this.endTimestamp = this.dataSourceObject.getEndTimeAsTimestamp() ? this.dataSourceObject.getEndTimeAsTimestamp() : this.maxTimestamp;
 
           // compute skip time
-          if ((this.skipTimeStep.endsWith('s'))) {
-            // time in second
-            this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1)) * 1000;
-          } else if (this.skipTimeStep.endsWith('%')) {
-            // compute percent on the whole period
-            const totalTime = this.maxTimestamp - this.minTimestamp;
-            const percent = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1));
-            this.skipTime = percent * totalTime / 100;
-          }
+          this.computeSkipTime();
           this.init = true;
           this.createRangeSlider();
         }catch (ex) {
           console.error(ex);
         }
+      }
+    },
+    computeSkipTime() {
+      if ((this.skipTimeStep.endsWith('s'))) {
+        // time in second
+        this.skipTime = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1)) * 1000;
+      } else if (this.skipTimeStep.endsWith('%')) {
+        // compute percent on the whole period
+        const totalTime = this.maxTimestamp - this.minTimestamp;
+        const percent = parseFloat(this.skipTimeStep.substring(0, this.skipTimeStep.length - 1));
+        this.skipTime = percent * totalTime / 100;
       }
     },
     displayConsoleWarningIncompatibleVersionThrottle() {
@@ -285,12 +288,15 @@ export default {
 
         if (isDefined(this.dataSynchronizer)) {
           dataSourceObj.dataSynchronizer = this.dataSynchronizer;
-          this.dataSynchronizer.onTimeChanged = function(minTimestamp, maxTimestamp,startTimestamp, endTimestamp) {
-            this.minTimestamp = minTimestamp;
-            this.maxTimestamp = maxTimestamp;
-            this.startTimestamp = startTimestamp? startTimestamp : minTimestamp;
-            this.endTimestamp = endTimestamp? endTimestamp : maxTimestamp;
-          }.bind(this);
+          this.dataSynchronizer.onTimeChanged = (minTimestamp, maxTimestamp,startTimestamp, endTimestamp) => {
+            if(!this.update) {
+              this.minTimestamp = minTimestamp;
+              this.maxTimestamp = maxTimestamp;
+              this.startTimestamp = startTimestamp ? startTimestamp : minTimestamp;
+              this.endTimestamp = endTimestamp ? endTimestamp : maxTimestamp;
+              this.computeSkipTime();
+            }
+          }
         } else {
           dataSourceObj.dataSource = this.dataSource;
         }
