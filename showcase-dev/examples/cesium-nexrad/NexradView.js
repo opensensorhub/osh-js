@@ -4,6 +4,7 @@ import {PointPrimitiveCollection} from "cesium";
 
 import {
     Cartesian3,
+    Cartographic,
     Color,
     Transforms,
     Matrix3,
@@ -51,6 +52,7 @@ class NexradView extends CesiumView {
     }
 
     async setData(dataSourceId, data) {
+        // need to do this ONLY when elevation changes (for single elevation)
         const values = data.values;
         for(let i=0;i < values.length;i++) {
             const d = values[i];
@@ -59,7 +61,7 @@ class NexradView extends CesiumView {
             }
         }
     }
-
+    
     async updateNexrad(props) {
         if (!isDefined(props.location)) {
             return;
@@ -69,34 +71,39 @@ class NexradView extends CesiumView {
 
         // keep only first elevation
         if (props.elevation > 0.7) {
+        //if (props.elevation > 0.0) {
             return false;
         }
 
         // draw directly in Cesium view
-        console.log(props)
         let radarLoc = Cartesian3.fromDegrees(props.location.x, props.location.y, props.location.z);
+        var lla = Cartographic.fromCartesian(radarLoc);
+        // console.log("lla: " + lla.latitude* 180.0/Math.PI + "," + lla.longitude* 180.0/Math.PI + "," + lla.height);
         //Transforms.headingPitchRollQuaternion(position, new HeadingPitchRoll(heading * DTR, /*roll*DTR*/0.0, pitch * DTR));
         let quat = Transforms.headingPitchRollQuaternion(radarLoc, new HeadingPitchRoll((props.azimuth-90)*DTR));
-        console.log(quat)
         let rotM = Matrix3.fromQuaternion(quat);
 
         let points = new PointPrimitiveCollection();
         let dist0 = props.rangeToCenterOfFirstRefGate;
         let step = props.refGateSize;
+
         for (let i=0; i<props.reflectivity.length; i++) {
 
             let val = props.reflectivity[i];
 
             // skip points that are out of range
-            if (val < -32 || val > 94.5) {
-                continue;
+            // min lower value is -32, but raising lower thereshold here masks out lower values and
+            // makes display a little cleaner
+            // if (val < -32 || val > 94.5) {
+            if (val < 0 || val > 94.5) {
+                   continue;
             }
 
             let gatePos = new Cartesian3(dist0 + i*step, 0, 0);
             Matrix3.multiplyByVector(rotM, gatePos, gatePos);
 
             // apply color map and add point to collection
-            console.log(radarLoc, gatePos)
+            // console.log(radarLoc, gatePos)
             points.add({
                 position : Cartesian3.add(radarLoc, gatePos, gatePos),
                 color : this.getReflectivityColor(val),
@@ -105,18 +112,22 @@ class NexradView extends CesiumView {
         }
 
         this.radialCount++;
+
+        this.previousPoints = points;
         this.viewer.scene.primitives.add(points);
+
+        let  size = this.viewer.scene.primitives.length;
+        console.log('\t** numPt prims: ' + size);
         // if (this.radialCount === 100) {
         //     this.viewer.scene.primitives.add(points);
         //     this.radialCount = 0;
         // }
 
-        this.viewer.camera.flyTo({
-            destination : Cartesian3.fromDegrees(props.location.y, props.location.x, 30000),
-            duration : 1.0
-        });
-
-        console.log(props);
+        // this.viewer.camera.flyTo({
+        //     // destination : Cartesian3.fromDegrees(props.location.y, props.location.x, props.location.z),
+        //     destination : radarLoc,
+        //     duration : 1.0
+        // });
     }
 
     getReflectivityColor(val) {
