@@ -17,7 +17,7 @@ class NexradView extends CesiumView {
             supportedLayers: ['marker', 'drapedImage', 'polyline', 'ellipse', 'polygon', 'coplanarPolygon', 'frustum', 'nexrad'],
             ...properties
         });
-
+        // this.radials = new Set();  // produces undefined when accessing from function; define in beforeAddingItems and it works
     }
     beforeAddingItems(options) {
         super.beforeAddingItems(options);
@@ -48,7 +48,9 @@ class NexradView extends CesiumView {
         ];
 
         this.pointCollection = new PointPrimitiveCollection();
+        this.radials = new Set();
         this.radialCount = 0;
+        this.prevElevation = 0.0;
     }
 
     async setData(dataSourceId, data) {
@@ -69,18 +71,28 @@ class NexradView extends CesiumView {
 
         let DTR = Math.PI/180;
 
-        // keep only first elevation
-        if (props.elevation > 0.7) {
-        //if (props.elevation > 0.0) {
-            return false;
+        // if(Math.abs(props.elevation - this.prevElevation) > 0.3) {
+        if(Math.abs(props.elevation - this.prevElevation) > 0.4 && props.elevation <= 0.7) {
+                // console.log('NexradView elevation: ' + props.elevation);
+            // if(props.elevation <= 0.7) {
+                this.radials.forEach(radial => {
+                    this.viewer.scene.primitives.remove(radial);
+                });
+                this.radials = new Set();
+            // }
+            console.log('\t** numRadials: ' + this.radials.size);
         }
+        this.prevElevation = props.elevation;
 
-        // draw directly in Cesium view
+        // create Transform from Radar coords to ECEF
         let radarLoc = Cartesian3.fromDegrees(props.location.x, props.location.y, props.location.z);
         var lla = Cartographic.fromCartesian(radarLoc);
         // console.log("lla: " + lla.latitude* 180.0/Math.PI + "," + lla.longitude* 180.0/Math.PI + "," + lla.height);
         //Transforms.headingPitchRollQuaternion(position, new HeadingPitchRoll(heading * DTR, /*roll*DTR*/0.0, pitch * DTR));
-        let quat = Transforms.headingPitchRollQuaternion(radarLoc, new HeadingPitchRoll((props.azimuth-90)*DTR));
+        let verticalScale = 2.5;
+        let quat = Transforms.headingPitchRollQuaternion(radarLoc,   
+            new HeadingPitchRoll( (props.azimuth-90)*DTR, (props.elevation * verticalScale * DTR) ));
+        //let quat = Transforms.headingPitchRollQuaternion(radarLoc, new HeadingPitchRoll((props.azimuth-90)*DTR));
         let rotM = Matrix3.fromQuaternion(quat);
 
         let points = new PointPrimitiveCollection();
@@ -113,15 +125,16 @@ class NexradView extends CesiumView {
 
         this.radialCount++;
 
-        this.previousPoints = points;
+        //  points here is pointPrimitive collection of all points along a single radial
+        this.radials.add(points);
         this.viewer.scene.primitives.add(points);
 
-        let  size = this.viewer.scene.primitives.length;
-        console.log('\t** numPt prims: ' + size);
-        // if (this.radialCount === 100) {
-        //     this.viewer.scene.primitives.add(points);
-        //     this.radialCount = 0;
-        // }
+        this.viewer.scene.requestRender();
+
+        // let  size = this.viewer.scene.primitives.length;
+        // console.log('\t** numPt prims: ' + size);
+        if(this.radials.size % 100 == 0)
+            console.log('\t** numRadials: ' + this.radials.size);
 
         // this.viewer.camera.flyTo({
         //     // destination : Cartesian3.fromDegrees(props.location.y, props.location.x, props.location.z),

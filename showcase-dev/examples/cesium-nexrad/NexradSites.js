@@ -11,7 +11,7 @@ class NexradSites {
         let foiReqUrl = 'http://localhost:8282/sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&responseFormat=application/json';
         let request = http.get(foiReqUrl, (res) => {
             if (res.statusCode !== 200) {
-                console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
+                console.error(`Error retrieving sites from the server. Code: ${res.statusCode}`);
                 res.resume();
                 return;
             }
@@ -23,7 +23,6 @@ class NexradSites {
             });
 
             res.on('close', () => {
-                console.log('Retrieved all data');
                 this.sites = JSON.parse(data);
                 // this.sites.forEach((site) => {
                 //     console.log(site.id + ":" + site.geometry.coordinates);
@@ -35,7 +34,7 @@ class NexradSites {
         });
 
         request.on('error', (err) => {
-            console.error(`Encountered an error trying to make a request: ${err.message}`);
+            console.error(`Error retrieving site FOI data from server: ${err.message}`);
         });
 
     }

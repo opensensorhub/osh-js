@@ -36,7 +36,7 @@ let nexradSource = createDataSource();
 // sites
 let nexradSites = new NexradSites();
 console.log(nexradSites);
-let siteId = 'KTBW';
+let siteId = 'KUDX';
 
 let nexradLayer = new NexradLayer({
     dataSourceIds: [nexradSource.id],
