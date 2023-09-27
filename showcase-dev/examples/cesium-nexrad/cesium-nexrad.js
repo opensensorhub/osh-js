@@ -21,10 +21,11 @@ function createDataSource() {
         endpointUrl: 'localhost:8282/sensorhub/sos',
         offeringID: 'urn:osh:sensor:weather:nexrad',
         observedProperty: 'http://sensorml.com/ont/swe/propertyx/NexradRadial',
+        featureOfInterest: 'urn:osh:sensor:weather:nexrad:KSJT',
         mode: 'realTime', // default is REAL_TIME
         reconnectTimeout: 1000 * 144000,
         reconnectionInterval: 1000 * 720000,
-        //recoonectTimeout: 1000 * 4000,
+        responseFormat: 'application/json',  // binary throws exception parsing text field
         replaySpeed: 1
     })
 }
@@ -36,10 +37,20 @@ let nexradSource = createDataSource();
 // sites
 let nexradSites = new NexradSites();
 console.log(nexradSites);
-let siteId = 'KUDX';
+let siteId = 'KILX';
 
 let nexradLayer = new NexradLayer({
     dataSourceIds: [nexradSource.id],
+    getLocation: (rec) => {  
+        // var location = nexradSites.getSiteLocation(siteId);
+        //return rec.location;
+       // console.log('nexradLayer.getLoc: ' + rec.siteId + ',' + rec.location.lat + ',' + rec.location.lon);
+        return {
+            x: rec.location.lon,
+            y: rec.location.lat,
+            z: rec.location.alt
+        };
+    },
     getAzimuth: (rec) => {
         return rec.azimuth;
     },
@@ -60,11 +71,8 @@ let nexradLayer = new NexradLayer({
     getReflectivity: (rec) => {
         return rec.Reflectivity;
     },
+  
     allowBillboardRotation: true,
-    getLocation: (rec) => {  
-        var location = nexradSites.getSiteLocation(siteId);
-        return location;
-    }
 });
 
 // create Cesium view

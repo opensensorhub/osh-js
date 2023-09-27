@@ -51,6 +51,9 @@ class NexradView extends CesiumView {
         this.radials = new Set();
         this.radialCount = 0;
         this.prevElevation = 0.0;
+        // Using elevations from GR2 analyst- the actual elevation value returned with each radial
+        // may vary from these values slightly, especially when radar is changing elevations
+        this.elevations = [ 0.5, 0.9, 1.3, 1.8, 2.4, 3.1, 4.0, 5.1, 6.4, 8.0 , 10.0, 12.4, 15.6, 19.5];
     }
 
     async setData(dataSourceId, data) {
@@ -71,18 +74,22 @@ class NexradView extends CesiumView {
 
         let DTR = Math.PI/180;
 
-        // if(Math.abs(props.elevation - this.prevElevation) > 0.3) {
+        // Check for new volume
         if(Math.abs(props.elevation - this.prevElevation) > 0.4 && props.elevation <= 0.7) {
                 // console.log('NexradView elevation: ' + props.elevation);
-            // if(props.elevation <= 0.7) {
+            if(props.elevation <= 0.7) { // ***
                 this.radials.forEach(radial => {
                     this.viewer.scene.primitives.remove(radial);
                 });
                 this.radials = new Set();
-            // }
+            } // ***
             console.log('\t** numRadials: ' + this.radials.size);
         }
         this.prevElevation = props.elevation;
+
+        // ***
+        if(props.elevation >= 0.8)  return
+        // if(!props.elevation in this.elevations)  return
 
         // create Transform from Radar coords to ECEF
         let radarLoc = Cartesian3.fromDegrees(props.location.x, props.location.y, props.location.z);
@@ -147,6 +154,15 @@ class NexradView extends CesiumView {
         let index = Math.floor((val + 30) / 5) + 1;
         return this.reflectivityColorMap[index];
     }
+
+    // TODO: support various VCP modes
+    // getClosestElevation(actualEl) {
+    //     let prevDelta = 1000.0; 
+    //     this.elevations.forEach(vcpEl => {
+    //         var delta = Math.abs(actualEl - vcpEl);
+    //         if(delta)
+    //     }); 
+    // }
 }
 
 export default NexradView;

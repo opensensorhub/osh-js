@@ -11,6 +11,7 @@ class NexradLayer extends Layer {
     init(properties=this.properties) {
         super.init(properties);
         const props = {
+            siteId: null,
             location: null,
             azimuth: null,
             elevation: null,
@@ -19,11 +20,14 @@ class NexradLayer extends Layer {
             reflectivity: null
         };
 
+        if (hasValue(properties.siteId)) {
+            props.siteId = properties.siteId;
+        }
+
         if (hasValue(properties.location)) {
             assertObject(properties.location, "location");
             props.location = properties.location;
         }
-
 
         if (isDefined(properties.azimuth)) {
             props.azimuth = properties.azimuth;
