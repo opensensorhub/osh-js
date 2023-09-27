@@ -51,9 +51,15 @@ class NexradView extends CesiumView {
         this.radials = new Set();
         this.radialCount = 0;
         this.prevElevation = 0.0;
-        // Using elevations from GR2 analyst- the actual elevation value returned with each radial
+        this.elevationNum = 0;
+        this.prevElevationNum;
+        // Using elevations from GR2 analyst (they round to tenths)- the actual elevation value returned with each radial
         // may vary from these values slightly, especially when radar is changing elevations
+        // Also these match VCP 212 and 215 (precip mode), 
+        // so need to figure out how to support other VCP modes (clear air)
         this.elevations = [ 0.5, 0.9, 1.3, 1.8, 2.4, 3.1, 4.0, 5.1, 6.4, 8.0 , 10.0, 12.4, 15.6, 19.5];
+
+        // Map<ElevationNum, radials> of latest radials
     }
 
     async setData(dataSourceId, data) {
@@ -75,9 +81,10 @@ class NexradView extends CesiumView {
         let DTR = Math.PI/180;
 
         // Check for new volume
-        if(Math.abs(props.elevation - this.prevElevation) > 0.4 && props.elevation <= 0.7) {
-                // console.log('NexradView elevation: ' + props.elevation);
-            if(props.elevation <= 0.7) { // ***
+//        if(Math.abs(props.elevation - this.prevElevation) > 0.4 && props.elevation <= 0.7) {
+        if(props.elevationNumber != this.prevElevationNum) {
+            console.log('NexradView elevation change: ' + props.elevationNumber + ", " + props.prevElevationNum);
+            if(props.elevationNumber <= 2) { // ***
                 this.radials.forEach(radial => {
                     this.viewer.scene.primitives.remove(radial);
                 });
@@ -86,9 +93,11 @@ class NexradView extends CesiumView {
             console.log('\t** numRadials: ' + this.radials.size);
         }
         this.prevElevation = props.elevation;
+        this.prevElevationNumber = props.elevationNumber;
 
         // ***
-        if(props.elevation >= 0.8)  return
+        // if(props.elevation >= 0.8)  return
+        if(props.elevationNumber > 2)  return
         // if(!props.elevation in this.elevations)  return
 
         // create Transform from Radar coords to ECEF

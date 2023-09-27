@@ -15,6 +15,7 @@ class NexradLayer extends Layer {
             location: null,
             azimuth: null,
             elevation: null,
+            elevationNumber: null,
             rangeToCenterOfFirstRefGate: null,
             refGateSize: null,
             reflectivity: null
@@ -35,6 +36,10 @@ class NexradLayer extends Layer {
 
         if (isDefined(properties.elevation)) {
             props.elevation = properties.elevation;
+        }
+
+        if (isDefined(properties.elevationNumber)) {
+            props.elevationNumber = properties.elevationNumber;
         }
 
         if (isDefined(properties.rangeToCenterOfFirstRefGate)) {

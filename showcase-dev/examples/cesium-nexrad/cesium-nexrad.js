@@ -32,6 +32,7 @@ function createDataSource() {
 
 // create  data source
 let prevElevation;
+let prevElevationNumber;
 let nexradSource = createDataSource();
 
 // sites
@@ -56,9 +57,11 @@ let nexradLayer = new NexradLayer({
     },
     getElevation: (rec) => {
         // Check to see if radar has completed a sweep and changed elevation
-        if(! (Math.abs(rec.elevation - prevElevation) < 0.3) ) {
-            console.log('NexradLayer ts, el, az = ' + new Date(rec.timestamp).toISOString() + ', ' + rec.elevation + ', ' + rec.azimuth );
+        // if(! (Math.abs(rec.elevation - prevElevation) < 0.3) ) {
+        if(rec.elevationNumber != prevElevationNumber) {
+            console.log('cesium-nexrad: ' + new Date(rec.timestamp).toISOString() + ', ' + rec.elevationNumber + ', ' + rec.elevation + ', ' + rec.azimuth );
             prevElevation = rec.elevation;
+            prevElevationNumber = rec.elevationNumber;
         }
         return rec.elevation;
     },
