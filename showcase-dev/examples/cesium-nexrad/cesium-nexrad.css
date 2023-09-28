@@ -1,0 +1,35 @@
+#popup {
+    position: absolute;
+    display: none;
+    width: 70px;
+    height: 50px;
+    z-index: 999999;
+    background: #00000091;
+    color: white;
+    padding: 5px;
+}
+
+.flex-container {
+    display: flex;
+    width: 500px;
+}
+
+.flex-child {
+    flex: 1;
+    border: 2px solid yellow;
+}
+
+.flex-child:first-child {
+    margin-right:  20 px;
+}
+
+
+/* #selection-div {
+    position: absolute;
+    display: none;
+    width: 10%;
+    height: 100%;
+    padding: 5px;
+    color: red;
+    background-color: #2ecc71;
+} */
