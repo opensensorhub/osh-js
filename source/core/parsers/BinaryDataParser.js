@@ -15,6 +15,7 @@ import RootParser from "./common/RootParser";
 class BinaryDataParser extends GenericParser {
 
     constructor(rootElement, encoding, properties = {timeShift : 0}) {
+        console.log(encoding)
         super(rootElement, {
             nodesId: {},
             nodesIdValue: {},
@@ -46,6 +47,7 @@ class BinaryDataParser extends GenericParser {
         // parse schema
         this.props.registeredParser = {
             'Time': () => new BinaryTimeParser(),
+            'Text': () => new StringParser(),
             'Category': () => new StringParser(),
             'Quantity': () => new DecimalParser(),
             'Count': () => new CountParser(),
