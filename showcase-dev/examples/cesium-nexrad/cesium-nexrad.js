@@ -21,11 +21,10 @@ function createDataSource() {
         endpointUrl: 'localhost:8282/sensorhub/sos',
         offeringID: 'urn:osh:sensor:weather:nexrad',
         observedProperty: 'http://sensorml.com/ont/swe/propertyx/NexradRadial',
-        featureOfInterest: 'urn:osh:sensor:weather:nexrad:KSJT',
         mode: 'realTime', // default is REAL_TIME
         reconnectTimeout: 1000 * 144000,
         reconnectionInterval: 1000 * 720000,
-        responseFormat: 'application/json',  // binary throws exception parsing text field
+        //responseFormat: 'application/json',  // binary throws exception parsing text field
         replaySpeed: 1
     })
 }
@@ -38,14 +37,17 @@ let nexradSource = createDataSource();
 // sites
 let nexradSites = new NexradSites();
 console.log(nexradSites);
-let siteId = 'KILX';
+let siteId = 'KMLB';
 
 let nexradLayer = new NexradLayer({
     dataSourceIds: [nexradSource.id],
+    getSiteId: (rec) => {
+        return rec.siteId;
+    },
+    getElevationNumber: (rec) => {
+        return rec.elevationNumber;
+    },
     getLocation: (rec) => {  
-        // var location = nexradSites.getSiteLocation(siteId);
-        //return rec.location;
-       // console.log('nexradLayer.getLoc: ' + rec.siteId + ',' + rec.location.lat + ',' + rec.location.lon);
         return {
             x: rec.location.lon,
             y: rec.location.lat,
@@ -57,9 +59,9 @@ let nexradLayer = new NexradLayer({
     },
     getElevation: (rec) => {
         // Check to see if radar has completed a sweep and changed elevation
-        // if(! (Math.abs(rec.elevation - prevElevation) < 0.3) ) {
         if(rec.elevationNumber != prevElevationNumber) {
-            console.log('cesium-nexrad: ' + new Date(rec.timestamp).toISOString() + ', ' + rec.elevationNumber + ', ' + rec.elevation + ', ' + rec.azimuth );
+            console.log('cesium-nexrad: ' + new Date(rec.timestamp).toISOString() + ', ' + 
+                rec.siteId + ', ' + rec.elevationNumber + ', ' + rec.elevation + ', ' + rec.azimuth );
             prevElevation = rec.elevation;
             prevElevationNumber = rec.elevationNumber;
         }
@@ -82,13 +84,31 @@ let nexradLayer = new NexradLayer({
 let cesiumView = new NexradView({
     container: 'cesium-container',
     allowBillboardRotation: true,
+    width: '50%',
+    height: '50%',
     layers: [nexradLayer]
 });
 
-console.log('connecting to datasources');
+//  Show radar location
 
-// start streaming
+
+//  Start WS connection to driver
+console.log('Establishing connection to Nexrad OSH node...');
 nexradSource.connect();
+
+// 
+let siteMenu = document.getElementById('sites');
+siteMenu.onchange = (event) => {
+    cesiumView.setActiveSite(event.target.value);
+}
+
+let elevationMenu = document.getElementById('elevations');
+elevations.onchange = (event) => {
+    // cesiumView.setElevationNumber(event.target.selectedIndex);
+    cesiumView.setElevationNumber(event.target.value);
+}
+
+// siteMenu.addEventListener
 
 // cesiumView.viewer.camera.flyTo({
 //     destination : Cartesian3.fromDegrees(radarLocation.x, radarLocation.y, radarLocation.z),

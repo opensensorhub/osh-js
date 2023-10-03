@@ -56,6 +56,20 @@ class NexradLayer extends Layer {
 
         this.definedId('nexradId', props);
 
+        if (this.checkFn("getSiteId")) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('siteId',await this.getFunc('getSiteId')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getSiteId'), fn);
+        }
+
+        if (this.checkFn("getElevationNumber")) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('elevationNumber',await this.getFunc('getElevationNumber')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getElevationNumber'), fn);
+        }
+
         if (this.checkFn("getLocation")) {
             let fn = async (rec, timestamp, options) => {
                 this.updateProperty('location',await this.getFunc('getLocation')(rec, timestamp, options));
