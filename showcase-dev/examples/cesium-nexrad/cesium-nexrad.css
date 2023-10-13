@@ -1,35 +1,40 @@
+/**
 #popup {
     position: absolute;
     display: none;
-    width: 70px;
+    width: 500px;
     height: 50px;
     z-index: 999999;
     background: #00000091;
     color: white;
     padding: 5px;
 }
-
+*/
 .flex-container {
     display: flex;
-    width: 500px;
+    flex-direction: row;
+    align-items: stretch;
+    align-content: stretch;
 }
 
 .flex-child {
     flex: 1;
-    border: 2px solid yellow;
+    display: flex;
+    border: 5px solid rgb(8, 10, 83);
+    justify-content: center;
+    padding: 15px;
+    background-color: lightgray ;
+    font-size: 22px;
 }
 
-.flex-child:first-child {
-    margin-right:  20 px;
+label {
+    margin-right: 12px;
 }
 
+#cesium-container {
+    height: 93%;
+}
 
-/* #selection-div {
-    position: absolute;
-    display: none;
-    width: 10%;
-    height: 100%;
+select { 
     padding: 5px;
-    color: red;
-    background-color: #2ecc71;
-} */
+}

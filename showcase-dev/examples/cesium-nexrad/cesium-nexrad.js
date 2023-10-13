@@ -1,11 +1,12 @@
 import cesium, {
-    Cartesian3, Color, ColorGeometryInstanceAttribute, HeightReference, Ion, GeometryInstance, GroundPrimitive, EllipseGeometry
+    Cartesian3, Ion, Color, ColorGeometryInstanceAttribute, HeightReference,
+    GeometryInstance, GroundPrimitive, EllipseGeometry
 } from 'cesium';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-//import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import NexradLayer from "./NexradLayer";
 import NexradView from "./NexradView";
 import NexradSites from "./NexradSites";
+import './cesium-nexrad.css';
 
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
@@ -37,7 +38,7 @@ let nexradSource = createDataSource();
 // sites
 let nexradSites = new NexradSites();
 console.log(nexradSites);
-let siteId = 'KMLB';
+let siteId = 'KILX';
 
 let nexradLayer = new NexradLayer({
     dataSourceIds: [nexradSource.id],
@@ -76,6 +77,11 @@ let nexradLayer = new NexradLayer({
     getReflectivity: (rec) => {
         return rec.Reflectivity;
     },
+    getProductTime: (rec, timestamp) => {
+        let isoTime =  new Date(rec.timestamp).toISOString(); // rec.timestamp == timestamp
+        //console.log('cesium-nexrad.getProductTime: ' + isoTime + ', ' + timestamp);
+        return isoTime;
+    },
   
     allowBillboardRotation: true,
 });
@@ -83,14 +89,24 @@ let nexradLayer = new NexradLayer({
 // create Cesium view
 let cesiumView = new NexradView({
     container: 'cesium-container',
+    options: {
+        layers: ['Bing Maps Aerial', 'Bing Maps Aerial with Labels', 'Bing Maps Roads']
+    },
     allowBillboardRotation: true,
     width: '50%',
     height: '50%',
     layers: [nexradLayer]
 });
 
-//  Show radar location
+// Default to Bing Maps Roads
+const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
+baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[2];
 
+cesiumView.viewer.camera.setView({
+    destination : Cartesian3.fromDegrees(-95.86789455,37.04455315,3750000)
+});
+
+//  TODO: Show radar location
 
 //  Start WS connection to driver
 console.log('Establishing connection to Nexrad OSH node...');
@@ -104,11 +120,8 @@ siteMenu.onchange = (event) => {
 
 let elevationMenu = document.getElementById('elevations');
 elevations.onchange = (event) => {
-    // cesiumView.setElevationNumber(event.target.selectedIndex);
     cesiumView.setElevationNumber(event.target.value);
 }
-
-// siteMenu.addEventListener
 
 // cesiumView.viewer.camera.flyTo({
 //     destination : Cartesian3.fromDegrees(radarLocation.x, radarLocation.y, radarLocation.z),

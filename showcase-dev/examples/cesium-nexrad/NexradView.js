@@ -46,7 +46,7 @@ class NexradView extends CesiumView {
             Color.fromBytes(253, 253, 253)
         ];
 
-        // Single site
+        // Some of this is handled by siteMap now and can be removed
         this.pointCollection = new PointPrimitiveCollection();
         this.radialSet = new Set();
         this.radialCount = 0;
@@ -59,11 +59,12 @@ class NexradView extends CesiumView {
         // so need to figure out how to cleanly support other VCP modes (clear air)
         this.elevations = [0.5, 0.9, 1.3, 1.8, 2.4, 3.1, 4.0, 5.1, 6.4, 8.0, 10.0, 12.4, 15.6, 19.5];
 
-        // 1 active site for now- get from user input
-        this.activeSite = 'KPUX';
-
-        // Multiple sites/elevations
+        // Initialize siteMap and state
         this.siteMap = new Map();
+        let siteMenu = document.getElementById('sites');
+        this.activeSite = siteMenu.value;
+        let siteState = this.addSite(this.activeSite);
+        siteState.activeElevationNumber = document.getElementById('elevations').value;
     }
 
     Radials(elevationNumber, elevationAngle, radials) {
@@ -73,7 +74,6 @@ class NexradView extends CesiumView {
     }
 
     async setData(dataSourceId, data) {
-        // need to do this ONLY when elevation changes (for single elevation)
         const values = data.values;
         for (let i = 0; i < values.length; i++) {
             const d = values[i];
@@ -81,6 +81,17 @@ class NexradView extends CesiumView {
                 await this.updateNexrad(d);
             }
         }
+    }
+
+    addSite(siteId) {
+        let siteState = {
+            activeElevationNumber: 1, // use if only one elevation
+            prevElevationNumber: 0,
+            radials: null
+        }
+        this.siteMap.set(this.activeSite, siteState);
+        siteState.radials = new Set();
+        return siteState;
     }
 
     async updateNexrad(props) {
@@ -96,13 +107,7 @@ class NexradView extends CesiumView {
         let siteState = this.siteMap.get(this.activeSite);
         if (!siteState) {
             console.log('activeSite not in siteMap. Adding now: ') + this.activeSite;
-            siteState = {
-                activeElevationNumber: 1, // use if only one elevation
-                prevElevationNumber: 0,
-                radials: null
-            }
-            siteState.radials = new Set();
-            this.siteMap.set(this.activeSite, siteState);
+            siteState = this.addSite(this.activeSite);
         }
 
         let DTR = Math.PI / 180;
@@ -110,9 +115,8 @@ class NexradView extends CesiumView {
         // Check for elevation change
         if (props.elevationNumber != siteState.prevElevationNumber) {
             // console.log('NexradView elevation change: ' + props.elevationNumber + ", " + siteState.prevElevationNumber);
-            // if (props.elevationNumber <= 2) { // ***
             if (props.elevationNumber == 1) {
-                console.log('NexradView volume change');
+                console.log('NexradView volume change');  // check this condition
                 if (siteState.radials) {
                     siteState.radials.forEach(radial => {
                         this.viewer.scene.primitives.remove(radial);
@@ -120,13 +124,13 @@ class NexradView extends CesiumView {
                 }
                 siteState.radials = new Set();
             }
-            // } // ***
         }
         this.prevElevation = props.elevation;
         siteState.prevElevationNumber = props.elevationNumber;
 
-        // ***
-        if (siteState.activeElevationNumber == 1 && props.elevationNumber > 1) return
+        // Check if this elevation should be rendered and return if not
+        if (siteState.activeElevationNumber == 1 && props.elevationNumber > 1) 
+            return;
 
         // create Transform from Radar coords to ECEF
         let radarLoc = Cartesian3.fromDegrees(props.location.x, props.location.y, props.location.z);
@@ -144,11 +148,10 @@ class NexradView extends CesiumView {
 
             let val = props.reflectivity[i];
 
-            // skip points that are out of range
             // min lower value is -32, but raising lower thereshold here masks out lower values and
             // makes display a little cleaner
             // if (val < -32 || val > 94.5) {
-            if (val < 15 || val > 94.5) {
+            if (val < 10 || val > 94.5) {
                 continue;
             }
 
@@ -159,7 +162,7 @@ class NexradView extends CesiumView {
             points.add({
                 position: Cartesian3.add(radarLoc, gatePos, gatePos),
                 color: this.getReflectivityColor(val),
-                pixelSize: 3
+                pixelSize: 6
             });
         }
 
@@ -167,6 +170,9 @@ class NexradView extends CesiumView {
         siteState.radials.add(points);
         this.viewer.scene.primitives.add(points);
         this.viewer.scene.requestRender();
+
+        let productTime = document.getElementById('product-time');
+        productTime.innerHTML = 'Product Time: ' + props.productTime;
 
         if (siteState.radials.size % 100 == 0)
             console.log('\t** numRadials: ' + siteState.radials.size);
@@ -185,6 +191,9 @@ class NexradView extends CesiumView {
 
     setElevationNumber(elevationNumber) {
         let currentSite = this.siteMap.get(this.activeSite);
+        if(!currentSite) {
+            currentSite = this.addSite(this.activeSite);
+        }
         currentSite.activeElevationNumber = elevationNumber;
         //
         if(currentSite) {
@@ -196,7 +205,6 @@ class NexradView extends CesiumView {
                 this.viewer.scene.requestRender();
             }
             currentSite.radials = new Set();
-
         }
     }
 

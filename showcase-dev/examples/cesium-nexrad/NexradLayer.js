@@ -13,6 +13,7 @@ class NexradLayer extends Layer {
         const props = {
             siteId: null,
             location: null,
+            productTime: null,
             azimuth: null,
             elevation: null,
             elevationNumber: null,
@@ -110,6 +111,13 @@ class NexradLayer extends Layer {
                 this.updateProperty('reflectivity',await this.getFunc('getReflectivity')(rec, timestamp, options));
             };
             this.addFn(this.getDataSourcesIdsByProperty('getReflectivity'), fn);
+        }
+
+        if (this.checkFn("getProductTime")) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('productTime',await this.getFunc('getProductTime')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getProductTime'), fn);
         }
     }
 }

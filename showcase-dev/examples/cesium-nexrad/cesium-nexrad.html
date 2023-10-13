@@ -1,14 +1,43 @@
 <head>
-    <link re;="stylesheet"" href="cesium-nexrad.css"">
+  <link href="./cesium-nexrad.css" rel="stylesheet" >
+
+<!--
+    <style>
+      #sites, #elevations {
+          height: 30px;
+          font-size: 15px;
+          color: black;
+          padding: 5px;
+      } 
+
+    </style>
+-->
 </head>
 
 <div id="popup"></div>
 
 <body>
     <div class="flex-container">
-      <div id="cesium-container" class="flex-child magenta"></div>">
-      </div>
-    </div>
 
-  </div>
-</body>
+        <div id="site-selection" class="flex-child" >
+          <label for="sites">Site:</label> 
+          <select name="sites" id="sites"> 
+            <option value="KLSX">KLSX - St. Louis, MO</option> 
+            <option value="KILX">KILX - Lincoln, IL</option> 
+          </select>
+        </div>
+      
+        <div id="elev-selection" class="flex-child">
+          <label for="elevations">Elevations:</label> 
+          <select name="elevations" id="elevations"> 
+            <option value="1">0.5</option> 
+            <option value="0">ALL</option> 
+          </select>
+        </div>
+
+        <div id="time-label" class="flex-child" >
+          <label id="product-time">Product Time: -----</label>
+        </div>
+    </div>
+    <div id="cesium-container"></div>
+  </body>
