@@ -122,8 +122,10 @@ class CurveLayer extends Layer {
         if (isDefined(properties.getValues)) {
             let fn = async (rec, timestamp, options) => {
                 const value = await that.getFunc('getValues')(rec,timestamp,options);
-                that.props.x = value.x;
-                that.props.y = value.y;
+                if (value != undefined || null) {
+                    that.props.x = value.x;
+                    that.props.y = value.y;
+                }
             };
             this.addFn(that.getDataSourcesIdsByProperty('getValues'), fn);
         }
