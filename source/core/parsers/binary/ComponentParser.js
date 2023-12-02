@@ -3,6 +3,7 @@ import BinaryDoubleDataTypeDecoder from "./dataType/BinaryDoubleDataTypeDecoder"
 import BinaryIntegerDataTypeDecoder from "./dataType/BinaryIntegerDataTypeDecoder";
 import BinaryShortDataTypeDecoder from "./dataType/BinaryShortDataTypeDecoder";
 import BinaryFloat32DataTypeDecoder from "./dataType/BinaryFloat32DataTypeDecoder";
+import BinaryStringUtf8DataTypeDecoder from "./dataType/BinaryStringUtf8DataTypeDecoder";
 
 class ComponentParser extends AbstractParser {
     constructor(binaryDataTypeDecoder) {
@@ -20,6 +21,8 @@ class ComponentParser extends AbstractParser {
             this.refs[element.ref] = new BinaryShortDataTypeDecoder();
         } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/float32') {
             this.refs[element.ref] = new BinaryFloat32DataTypeDecoder();
+        } else if(element.dataType === 'http://www.opengis.net/def/dataType/OGC/0/string-utf-8'){
+            this.refs[element.ref] = new BinaryStringUtf8DataTypeDecoder();
         }
         if(element.ref in this.refs) {
             this.binaryDataTypeDecoder.addRef(element.ref, this.refs[element.ref]);
