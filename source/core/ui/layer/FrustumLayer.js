@@ -1,4 +1,4 @@
-import Layer from "../../../../source/core/ui/layer/Layer";
+import Layer from "./Layer.js";
 import {isDefined} from "../../utils/Utils";
 
 /**
