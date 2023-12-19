@@ -8,8 +8,7 @@ import NexradSites from "./NexradSites";
 import './cesium-nexrad.css';
 
 // Compile errors when including TimeController
-//import TimeController from 'osh-js/vue/components/TimeController.vue';
-
+import TimeController from 'osh-js/vue/components/TimeController.vue';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
