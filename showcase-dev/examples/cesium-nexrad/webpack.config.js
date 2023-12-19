@@ -49,14 +49,20 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            },
+            {
                 test: /\.(png|svg|jpg|gif)$/,
                 use: [
                     'file-loader',
                 ],
-            },{
+            },
+            {
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
-            }, {
+            }, 
+            {
                 test: /\.worker\.js$/,
                 use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
             }

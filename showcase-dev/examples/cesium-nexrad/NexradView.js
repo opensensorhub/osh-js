@@ -48,6 +48,7 @@ class NexradView extends CesiumView {
 
         // Some of this is handled by siteMap now and can be removed
         this.pointCollection = new PointPrimitiveCollection();
+        this.viewer.scene.primitives.add(this.pointCollection);
         this.radialSet = new Set();
         this.radialCount = 0;
         this.prevElevation = 0.0;
@@ -117,12 +118,15 @@ class NexradView extends CesiumView {
             // console.log('NexradView elevation change: ' + props.elevationNumber + ", " + siteState.prevElevationNumber);
             if (props.elevationNumber == 1) {
                 console.log('NexradView volume change');  // check this condition
+                // TODO FIX for new ptprim collection
                 if (siteState.radials) {
                     siteState.radials.forEach(radial => {
                         this.viewer.scene.primitives.remove(radial);
                     });
                 }
                 siteState.radials = new Set();
+                //
+                this.pointCollection.removeAll();
             }
         }
         this.prevElevation = props.elevation;
@@ -159,29 +163,24 @@ class NexradView extends CesiumView {
             Matrix3.multiplyByVector(rotM, gatePos, gatePos);
 
             //  points is pointPrimitive collection of all points along a single radial
-            points.add({
+            // points.add({
+            this.pointCollection.add({
                 position: Cartesian3.add(radarLoc, gatePos, gatePos),
                 color: this.getReflectivityColor(val),
-                pixelSize: 6
+                pixelSize: 5
             });
         }
 
-        this.radialCount++;
-        siteState.radials.add(points);
-        this.viewer.scene.primitives.add(points);
+        // this.radialCount++;
+        // siteState.radials.add(points);
+        // this.viewer.scene.primitives.add(points);  
         this.viewer.scene.requestRender();
 
         let productTime = document.getElementById('product-time');
         productTime.innerHTML = 'Product Time: ' + props.productTime;
 
-        if (siteState.radials.size % 100 == 0)
-            console.log('\t** numRadials: ' + siteState.radials.size);
-
-        // this.viewer.camera.flyTo({
-        //     // destination : Cartesian3.fromDegrees(props.location.y, props.location.x, props.location.z),
-        //     destination : radarLoc,
-        //     duration : 1.0
-        // });
+        // if (this.pointCollection.length % 1000 == 0)
+            // console.log('\t** numPoints: ' + this.pointCollection.length);
     }
 
     getReflectivityColor(val) {
@@ -212,14 +211,16 @@ class NexradView extends CesiumView {
         // remove existing radials
         let currentSite = this.siteMap.get(this.activeSite);
         if(currentSite) {
-            console.log('Remove old radials from ' + this.activeSite);
-            if (currentSite.radials) {
-                currentSite.radials.forEach(radial => {
-                    this.viewer.scene.primitives.remove(radial);
-                });
-                this.viewer.scene.requestRender();
-            }
-            currentSite.radials = new Set();
+            this.pointCollection.removeAll();
+
+            // console.log('Remove old radials from ' + this.activeSite);
+            // if (currentSite.radials) {
+            //     currentSite.radials.forEach(radial => {
+            //         this.viewer.scene.primitives.remove(radial);
+            //     });
+            //     this.viewer.scene.requestRender();
+            // }
+            // currentSite.radials = new Set();
 
         }
 
