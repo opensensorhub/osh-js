@@ -1,5 +1,5 @@
 /* webpack.config.js */
-
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -49,11 +49,18 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader"
+                }
+            },
+            {
                 test: /\.vue$/,
                 loader: 'vue-loader'
             },
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.(png|woff|woff2|eot|ttf|svg|jpg|gif)$/,
                 use: [
                     'file-loader',
                 ],
@@ -61,7 +68,7 @@ module.exports = {
             {
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
-            }, 
+            },
             {
                 test: /\.worker\.js$/,
                 use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
@@ -91,6 +98,7 @@ module.exports = {
          *
          * See `Options and Defaults` for information
          */
+        new VueLoaderPlugin(),
         new CleanWebpackPlugin(),
         // This plugin will generate an index.html file for us that can be used
         // by the Webpack dev server. We can give it a template file (written in EJS)
