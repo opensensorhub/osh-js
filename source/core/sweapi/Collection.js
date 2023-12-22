@@ -47,6 +47,7 @@ class Collection {
 
         const jsonResponse = await fetch(fullUrl, {
             method: 'GET',
+            credentials: 'include',
             headers: {}
         }).then((response) => {
             if (!response.ok) {
