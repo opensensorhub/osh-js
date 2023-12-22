@@ -122,6 +122,7 @@ class SensorWebApi {
 
         return fetch(fullUrl, {
                 method: 'GET',
+                credentials: 'include',
                 headers: headers
             }
         ).then(function (response) {
