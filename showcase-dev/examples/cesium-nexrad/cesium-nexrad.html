@@ -21,9 +21,9 @@
         <div id="site-selection" class="flex-child" >
           <label for="sites">Site:</label> 
           <select name="sites" id="sites"> 
-            <option value="KHTX">KHTX</option> 
-            <option value="KOHX">KOHX</option> 
-            <option value="KGWX">KGWX</option> 
+            <option value="KHGX">KHGX</option> 
+            <option value="KGRK">KGRK</option> 
+            <option value="KMOB">KMOB</option> 
           </select>
         </div>
       
@@ -39,5 +39,18 @@
           <label id="product-time">Product Time: -----</label>
         </div>
     </div>
+
+    <div id="time-controller">
+      <TimeController id="timecontroller"
+          :dataSource="nexradSource"
+          @event='onControlEvent'
+          :skipTimeStep="'60s'"
+          :parseTime='parseTime'
+          v-if="dataSynchronizer"
+          :key="key"
+        >
+      </TimeController>
+    </div>
+
     <div id="cesium-container"></div>
   </body>

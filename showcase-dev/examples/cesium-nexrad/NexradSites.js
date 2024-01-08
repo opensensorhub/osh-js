@@ -24,9 +24,9 @@ class NexradSites {
 
             res.on('close', () => {
                 this.sites = JSON.parse(data);
-                // this.sites.forEach((site) => {
-                //     console.log(site.id + ":" + site.geometry.coordinates);
-                // });
+                this.sites.forEach((site) => {
+                    console.log(site.id + ":" + site.geometry.coordinates);
+                });
 
                 return this.sites;   
             });

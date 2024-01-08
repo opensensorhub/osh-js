@@ -19,8 +19,8 @@ function createDataSource() {
     return new SosGetResult('nexrad-data', {
         protocol: 'ws',
         service: 'SOS',
-        endpointUrl: '76.187.247.4:8282/sensorhub/sos',
-        // endpointUrl: 'localhost:8282/sensorhub/sos',
+        //endpointUrl: '76.187.247.4:8282/sensorhub/sos',
+        endpointUrl: 'localhost:8282/sensorhub/sos',
         offeringID: 'urn:osh:sensor:weather:nexrad',
         observedProperty: 'http://sensorml.com/ont/swe/propertyx/NexradRadial',
         mode: 'realTime', // default is REAL_TIME
@@ -101,6 +101,14 @@ let cesiumView = new NexradView({
   
 });
 
+
+// let timeController = new TimeController({
+//     event:'onControlEvent',
+//     skipTimeStep: "'60s'",
+//     parseTime: 'parseTime',
+    
+// });
+
 // Default to Bing Maps Roads
 const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
 baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[2];
@@ -159,6 +167,8 @@ let elevationMenu = document.getElementById('elevations');
 elevations.onchange = (event) => {
     cesiumView.setElevationNumber(event.target.value);
 }
+
+let timeController = document.getElementById('TimeController');
 
 //  Start WS connection to driver
 console.log('Establishing connection to Nexrad OSH node...');

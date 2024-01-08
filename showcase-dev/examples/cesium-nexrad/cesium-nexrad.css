@@ -32,7 +32,16 @@ label {
 }
 
 #cesium-container {
-    height: 93%;
+    height: 85%;
+}
+
+#time-controller {
+    height: 8%;
+}
+
+#timecontroller {
+    width: 500px;
+    height: 100px;
 }
 
 select { 
