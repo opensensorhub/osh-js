@@ -112,6 +112,7 @@ module.exports = {
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
             { from: path.resolve(__dirname,'images'), to: 'images'},
+            { from: path.resolve(__dirname,'css'), to: 'css'},
             { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, cesiumWorkers), to: 'Workers', force:true },
             { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: 'Assets', force:true },
             { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: 'Widgets', force:true }

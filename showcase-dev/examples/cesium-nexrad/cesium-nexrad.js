@@ -5,7 +5,7 @@ import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js'
 import NexradLayer from "./NexradLayer";
 import NexradView from "./NexradView";
 import NexradSites from "./NexradSites";
-import './cesium-nexrad.css';
+import './css/cesium-nexrad.css';
 
 // Compile errors when including TimeController
 import TimeController from 'osh-js/vue/components/TimeController.vue';
@@ -46,7 +46,7 @@ let nexradLayer = new NexradLayer({
     getElevationNumber: (rec) => {
         return rec.elevationNumber;
     },
-    getLocation: (rec) => {  
+    getLocation: (rec) => {
         return {
             x: rec.location.lon,
             y: rec.location.lat,
@@ -59,7 +59,7 @@ let nexradLayer = new NexradLayer({
     getElevation: (rec) => {
         // Check to see if radar has completed a sweep and changed elevation
         if(rec.elevationNumber != prevElevationNumber) {
-            console.log('cesium-nexrad: ' + new Date(rec.timestamp).toISOString() + ', ' + 
+            console.log('cesium-nexrad: ' + new Date(rec.timestamp).toISOString() + ', ' +
                 rec.siteId + ', ' + rec.elevationNumber + ', ' + rec.elevation + ', ' + rec.azimuth );
             prevElevation = rec.elevation;
             prevElevationNumber = rec.elevationNumber;
@@ -79,7 +79,7 @@ let nexradLayer = new NexradLayer({
         let isoTime =  new Date(rec.timestamp).toISOString(); // rec.timestamp == timestamp
         return isoTime;
     },
-  
+
     allowBillboardRotation: true,
 });
 
@@ -98,7 +98,7 @@ let cesiumView = new NexradView({
     width: '50%',
     height: '50%',
     layers: [nexradLayer],
-  
+
 });
 
 
@@ -106,7 +106,7 @@ let cesiumView = new NexradView({
 //     event:'onControlEvent',
 //     skipTimeStep: "'60s'",
 //     parseTime: 'parseTime',
-    
+
 // });
 
 // Default to Bing Maps Roads
@@ -139,7 +139,7 @@ siteMenu.onchange = (event) => {
     cesiumView.viewer.camera.flyTo({
         destination : Cartesian3.fromDegrees(siteLoc.x, siteLoc.y, 600000),
         duration : 1.0
-    });   
+    });
 }
 
 function getSiteLabel(position, siteId) {
