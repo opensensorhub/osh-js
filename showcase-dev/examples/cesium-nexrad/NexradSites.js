@@ -4,7 +4,7 @@ const https = require('https');
 class NexradSites {
     constructor() {
         this.sites = this.init();
-        console.log('nwe');
+        console.log('NexradSites sites table loaded: this.sites = ' + this.sites);
     }
 
     init() {
@@ -25,8 +25,9 @@ class NexradSites {
             res.on('close', () => {
                 this.sites = JSON.parse(data);
                 this.sites.forEach((site) => {
-                    console.log(site.id + ":" + site.geometry.coordinates);
+                    console.log(site.properties.name + ":" + site.properties.uid + ":" + site.geometry.coordinates);
                 });
+                // console.error(`Returning this.sites = ` + this.sites);
 
                 return this.sites;   
             });
@@ -40,7 +41,7 @@ class NexradSites {
     }
     
     getSite(id) {
-        let site =  this.sites.find(s => s.id === id);
+        let site =  this.sites.find(s => s.properties.name === id);
         return site;
     }
 

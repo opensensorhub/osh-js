@@ -19,8 +19,8 @@ function createDataSource() {
     return new SosGetResult('nexrad-data', {
         protocol: 'ws',
         service: 'SOS',
-        endpointUrl: '76.187.247.4:8282/sensorhub/sos',
-        //endpointUrl: 'localhost:8282/sensorhub/sos',
+        // endpointUrl: '76.187.247.4:8282/sensorhub/sos',
+        endpointUrl: 'localhost:8282/sensorhub/sos',
         offeringID: 'urn:osh:sensor:weather:nexrad',
         observedProperty: 'http://sensorml.com/ont/swe/propertyx/NexradRadial',
         mode: 'realTime', // default is REAL_TIME
@@ -124,25 +124,37 @@ cesiumView.viewer.camera.setView({
 
 // Set initial menu options and change events
 let siteMenu = document.getElementById('sites');
-
 let currentLabel;
+//setActiveSite(siteMenu.value);
+
 siteMenu.onchange = (event) => {
-    cesiumView.setActiveSite(event.target.value);
-    let siteLoc = nexradSites.getSiteLocation(event.target.value);
-    console.log(siteLoc);
+    setActiveSite(event.target.value);
+}
+
+function setActiveSite(siteId) {
+    cesiumView.setActiveSite(siteId);
+    let siteLoc = nexradSites.getSiteLocation(siteId);
+    let label = getSiteLabel(siteLoc, siteId);
     if(!currentLabel) {
-        let label = getSiteLabel(siteLoc, event.target.value);
+//        let label = getSiteLabel(siteLoc, event.target.value);
         currentLabel = cesiumView.viewer.entities.add(label);
     } else {
+        // let idx = siteId.lastIndexOf(':');
+        // let id = siteId.substring(idx + 1);
         currentLabel.position = Cartesian3.fromDegrees(siteLoc.x, siteLoc.y);
+        currentLabel.label.text = siteId;
     }
     cesiumView.viewer.camera.flyTo({
         destination : Cartesian3.fromDegrees(siteLoc.x, siteLoc.y, 600000),
         duration : 1.0
     });   
+
 }
 
 function getSiteLabel(position, siteId) {
+    // let idx = siteId.lastIndexOf(':');
+    // let id = siteId.substring(idx + 1);
+    // console.log(idx + ', ' + siteId + "," + id);
     let label = {
         position: Cartesian3.fromDegrees(position.x, position.y),
         point: {

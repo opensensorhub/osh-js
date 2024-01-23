@@ -63,7 +63,9 @@ class NexradView extends CesiumView {
         // Initialize siteMap and state
         this.siteMap = new Map();
         let siteMenu = document.getElementById('sites');
+        // TODO: fix me 
         this.activeSite = siteMenu.value;
+        //this.activeSite = "urn:osh:sensor:weather:nexrad:" + siteMenu.value;
         let siteState = this.addSite(this.activeSite);
         siteState.activeElevationNumber = document.getElementById('elevations').value;
     }
@@ -225,7 +227,7 @@ class NexradView extends CesiumView {
         }
 
         this.activeSite = site;
-        console.log('Site changed: ' + event.target.value);
+        //console.log('Site changed: ' + event.target.value);
 
         let siteState = this.siteMap.get(this.activeSite);
         if (!siteState) {
