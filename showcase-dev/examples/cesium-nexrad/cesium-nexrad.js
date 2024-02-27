@@ -1,11 +1,17 @@
 import cesium, {
-    Cartesian2, Cartesian3, Ion, Color, LabelStyle, HorizontalOrigin, SceneMode
+    Cartesian2,
+    Cartesian3,
+    Ion,
+    Color,
+    LabelStyle,
+    HorizontalOrigin,
+    SceneMode
 } from 'cesium';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import NexradLayer from "./NexradLayer";
 import NexradView from "./NexradView";
 import NexradSites from "./NexradSites";
-import './cesium-nexrad.css';
+import './css/cesium-nexrad.css';
 
 // Compile errors when including TimeController
 import TimeController from 'osh-js/vue/components/TimeController.vue';
@@ -24,7 +30,7 @@ function createDataSource() {
         offeringID: 'urn:osh:sensor:weather:nexrad',
         observedProperty: 'http://sensorml.com/ont/swe/propertyx/NexradRadial',
         mode: 'realTime', // default is REAL_TIME
-        reconnectTimeout: 1000 * 120,  // 2 mimutes
+        reconnectTimeout: 1000 * 120, // 2 mimutes
         replaySpeed: 1
     })
 }
@@ -46,7 +52,7 @@ let nexradLayer = new NexradLayer({
     getElevationNumber: (rec) => {
         return rec.elevationNumber;
     },
-    getLocation: (rec) => {  
+    getLocation: (rec) => {
         return {
             x: rec.location.lon,
             y: rec.location.lat,
@@ -58,9 +64,9 @@ let nexradLayer = new NexradLayer({
     },
     getElevation: (rec) => {
         // Check to see if radar has completed a sweep and changed elevation
-        if(rec.elevationNumber != prevElevationNumber) {
-            console.log('cesium-nexrad: ' + new Date(rec.timestamp).toISOString() + ', ' + 
-                rec.siteId + ', ' + rec.elevationNumber + ', ' + rec.elevation + ', ' + rec.azimuth );
+        if (rec.elevationNumber != prevElevationNumber) {
+            console.log('cesium-nexrad: ' + new Date(rec.timestamp).toISOString() + ', ' +
+                rec.siteId + ', ' + rec.elevationNumber + ', ' + rec.elevation + ', ' + rec.azimuth);
             prevElevation = rec.elevation;
             prevElevationNumber = rec.elevationNumber;
         }
@@ -76,10 +82,10 @@ let nexradLayer = new NexradLayer({
         return rec.Reflectivity;
     },
     getProductTime: (rec, timestamp) => {
-        let isoTime =  new Date(rec.timestamp).toISOString(); // rec.timestamp == timestamp
+        let isoTime = new Date(rec.timestamp).toISOString(); // rec.timestamp == timestamp
         return isoTime;
     },
-  
+
     allowBillboardRotation: true,
 });
 
@@ -90,7 +96,7 @@ let cesiumView = new NexradView({
         layers: ['Bing Maps Aerial', 'Bing Maps Aerial with Labels', 'Bing Maps Roads'],
         viewerProps: {
             homeButton: true,
-            sceneMode : SceneMode.SCENE2D,
+            sceneMode: SceneMode.SCENE2D,
             scene3DOnly: false, // for draw layer,
         }
     },
@@ -98,7 +104,7 @@ let cesiumView = new NexradView({
     width: '50%',
     height: '50%',
     layers: [nexradLayer],
-  
+
 });
 
 
@@ -106,7 +112,7 @@ let cesiumView = new NexradView({
 //     event:'onControlEvent',
 //     skipTimeStep: "'60s'",
 //     parseTime: 'parseTime',
-    
+
 // });
 
 // Default to Bing Maps Roads
@@ -119,7 +125,7 @@ baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProvi
 // console.log('CURRENT SITE: ' + siteLocation);
 //  For now, show approximate CONUS view
 cesiumView.viewer.camera.setView({
-    destination : Cartesian3.fromDegrees(-95.86789455,37.04455315,3750000)
+    destination: Cartesian3.fromDegrees(-95.86789455, 37.04455315, 3750000)
 });
 
 // Set initial menu options and change events
@@ -135,8 +141,8 @@ function setActiveSite(siteId) {
     cesiumView.setActiveSite(siteId);
     let siteLoc = nexradSites.getSiteLocation(siteId);
     let label = getSiteLabel(siteLoc, siteId);
-    if(!currentLabel) {
-//        let label = getSiteLabel(siteLoc, event.target.value);
+    if (!currentLabel) {
+        //        let label = getSiteLabel(siteLoc, event.target.value);
         currentLabel = cesiumView.viewer.entities.add(label);
     } else {
         // let idx = siteId.lastIndexOf(':');
@@ -145,10 +151,9 @@ function setActiveSite(siteId) {
         currentLabel.label.text = siteId;
     }
     cesiumView.viewer.camera.flyTo({
-        destination : Cartesian3.fromDegrees(siteLoc.x, siteLoc.y, 600000),
-        duration : 1.0
-    });   
-
+        destination: Cartesian3.fromDegrees(siteLoc.x, siteLoc.y, 600000),
+        duration: 1.0
+    });
 }
 
 function getSiteLabel(position, siteId) {
@@ -158,21 +163,21 @@ function getSiteLabel(position, siteId) {
     let label = {
         position: Cartesian3.fromDegrees(position.x, position.y),
         point: {
-          pixelSize: 8,
-          color: Color.RED,
+            pixelSize: 8,
+            color: Color.RED,
         },
         label: {
-          text: siteId,
-          font: "20px monospace",
-          fillColor: Color.RED,
-          outlineColor: Color.BLACK,
-          style: LabelStyle.FILL_AND_OUTLINE,
-          outlineWidth: 3,
-          HorizontalOrigin: HorizontalOrigin.RIGHT,
-          pixelOffset: new Cartesian2(32, 8),
+            text: siteId,
+            font: "20px monospace",
+            fillColor: Color.RED,
+            outlineColor: Color.BLACK,
+            style: LabelStyle.FILL_AND_OUTLINE,
+            outlineWidth: 3,
+            HorizontalOrigin: HorizontalOrigin.RIGHT,
+            pixelOffset: new Cartesian2(32, 8),
         },
-      };
-      return label;
+    };
+    return label;
 }
 
 let elevationMenu = document.getElementById('elevations');

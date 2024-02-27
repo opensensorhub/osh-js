@@ -1,13 +1,13 @@
 <head>
-  <link href="./cesium-nexrad.css" rel="stylesheet" >
-<!--
+    <link href="./css/cesium-nexrad.css" rel="stylesheet">
+    <!--
     <style>
       #sites, #elevations {
           height: 30px;
           font-size: 15px;
           color: black;
           padding: 5px;
-      } 
+      }
 
     </style>
 -->
@@ -18,44 +18,32 @@
 <body>
     <div class="flex-container">
 
-        <div id="site-selection" class="flex-child" >
-          <label for="sites">Site:</label> 
-          <select name="sites" id="sites"> 
-            <!--
-            <option value="urn:osh:sensor:weather:nexrad:KHGX">KHGX</option> 
-            <option value="urn:osh:sensor:weather:nexrad:KPAH">KPAH</option> 
-            <option value="urn:osh:sensor:weather:nexrad:KOHX">KOHX</option> 
-            -->
+        <div id="site-selection" class="flex-child">
+            <label for="sites">Site:</label>
+            <select name="sites" id="sites"> 
             <option value="KHGX">KHGX</option> 
-            <option value="KPAH">KPAH</option> 
-            <option value="KOHX">KOHX</option> 
-          </select>
-        </div>
-      
-        <div id="elev-selection" class="flex-child">
-          <label for="elevations">Elevations:</label> 
-          <select name="elevations" id="elevations"> 
-            <option value="1">0.5</option> 
-            <option value="0">ALL</option> 
+            <option value="KGRK">KGRK</option> 
+            <option value="KMOB">KMOB</option> 
           </select>
         </div>
 
-        <div id="time-label" class="flex-child" >
-          <label id="product-time">Product Time: -----</label>
+        <div id="elev-selection" class="flex-child">
+            <label for="elevations">Elevations:</label>
+            <select name="elevations" id="elevations">
+            <option value="1">0.5</option>
+            <option value="0">ALL</option>
+          </select>
+        </div>
+
+        <div id="time-label" class="flex-child">
+            <label id="product-time">Product Time: -----</label>
         </div>
     </div>
 
     <div id="time-controller">
-      <TimeController id="timecontroller"
-          :dataSource="nexradSource"
-          @event='onControlEvent'
-          :skipTimeStep="'60s'"
-          :parseTime='parseTime'
-          v-if="dataSynchronizer"
-          :key="key"
-        >
-      </TimeController>
+        <TimeController id="timecontroller" :dataSource="nexradSource" @event='onControlEvent' :skipTimeStep="'60s'" :parseTime='parseTime' v-if="dataSynchronizer" :key="key">
+        </TimeController>
     </div>
 
     <div id="cesium-container"></div>
-  </body>
+</body>
