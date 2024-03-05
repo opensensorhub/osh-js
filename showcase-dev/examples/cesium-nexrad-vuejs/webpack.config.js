@@ -21,7 +21,7 @@ const config = {
       filename: 'bundle.cesium-nexrad-vue.js',
       path: path.resolve(__dirname, 'dist'),
     },
-  
+
     resolve: {
       modules: [
         path.resolve(__dirname, 'node_modules'),
@@ -72,7 +72,7 @@ const config = {
       port: 9002,
       hot: true,
       index: 'cesium-nexrad-vue.html',
-      https:true
+      https:false
     },
     optimization: {
       splitChunks: {

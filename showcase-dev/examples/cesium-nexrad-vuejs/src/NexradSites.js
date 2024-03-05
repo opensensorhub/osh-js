@@ -8,7 +8,7 @@ class NexradSites {
     }
 
     init() {
-        let foiReqUrl = 'http://localhost:8282/sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&responseFormat=application/json';
+        let foiReqUrl = 'http://76.187.247.4:8282/sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&responseFormat=application/json';
         let request = http.get(foiReqUrl, (res) => {
             if (res.statusCode !== 200) {
                 console.error(`Error retrieving sites from the server. Code: ${res.statusCode}`);
@@ -28,7 +28,7 @@ class NexradSites {
                 //     console.log(site.properties.name + ":" + site.properties.uid + ":" + site.geometry.coordinates);
                 // });
 
-                return this.sites;   
+                return this.sites;
             });
 
         });
@@ -38,7 +38,7 @@ class NexradSites {
         });
 
     }
-    
+
     getSite(id) {
         let site =  this.sites.find(s => s.properties.name === id);
         return site;
