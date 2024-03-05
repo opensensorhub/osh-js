@@ -7,10 +7,10 @@
 
         <div id="site-selection" class="flex-child">
             <label for="sites">Site:</label>
-            <select name="sites" id="sites" class="select"> 
-                <option value="KHGX">KHGX</option> 
-                <option value="KGRK">KGRK</option> 
-                <option value="KMOB">KMOB</option> 
+            <select name="sites" id="sites" class="select">
+                <option value="KHGX">KHGX</option>
+                <option value="KGRK">KGRK</option>
+                <option value="KMOB">KMOB</option>
           </select>
         </div>
 
@@ -28,14 +28,14 @@
     </div>
 
     <div id="cesium-container"></div>
-<!--
     <div class="footer">
         <TimeController
             @event='onControlEvent'
             :skipTimeStep="'10s'"
+            :dataSource="nexradSource"
+            v-if="nexradSource"
         ></TimeController>
     </div>
--->    
   </body>
   </div>
 
@@ -72,7 +72,8 @@ components: {
 
 data: function () {
     return {
-      dataSynchronizer: null
+      dataSynchronizer: null,
+      nexradSource: null
     }
 },
 
@@ -80,7 +81,7 @@ beforeMount() {
 },
 
 mounted() {
- 
+
     function createDataSource() {
         return new SosGetResult('nexrad-data', {
             protocol: 'ws',
@@ -94,18 +95,18 @@ mounted() {
             reconnectTimeout: 1000 * 120, // 2 mimutes
             replaySpeed: 1
         })
-    }          
+    }
 
     let prevElevation;
     let prevElevationNumber;
-    let nexradSource = createDataSource();
+    this.nexradSource = createDataSource();
 
     // sites
     console.log('Initializing NexradSites...');
     let nexradSites = new NexradSites();
 
     let nexradLayer = new NexradLayer({
-        dataSourceIds: [nexradSource.id],
+        dataSourceIds: [this.nexradSource.id],
         getSiteId: (rec) => {
             return rec.siteId;
         },
@@ -201,7 +202,7 @@ mounted() {
             destination: Cartesian3.fromDegrees(siteLoc.x, siteLoc.y, 600000),
             duration: 1.0
         });
-    }    
+    }
 
     function getSiteLabel(position, siteId) {
     // let idx = siteId.lastIndexOf(':');
@@ -234,7 +235,7 @@ mounted() {
 
     //  Start WS connection to driver
     console.log('Establishing connection to Nexrad OSH node...');
-    nexradSource.connect();
+    this.nexradSource.connect();
 
 },
 
@@ -279,7 +280,7 @@ methods: {
         height: 85%;
     }
 
-    .select { 
+    .select {
         padding: 5px;
         border: 2px solid #000000;
         background-color: white;
