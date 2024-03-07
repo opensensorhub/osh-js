@@ -162,7 +162,7 @@ videoView.getVideoCanvas().then(canvasElt => {
 let cesiumView = new CesiumView({
     container: 'cesium-h264-draping-container',
     // layers: [pointMarkerLayer, imageDrapingLayer],
-    layers: [pointMarkerLayer],
+    layers: [pointMarkerLayer, imageDrapingLayer],
     options: {
         layers: ['Bing Maps Aerial', 'Bing Maps Aerial with Labels', 'Bing Maps Roads']
     },

@@ -1,11 +1,12 @@
-export default `varying vec3 v_positionEC;
-varying vec3 v_normalEC;
-varying vec2 v_st;
+export default `out vec3 v_positionEC;
+out vec3 v_normalEC;
+out vec2 v_st;
+out vec4 fragColor;
 
 vec4 windowToEye(vec4 fragCoord)
 {
     vec2 uv = fragCoord.xy / czm_viewport.zw;
-    float z_window = czm_unpackDepth(texture2D(czm_globeDepthTexture, uv));
+    float z_window = czm_unpackDepth(texture(czm_globeDepthTexture, uv));
 
     if (z_window == 0.0)
         discard;
@@ -64,7 +65,7 @@ void main()
     materialInput.positionToEyeEC = positionToEyeEC;
     materialInput.st = vec2(st.x, st.y);
     czm_material material = czm_getMaterial(materialInput);
-    gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);
+    fragColor = vec4(material.diffuse + material.emission, material.alpha);
 
     //float depth = pow(v_posEC.z * 0.5 + 0.5, 8.0);
     //gl_FragColor = vec4(depth, depth, depth, 1.0);
