@@ -63,8 +63,11 @@ import {
     PolylineGeometry,
     PolylineColorAppearance,
     LabelStyle,
-    CesiumWidget
+    Terrain
 } from "@cesium/engine";
+
+import { Viewer } from "@cesium/widgets";
+import "@cesium/widgets/Source/widgets.css";
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
 import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
@@ -160,6 +163,7 @@ class CesiumView extends MapView {
             baseLayerPicker: true,
             // imageryProviderViewModels: imageryProviders,
             // selectedImageryProviderViewModel: imageryProviders[0],
+            terrain: Terrain.fromWorldTerrain(),
             timeline: false,
             homeButton: false,
             navigationInstructionsInitiallyVisible: false,
@@ -188,7 +192,7 @@ class CesiumView extends MapView {
                 customViewer = options.options.viewer;
             }
         }
-        this.viewer = (isDefined(customViewer)) ? customViewer :  new CesiumWidget(this.divId, viewerProps);
+        this.viewer = (isDefined(customViewer)) ? customViewer :  new Viewer(this.divId, viewerProps);
 
         this.viewer.terrainProvider = new EllipsoidTerrainProvider();
         this.viewer.scene.copyGlobeDepth = true;

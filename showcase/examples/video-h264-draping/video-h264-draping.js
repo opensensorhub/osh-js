@@ -3,7 +3,8 @@ import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {
     Matrix3,
     Cartesian3,
-    Cartesian2, Ion
+    Cartesian2, Ion,
+    EllipsoidTerrainProvider
 } from "@cesium/engine";
 
 import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
@@ -160,21 +161,18 @@ videoView.getVideoCanvas().then(canvasElt => {
 
 let cesiumView = new CesiumView({
     container: 'cesium-h264-draping-container',
-    layers: [pointMarkerLayer, imageDrapingLayer],
+    // layers: [pointMarkerLayer, imageDrapingLayer],
+    layers: [pointMarkerLayer],
     options: {
         layers: ['Bing Maps Aerial', 'Bing Maps Aerial with Labels', 'Bing Maps Roads']
     },
 });
 
-// cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
-// cesiumView.viewer.scene.logarithmicDepthBuffer = false;
-// cesiumView.viewer.camera.setView({
-//     destination : Cartesian3.fromDegrees(-86.5812,34.6904,1000)
-// });
-
-// select bing maps as default imagery
-// const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-// baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
+cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
+cesiumView.viewer.scene.logarithmicDepthBuffer = false;
+cesiumView.viewer.camera.setView({
+    destination : Cartesian3.fromDegrees(-86.5812,34.6904,1000)
+});
 
 // start streaming
 const dataSynchronizer = new DataSynchronizer({
