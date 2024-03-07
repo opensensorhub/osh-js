@@ -7,8 +7,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 // Cesium deps
 const cesiumSource = 'node_modules/cesium/Build/Cesium';
-const cesiumWorkers = 'node_modules/@cesium/engine/Source';
-
 const PROCESS_BASE_PATH = process.cwd();
 const cesiumBaseUrl = "cesiumStatic";
 
@@ -19,7 +17,7 @@ const config = {
         entry: path.resolve(__dirname,'video-h264-draping.js'),
     },
     output: {
-        filename: 'bundle.video.h264.draping.js',
+        filename: 'bundle.[name].video.h264.draping.js',
         path: path.resolve(__dirname, 'dist'),
         sourcePrefix: ''
     },
@@ -52,6 +50,10 @@ const config = {
             {
                 test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
                 type: "asset/inline",
+            },
+            {
+                test: /\.worker\.js$/,
+                use: { loader: 'worker-loader' }
             },
         ],
     },
