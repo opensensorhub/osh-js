@@ -1,5 +1,5 @@
 import * as React from "react";
-import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
+import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "@cesium/engine";
 import PointMarkerLayer from "osh/core/ui/layer/PointMarkerLayer.js";
 import PolygonLayer from "osh/core/ui/layer/PolygonLayer.js";
 import CoPlanarPolygonLayer from "osh/core/ui/layer/CoPlanarPolygonLayer.js";
@@ -7,8 +7,6 @@ import CoPlanarPolygonLayer from "osh/core/ui/layer/CoPlanarPolygonLayer.js";
 import CesiumView from "osh/core/ui/view/map/CesiumView.js";
 import {randomUUID} from "osh/core/utils/Utils.js";
 import ImageDrapingLayer from "osh/core/ui/layer/ImageDrapingLayer.js";
-
-window.CESIUM_BASE_URL = './';
 
 class BaseMap extends React.Component {
   constructor(props) {

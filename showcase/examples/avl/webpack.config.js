@@ -5,12 +5,13 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 var path = require('path');
+const webpack = require("webpack");
 
 const PROCESS_BASE_PATH = process.cwd();
 
 // Cesium deps
-const cesiumSource = 'node_modules/cesium/Source';
-const cesiumWorkers = '../Build/Cesium/Workers';
+const cesiumSource = 'node_modules/cesium/Build/Cesium';
+const cesiumBaseUrl = "cesiumStatic";
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
@@ -57,6 +58,29 @@ module.exports = {
             }, {
                 test: /\.worker\.js$/,
                 use: {loader: 'worker-loader', options: {name: 'WorkerName.[hash].js'}}
+            },
+            {
+                test: /\.(?:js|mjs|cjs)$/,
+                exclude: {
+                    and: [/node_modules/], // Exclude libraries in node_modules ...
+                    not: [/cesium/], // Except Cesium because it uses modern syntax
+                },
+                use: [
+                    {
+                        loader: "babel-loader",
+                        options: {
+                            presets: [
+                                ["@babel/preset-env", { targets: "defaults, not ie 11" }],
+                            ],
+                            plugins: ["@babel/plugin-transform-optional-chaining"],
+                        },
+                    },
+                    // Babel understands the import.meta syntax but doesn't transform it in any way
+                    // However Webpack can't parse this and throws an error for an unexpected token
+                    // we need to use this extra loader so Webpack can actually bundle the code
+                    // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
+                    require.resolve("@open-wc/webpack-import-meta-loader"),
+                ],
             }
         ]
     },
@@ -96,9 +120,14 @@ module.exports = {
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
             {from: path.resolve(__dirname, 'images'), to: 'images'},
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, cesiumWorkers), to: 'Workers', force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: 'Assets', force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: 'Widgets', force:true }
-        ])
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true }
+        ]),
+        new webpack.DefinePlugin({
+            // Define relative base path in cesium for loading assets
+            CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
+        }),
     ]
 };

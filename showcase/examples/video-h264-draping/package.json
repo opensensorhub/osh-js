@@ -28,21 +28,25 @@
     "dev": "webpack-dev-server --config webpack.config.js --mode development"
   },
   "dependencies": {
-    "@cesium/engine": "^8.0.0",
-    "@cesium/widgets": "^5.0.0",
-    "cesium": "^1.114.0"
+    "@cesium/engine": "8.0.0",
+    "@cesium/widgets": "5.0.0",
+    "cesium": "1.114.0"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^9.1.0",
-    "css-loader": "^6.8.1",
-    "html-webpack-plugin": "^5.6.0",
-    "patch-package": "^8.0.0",
-    "path-browserify": "^1.0.1",
-    "style-loader": "^3.3.3",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.15.1",
-    "worker-loader": "^3.0.8"
+    "clean-webpack-plugin": "3.0.0",
+    "css-loader": "3.4.2",
+    "file-loader": "5.1.0",
+    "html-webpack-plugin": "3.2.0",
+    "style-loader": "1.1.3",
+    "webpack": "4.42.0",
+    "webpack-cli": "3.3.11",
+    "webpack-dev-server": "3.10.3",
+    "worker-loader": "2.0.0",
+    "worklet-loader": "1.0.0",
+    "@open-wc/webpack-import-meta-loader": "0.4.7",
+    "@babel/core": "7.23.7",
+    "@babel/plugin-transform-optional-chaining": "7.23.4",
+    "@babel/preset-env": "7.23.7",
+    "babel-loader": "8.3.0"
   }
 }

@@ -8,8 +8,8 @@ const path = require('path');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 // Cesium deps
-const cesiumSource = 'node_modules/cesium/Source';
-const cesiumWorkers = '../Build/Cesium/Workers';
+const cesiumSource = 'node_modules/cesium/Build/Cesium';
+const cesiumBaseUrl = "cesiumStatic";
 //
 const PROCESS_BASE_PATH = process.cwd();
 
@@ -46,11 +46,27 @@ const config = {
         loader: 'vue-loader'
       },
       {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
+        test: /\.(?:js|mjs|cjs)$/,
+        exclude: {
+          and: [/node_modules/], // Exclude libraries in node_modules ...
+          not: [/cesium/], // Except Cesium because it uses modern syntax
+        },
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              presets: [
+                ["@babel/preset-env", { targets: "defaults, not ie 11" }],
+              ],
+              plugins: ["@babel/plugin-transform-optional-chaining"],
+            },
+          },
+          // Babel understands the import.meta syntax but doesn't transform it in any way
+          // However Webpack can't parse this and throws an error for an unexpected token
+          // we need to use this extra loader so Webpack can actually bundle the code
+          // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
+          require.resolve("@open-wc/webpack-import-meta-loader"),
+        ],
       },
       {
         test: /\.(png|woff|woff2|eot|ttf|svg|jpg|gif)$/,
@@ -106,11 +122,16 @@ const config = {
       favicon: path.resolve(__dirname,'favicon.ico')
     }),
     new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers'},
-      { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
-      { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
+      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
+      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
+      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
+      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true },
       { from: path.resolve(__dirname, 'images'), to: 'images' }
     ]),
+    new DefinePlugin({
+      // Define relative base path in cesium for loading assets
+      CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
+    }),
     new DefinePlugin({
       // Define relative base path in cesium for loading assets
       BASE_URL: JSON.stringify('/')

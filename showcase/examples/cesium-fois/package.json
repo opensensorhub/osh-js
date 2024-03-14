@@ -36,9 +36,16 @@
     "webpack": "4.42.0",
     "webpack-cli": "3.3.11",
     "webpack-dev-server": "3.10.3",
-    "worker-loader": "2.0.0"
+    "worker-loader": "2.0.0",
+    "@open-wc/webpack-import-meta-loader": "0.4.7",
+    "@babel/core": "7.23.7",
+    "@babel/plugin-transform-optional-chaining": "7.23.4",
+    "@babel/preset-env": "7.23.7",
+    "babel-loader": "8.3.0"
   },
   "dependencies": {
-    "cesium": "1.68.0"
+    "@cesium/engine": "8.0.0",
+    "@cesium/widgets": "5.0.0",
+    "cesium": "1.114.0"
   }
 }

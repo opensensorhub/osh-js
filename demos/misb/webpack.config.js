@@ -8,7 +8,11 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
+const PROCESS_BASE_PATH = process.cwd();
 
+// Cesium deps
+const cesiumSource = 'node_modules/cesium/Build/Cesium';
+const cesiumBaseUrl = "cesiumStatic";
 // Now, using the cesiumConfig in your real configuration
 const config = {
   entry: {
@@ -25,16 +29,14 @@ const config = {
     ],
     alias: {
       'osh-js': path.resolve(__dirname, '../../source'),
-      'cesium': path.resolve(__dirname, 'node_modules/cesium'),
+      '@cesium/engine': path.resolve(__dirname, 'node_modules/@cesium/engine'),
+      '@cesium/widgets': path.resolve(__dirname, 'node_modules/@cesium/widgets'),
     },
     fallback : {
       "path": require.resolve("path-browserify"),
       "crypto": false,
       fs: false
     }
-  },
-  module: {
-      unknownContextCritical : false,
   },
   node: {
   },
@@ -55,11 +57,27 @@ const config = {
         loader: 'vue-loader'
       },
       {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
+        test: /\.(?:js|mjs|cjs|jsx)$/,
+        exclude: {
+          and: [/node_modules/], // Exclude libraries in node_modules ...
+          not: [/cesium/], // Except Cesium because it uses modern syntax
+        },
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              presets: [
+                ["@babel/preset-env", { targets: "defaults, not ie 11" }],
+              ],
+              plugins: ["@babel/plugin-transform-optional-chaining"],
+            },
+          },
+          // Babel understands the import.meta syntax but doesn't transform it in any way
+          // However Webpack can't parse this and throws an error for an unexpected token
+          // we need to use this extra loader so Webpack can actually bundle the code
+          // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
+          require.resolve("@open-wc/webpack-import-meta-loader"),
+        ],
       },
       {
         test: /\.(png|woff|woff2|eot|ttf|svg|jpg|gif)$/,
@@ -151,15 +169,20 @@ const config = {
     }),
     new   CopywebpackPlugin({
       patterns: [
-        { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' },
-        { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' },
-        { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' },
+        { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
+        { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
+        { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
+        { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true },
         { from: 'images', to: 'images'},
         { from: 'models', to: 'models'},
         { from: 'public', to: 'public'}
       ]
     }),
     new nodePolyfillWebpackPlugin(), // fix Webpack Buffer not defined
+    new webpack.DefinePlugin({
+      // Define relative base path in cesium for loading assets
+      CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
+    }),
   ],
 };
 

@@ -10,7 +10,7 @@ import {EventType} from 'osh-js/core/event/EventType';
 
 import {
     Cartographic, Ion, Math as MathCesium
-} from "cesium";
+} from "@cesium/engine";
 import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
 import mapboxgl from "mapbox-gl/dist/mapbox-gl";
 import {Mode} from 'osh-js/core/datasource/Mode';

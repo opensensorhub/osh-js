@@ -254,6 +254,7 @@ class CesiumView extends MapView {
                 duration: 1.0
             });
         }
+        GroundPrimitive.initializeTerrainHeights();
     }
 
     render() {
