@@ -1,0 +1,2 @@
+/*! For license information please see transferTypedArrayTest.js.LICENSE.txt */
+self.onmessage=function(e){let s=e.data.array,a=self.webkitPostMessage||self.postMessage;try{a({array:s},[s.buffer])}catch{a({})}};

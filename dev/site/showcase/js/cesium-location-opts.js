@@ -1,6 +1,7 @@
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import {createDefaultImageryProviderViewModels, EllipsoidTerrainProvider, Ion, Viewer} from 'cesium';
+import {EllipsoidTerrainProvider, Ion} from '@cesium/engine';
+import {Viewer} from '@cesium/widgets';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
