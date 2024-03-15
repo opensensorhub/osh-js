@@ -1,6 +1,6 @@
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import {EllipsoidTerrainProvider, Ion} from 'cesium';
+import {EllipsoidTerrainProvider, Ion} from '@cesium/engine';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
 import EllipseLayer from "osh-js/core/ui/layer/EllipseLayer";

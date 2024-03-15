@@ -1,33 +1,26 @@
 /* webpack.config.js */
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+var path = require('path');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const webpack = require("webpack");
+
+const PROCESS_BASE_PATH = process.cwd();
 
 // Cesium deps
-const cesiumSource = 'node_modules/cesium/Source';
-const cesiumWorkers = '../Build/Cesium/Workers';
-//
-
-var path = require('path');
-const PROCESS_BASE_PATH = process.cwd();
+const cesiumSource = 'node_modules/cesium/Build/Cesium';
+const cesiumBaseUrl = "cesiumStatic";
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
     entry: path.resolve(__dirname,'video-h264-draping.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.video.h264.draping.js',
-        path: path.resolve(__dirname, 'dist'),
-        // Needed to compile multiline strings in Cesium
-        sourcePrefix: ''
-    },
-    amd: {
-        // Enable webpack-friendly use of require in Cesium
-        toUrlUndefined: true
+        filename: 'bundle.video.h264.js',
+        path: path.resolve(__dirname, 'dist')
     },
     node: {
-        // Resolve node module use of fs
         fs: 'empty'
     },
     // Tell Webpack which directories to look in to resolve import statements.
@@ -58,7 +51,30 @@ module.exports = {
             },
             {
                 test: /\.worker\.js$/,
-                use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
+                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
+            },
+            {
+                test: /\.(?:js|mjs|cjs)$/,
+                exclude: {
+                    and: [/node_modules/], // Exclude libraries in node_modules ...
+                    not: [/cesium/], // Except Cesium because it uses modern syntax
+                },
+                use: [
+                    {
+                        loader: "babel-loader",
+                        options: {
+                            presets: [
+                                ["@babel/preset-env", { targets: "defaults, not ie 11" }],
+                            ],
+                            plugins: ["@babel/plugin-transform-optional-chaining"],
+                        },
+                    },
+                    // Babel understands the import.meta syntax but doesn't transform it in any way
+                    // However Webpack can't parse this and throws an error for an unexpected token
+                    // we need to use this extra loader so Webpack can actually bundle the code
+                    // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
+                    require.resolve("@open-wc/webpack-import-meta-loader"),
+                ],
             }
         ]
     },
@@ -93,14 +109,16 @@ module.exports = {
             filename: 'video-h264-draping.html',
             template: path.resolve(__dirname, 'video-h264-draping.html')
         }),
-        // This plugin will copy files over to ‘./dist’ without transforming them.
-        // That's important because the custom-elements-es5-adapter.js MUST
-        // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
-            { from: path.resolve(__dirname,'models'), to: 'models'},
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, cesiumWorkers), to: 'Workers', force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: 'Assets', force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: 'Widgets', force:true }
-        ])
+            { from: path.resolve(__dirname,'images'), to: 'images'},
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true }
+        ]),
+        new webpack.DefinePlugin({
+            // Define relative base path in cesium for loading assets
+            CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
+        }),
     ]
 };

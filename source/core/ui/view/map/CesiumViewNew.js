@@ -18,6 +18,8 @@
 import {isDefined, randomUUID} from "../../../utils/Utils.js";
 
 import {
+    when,
+    Cartographic,
     Cartesian3,
     Cartesian2,
     Color,
@@ -30,6 +32,7 @@ import {
     Matrix4,
     MaterialAppearance,
     Material,
+    sampleTerrain,
     GeometryInstance,
     PolygonGeometry,
     RectangleGeometry,
@@ -45,7 +48,7 @@ import {
     EncodedCartesian3,
     ScreenSpaceEventType,
     ColorGeometryInstanceAttribute,
-    PolygonHierarchy, GroundPrimitive,
+    Scene, PolygonHierarchy, PerInstanceColorAppearance, GroundPrimitive,
     PolylineCollection,
     PrimitiveCollection,
     EllipseGeometry,
@@ -63,15 +66,14 @@ import {
     PolylineGeometry,
     PolylineColorAppearance,
     LabelStyle,
-    Terrain
-} from "@cesium/engine";
+    EllipsoidGeometry
+} from 'cesium';
 
-import { Viewer } from "@cesium/widgets";
-import "@cesium/widgets/Source/widgets.css";
+import { CesiumWidget } from "@cesium/engine";
+import "@cesium/engine/Source/Widget/CesiumWidget.css";
 
 import ImageDrapingVS from "./shaders/ImageDrapingVS.js";
 import ImageDrapingFS from "./shaders/ImageDrapingFS.js";
-import "@cesium/engine/Source/Widget/CesiumWidget.css";
 import MapView from "./MapView";
 import { FrustumPositionMode } from "../../layer/FrustumLayer";
 import { ImageDrapingPositionMode, GimbalEulerAngleOrder } from "../../layer/ImageDrapingLayer.js";
@@ -154,16 +156,15 @@ class CesiumView extends MapView {
 
         // #region snippet_cesiumview_default_cesiumprops_viewer_props
 
-        // let imageryProviders = createDefaultImageryProviderViewModels();
-        // if(options && options.options && options.options.layers) {
-        //     const imageryFilter = options.options.layers;
-        //     imageryProviders = imageryProviders.filter(el => imageryFilter.includes(el.name));
-        // }
+        let imageryProviders = createDefaultImageryProviderViewModels();
+        if(options && options.options && options.options.layers) {
+            const imageryFilter = options.options.layers;
+            imageryProviders = imageryProviders.filter(el => imageryFilter.includes(el.name));
+        }
         let viewerProps = {
             baseLayerPicker: true,
-            // imageryProviderViewModels: imageryProviders,
-            // selectedImageryProviderViewModel: imageryProviders[0],
-            terrain: Terrain.fromWorldTerrain(),
+            imageryProviderViewModels: imageryProviders,
+            selectedImageryProviderViewModel: imageryProviders[0],
             timeline: false,
             homeButton: false,
             navigationInstructionsInitiallyVisible: false,
@@ -192,9 +193,9 @@ class CesiumView extends MapView {
                 customViewer = options.options.viewer;
             }
         }
-        this.viewer = (isDefined(customViewer)) ? customViewer :  new Viewer(this.divId, viewerProps);
+        this.viewer = (isDefined(customViewer)) ? customViewer :  new CesiumWidget(this.divId, viewerProps);
 
-        this.viewer.terrainProvider = new EllipsoidTerrainProvider();
+     /*   this.viewer.terrainProvider = new EllipsoidTerrainProvider();
         this.viewer.scene.copyGlobeDepth = true;
         this.viewer.scene._environmentState.useGlobeDepthFramebuffer = true;
         this.viewer.scene.globe.depthTestAgainstTerrain = true;
@@ -253,8 +254,7 @@ class CesiumView extends MapView {
                 ...cameraOpts,
                 duration: 1.0
             });
-        }
-        GroundPrimitive.initializeTerrainHeights();
+        }*/
     }
 
     render() {

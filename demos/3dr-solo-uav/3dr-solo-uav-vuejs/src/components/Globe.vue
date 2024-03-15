@@ -5,7 +5,6 @@
 </template>
 
 <script>
-  window.CESIUM_BASE_URL = './';
   import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
   import CesiumView from "osh-js/core/ui/view/map/CesiumView.js";
   // @ is an alias to /src

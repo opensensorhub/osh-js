@@ -6,6 +6,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
+const webpack = require("webpack");
+const PROCESS_BASE_PATH = process.cwd();
+
+// Cesium deps
+const cesiumSource = 'node_modules/cesium/Build/Cesium';
+const cesiumBaseUrl = "cesiumStatic";
 
 const cesiumConfig = {
   // Tell Webpack which file kicks off our app.
@@ -27,9 +33,11 @@ const cesiumConfig = {
   },
   plugins: [
     // Copy Cesium Assets, Widgets, and Workers to a static directory
-    new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' } ]),
-    new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' } ]),
-    new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' } ]),
+    new CopywebpackPlugin([
+      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
+      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
+      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
+      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true } ]),
     new CopywebpackPlugin([ { from: 'images', to: 'images'} ])
   ],
 };
@@ -46,7 +54,8 @@ const config = {
   resolve: {
     alias: {
       'osh-js': path.resolve(__dirname, '../../../source'),
-      'cesium': path.resolve(__dirname, 'node_modules/cesium'),
+      '@cesium/engine': path.resolve(__dirname, 'node_modules/@cesium/engine'),
+      '@cesium/widgets': path.resolve(__dirname, 'node_modules/@cesium/widgets'),
     }
   },
   node: {
@@ -82,6 +91,29 @@ const config = {
       },{
         test: /\.worker\.js$/,
         use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
+      },
+      {
+        test: /\.(?:js|mjs|cjs)$/,
+        exclude: {
+          and: [/node_modules/], // Exclude libraries in node_modules ...
+          not: [/cesium/], // Except Cesium because it uses modern syntax
+        },
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              presets: [
+                ["@babel/preset-env", { targets: "defaults, not ie 11" }],
+              ],
+              plugins: ["@babel/plugin-transform-optional-chaining"],
+            },
+          },
+          // Babel understands the import.meta syntax but doesn't transform it in any way
+          // However Webpack can't parse this and throws an error for an unexpected token
+          // we need to use this extra loader so Webpack can actually bundle the code
+          // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
+          require.resolve("@open-wc/webpack-import-meta-loader"),
+        ],
       }
     ],
   },
@@ -125,6 +157,10 @@ const config = {
     new DefinePlugin({
       // Define relative base path in cesium for loading assets
       BASE_URL: JSON.stringify('/')
+    }),
+    new webpack.DefinePlugin({
+      // Define relative base path in cesium for loading assets
+      CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
     }),
   ],
 };

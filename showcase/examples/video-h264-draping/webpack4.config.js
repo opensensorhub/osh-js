@@ -4,21 +4,20 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-var path = require('path');
-
-const PROCESS_BASE_PATH = process.cwd();
-
 // Cesium deps
 const cesiumSource = 'node_modules/cesium/Source';
 const cesiumWorkers = '../Build/Cesium/Workers';
 //
 
+var path = require('path');
+const PROCESS_BASE_PATH = process.cwd();
+
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: path.resolve(__dirname,'cesium-piaware.js'),
+    entry: path.resolve(__dirname,'video-h264-draping.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.cesium.piaware.js',
+        filename: 'bundle.video.h264.draping.js',
         path: path.resolve(__dirname, 'dist'),
         // Needed to compile multiline strings in Cesium
         sourcePrefix: ''
@@ -49,6 +48,21 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.js$/,
+                enforce: "pre",
+                include: path.resolve(__dirname, cesiumSource),
+                use: [
+                    {
+                        loader: "strip-pragma-loader",
+                        options: {
+                            pragmas: {
+                                debug: false,
+                            },
+                        },
+                    },
+                ],
+            },
+            {
                 test: /\.(png|svg|jpg|gif)$/,
                 use: [
                     'file-loader',
@@ -56,9 +70,10 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
-            }, {
+            },
+            {
                 test: /\.worker\.js$/,
-                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
+                use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
             }
         ]
     },
@@ -69,8 +84,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'cesium-piaware.html',
-        https: false
+        index: 'video-h264-draping.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [
@@ -90,17 +105,18 @@ module.exports = {
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.
         new HtmlWebpackPlugin({
-            filename: "cesium-piaware.html",
-            template: path.resolve(__dirname, 'cesium-piaware.html')
+            filename: 'video-h264-draping.html',
+            template: path.resolve(__dirname, 'video-h264-draping.html')
         }),
         // This plugin will copy files over to ‘./dist’ without transforming them.
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
-            { from: path.resolve(__dirname,'images'), to: 'images'},
+            { from: path.resolve(__dirname,'models'), to: 'models'},
             { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, cesiumWorkers), to: 'Workers', force:true },
             { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: 'Assets', force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: 'Widgets', force:true }
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: 'Widgets', force:true },
+            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: 'ThirdParty', force:true }
         ])
     ]
 };

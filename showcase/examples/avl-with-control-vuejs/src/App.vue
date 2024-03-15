@@ -36,7 +36,7 @@ import {Mode} from 'osh-js/core/datasource/Mode';
 
 import {
   Cartographic, Math as MathCesium, Ion
-} from "cesium";
+} from "@cesium/engine";
 import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
 
 

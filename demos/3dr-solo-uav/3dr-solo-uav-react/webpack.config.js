@@ -1,40 +1,17 @@
 // webpack.config.common.js
-const CopywebpackPlugin = require('copy-webpack-plugin');
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
+const webpack = require("webpack");
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const cesiumConfig = {
-  // Tell Webpack which file kicks off our app.
-  entry: path.resolve(__dirname,'src/index.js'),
-  // Tell Weback to output our bundle to ./dist/bundle.js
-  output: {
-    filename: 'bundle.3dr.js',
-    path: path.resolve(__dirname, 'dist'),
-    // Needed to compile multiline strings in Cesium
-    sourcePrefix: ''
-  },
-  amd: {
-    // Enable webpack-friendly use of require in Cesium
-    toUrlUndefined: true
-  },
-  output: {
-    // Needed to compile multiline strings in Cesium
-    sourcePrefix: '',
-  },
-  plugins: [
-    // Copy Cesium Assets, Widgets, and Workers to a static directory
-    new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Workers'), to: 'Workers' } ]),
-    new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Assets'), to: 'Assets' } ]),
-    new CopywebpackPlugin([ { from: path.resolve(__dirname, 'node_modules/cesium/Source/Widgets'), to: 'Widgets' } ]),
-    new CopywebpackPlugin([ { from: 'models', to: 'models'} ]),
-  ],
-};
-// Now, using the cesiumConfig in your real configuration
-const config = {
-  ...cesiumConfig,
+// Cesium deps
+const cesiumSource = 'node_modules/cesium/Build/Cesium';
+const cesiumBaseUrl = "cesiumStatic";
+
+module.exports = {
   entry: {
     app: './src/index.js'
   },
@@ -45,7 +22,8 @@ const config = {
   resolve: {
     alias: {
       'osh': path.resolve(__dirname, '../../../source'),
-      'cesium': path.resolve(__dirname, 'node_modules/cesium'),
+      '@cesium/engine': path.resolve(__dirname, 'node_modules/@cesium/engine'),
+      '@cesium/widgets': path.resolve(__dirname, 'node_modules/@cesium/widgets'),
     }
   },
   node: {
@@ -61,11 +39,27 @@ const config = {
     unknownContextCritical: false,
     rules: [
       {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
+        test: /\.(?:js|mjs|cjs)$/,
+        exclude: {
+          and: [/node_modules/], // Exclude libraries in node_modules ...
+          not: [/cesium/], // Except Cesium because it uses modern syntax
+        },
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              presets: [
+                ["@babel/preset-env", { targets: "defaults, not ie 11" }],
+              ],
+              plugins: ["@babel/plugin-transform-optional-chaining"],
+            },
+          },
+          // Babel understands the import.meta syntax but doesn't transform it in any way
+          // However Webpack can't parse this and throws an error for an unexpected token
+          // we need to use this extra loader so Webpack can actually bundle the code
+          // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
+          require.resolve("@open-wc/webpack-import-meta-loader"),
+        ],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif|ico)$/,
@@ -86,14 +80,22 @@ const config = {
     minimize: false
   },
   plugins: [
-  ...cesiumConfig.plugins,
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
       filename: './index.html',
       favicon: './public/favicon.ico'
     }),
+    new CopyWebpackPlugin([
+      { from: path.resolve(__dirname,'models'), to: 'models'},
+      { from: path.join(cesiumSource, "Workers"), to: `${cesiumBaseUrl}/Workers`, },
+      { from: path.join(cesiumSource, "ThirdParty"), to: `${cesiumBaseUrl}/ThirdParty`, },
+      { from: path.join(cesiumSource, "Assets"), to: `${cesiumBaseUrl}/Assets`, },
+      { from: path.join(cesiumSource, "Widgets"), to: `${cesiumBaseUrl}/Widgets`, },
+    ]),
+    new webpack.DefinePlugin({
+      // Define relative base path in cesium for loading assets
+      CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
+    }),
 ],
 };
-
-module.exports = config;
