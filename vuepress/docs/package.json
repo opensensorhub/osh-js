@@ -14,11 +14,12 @@
     "build-showcase-dev": "yarn install --cwd ../../showcase-dev/ && rm -fr ../../showcase-dev/dist && yarn --cwd ../../showcase-dev/ prod",
     "dev": "vuepress dev src",
     "prod": "NODE_OPTIONS='--max-old-space-size=8192' yarn init-deps && vuepress build src",
+    "prod2": "vuepress build src",
     "doc": "yarn  --cwd ../../ documentation"
   },
   "license": "MIT",
   "devDependencies": {
-    "vuepress": "1.9.7",
+    "vuepress": "1.9.10",
     "vuepress-plugin-element-tabs": "0.2.8"
   },
   "dependencies": {
@@ -26,6 +27,7 @@
     "jsdoc": "3.6.6",
     "markdown-it-include": "2.0.0",
     "prism-themes": "1.9.0",
+    "sass": "^1.72.0",
     "taffydb": "2.7.3",
     "underscore": "1.13.2",
     "vuepress-plugin-auto-sidebar": "2.3.2",
