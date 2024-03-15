@@ -3,7 +3,7 @@ import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import SosGetFois from 'osh-js/core/datasource/sos/SosGetFois.datasource';
 import {
     Cartesian3, Ion
-} from 'cesium';
+} from '@cesium/engine';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
