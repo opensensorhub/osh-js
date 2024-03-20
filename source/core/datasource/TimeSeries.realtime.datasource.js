@@ -157,6 +157,18 @@ class TimeSeriesRealtimeDatasource extends DataSource {
     }
 
     /**
+     * Sets the start time
+     */
+    setStartTime(time) {
+    }
+
+    /**
+     * Sets the end time
+     */
+    setEndTime(time) {
+    }    
+
+    /**
      * Gets the endTime
      * @returns {String} - endTime as ISO date
      */
