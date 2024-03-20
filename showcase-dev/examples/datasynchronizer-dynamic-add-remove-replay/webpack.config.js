@@ -4,14 +4,13 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 var path = require('path');
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     // Tell Webpack which file kicks off our app.
-    entry: path.resolve(__dirname,'./datasynchronizer-dynamic-add-remove.js'),
+    entry: path.resolve(__dirname,'./datasynchronizer-dynamic-add-remove-replay.js'),
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
-        filename: 'bundle.datasource.datasynchronizer-dynamic-add-remove.js',
+        filename: 'bundle.datasources.synchronized.dynamic.js',
         path: path.resolve(__dirname, 'dist')
     },
     // Tell Webpack which directories to look in to resolve import statements.
@@ -53,7 +52,7 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'datasynchronizer-dynamic-add-remove.html',
+        index: 'datasynchronizer-dynamic-add-remove-replay.html',
         https:true
     },
     devtool: 'source-map',
@@ -74,11 +73,8 @@ module.exports = {
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.
         new HtmlWebpackPlugin({
-            filename: "datasynchronizer-dynamic-add-remove.html",
-            template: path.resolve(__dirname, 'datasynchronizer-dynamic-add-remove.html')
-        }),
-        new CopyWebpackPlugin([
-            { from: path.resolve(__dirname,'data'), to: 'data'}
-        ])
+            filename: "datasynchronizer-dynamic-add-remove-replay.html",
+            template: path.resolve(__dirname, 'datasynchronizer-dynamic-add-remove-replay.html')
+        })
     ]
 };

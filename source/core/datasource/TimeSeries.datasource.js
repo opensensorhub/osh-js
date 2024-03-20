@@ -17,7 +17,7 @@
 import {Mode} from './Mode';
 import TimeSeriesRealtimeDatasource from "./TimeSeries.realtime.datasource";
 import TimeSeriesReplayDatasource from "./TimeSeries.replay.datasource";
-import {randomUUID} from "../utils/Utils";
+import {isDefined, randomUUID} from "../utils/Utils";
 
 /**
  * The DataSource is the abstract class used to create different datasources.
@@ -206,7 +206,9 @@ class TimeSeriesDatasource {
      * @returns {Promise}
      */
     async setDataSynchronizer(dataSynchronizer) {
-        await this.setMode(dataSynchronizer.getMode(),false);
+        if(isDefined(dataSynchronizer)) {
+            await this.setMode(dataSynchronizer.getMode(), false);
+        }
         return this.timeSeriesDataSource.setDataSynchronizer(dataSynchronizer);
     }
 

@@ -341,10 +341,6 @@ class DataSynchronizerReplay {
      */
     async removeDataSource(dataSource) {
         this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
-        if (this.dataSources.length === 0) {
-            await this.reset();
-        }
-        this.computeMinMax();
 
         if (!this.initialized) {
             console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
@@ -352,6 +348,10 @@ class DataSynchronizerReplay {
             this.timeChanged();
             this.onRemovedDataSource(dataSource.id);
         } else {
+            if (this.dataSources.length === 0) {
+                await this.reset();
+            }
+            this.computeMinMax();
             await dataSource.disconnect();
             await dataSource.removeDataSynchronizer();
 

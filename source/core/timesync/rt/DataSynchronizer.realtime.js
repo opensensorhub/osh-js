@@ -152,6 +152,7 @@ class DataSynchronizerRealtime {
     async removeDataSource(dataSource) {
         await dataSource.removeDataSynchronizer();
         this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+        await dataSource.setDataSynchronizer(null);
         if (this.dataSources.length === 0) {
             await this.reset();
         }

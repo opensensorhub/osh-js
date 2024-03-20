@@ -42,7 +42,7 @@ class DataSynchronizer {
         this.dataSynchronizerRt = new DataSynchronizerRealtime({
             ...properties,
             id: id+'-realtime'
-        }, this)
+        }, this);
         this.broadcastChannels = [];
         this.setMode(properties.mode || Mode.REPLAY, false).then(() => {
             this.dataSynchronizer.onTimeChanged = (min, max, start, end) => this.onTimeChanged(min, max, start, end);

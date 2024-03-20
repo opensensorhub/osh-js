@@ -5,7 +5,7 @@ import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
 
 const START_TIME = '2012-06-29T14:32:34.099333251Z';
 const END_TIME = '2012-06-29T14:36:54.033333251Z';
-const REPLAY_SPEED = 2.6;
+const REPLAY_SPEED = 1.0;
 
 const commonDatasourceOpts = {
   endpointUrl:  'api.georobotix.io/ogc/t18/api',
@@ -14,8 +14,8 @@ const commonDatasourceOpts = {
   endTime: END_TIME,
   mode: Mode.REPLAY,
   replaySpeed: REPLAY_SPEED,
-  prefetchBatchDuration: 10000,
-  prefetchBatchSize: 250
+  prefetchBatchDuration: 100,
+  prefetchBatchSize: 50
 };
 
 const ds0 = new SweApiDatasource('MISB Drone - Video', {
@@ -39,7 +39,7 @@ const ds2 = new SweApiDatasource('MISB UAS - Platform Attitude', {
 
 const dataSynchronizer = new DataSynchronizer({
   replaySpeed: REPLAY_SPEED,
-  masterTimeRefreshRate: 250,
+  masterTimeRefreshRate: 50,
   startTime: START_TIME,
   endTime: END_TIME,
   dataSources: []

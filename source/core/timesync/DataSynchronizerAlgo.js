@@ -16,6 +16,7 @@ class DataSynchronizerAlgo {
     removeDataSource(dataSourceId) {
         this.datasources = this.datasources.filter( elt => elt.id !== dataSourceId);
         delete this.dataSourceMap[dataSourceId];
+        console.log(`Removed datasource ${dataSourceId} from algo..`);
     }
 
     push(dataSourceId, dataBlocks) {

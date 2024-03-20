@@ -198,14 +198,26 @@ class TimeSeriesRealtimeDatasource extends DataSource {
                 dsId: this.id,
                 mode: Mode.REAL_TIME,
             });
+        } else {
+
         }
     }
 
     async removeDataSynchronizer() {
-        await this.removeWorker();
         this.dataSynchronizer = undefined;
-        // this.init = undefined;
-        return this.checkInit();
+        // remove datasynchronizer
+        // restore datasource topic
+        this.properties.version = 0;
+
+        return this.getWorker().postMessageWithAck({
+            message: 'topics',
+            topics: {
+                data: this.getTopicId(),
+                time: this.getTimeTopicId()
+            },
+            dsId: this.id,
+            mode: Mode.REAL_TIME,
+        });
     }
 
     /**
