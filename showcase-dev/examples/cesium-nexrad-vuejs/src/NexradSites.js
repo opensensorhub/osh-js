@@ -1,14 +1,27 @@
 const http = require('http');
 const https = require('https');
 
+import SosGetFois from 'osh-js/core/datasource/sos/SosGetFois.datasource';
+
 class NexradSites {
     constructor() {
-        this.sites = this.init();
-        console.log('NexradSites sites table loaded: this.sites = ' + this.sites);
+        // // create data source for Fois - CORS blocks this request
+        // let nexradFois = new SosGetFois('fois', {
+        //     // endpointUrl: 'localhost:8282',
+        //     //endpointUrl: '192.168.1.129:8282',
+        //     endpointUrl: '76.187.247.4:8282',
+        //     procedureId: 'urn:osh:sensor:weather:nexrad',
+        //     tls: false
+        // });
+        // nexradFois.connect();
+
+       this.sites = this.init();
+
     }
 
     init() {
-        let foiReqUrl = 'http://76.187.247.4:8282/sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&responseFormat=application/json';
+        // let foiReqUrl = 'http://76.187.247.4:8282/sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&responseFormat=application/json';
+        let foiReqUrl = 'http://localhost:8282/sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&responseFormat=application/json';
         let request = http.get(foiReqUrl, (res) => {
             if (res.statusCode !== 200) {
                 console.error(`Error retrieving sites from the server. Code: ${res.statusCode}`);
@@ -41,6 +54,7 @@ class NexradSites {
 
     getSite(id) {
         let site =  this.sites.find(s => s.properties.name === id);
+        console.log('getSite(): site = ' + site.properties.name);
         return site;
     }
 
