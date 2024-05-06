@@ -354,6 +354,8 @@ class DataSynchronizerReplay {
             this.computeMinMax();
             await dataSource.disconnect();
             await dataSource.removeDataSynchronizer();
+            // if any
+            dataSource.destroyTimeUpdater();
 
             return this.synchronizerWorker.postMessageWithAck({
                 message: 'remove',
