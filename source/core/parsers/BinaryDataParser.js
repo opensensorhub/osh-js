@@ -69,7 +69,6 @@ class BinaryDataParser extends GenericParser {
             this.parser.parse(this.binaryDataTypeDecoder, {}, res);
             res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime() + this.props.timeShift;
             results.push(res);
-            break;
         }
         return results;
     }
