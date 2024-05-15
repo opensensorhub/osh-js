@@ -63,6 +63,11 @@ async function handleMessage(event) {
         } else if (event.data.message === 'add' && event.data.dataSources) {
             console.log('Add datasource to synchronizer..')
             addDataSources(event.data.dataSources);
+            if (dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay) {
+                dataSynchronizerAlgo.startTimestamp = event.data.startTimestamp;
+                dataSynchronizerAlgo.endTimestamp = event.data.endTimestamp;
+            }
+            reset();
         } else if (event.data.message === 'connect') {
             startMasterTimeInterval(masterTimeRefreshRate);
             dataSynchronizerAlgo.checkStart();
@@ -73,8 +78,10 @@ async function handleMessage(event) {
             console.log('Remove datasource from synchronizer algorithm..')
             await removeDataSources(event.data.dataSourceIds);
             if (dataSynchronizerAlgo instanceof DataSynchronizerAlgoReplay) {
+                dataSynchronizerAlgo.startTimestamp = event.data.startTimestamp;
                 dataSynchronizerAlgo.endTimestamp = event.data.endTimestamp;
             }
+            reset();
         } else if (event.data.message === 'current-time') {
             data = dataSynchronizerAlgo.getCurrentTimestamp();
         } else if (event.data.message === 'reset') {
@@ -191,14 +198,14 @@ function addDataSource(dataSource) {
  *
  * @param dataSourceIds
  */
-async function removeDataSources(dataSourceIds) {
+function removeDataSources(dataSourceIds) {
     for(let dataSourceId of dataSourceIds) {
-        await removeDataSource(dataSourceId);
+        removeDataSource(dataSourceId);
     }
 }
 
-async function removeDataSource(dataSourceId) {
-    await dataSynchronizerAlgo.removeDataSource(dataSourceId);
+function removeDataSource(dataSourceId) {
+    dataSynchronizerAlgo.removeDataSource(dataSourceId);
     // create a BC to push back the synchronized data into the DATA Stream.
     console.log('deleting BC for datasource '+dataSourceId);
     delete bcChannels[dataSourceId];

@@ -81,7 +81,6 @@ export default {
       }.bind(this);
 
       this.dataSynchronizer.onAddedDataSource = function (dataSourceId) {
-        console.log('onAdded')
         if (this.dataSynchronizer.getDataSources().length > 0 && isDefined(this.rangeSlider)) {
           // To disable
           this.rangeSlider.enable();
