@@ -24,11 +24,11 @@ import {Mode} from './Mode';
  *
  */
 class TimeSeriesReplayDatasource extends DataSource {
-    constructor(name, properties) {
+    constructor(name = 'DataSource', properties) {
         super(name, properties);
-
         this.setMinTime(properties.startTime);
         this.setMaxTime(properties.endTime);
+
         this.properties.startTimestamp = new Date(properties.startTime).getTime();
         this.properties.endTimestamp = new Date(properties.endTime).getTime();
 
@@ -36,6 +36,7 @@ class TimeSeriesReplayDatasource extends DataSource {
         this.dataSynchronizer = undefined;
 
         this.properties.version = 0;
+
     }
 
     getTimeTopicId() {

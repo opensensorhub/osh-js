@@ -117,6 +117,13 @@ class DataSynchronizerReplay {
             this.properties.minTimestamp = this.properties.startTimestamp = st;
             this.properties.maxTimestamp = this.properties.endTimestamp = end;
         }
+
+        if(this.properties.startTimestamp < this.properties.minTimestamp || this.properties.startTimestamp > this.properties.maxTimestamp) {
+            this.properties.startTimestamp = this.properties.minTimestamp;
+        }
+        if(this.properties.endTimestamp > this.properties.maxTimestamp || this.properties.endTimestamp < this.properties.minTimestamp) {
+            this.properties.endTimestamp = this.properties.maxTimestamp;
+        }
     }
 
     /**
@@ -324,7 +331,9 @@ class DataSynchronizerReplay {
             // add dataSource to synchronizer algorithm
             return this.synchronizerWorker.postMessageWithAck({
                 message: 'add',
-                dataSources: [dataSourceForWorker]
+                dataSources: [dataSourceForWorker],
+                startTimestamp: this.getStartTimeAsTimestamp(),
+                endTimestamp: this.getEndTimeAsTimestamp()
             }).then(async () => {
                 if (await this.isConnected()) {
                     await dataSource.connect()
@@ -362,7 +371,8 @@ class DataSynchronizerReplay {
                 dataSourceIds: [dataSource.getId()],
                 startTimestamp: this.getStartTimeAsTimestamp(),
                 endTimestamp: this.getEndTimeAsTimestamp()
-            }).then(() => {
+            }).then(async () => {
+                await this.disconnect();
                 this.timeChanged();
                 this.onRemovedDataSource(dataSource.id);
             });
