@@ -170,20 +170,45 @@ class DeckGlView extends MapView {
                 sizeScale: props.iconScale,
                 _lighting: 'pbr'
             });
-        }  else {
-            let extraOpts = {};
-            if(props.icon.endsWith('svg')) {
-                extraOpts = {
-                    loadOptions: {
-                        imagebitmap: {
-                            resizeWidth: props.iconSize[0],
-                            resizeHeight: props.iconSize[1],
-                            resizeQuality: 'high'
-                        }
+        }  else if(props.icon.endsWith('svg')) {
+            iconLayer = new IconLayer({
+                id: id,
+                data: [{
+                    position: [props.location.x, props.location.y, props.location.z]
+                }],
+                pickable: true,
+                // iconAtlas and iconMapping are required
+                // getIcon: return a string
+                iconAtlas: props.icon,
+                iconMapping: {
+                    marker: {
+                        x: 0,
+                        y: 0,
+                        anchorX: props.iconAnchor[0],
+                        anchorY: props.iconAnchor[1],
+                        width: props.iconSize[0] * props.iconScale,
+                        height: props.iconSize[1] * props.iconScale,
+                        mask: isDefined(props.iconColor) && props.iconColor !== '#000000'
                     }
-                };
-            }
-
+                },
+                getIcon: d => 'marker',
+                getPosition: d => d.position,
+                sizeScale: 1.0,
+                getSize: d => props.iconSize[1] * props.iconScale,
+                getColor: d => iconColor,
+                onHover: (info, event) => this.onMarkerHover(mId, info, props, event),
+                onClick: (info, event) => event.leftButton ? this.onMarkerLeftClick(mId, info, props, event) :
+                    this.onMarkerRightClick(mId, info, props, event),
+                zIndex: props.zIndex,
+                loadOptions: {
+                    imagebitmap: {
+                        resizeWidth: props.iconSize[0] * props.iconScale,
+                        resizeHeight: props.iconSize[1] * props.iconScale,
+                        resizeQuality: 'high'
+                    }
+                }
+            });
+        } else {
             // in deck we create a new layer everytime => reactive programming
             iconLayer = new IconLayer({
                 id: id,
@@ -214,7 +239,6 @@ class DeckGlView extends MapView {
                 onClick: (info, event) => event.leftButton ? this.onMarkerLeftClick(mId, info, props, event) :
                     this.onMarkerRightClick(mId, info, props, event),
                 zIndex: props.zIndex,
-                ...extraOpts
             });
         }
 
