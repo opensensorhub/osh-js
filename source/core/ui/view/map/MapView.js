@@ -444,8 +444,8 @@ class MapView extends View {
      * @param {Object} event - the original Map View event
      */
     onMarkerLeftClick(markerId, markerObject, layer, event) {
-        if (isDefined(layer.props.onLeftClick)) {
-            layer.props.onLeftClick.call(layer,markerId, markerObject, event);
+        if (isDefined(layer.onLeftClick)) {
+            layer.onLeftClick.call(layer,markerId, markerObject, event);
         }
     }
 
@@ -457,8 +457,8 @@ class MapView extends View {
      * @param {Object} event - the original Map View event
      */
     onMarkerRightClick(markerId, markerObject, layer, event) {
-        if (isDefined(layer.props.onRightClick)) {
-            layer.props.onRightClick.call(layer,markerId, markerObject, event);
+        if (isDefined(layer.onRightClick)) {
+            layer.onRightClick.call(layer,markerId, markerObject, event);
         }
     }
 
@@ -483,8 +483,8 @@ class MapView extends View {
      * @param {Object} event - the original Map View event
      */
     onMarkerHover(markerId, markerObject, layer, event) {
-        if (isDefined(layer.props.onHover)) {
-            layer.props.onHover.call(layer,markerId, markerObject, event);
+        if (isDefined(layer.onHover)) {
+            layer.onHover.call(layer,markerId, markerObject, event);
         }
     }
 
