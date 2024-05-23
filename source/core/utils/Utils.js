@@ -533,3 +533,11 @@ export function rgbaToArray(str) {
     let values = str.substr(startIdxValue, endIdxValue-startIdxValue);
     return values.split(',').map(Number);
 }
+
+export function svgToDataURL(svg) {
+    if(svg.endsWith('.svg')) {
+        return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    } else {
+        return svg;
+    }
+}

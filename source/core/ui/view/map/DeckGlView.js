@@ -170,7 +170,20 @@ class DeckGlView extends MapView {
                 sizeScale: props.iconScale,
                 _lighting: 'pbr'
             });
-        } else {
+        }  else {
+            let extraOpts = {};
+            if(props.icon.endsWith('svg')) {
+                extraOpts = {
+                    loadOptions: {
+                        imagebitmap: {
+                            resizeWidth: props.iconSize[0],
+                            resizeHeight: props.iconSize[1],
+                            resizeQuality: 'high'
+                        }
+                    }
+                };
+            }
+
             // in deck we create a new layer everytime => reactive programming
             iconLayer = new IconLayer({
                 id: id,
@@ -200,7 +213,8 @@ class DeckGlView extends MapView {
                 onHover: (info, event) => this.onMarkerHover(mId, info, props, event),
                 onClick: (info, event) => event.leftButton ? this.onMarkerLeftClick(mId, info, props, event) :
                     this.onMarkerRightClick(mId, info, props, event),
-                zIndex: props.zIndex
+                zIndex: props.zIndex,
+                ...extraOpts
             });
         }
 
