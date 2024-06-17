@@ -201,7 +201,9 @@ class DataSynchronizer {
      * Terminate the corresponding running WebWorker by calling terminate() on it.
      */
     terminate() {
-        return this.dataSynchronizer.terminate();
+        if(this.dataSynchronizer) {
+            return this.dataSynchronizer.terminate();
+        }
     }
 
     getMode() {

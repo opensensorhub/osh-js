@@ -204,6 +204,9 @@ class TimeSeriesRealtimeDatasource extends DataSource {
     }
 
     async removeDataSynchronizer() {
+        if(this.dataSynchronizer) {
+            await this.dataSynchronizer.removeDataSource(this);
+        }
         this.dataSynchronizer = undefined;
         // remove datasynchronizer
         // restore datasource topic

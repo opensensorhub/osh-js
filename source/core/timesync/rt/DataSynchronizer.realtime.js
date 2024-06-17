@@ -66,7 +66,7 @@ class DataSynchronizerRealtime {
      * Terminate the corresponding running WebWorker by calling terminate() on it.
      */
     terminate() {
-        if (this.synchronizerWorker !== null) {
+        if (isDefined(this.synchronizerWorker)) {
             this.synchronizerWorker.terminate();
             this.synchronizerWorker = null;
         }

@@ -211,6 +211,9 @@ class TimeSeriesReplayDatasource extends DataSource {
     }
 
     async removeDataSynchronizer() {
+        if(this.dataSynchronizer) {
+            await this.dataSynchronizer.removeDataSource(this);
+        }
         this.init = undefined;
         this.dataSynchronizer = undefined;
         return this.checkInit();
