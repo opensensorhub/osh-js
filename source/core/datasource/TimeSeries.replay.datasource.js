@@ -211,9 +211,11 @@ class TimeSeriesReplayDatasource extends DataSource {
     }
 
     async removeDataSynchronizer() {
-        if(this.dataSynchronizer) {
-            await this.dataSynchronizer.removeDataSource(this);
-        }
+        // ISSUE: this causing loop because this.dataSynchronizer.removeDataSource(this); is calling this method
+        // if(this.dataSynchronizer) {
+        //     await this.dataSynchronizer.removeDataSource(this);
+        // }
+
         this.init = undefined;
         this.dataSynchronizer = undefined;
         return this.checkInit();

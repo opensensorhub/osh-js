@@ -317,30 +317,32 @@ class DataSynchronizerReplay {
      * @param {TimeSeriesDataSource} dataSource - the new datasource to add
      */
     async addDataSource(dataSource) {
-        this.dataSources.push(dataSource);
-        this.computeMinMax();
-        if (!this.initialized) {
-            console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
-            this.timeChanged();
-            this.onAddedDataSource(dataSource.id);
-        } else {
-            dataSource.setStartTime(this.getStartTimeAsIsoDate());
-            dataSource.setEndTime(this.getEndTimeAsIsoDate());
-            const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-
-            // add dataSource to synchronizer algorithm
-            return this.synchronizerWorker.postMessageWithAck({
-                message: 'add',
-                dataSources: [dataSourceForWorker],
-                startTimestamp: this.getStartTimeAsTimestamp(),
-                endTimestamp: this.getEndTimeAsTimestamp()
-            }).then(async () => {
-                if (await this.isConnected()) {
-                    await dataSource.connect()
-                }
-                this.onAddedDataSource(dataSource.id);
+        if(!this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+            this.dataSources.push(dataSource);
+            this.computeMinMax();
+            if (!this.initialized) {
+                console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
                 this.timeChanged();
-            });
+                this.onAddedDataSource(dataSource.id);
+            } else {
+                dataSource.setStartTime(this.getStartTimeAsIsoDate());
+                dataSource.setEndTime(this.getEndTimeAsIsoDate());
+                const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
+
+                // add dataSource to synchronizer algorithm
+                return this.synchronizerWorker.postMessageWithAck({
+                    message: 'add',
+                    dataSources: [dataSourceForWorker],
+                    startTimestamp: this.getStartTimeAsTimestamp(),
+                    endTimestamp: this.getEndTimeAsTimestamp()
+                }).then(async () => {
+                    if (await this.isConnected()) {
+                        await dataSource.connect()
+                    }
+                    this.onAddedDataSource(dataSource.id);
+                    this.timeChanged();
+                });
+            }
         }
     }
 
@@ -349,33 +351,35 @@ class DataSynchronizerReplay {
      * @param {TimeSeriesDatasource} dataSource - the new datasource to add
      */
     async removeDataSource(dataSource) {
-        this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+        if(this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+            this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
 
-        if (!this.initialized) {
-            console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
-            await dataSource.removeDataSynchronizer();
-            this.timeChanged();
-            this.onRemovedDataSource(dataSource.id);
-        } else {
-            if (this.dataSources.length === 0) {
-                await this.reset();
-            }
-            this.computeMinMax();
-            await dataSource.disconnect();
-            await dataSource.removeDataSynchronizer();
-            // if any
-            dataSource.destroyTimeUpdater();
-
-            return this.synchronizerWorker.postMessageWithAck({
-                message: 'remove',
-                dataSourceIds: [dataSource.getId()],
-                startTimestamp: this.getStartTimeAsTimestamp(),
-                endTimestamp: this.getEndTimeAsTimestamp()
-            }).then(async () => {
-                await this.disconnect();
+            if (!this.initialized) {
+                console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
+                await dataSource.removeDataSynchronizer();
                 this.timeChanged();
                 this.onRemovedDataSource(dataSource.id);
-            });
+            } else {
+                if (this.dataSources.length === 0) {
+                    await this.reset();
+                }
+                this.computeMinMax();
+                await dataSource.disconnect();
+                await dataSource.removeDataSynchronizer();
+                // if any
+                dataSource.destroyTimeUpdater();
+
+                return this.synchronizerWorker.postMessageWithAck({
+                    message: 'remove',
+                    dataSourceIds: [dataSource.getId()],
+                    startTimestamp: this.getStartTimeAsTimestamp(),
+                    endTimestamp: this.getEndTimeAsTimestamp()
+                }).then(async () => {
+                    await this.disconnect();
+                    this.timeChanged();
+                    this.onRemovedDataSource(dataSource.id);
+                });
+            }
         }
     }
 

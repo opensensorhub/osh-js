@@ -150,21 +150,23 @@ class DataSynchronizerRealtime {
      * @param {TimeSeriesDatasource} dataSource - the new datasource to add
      */
     async removeDataSource(dataSource) {
-        await dataSource.removeDataSynchronizer();
-        this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
-        await dataSource.setDataSynchronizer(null);
-        if (this.dataSources.length === 0) {
-            await this.reset();
-        }
-        if (!this.initialized) {
-            console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
-        } else {
-            return this.synchronizerWorker.postMessageWithAck({
-                message: 'remove',
-                dataSourceIds: [dataSource.getId()],
-            }).then(() => {
-                this.onRemovedDataSource(dataSource.id);
-            });
+        if(this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+            dataSource.removeDataSynchronizer();
+            this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+            dataSource.setDataSynchronizer(null);
+            if (this.dataSources.length === 0) {
+                await this.reset();
+            }
+            if (!this.initialized) {
+                console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
+            } else {
+                return this.synchronizerWorker.postMessageWithAck({
+                    message: 'remove',
+                    dataSourceIds: [dataSource.getId()],
+                }).then(() => {
+                    this.onRemovedDataSource(dataSource.id);
+                });
+            }
         }
     }
 
