@@ -243,7 +243,6 @@ class CesiumView extends MapView {
                     pitch : Math.toRadians(options.options.orientation.pitch),
                     roll : 0.0
                 }
-                console.log(cameraOpts.orientation)
             }
 
         }
