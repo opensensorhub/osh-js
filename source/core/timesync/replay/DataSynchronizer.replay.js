@@ -38,7 +38,7 @@ class DataSynchronizerReplay {
     constructor(properties, timeSync) {
         this.bufferingTime = 1000; // default
         this.id = properties.id || randomUUID();
-        this.dataSources = properties.dataSources || [];
+        this.dataSources = (properties.dataSources) ? [...properties.dataSources] : [];
         this.replaySpeed = properties.replaySpeed || 1;
         this.timerResolution = properties.timerResolution || 5;
         this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250;
@@ -317,13 +317,19 @@ class DataSynchronizerReplay {
      * @param {TimeSeriesDataSource} dataSource - the new datasource to add
      */
     async addDataSource(dataSource) {
+        console.log(this.dataSources.map(ds => ds.id).includes(dataSource.id))
         if(!this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
             this.dataSources.push(dataSource);
             this.computeMinMax();
+            console.log('time changed');
             if (!this.initialized) {
                 console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
+                console.log('ici')
                 this.timeChanged();
                 this.onAddedDataSource(dataSource.id);
+                return new Promise((resolve, reject) => {
+                    resolve();
+                });
             } else {
                 dataSource.setStartTime(this.getStartTimeAsIsoDate());
                 dataSource.setEndTime(this.getEndTimeAsIsoDate());
@@ -336,7 +342,7 @@ class DataSynchronizerReplay {
                     startTimestamp: this.getStartTimeAsTimestamp(),
                     endTimestamp: this.getEndTimeAsTimestamp()
                 }).then(async () => {
-                    if (await this.isConnected()) {
+                    if (!await this.isConnected()) {
                         await dataSource.connect()
                     }
                     this.onAddedDataSource(dataSource.id);

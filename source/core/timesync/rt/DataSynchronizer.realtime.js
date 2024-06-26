@@ -33,7 +33,7 @@ class DataSynchronizerRealtime {
     constructor(properties, timeSync) {
         this.bufferingTime = 1000; // default
         this.id = properties.id || randomUUID();
-        this.dataSources = properties.dataSources || [];
+        this.dataSources = (properties.dataSources) ? [...properties.dataSources] : [];
         this.timerResolution = properties.timerResolution || 5;
         this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250;
         this.initialized = false;
