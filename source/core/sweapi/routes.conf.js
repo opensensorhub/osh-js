@@ -48,8 +48,8 @@ const API = {
         by_id: '/observations/{id}',
     },
     fois: {
-        search: '/featuresOfInterest',
-        by_id: '/featuresOfInterest/{id}',
+        search: '/samplingFeatures',
+        by_id: '/samplingFeatures/{id}',
     },
 };
 

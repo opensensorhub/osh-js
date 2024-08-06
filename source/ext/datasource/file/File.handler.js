@@ -21,6 +21,12 @@ class FileHandler extends DataSourceHandler {
     createContext(properties) {
         return new FileContext();
     }
+
+    flushAll() {
+        while(this.values.length > 0) {
+            this.flush();
+        }
+    }
 }
 
 export default FileHandler;

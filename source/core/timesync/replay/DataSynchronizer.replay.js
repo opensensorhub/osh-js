@@ -317,14 +317,12 @@ class DataSynchronizerReplay {
      * @param {TimeSeriesDataSource} dataSource - the new datasource to add
      */
     async addDataSource(dataSource) {
-        console.log(this.dataSources.map(ds => ds.id).includes(dataSource.id))
         if(!this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
             this.dataSources.push(dataSource);
             this.computeMinMax();
             console.log('time changed');
             if (!this.initialized) {
                 console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
-                console.log('ici')
                 this.timeChanged();
                 this.onAddedDataSource(dataSource.id);
                 return new Promise((resolve, reject) => {
@@ -562,10 +560,12 @@ class DataSynchronizerReplay {
      * Resets reference time
      */
     async reset() {
-        await this.checkInit();
-        return this.synchronizerWorker.postMessageWithAck({
-            message: 'reset'
-        }).then(() => this.resetTimes());
+        if(isDefined(this.synchronizerWorker)) {
+            await this.checkInit();
+            return this.synchronizerWorker.postMessageWithAck({
+                message: 'reset'
+            }).then(() => this.resetTimes());
+        } else return this.checkInit();
     }
 
     async getCurrentTime() {

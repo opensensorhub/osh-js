@@ -67,9 +67,19 @@ var samples = [
         code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
     },
     {
-        name: 'Add/Remove DataSource(s) to/from DataSynchronizer',
+        name: 'Add/Remove DataSource(s) to/from DataSynchronizer in Realtime mode',
         description: 'Add/Remove DataSource(s) to/from DataSynchronizer even if DataSynchronizer is running',
-        url: 'datasynchronizer-dynamic-add-remove'
+        url: 'datasynchronizer-dynamic-add-remove-realtime'
+    },
+    {
+        name: 'Add/Remove DataSource(s) to/from DataSynchronizer in REPLAY mode',
+        description: 'Add/Remove DataSource(s) to/from DataSynchronizer even if DataSynchronizer is running',
+        url: 'datasynchronizer-dynamic-add-remove-replay'
+    },
+    {
+        name: 'Read and display GeoJSON using generic Layer',
+        description: 'Read and display GeoJSON using generic Layer',
+        url: 'datasource-geojson'
     },
 ];
 
