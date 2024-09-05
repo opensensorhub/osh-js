@@ -32,7 +32,6 @@
     "copy-sources-package": "shx cp -rf source/ build/osh-js/source",
     "prepare-package": "shx mkdir -p build/osh-js",
     "build-package": "yarn clean-package && yarn prepare-package && yarn copy-sources-package && yarn transpile-package && node config/prepare-package",
-
     "transpile-lib": "tsc --project config/tsconfig-lib.json && shx cp -rf source/vue dist/vue && shx cp -fr source/core/resources dist/core/resources && shx cp -fr source/ext/resources dist/ext/resources",
     "copy-sources-lib": "shx cp -rf source/ dist",
     "prepare-lib": "rm -fr dist; shx mkdir -p dist",
@@ -44,7 +43,7 @@
     "css-loader": "^3.4.2",
     "empty-module": "0.0.2",
     "file-loader": "^5.1.0",
-    "jsdoc": "^3.6.4",
+    "jsdoc": "^4.0.3",
     "moment": "^2.24.0",
     "npm-install-webpack-plugin": "^4.0.5",
     "null-loader": "^3.0.0",
@@ -62,6 +61,6 @@
     "worker-loader": "^2.0.0",
     "worker-plugin": "^4.0.2"
   },
-  "dependencies": {
-  }
+  "dependencies": {},
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
