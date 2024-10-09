@@ -8,9 +8,9 @@
         <div id="site-selection" class="flex-child">
             <label for="sites">Site:</label>
             <select name="sites" id="sites" class="select">
-                <option value="KEWX">KEWX</option>
-                <option value="KHGX">KHGX</option>
-                <option value="KHTX">KHTX</option>
+                <option value="KAMX">KAMX</option>
+                <option value="KTBW">KTBW</option>
+                <option value="KMLB">KMLB</option>
           </select>
         </div>
 

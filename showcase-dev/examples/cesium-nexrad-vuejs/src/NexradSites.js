@@ -21,7 +21,7 @@ class NexradSites {
 
     init() {
         // let foiReqUrl = 'http://76.187.247.4:8282/sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&responseFormat=application/json';
-        let foiReqUrl = 'http://localhost:8282/sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&responseFormat=application/json';
+        let foiReqUrl = 'http://botts-geo.com:8282/sensorhub/sos?service=SOS&version=2.0&request=GetFeatureOfInterest&responseFormat=application/json';
         let request = http.get(foiReqUrl, (res) => {
             if (res.statusCode !== 200) {
                 console.error(`Error retrieving sites from the server. Code: ${res.statusCode}`);
@@ -37,9 +37,9 @@ class NexradSites {
 
             res.on('close', () => {
                 this.sites = JSON.parse(data);
-                // this.sites.forEach((site) => {
-                //     console.log(site.properties.name + ":" + site.properties.uid + ":" + site.geometry.coordinates);
-                // });
+                this.sites.forEach((site) => {
+                     console.log(site.properties.name + ":" + site.properties.uid + ":" + site.geometry.coordinates);
+                });
 
                 return this.sites;
             });

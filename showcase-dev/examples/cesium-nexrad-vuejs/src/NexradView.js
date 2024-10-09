@@ -141,7 +141,7 @@ class NexradView extends CesiumView {
         // create Transform from Radar coords to ECEF
         let radarLoc = Cartesian3.fromDegrees(props.location.x, props.location.y, props.location.z);
         // var lla = Cartographic.fromCartesian(radarLoc);
-        let verticalScale = 3.0;
+        let verticalScale = 20.0;
         let quat = Transforms.headingPitchRollQuaternion(radarLoc,
             new HeadingPitchRoll((props.azimuth - 90) * DTR, (props.elevation * verticalScale * DTR)));
         let rotM = Matrix3.fromQuaternion(quat);
