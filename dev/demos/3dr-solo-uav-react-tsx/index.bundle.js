@@ -21770,9 +21770,16 @@ function rgbaToArray(str) {
   let values = str.substr(startIdxValue, endIdxValue - startIdxValue);
   return values.split(',').map(Number);
 }
+function svgToDataURL(svg) {
+  if (svg.endsWith('.svg')) {
+    return "data:image/svg+xml;charset=utf-8,".concat(encodeURIComponent(svg));
+  } else {
+    return svg;
+  }
+}
 ;// CONCATENATED MODULE: ../../../source/core/datasource/worker/DataSource.worker.js
 function Worker_fn() {
-  return new Worker(__webpack_require__.p + "Worker.e450c6247323a9b9f067.js");
+  return new Worker(__webpack_require__.p + "Worker.27043302306dc465eda8.js");
 }
 
 ;// CONCATENATED MODULE: ../../../source/core/worker/WorkerExt.js
@@ -22933,14 +22940,27 @@ class TimeSeriesRealtimeDatasource extends DataSource_datasource {
         dsId: this.id,
         mode: Mode.REAL_TIME
       });
-    }
+    } else {}
   }
 
   async removeDataSynchronizer() {
-    await this.removeWorker();
-    this.dataSynchronizer = undefined; // this.init = undefined;
+    if (this.dataSynchronizer) {
+      await this.dataSynchronizer.removeDataSource(this);
+    }
 
-    return this.checkInit();
+    this.dataSynchronizer = undefined; // remove datasynchronizer
+    // restore datasource topic
+
+    this.properties.version = 0;
+    return this.getWorker().postMessageWithAck({
+      message: 'topics',
+      topics: {
+        data: this.getTopicId(),
+        time: this.getTimeTopicId()
+      },
+      dsId: this.id,
+      mode: Mode.REAL_TIME
+    });
   }
   /**
    * Disconnect the dataSource then the protocol will be closed as well.
@@ -23053,7 +23073,9 @@ class TimeSeriesRealtimeDatasource extends DataSource_datasource {
  */
 
 class TimeSeriesReplayDatasource extends DataSource_datasource {
-  constructor(name, properties) {
+  constructor() {
+    let name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'DataSource';
+    let properties = arguments.length > 1 ? arguments[1] : undefined;
     super(name, properties);
     this.setMinTime(properties.startTime);
     this.setMaxTime(properties.endTime);
@@ -23253,6 +23275,10 @@ class TimeSeriesReplayDatasource extends DataSource_datasource {
   }
 
   async removeDataSynchronizer() {
+    // ISSUE: this causing loop because this.dataSynchronizer.removeDataSource(this); is calling this method
+    // if(this.dataSynchronizer) {
+    //     await this.dataSynchronizer.removeDataSource(this);
+    // }
     this.init = undefined;
     this.dataSynchronizer = undefined;
     return this.checkInit();
@@ -23615,7 +23641,10 @@ class TimeSeriesDatasource {
 
 
   async setDataSynchronizer(dataSynchronizer) {
-    await this.setMode(dataSynchronizer.getMode(), false);
+    if (Utils_isDefined(dataSynchronizer)) {
+      await this.setMode(dataSynchronizer.getMode(), false);
+    }
+
     return this.timeSeriesDataSource.setDataSynchronizer(dataSynchronizer);
   }
 
@@ -23815,7 +23844,7 @@ class SosGetResult extends TimeSeries_datasource {
 /* harmony default export */ var SosGetResult_datasource = (SosGetResult);
 ;// CONCATENATED MODULE: ../../../source/core/ui/view/video/workers/ffmpeg.decode.video.worker.js
 function ffmpeg_decode_video_worker_Worker_fn() {
-  return new Worker(__webpack_require__.p + "Worker.b535bbb0960fda63991f.js");
+  return new Worker(__webpack_require__.p + "Worker.9f2ecc868af503a2def0.js");
 }
 
 // EXTERNAL MODULE: ./node_modules/css-loader/dist/cjs.js!../../../source/core/resources/css/ffmpegview.css
@@ -25648,7 +25677,7 @@ class VideoDataLayer extends layer_BinaryDataLayer {
 /* harmony default export */ var layer_VideoDataLayer = (VideoDataLayer);
 ;// CONCATENATED MODULE: ../../../source/core/timesync/replay/DataSynchronizer.replay.worker.js
 function DataSynchronizer_replay_worker_Worker_fn() {
-  return new Worker(__webpack_require__.p + "Worker.f4566911efc9ca252105.js");
+  return new Worker(__webpack_require__.p + "Worker.a23645e65ca05deb0d94.js");
 }
 
 ;// CONCATENATED MODULE: ../../../source/core/timesync/replay/DataSynchronizer.replay.js
@@ -25692,7 +25721,7 @@ class DataSynchronizerReplay {
     this.bufferingTime = 1000; // default
 
     this.id = properties.id || randomUUID();
-    this.dataSources = properties.dataSources || [];
+    this.dataSources = properties.dataSources ? [...properties.dataSources] : [];
     this.replaySpeed = properties.replaySpeed || 1;
     this.timerResolution = properties.timerResolution || 5;
     this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250;
@@ -25772,6 +25801,14 @@ class DataSynchronizerReplay {
       const end = new Date('2055-01-01T00:00:00Z').getTime();
       this.properties.minTimestamp = this.properties.startTimestamp = st;
       this.properties.maxTimestamp = this.properties.endTimestamp = end;
+    }
+
+    if (this.properties.startTimestamp < this.properties.minTimestamp || this.properties.startTimestamp > this.properties.maxTimestamp) {
+      this.properties.startTimestamp = this.properties.minTimestamp;
+    }
+
+    if (this.properties.endTimestamp > this.properties.maxTimestamp || this.properties.endTimestamp < this.properties.minTimestamp) {
+      this.properties.endTimestamp = this.properties.maxTimestamp;
     }
   }
   /**
@@ -25896,7 +25933,7 @@ class DataSynchronizerReplay {
 
 
   terminate() {
-    if (this.synchronizerWorker !== null) {
+    if (Utils_isDefined(this.synchronizerWorker)) {
       this.synchronizerWorker.terminate();
       this.synchronizerWorker = null;
     }
@@ -25980,29 +26017,37 @@ class DataSynchronizerReplay {
 
 
   async addDataSource(dataSource) {
-    this.dataSources.push(dataSource);
-    this.computeMinMax();
+    if (!this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+      this.dataSources.push(dataSource);
+      this.computeMinMax();
+      console.log('time changed');
 
-    if (!this.initialized) {
-      console.log("DataSynchronizer not initialized yet, add DataSource ".concat(dataSource.id, " as it"));
-      this.timeChanged();
-      this.onAddedDataSource(dataSource.id);
-    } else {
-      dataSource.setStartTime(this.getStartTimeAsIsoDate());
-      dataSource.setEndTime(this.getEndTimeAsIsoDate());
-      const dataSourceForWorker = await this.createDataSourceForWorker(dataSource); // add dataSource to synchronizer algorithm
-
-      return this.synchronizerWorker.postMessageWithAck({
-        message: 'add',
-        dataSources: [dataSourceForWorker]
-      }).then(async () => {
-        if (await this.isConnected()) {
-          await dataSource.connect();
-        }
-
-        this.onAddedDataSource(dataSource.id);
+      if (!this.initialized) {
+        console.log("DataSynchronizer not initialized yet, add DataSource ".concat(dataSource.id, " as it"));
         this.timeChanged();
-      });
+        this.onAddedDataSource(dataSource.id);
+        return new Promise((resolve, reject) => {
+          resolve();
+        });
+      } else {
+        dataSource.setStartTime(this.getStartTimeAsIsoDate());
+        dataSource.setEndTime(this.getEndTimeAsIsoDate());
+        const dataSourceForWorker = await this.createDataSourceForWorker(dataSource); // add dataSource to synchronizer algorithm
+
+        return this.synchronizerWorker.postMessageWithAck({
+          message: 'add',
+          dataSources: [dataSourceForWorker],
+          startTimestamp: this.getStartTimeAsTimestamp(),
+          endTimestamp: this.getEndTimeAsTimestamp()
+        }).then(async () => {
+          if (!(await this.isConnected())) {
+            await dataSource.connect();
+          }
+
+          this.onAddedDataSource(dataSource.id);
+          this.timeChanged();
+        });
+      }
     }
   }
   /**
@@ -26012,31 +26057,35 @@ class DataSynchronizerReplay {
 
 
   async removeDataSource(dataSource) {
-    this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+    if (this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+      this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
 
-    if (this.dataSources.length === 0) {
-      await this.reset();
-    }
-
-    this.computeMinMax();
-
-    if (!this.initialized) {
-      console.log("DataSynchronizer not initialized yet, remove DataSource ".concat(dataSource.id, " as it"));
-      await dataSource.removeDataSynchronizer();
-      this.timeChanged();
-      this.onRemovedDataSource(dataSource.id);
-    } else {
-      await dataSource.disconnect();
-      await dataSource.removeDataSynchronizer();
-      return this.synchronizerWorker.postMessageWithAck({
-        message: 'remove',
-        dataSourceIds: [dataSource.getId()],
-        startTimestamp: this.getStartTimeAsTimestamp(),
-        endTimestamp: this.getEndTimeAsTimestamp()
-      }).then(() => {
+      if (!this.initialized) {
+        console.log("DataSynchronizer not initialized yet, remove DataSource ".concat(dataSource.id, " as it"));
+        await dataSource.removeDataSynchronizer();
         this.timeChanged();
         this.onRemovedDataSource(dataSource.id);
-      });
+      } else {
+        if (this.dataSources.length === 0) {
+          await this.reset();
+        }
+
+        this.computeMinMax();
+        await dataSource.disconnect();
+        await dataSource.removeDataSynchronizer(); // if any
+
+        dataSource.destroyTimeUpdater();
+        return this.synchronizerWorker.postMessageWithAck({
+          message: 'remove',
+          dataSourceIds: [dataSource.getId()],
+          startTimestamp: this.getStartTimeAsTimestamp(),
+          endTimestamp: this.getEndTimeAsTimestamp()
+        }).then(async () => {
+          await this.disconnect();
+          this.timeChanged();
+          this.onRemovedDataSource(dataSource.id);
+        });
+      }
     }
   }
   /**
@@ -26219,10 +26268,12 @@ class DataSynchronizerReplay {
 
 
   async reset() {
-    await this.checkInit();
-    return this.synchronizerWorker.postMessageWithAck({
-      message: 'reset'
-    }).then(() => this.resetTimes());
+    if (Utils_isDefined(this.synchronizerWorker)) {
+      await this.checkInit();
+      return this.synchronizerWorker.postMessageWithAck({
+        message: 'reset'
+      }).then(() => this.resetTimes());
+    } else return this.checkInit();
   }
 
   async getCurrentTime() {
@@ -26271,7 +26322,7 @@ class DataSynchronizerReplay {
 /* harmony default export */ var DataSynchronizer_replay = (DataSynchronizerReplay);
 ;// CONCATENATED MODULE: ../../../source/core/timesync/rt/DataSynchronizer.realtime.worker.js
 function DataSynchronizer_realtime_worker_Worker_fn() {
-  return new Worker(__webpack_require__.p + "Worker.21ac94ce6221780e03c5.js");
+  return new Worker(__webpack_require__.p + "Worker.e6fa5f30c72fadd6a8db.js");
 }
 
 ;// CONCATENATED MODULE: ../../../source/core/timesync/rt/DataSynchronizer.realtime.js
@@ -26310,7 +26361,7 @@ class DataSynchronizerRealtime {
     this.bufferingTime = 1000; // default
 
     this.id = properties.id || randomUUID();
-    this.dataSources = properties.dataSources || [];
+    this.dataSources = properties.dataSources ? [...properties.dataSources] : [];
     this.timerResolution = properties.timerResolution || 5;
     this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250;
     this.initialized = false;
@@ -26344,7 +26395,7 @@ class DataSynchronizerRealtime {
 
 
   terminate() {
-    if (this.synchronizerWorker !== null) {
+    if (Utils_isDefined(this.synchronizerWorker)) {
       this.synchronizerWorker.terminate();
       this.synchronizerWorker = null;
     }
@@ -26434,22 +26485,25 @@ class DataSynchronizerRealtime {
 
 
   async removeDataSource(dataSource) {
-    await dataSource.removeDataSynchronizer();
-    this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+    if (this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+      dataSource.removeDataSynchronizer();
+      this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+      dataSource.setDataSynchronizer(null);
 
-    if (this.dataSources.length === 0) {
-      await this.reset();
-    }
+      if (this.dataSources.length === 0) {
+        await this.reset();
+      }
 
-    if (!this.initialized) {
-      console.log("DataSynchronizer not initialized yet, remove DataSource ".concat(dataSource.id, " as it"));
-    } else {
-      return this.synchronizerWorker.postMessageWithAck({
-        message: 'remove',
-        dataSourceIds: [dataSource.getId()]
-      }).then(() => {
-        this.onRemovedDataSource(dataSource.id);
-      });
+      if (!this.initialized) {
+        console.log("DataSynchronizer not initialized yet, remove DataSource ".concat(dataSource.id, " as it"));
+      } else {
+        return this.synchronizerWorker.postMessageWithAck({
+          message: 'remove',
+          dataSourceIds: [dataSource.getId()]
+        }).then(() => {
+          this.onRemovedDataSource(dataSource.id);
+        });
+      }
     }
   }
   /**
@@ -26796,7 +26850,9 @@ class DataSynchronizer {
 
 
   terminate() {
-    return this.dataSynchronizer.terminate();
+    if (this.dataSynchronizer) {
+      return this.dataSynchronizer.terminate();
+    }
   }
 
   getMode() {
@@ -26819,7 +26875,7 @@ class DataSynchronizer {
 
 
   async addDataSource(dataSource) {
-    await this.dataSynchronizerRt.addDataSource(dataSource);
+    this.dataSynchronizerRt.addDataSource(dataSource);
     return this.dataSynchronizerReplay.addDataSource(dataSource);
   }
   /**
@@ -313585,8 +313641,8 @@ class MapView extends view_View {
 
 
   onMarkerLeftClick(markerId, markerObject, layer, event) {
-    if (Utils_isDefined(layer.props.onLeftClick)) {
-      layer.props.onLeftClick.call(layer, markerId, markerObject, event);
+    if (Utils_isDefined(layer.onLeftClick)) {
+      layer.onLeftClick.call(layer, markerId, markerObject, event);
     }
   }
   /**
@@ -313599,8 +313655,8 @@ class MapView extends view_View {
 
 
   onMarkerRightClick(markerId, markerObject, layer, event) {
-    if (Utils_isDefined(layer.props.onRightClick)) {
-      layer.props.onRightClick.call(layer, markerId, markerObject, event);
+    if (Utils_isDefined(layer.onRightClick)) {
+      layer.onRightClick.call(layer, markerId, markerObject, event);
     }
   }
   /**
@@ -313627,8 +313683,8 @@ class MapView extends view_View {
 
 
   onMarkerHover(markerId, markerObject, layer, event) {
-    if (Utils_isDefined(layer.props.onHover)) {
-      layer.props.onHover.call(layer, markerId, markerObject, event);
+    if (Utils_isDefined(layer.onHover)) {
+      layer.onHover.call(layer, markerId, markerObject, event);
     }
   }
   /**
@@ -314251,7 +314307,6 @@ class CesiumView extends map_MapView {
           pitch: Core_Math.toRadians(options.options.orientation.pitch),
           roll: 0.0
         };
-        console.log(cameraOpts.orientation);
       }
     }
 

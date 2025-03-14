@@ -12017,7 +12017,7 @@ module.exports = NoSleep;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = function () {
-  return new Worker(__webpack_require__.p + "Worker.5831b5c12d4a818aada2.js");
+  return new Worker(__webpack_require__.p + "Worker.6d18df41354dd5aae501.js");
 };
 
 /***/ }),
@@ -12025,7 +12025,7 @@ module.exports = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = function () {
-  return new Worker(__webpack_require__.p + "Worker.1a9b624ea3b59474ad8d.js");
+  return new Worker(__webpack_require__.p + "Worker.a8e3829bdb48edefd28d.js");
 };
 
 /***/ }),
@@ -12033,7 +12033,7 @@ module.exports = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = function () {
-  return new Worker(__webpack_require__.p + "Worker.b8e5ee37fdabd99eeb65.js");
+  return new Worker(__webpack_require__.p + "Worker.05d195b7bff68985b7c3.js");
 };
 
 /***/ }),
@@ -12041,7 +12041,7 @@ module.exports = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = function () {
-  return new Worker(__webpack_require__.p + "Worker.99ebf84aac5f91e11648.js");
+  return new Worker(__webpack_require__.p + "Worker.4b628afb6c12a9b591e0.js");
 };
 
 /***/ }),
@@ -52075,6 +52075,13 @@ function rgbaToArray(str) {
   let endIdxValue = str.indexOf(')');
   let values = str.substr(startIdxValue, endIdxValue - startIdxValue);
   return values.split(',').map(Number);
+}
+function svgToDataURL(svg) {
+  if (svg.endsWith('.svg')) {
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  } else {
+    return svg;
+  }
 }
 // CONCATENATED MODULE: /home/nevro/Progs/progs-local/git-repo/OSH2/github/osh-js/source/core/ui/layer/Layer.js
 /***************************** BEGIN LICENSE BLOCK ***************************
@@ -282208,8 +282215,8 @@ class MapView_MapView extends view_View {
    * @param {Object} event - the original Map View event
    */
   onMarkerLeftClick(markerId, markerObject, layer, event) {
-    if (Utils_isDefined(layer.props.onLeftClick)) {
-      layer.props.onLeftClick.call(layer, markerId, markerObject, event);
+    if (Utils_isDefined(layer.onLeftClick)) {
+      layer.onLeftClick.call(layer, markerId, markerObject, event);
     }
   }
 
@@ -282221,8 +282228,8 @@ class MapView_MapView extends view_View {
    * @param {Object} event - the original Map View event
    */
   onMarkerRightClick(markerId, markerObject, layer, event) {
-    if (Utils_isDefined(layer.props.onRightClick)) {
-      layer.props.onRightClick.call(layer, markerId, markerObject, event);
+    if (Utils_isDefined(layer.onRightClick)) {
+      layer.onRightClick.call(layer, markerId, markerObject, event);
     }
   }
 
@@ -282247,8 +282254,8 @@ class MapView_MapView extends view_View {
    * @param {Object} event - the original Map View event
    */
   onMarkerHover(markerId, markerObject, layer, event) {
-    if (Utils_isDefined(layer.props.onHover)) {
-      layer.props.onHover.call(layer, markerId, markerObject, event);
+    if (Utils_isDefined(layer.onHover)) {
+      layer.onHover.call(layer, markerId, markerObject, event);
     }
   }
 
@@ -282805,7 +282812,6 @@ class CesiumView_CesiumView extends map_MapView {
           pitch: Core_Math.toRadians(options.options.orientation.pitch),
           roll: 0.0
         };
-        console.log(cameraOpts.orientation);
       }
     }
     if (cameraOpts) {
@@ -284995,7 +285001,7 @@ class DataSynchronizer_replay_DataSynchronizerReplay {
   constructor(properties, timeSync) {
     this.bufferingTime = 1000; // default
     this.id = properties.id || randomUUID();
-    this.dataSources = properties.dataSources || [];
+    this.dataSources = properties.dataSources ? [...properties.dataSources] : [];
     this.replaySpeed = properties.replaySpeed || 1;
     this.timerResolution = properties.timerResolution || 5;
     this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250;
@@ -285063,6 +285069,12 @@ class DataSynchronizer_replay_DataSynchronizerReplay {
       const end = new Date('2055-01-01T00:00:00Z').getTime();
       this.properties.minTimestamp = this.properties.startTimestamp = st;
       this.properties.maxTimestamp = this.properties.endTimestamp = end;
+    }
+    if (this.properties.startTimestamp < this.properties.minTimestamp || this.properties.startTimestamp > this.properties.maxTimestamp) {
+      this.properties.startTimestamp = this.properties.minTimestamp;
+    }
+    if (this.properties.endTimestamp > this.properties.maxTimestamp || this.properties.endTimestamp < this.properties.minTimestamp) {
+      this.properties.endTimestamp = this.properties.maxTimestamp;
     }
   }
 
@@ -285171,7 +285183,7 @@ class DataSynchronizer_replay_DataSynchronizerReplay {
    * Terminate the corresponding running WebWorker by calling terminate() on it.
    */
   terminate() {
-    if (this.synchronizerWorker !== null) {
+    if (Utils_isDefined(this.synchronizerWorker)) {
       this.synchronizerWorker.terminate();
       this.synchronizerWorker = null;
     }
@@ -285248,28 +285260,36 @@ class DataSynchronizer_replay_DataSynchronizerReplay {
    * @param {TimeSeriesDataSource} dataSource - the new datasource to add
    */
   async addDataSource(dataSource) {
-    this.dataSources.push(dataSource);
-    this.computeMinMax();
-    if (!this.initialized) {
-      console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
-      this.timeChanged();
-      this.onAddedDataSource(dataSource.id);
-    } else {
-      dataSource.setStartTime(this.getStartTimeAsIsoDate());
-      dataSource.setEndTime(this.getEndTimeAsIsoDate());
-      const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
-
-      // add dataSource to synchronizer algorithm
-      return this.synchronizerWorker.postMessageWithAck({
-        message: 'add',
-        dataSources: [dataSourceForWorker]
-      }).then(async () => {
-        if (await this.isConnected()) {
-          await dataSource.connect();
-        }
-        this.onAddedDataSource(dataSource.id);
+    if (!this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+      this.dataSources.push(dataSource);
+      this.computeMinMax();
+      console.log('time changed');
+      if (!this.initialized) {
+        console.log(`DataSynchronizer not initialized yet, add DataSource ${dataSource.id} as it`);
         this.timeChanged();
-      });
+        this.onAddedDataSource(dataSource.id);
+        return new Promise((resolve, reject) => {
+          resolve();
+        });
+      } else {
+        dataSource.setStartTime(this.getStartTimeAsIsoDate());
+        dataSource.setEndTime(this.getEndTimeAsIsoDate());
+        const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
+
+        // add dataSource to synchronizer algorithm
+        return this.synchronizerWorker.postMessageWithAck({
+          message: 'add',
+          dataSources: [dataSourceForWorker],
+          startTimestamp: this.getStartTimeAsTimestamp(),
+          endTimestamp: this.getEndTimeAsTimestamp()
+        }).then(async () => {
+          if (!(await this.isConnected())) {
+            await dataSource.connect();
+          }
+          this.onAddedDataSource(dataSource.id);
+          this.timeChanged();
+        });
+      }
     }
   }
 
@@ -285278,28 +285298,33 @@ class DataSynchronizer_replay_DataSynchronizerReplay {
    * @param {TimeSeriesDatasource} dataSource - the new datasource to add
    */
   async removeDataSource(dataSource) {
-    this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
-    if (this.dataSources.length === 0) {
-      await this.reset();
-    }
-    this.computeMinMax();
-    if (!this.initialized) {
-      console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
-      await dataSource.removeDataSynchronizer();
-      this.timeChanged();
-      this.onRemovedDataSource(dataSource.id);
-    } else {
-      await dataSource.disconnect();
-      await dataSource.removeDataSynchronizer();
-      return this.synchronizerWorker.postMessageWithAck({
-        message: 'remove',
-        dataSourceIds: [dataSource.getId()],
-        startTimestamp: this.getStartTimeAsTimestamp(),
-        endTimestamp: this.getEndTimeAsTimestamp()
-      }).then(() => {
+    if (this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+      this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+      if (!this.initialized) {
+        console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
+        await dataSource.removeDataSynchronizer();
         this.timeChanged();
         this.onRemovedDataSource(dataSource.id);
-      });
+      } else {
+        if (this.dataSources.length === 0) {
+          await this.reset();
+        }
+        this.computeMinMax();
+        await dataSource.disconnect();
+        await dataSource.removeDataSynchronizer();
+        // if any
+        dataSource.destroyTimeUpdater();
+        return this.synchronizerWorker.postMessageWithAck({
+          message: 'remove',
+          dataSourceIds: [dataSource.getId()],
+          startTimestamp: this.getStartTimeAsTimestamp(),
+          endTimestamp: this.getEndTimeAsTimestamp()
+        }).then(async () => {
+          await this.disconnect();
+          this.timeChanged();
+          this.onRemovedDataSource(dataSource.id);
+        });
+      }
     }
   }
 
@@ -285456,10 +285481,12 @@ class DataSynchronizer_replay_DataSynchronizerReplay {
    * Resets reference time
    */
   async reset() {
-    await this.checkInit();
-    return this.synchronizerWorker.postMessageWithAck({
-      message: 'reset'
-    }).then(() => this.resetTimes());
+    if (Utils_isDefined(this.synchronizerWorker)) {
+      await this.checkInit();
+      return this.synchronizerWorker.postMessageWithAck({
+        message: 'reset'
+      }).then(() => this.resetTimes());
+    } else return this.checkInit();
   }
   async getCurrentTime() {
     return this.synchronizerWorker.postMessageWithAck({
@@ -285534,7 +285561,7 @@ class DataSynchronizer_realtime_DataSynchronizerRealtime {
   constructor(properties, timeSync) {
     this.bufferingTime = 1000; // default
     this.id = properties.id || randomUUID();
-    this.dataSources = properties.dataSources || [];
+    this.dataSources = properties.dataSources ? [...properties.dataSources] : [];
     this.timerResolution = properties.timerResolution || 5;
     this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250;
     this.initialized = false;
@@ -285562,7 +285589,7 @@ class DataSynchronizer_realtime_DataSynchronizerRealtime {
    * Terminate the corresponding running WebWorker by calling terminate() on it.
    */
   terminate() {
-    if (this.synchronizerWorker !== null) {
+    if (Utils_isDefined(this.synchronizerWorker)) {
       this.synchronizerWorker.terminate();
       this.synchronizerWorker = null;
     }
@@ -285645,20 +285672,23 @@ class DataSynchronizer_realtime_DataSynchronizerRealtime {
    * @param {TimeSeriesDatasource} dataSource - the new datasource to add
    */
   async removeDataSource(dataSource) {
-    await dataSource.removeDataSynchronizer();
-    this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
-    if (this.dataSources.length === 0) {
-      await this.reset();
-    }
-    if (!this.initialized) {
-      console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
-    } else {
-      return this.synchronizerWorker.postMessageWithAck({
-        message: 'remove',
-        dataSourceIds: [dataSource.getId()]
-      }).then(() => {
-        this.onRemovedDataSource(dataSource.id);
-      });
+    if (this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+      dataSource.removeDataSynchronizer();
+      this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+      dataSource.setDataSynchronizer(null);
+      if (this.dataSources.length === 0) {
+        await this.reset();
+      }
+      if (!this.initialized) {
+        console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
+      } else {
+        return this.synchronizerWorker.postMessageWithAck({
+          message: 'remove',
+          dataSourceIds: [dataSource.getId()]
+        }).then(() => {
+          this.onRemovedDataSource(dataSource.id);
+        });
+      }
     }
   }
 
@@ -285952,7 +285982,9 @@ class DataSynchronizer_DataSynchronizer {
    * Terminate the corresponding running WebWorker by calling terminate() on it.
    */
   terminate() {
-    return this.dataSynchronizer.terminate();
+    if (this.dataSynchronizer) {
+      return this.dataSynchronizer.terminate();
+    }
   }
   getMode() {
     return this.dataSynchronizer.getMode();
@@ -285973,7 +286005,7 @@ class DataSynchronizer_DataSynchronizer {
    * @param {TimeSeriesDataSource} dataSource - the new datasource to add
    */
   async addDataSource(dataSource) {
-    await this.dataSynchronizerRt.addDataSource(dataSource);
+    this.dataSynchronizerRt.addDataSource(dataSource);
     return this.dataSynchronizerReplay.addDataSource(dataSource);
   }
 
@@ -287054,13 +287086,25 @@ class TimeSeries_realtime_datasource_TimeSeriesRealtimeDatasource extends DataSo
         dsId: this.id,
         mode: Mode.REAL_TIME
       });
-    }
+    } else {}
   }
   async removeDataSynchronizer() {
-    await this.removeWorker();
+    if (this.dataSynchronizer) {
+      await this.dataSynchronizer.removeDataSource(this);
+    }
     this.dataSynchronizer = undefined;
-    // this.init = undefined;
-    return this.checkInit();
+    // remove datasynchronizer
+    // restore datasource topic
+    this.properties.version = 0;
+    return this.getWorker().postMessageWithAck({
+      message: 'topics',
+      topics: {
+        data: this.getTopicId(),
+        time: this.getTimeTopicId()
+      },
+      dsId: this.id,
+      mode: Mode.REAL_TIME
+    });
   }
 
   /**
@@ -287162,7 +287206,9 @@ class TimeSeries_realtime_datasource_TimeSeriesRealtimeDatasource extends DataSo
  *
  */
 class TimeSeries_replay_datasource_TimeSeriesReplayDatasource extends DataSource_datasource {
-  constructor(name, properties) {
+  constructor() {
+    let name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'DataSource';
+    let properties = arguments.length > 1 ? arguments[1] : undefined;
     super(name, properties);
     this.setMinTime(properties.startTime);
     this.setMaxTime(properties.endTime);
@@ -287341,6 +287387,10 @@ class TimeSeries_replay_datasource_TimeSeriesReplayDatasource extends DataSource
     }
   }
   async removeDataSynchronizer() {
+    // ISSUE: this causing loop because this.dataSynchronizer.removeDataSource(this); is calling this method
+    // if(this.dataSynchronizer) {
+    //     await this.dataSynchronizer.removeDataSource(this);
+    // }
     this.init = undefined;
     this.dataSynchronizer = undefined;
     return this.checkInit();
@@ -287664,7 +287714,9 @@ class TimeSeries_datasource_TimeSeriesDatasource {
    * @returns {Promise}
    */
   async setDataSynchronizer(dataSynchronizer) {
-    await this.setMode(dataSynchronizer.getMode(), false);
+    if (Utils_isDefined(dataSynchronizer)) {
+      await this.setMode(dataSynchronizer.getMode(), false);
+    }
     return this.timeSeriesDataSource.setDataSynchronizer(dataSynchronizer);
   }
   getDataSynchronizer() {
