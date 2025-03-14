@@ -1,0 +1,15 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2014-01-19T23:59:12.839Z,61.9939,-149.9531,46.7,1.6,ml,,,,0.5,ak,ak014vt98j7,2019-05-20T22:55:00.694Z,"19km SSW of Y, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-19T23:57:33.830Z,33.6321667,-116.7385,15.669,0.31,ml,13,84,0.04392,0.08,ci,ci11415674,2016-03-11T16:45:48.096Z,"10km NW of Anza, CA",earthquake,0.41,0.64,0.226,5,reviewed,ci,ci
+2014-01-19T23:57:03.300Z,18.2133,-68.0556,100,3.3,Md,16,208.8,0.43029302,0.34,pr,pr14019036,2014-03-22T00:05:24.000Z,"54km SE of Punta Cana, Dominican Republic",earthquake,3,1.5,0,10,reviewed,pr,pr
+2014-01-19T23:56:25.480Z,38.7996674,-122.7223358,1.642,0.42,md,5,107,0.009009,0,nc,nc72143430,2017-02-02T23:10:39.749Z,"Northern California",earthquake,0.46,1.19,0.06,2,automatic,nc,nc
+2014-01-19T23:46:41.670Z,36.9756667,-121.4616667,2.708,0.54,md,17,80,0.04775,0.04,nc,nc72143425,2017-02-02T23:10:34.885Z,"10km ESE of Gilroy, California",earthquake,0.2,0.5,0.295,13,reviewed,nc,nc
+2014-01-19T23:44:47.880Z,39.4098,-120.2146,10.5,-0.7,ml,4,129.97,0.065,0.079,nn,nn00435530,2018-06-29T23:01:30.465Z,"Northern California",earthquake,,4.5,0,1,reviewed,nn,nn
+2014-01-19T23:44:25.320Z,38.7993333,-122.723,1.878,0.63,md,6,101,0.009009,0.02,nc,nc72143420,2017-02-02T23:10:29.717Z,"Northern California",earthquake,0.41,1.1,0.012,2,reviewed,nc,nc
+2014-01-19T23:44:09.071Z,37.1678,-114.8598,0,1.7,ml,7,269.98,0.283,0.1262,nn,nn00435156,2018-06-29T23:01:36.003Z,"20km SE of Alamo, Nevada",earthquake,,0,0.5,5,reviewed,nn,nn
+2014-01-19T23:43:21.670Z,37.8147,144.0024,35.25,4.3,mb,,99,4.245,0.97,us,usc000mh08,2014-03-22T00:05:24.000Z,"243km SE of Ofunato, Japan",earthquake,,3.2,0.168,10,reviewed,us,us
+2014-01-19T23:34:49.180Z,-11.1466,163.9376,40.24,4.5,mb,,80,4.277,1.18,us,usc000mh09,2014-03-22T00:05:24.000Z,"212km WSW of Lata, Solomon Islands",earthquake,,8.8,0.14,15,reviewed,us,us
+2014-01-19T23:34:01.740Z,36.9875,-121.4525,4.928,0.91,md,32,61,0.03964,0.06,nc,nc72143415,2017-02-02T23:10:23.200Z,"10km E of Gilroy, California",earthquake,0.19,0.39,0.25,28,reviewed,nc,nc
+2014-01-19T23:33:17.780Z,52.659,-169.256,19.2,2.6,ml,,,,0.5,us,usb000m6e3,2019-05-20T22:55:00.271Z,"40km SW of Nikolski, Alaska",earthquake,,6,,11,reviewed,ak,ak
+2014-01-19T23:30:36.755Z,38.5628,-118.4389,2.5,0.3,ml,5,164.96,0.092,0.1712,nn,nn00435386,2018-06-29T23:01:28.973Z,"16km ENE of Hawthorne, Nevada",earthquake,,19.3,0,1,reviewed,nn,nn
+2014-01-19T23:30:07.510Z,-2.9798,129.5644,22.52,4.8,mb,,32,2.681,1.11,us,usb000m4h2,2014-03-22T00:05:24.000Z,"81km ENE of Amahai, Indonesia",earthquake,,4.1,0.065,73,reviewed,us,us

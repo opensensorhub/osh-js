@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ext/ui/view/spectrogram/SpectrogramView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+<div class="container">
+    <nav>
+        <h2><a href="index.html">OSH-JS</a></h2><h3>Modules</h3><ul><li><a href="module-osh-vue_MenuSettings.html">osh-vue/MenuSettings</a></li><li><a href="module-osh-vue_TimeController.html">osh-vue/TimeController</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="AnimationObjectGroup.html">AnimationObjectGroup</a></li><li><a href="AudioCanvasVisualizer.html">AudioCanvasVisualizer</a></li><li><a href="AudioChartVisualizer.html">AudioChartVisualizer</a></li><li><a href="AudioDataLayer.html">AudioDataLayer</a></li><li><a href="AudioFrequencyCanvasVisualizer.html">AudioFrequencyCanvasVisualizer</a></li><li><a href="AudioFrequencyChartJsVisualizer.html">AudioFrequencyChartJsVisualizer</a></li><li><a href="AudioSpectrogramVisualizer.html">AudioSpectrogramVisualizer</a></li><li><a href="AudioTimeCanvasVisualizer.html">AudioTimeCanvasVisualizer</a></li><li><a href="AudioTimeChartJsVisualizer.html">AudioTimeChartJsVisualizer</a></li><li><a href="AudioView.html">AudioView</a></li><li><a href="AudioVisualizer.html">AudioVisualizer</a></li><li><a href="BinaryDataLayer.html">BinaryDataLayer</a></li><li><a href="BooleanKeyframeTrack.html">BooleanKeyframeTrack</a></li><li><a href="CameraHelper.html">CameraHelper</a></li><li><a href="CanvasView.html">CanvasView</a></li><li><a href="CesiumView.html">CesiumView</a></li><li><a href="ChartJsView.html">ChartJsView</a></li><li><a href="Collection.html">Collection</a></li><li><a href="ColorKeyframeTrack.html">ColorKeyframeTrack</a></li><li><a href="Command.html">Command</a></li><li><a href="CommandFilter.html">CommandFilter</a></li><li><a href="Commands.html">Commands</a></li><li><a href="CompressedTextureLoader.html">CompressedTextureLoader</a></li><li><a href="Control.html">Control</a></li><li><a href="ControlFilter.html">ControlFilter</a></li><li><a href="Controls.html">Controls</a></li><li><a href="CoPlanarPolygonLayer.html">CoPlanarPolygonLayer</a></li><li><a href="CubicInterpolant.html">CubicInterpolant</a></li><li><a href="Curve.html">Curve</a></li><li><a href="CurveLayer.html">CurveLayer</a></li><li><a href="Cylindrical.html">Cylindrical</a></li><li><a href="DataConnector.html">DataConnector</a></li><li><a href="DataSenderController.html">DataSenderController</a></li><li><a href="DataSink.html">DataSink</a></li><li><a href="DataStream.html">DataStream</a></li><li><a href="DataStreamFilter.html">DataStreamFilter</a></li><li><a href="DataStreams.html">DataStreams</a></li><li><a href="DataSynchronizer.html">DataSynchronizer</a></li><li><a href="DataSynchronizerBatch.html">DataSynchronizerBatch</a></li><li><a href="DataSynchronizerRealtime.html">DataSynchronizerRealtime</a></li><li><a href="DataSynchronizerReplay.html">DataSynchronizerReplay</a></li><li><a href="DataTextureLoader.html">DataTextureLoader</a></li><li><a href="DeckGlView.html">DeckGlView</a></li><li><a href="DiscreteInterpolant.html">DiscreteInterpolant</a></li><li><a href="EllipseLayer.html">EllipseLayer</a></li><li><a href="Event.html">Event</a></li><li><a href="EventDispatcher.html">EventDispatcher</a></li><li><a href="EventFilter.html">EventFilter</a></li><li><a href="Events.html">Events</a></li><li><a href="ExtrudeGeometry.html">ExtrudeGeometry</a></li><li><a href="FeatureOfInterest.html">FeatureOfInterest</a></li><li><a href="FeatureOfInterestFilter.html">FeatureOfInterestFilter</a></li><li><a href="FeaturesOfInterest.html">FeaturesOfInterest</a></li><li><a href="FFMPEGView.html">FFMPEGView</a></li><li><a href="FileConnector.html">FileConnector</a></li><li><a href="FileDataSource.html">FileDataSource</a></li><li><a href="FoscamPtzTasking.html">FoscamPtzTasking</a></li><li><a href="frustumLayer.html">frustumLayer</a></li><li><a href="HttpConnector.html">HttpConnector</a></li><li><a href="ImageDrapingLayer.html">ImageDrapingLayer</a></li><li><a href="Interpolant.html">Interpolant</a></li><li><a href="Layer.html">Layer</a></li><li><a href="LeafletView.html">LeafletView</a></li><li><a href="LineBasicMaterial.html">LineBasicMaterial</a></li><li><a href="LineDashedMaterial.html">LineDashedMaterial</a></li><li><a href="MapboxView.html">MapboxView</a></li><li><a href="MapView.html">MapView</a></li><li><a href="MeshBasicMaterial.html">MeshBasicMaterial</a></li><li><a href="MeshDepthMaterial.html">MeshDepthMaterial</a></li><li><a href="MeshDistanceMaterial.html">MeshDistanceMaterial</a></li><li><a href="MeshLambertMaterial.html">MeshLambertMaterial</a></li><li><a href="MeshMatcapMaterial.html">MeshMatcapMaterial</a></li><li><a href="MeshNormalMaterial.html">MeshNormalMaterial</a></li><li><a href="MeshPhongMaterial.html">MeshPhongMaterial</a></li><li><a href="MeshPhysicalMaterial.html">MeshPhysicalMaterial</a></li><li><a href="MeshStandardMaterial.html">MeshStandardMaterial</a></li><li><a href="MeshToonMaterial.html">MeshToonMaterial</a></li><li><a href="MjpegView.html">MjpegView</a></li><li><a href="MqttConnector.html">MqttConnector</a></li><li><a href="MqttProvider.html">MqttProvider</a></li><li><a href="MqttTopicConnector.html">MqttTopicConnector</a></li><li><a href="NumberKeyframeTrack.html">NumberKeyframeTrack</a></li><li><a href="Observation.html">Observation</a></li><li><a href="ObservationFilter.html">ObservationFilter</a></li><li><a href="Observations.html">Observations</a></li><li><a href="ObservationsCollection.html">ObservationsCollection</a></li><li><a href="OpenLayerView.html">OpenLayerView</a></li><li><a href="ParametricGeometry.html">ParametricGeometry</a></li><li><a href="PointMarkerLayer.html">PointMarkerLayer</a></li><li><a href="PointsMaterial.html">PointsMaterial</a></li><li><a href="PolygonLayer.html">PolygonLayer</a></li><li><a href="PolylineLayer.html">PolylineLayer</a></li><li><a href="PtzTasking.html">PtzTasking</a></li><li><a href="QuaternionKeyframeTrack.html">QuaternionKeyframeTrack</a></li><li><a href="QuaternionLinearInterpolant.html">QuaternionLinearInterpolant</a></li><li><a href="RangeSliderViewRealtime.html">RangeSliderViewRealtime</a></li><li><a href="RangeSliderViewReplay.html">RangeSliderViewReplay</a></li><li><a href="SensorWebApi.html">SensorWebApi</a></li><li><a href="Server.html">Server</a></li><li><a href="ShaderMaterial.html">ShaderMaterial</a></li><li><a href="ShadowMaterial.html">ShadowMaterial</a></li><li><a href="SosGetResult.html">SosGetResult</a></li><li><a href="SpectrogramView.html">SpectrogramView</a></li><li><a href="Spherical.html">Spherical</a></li><li><a href="SphericalHarmonics3.html">SphericalHarmonics3</a></li><li><a href="SpriteMaterial.html">SpriteMaterial</a></li><li><a href="StringKeyframeTrack.html">StringKeyframeTrack</a></li><li><a href="SweApi.html">SweApi</a></li><li><a href="SWEXmlStreamParser.html">SWEXmlStreamParser</a></li><li><a href="System.html">System</a></li><li><a href="SystemFilter.html">SystemFilter</a></li><li><a href="SystemHistoryFilter.html">SystemHistoryFilter</a></li><li><a href="Systems.html">Systems</a></li><li><a href="TextGeometry.html">TextGeometry</a></li><li><a href="TimeSeriesDatasource.html">TimeSeriesDatasource</a></li><li><a href="TimeSeriesReplayDatasource.html">TimeSeriesReplayDatasource</a></li><li><a href="TopicConnector.html">TopicConnector</a></li><li><a href="UavMapTasking.html">UavMapTasking</a></li><li><a href="VectorKeyframeTrack.html">VectorKeyframeTrack</a></li><li><a href="VideoDataLayer.html">VideoDataLayer</a></li><li><a href="VideoView.html">VideoView</a></li><li><a href="View.html">View</a></li><li><a href="WebCodecView.html">WebCodecView</a></li><li><a href="WebSocketConnector.html">WebSocketConnector</a></li><li><a href="WebSocketFetchConnector.html">WebSocketFetchConnector</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDataSources">addDataSources</a></li><li><a href="global.html#CatmullRom">CatmullRom</a></li><li><a href="global.html#cloneUniforms">cloneUniforms</a></li><li><a href="global.html#convertLinearToRGBE">convertLinearToRGBE</a></li><li><a href="global.html#Earcut">Earcut</a></li><li><a href="global.html#ECEF_WITH_MATRICES">ECEF_WITH_MATRICES</a></li><li><a href="global.html#ECEF_WITH_QUATERNIONS">ECEF_WITH_QUATERNIONS</a></li><li><a href="global.html#emptyTexture">emptyTexture</a></li><li><a href="global.html#FrustumPositionMode">FrustumPositionMode</a></li><li><a href="global.html#GimbalEulerAngleOrder">GimbalEulerAngleOrder</a></li><li><a href="global.html#ImageDrapingPositionMode">ImageDrapingPositionMode</a></li><li><a href="global.html#initialStates">initialStates</a></li><li><a href="global.html#LONLATALT_WITH_EULER_ANGLES">LONLATALT_WITH_EULER_ANGLES</a></li><li><a href="global.html#maxPoolSize">maxPoolSize</a></li><li><a href="global.html#Mode">Mode</a></li><li><a href="global.html#mqttConnectors">mqttConnectors</a></li><li><a href="global.html#mqttProviders">mqttProviders</a></li><li><a href="global.html#reconnectionInterval">reconnectionInterval</a></li><li><a href="global.html#removeDataSources">removeDataSources</a></li><li><a href="global.html#REVISION">REVISION</a></li><li><a href="global.html#Status">Status</a></li><li><a href="global.html#UniformsLib">UniformsLib</a></li></ul>
+    </nav>
+    <div id="main">
+
+        <h1 class="page-title">Source: ext/ui/view/spectrogram/SpectrogramView.js</h1>
+
+        
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2020 Ian Patterson. All Rights Reserved.
+
+ Author: Ian Patterson &lt;cr31.dev@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+import View from '../../../../core/ui/view/View.js';
+import * as d3 from 'd3/dist/d3.js';
+
+/**
+ * @extends View
+ */
+class SpectrogramView extends View {
+
+    /**
+     *
+     * @param {Object} [properties={}] - the properties of the view
+*    * @param {String} properties.isSim - Enable simulation mode
+     */
+    constructor(properties) {
+        super({
+            supportedLayers: ['data'],
+            dataSourceId: properties.dataSource.id,
+            ...properties,
+            visible: true
+        });
+
+        // Data Vars
+        this.spectrogramData = [];
+        this.powerRange = [-80, 250];
+        this.minDate = Date.now();
+        this.maxDate = Date.now() + 60000;
+        this.freqUnit = 'Hz';
+        this.minFreq = 0;
+        this.maxFreq = 4000;
+        this.numBands = 10;
+        this.maxDataPoints = 1000;
+        this.isSim = false;
+        this.tickArray = [];
+        for (let i = 0; i &lt;= this.numBands; i++) {
+            let interval = (this.maxFreq - this.minFreq) / this.numBands;
+            let tickVal = i * interval;
+            this.tickArray.push(tickVal);
+        }
+
+        // Layout Vars
+        let thisDiv = document.getElementById(this.divId);
+        thisDiv.style.height = thisDiv.parentElement.getBoundingClientRect().height + 'px';
+        // this.width = thisDiv.getBoundingClientRect().width;
+        // this.height = thisDiv.getBoundingClientRect().height;
+        this.width = 500;
+        this.height = 350;
+        this.xOffset = (0.10 * this.width);
+        this.yOffset = (0.90 * this.height);
+        this.yOffsetBottom = 10;
+
+        // Draw Spectrogram
+        // The div that will be the root of the D3JS Chart
+        this.container = d3.select('#' + this.divId);
+        this.width = parseInt(this.container.style('width'), 10);
+        this.height = parseInt(this.container.style('height'), 10);
+        this.aspect = this.width / this.height;
+
+        this.svg = this.container.append('svg')
+            .classed('spec-svg', true)
+            .attr("viewBox", `0 0 ${this.width} ${this.height}`)
+            .attr('preserveAspectRatio', 'xMinYMid')
+            .call(this.makeResponsive);
+
+        // Setup Scales
+        this.initXScale = d3.scaleTime()
+            .domain([this.minDate, this.maxDate])
+            .range([this.xOffset, this.width - 100]);
+        this.initXAxis = d3.axisBottom(this.initXScale);
+
+        this.initYScale = d3.scaleLinear()
+            .domain([this.minFreq, this.maxFreq])
+            .range([this.yOffset, this.yOffsetBottom]);    // TODO: name {bottomOffset} something better
+        // this.initYAxis = d3.axisLeft(this.initYScale).ticks(this.numBands).tickFormat((d, i) => d + this.freqUnit);
+        this.initYAxis = d3.axisLeft(this.initYScale).tickValues(this.tickArray).tickFormat((d, i) => d + this.freqUnit);
+
+        this.initZScale = d3.scaleSequential(d3.interpolateOrRd).domain(this.powerRange);
+
+
+        // Add Axes to Chart
+        this.xBar = this.svg.append('g')
+            .attr('class', ' x axis')
+            .attr('transform', 'translate(' + (0) + ',' + (this.yOffset) + ')')
+            .call(this.initXAxis);
+        this.yBar = this.svg.append('g')
+            .attr('class', 'y axis')
+            .attr('transform', 'translate(' + (this.xOffset) + ',' + (0) + ')')
+            .call(this.initYAxis);
+
+        if (properties.hasOwnProperty('isSim')) {
+            this.isSim = properties.isSim;
+        }
+
+        if (this.isSim) {
+            console.info("Simulating Spectrogram");
+            setInterval(() => {
+                // this.spectrogramData = this.spectrogramData.concat(this.createDataEntries());
+                this.spectrogramData = [...this.spectrogramData, ...this.createDataEntries()];
+                this.draw();
+            }, 1000);
+        }
+    }
+
+    setData(dataSourceId, data) {
+        const values = data.values;
+        for(let i=0;i &lt; values.length;i++) {
+            const d = values[i];
+            if(data.type === 'spectrogram') {
+                this.updateSpectrogram(d);
+            }
+        }
+    }
+
+    /**
+     * Updates the spectrogram data and redraw.
+     * @param {Spectogram.props} props - The layer properties allowing the update of the spectrogram
+     */
+    updateSpectrogram(data) {
+        // push layer data into Spectrogram Data Object
+        if (layer !== null) this.spectrogramData.push(layer.latestData);
+
+        // redraw
+        this.draw();
+
+    }
+
+    /**
+     * Draws the spectrogram
+     */
+    draw() {
+        // check for dataset size
+        if(this.spectrogramData.length > this.maxDataPoints){
+            let pointsToCull = this.spectrogramData.length - this.maxDataPoints;
+            this.spectrogramData = this.spectrogramData.slice(pointsToCull, this.spectrogramData.length);
+        }
+
+        this.minDate = this.spectrogramData[0].time;
+        this.maxDate = Date.now();
+
+        let tempXScale = d3
+            .scaleTime()
+            .domain([this.minDate, this.maxDate])
+            .range([this.xOffset, this.width]);
+        let newXAxis = d3.axisBottom(tempXScale).ticks(10);
+
+        this.xBar = this.svg.select('g.x.axis')
+            .call(newXAxis);
+
+        let bandwidth = 10* this.width/this.spectrogramData.length;
+
+        this.svg.selectAll('rect')
+            .data(this.spectrogramData)
+            .join('rect')
+            .attr('width', bandwidth)
+            .attr('height', d => this.initYScale(d.freqBand[0]) - this.initYScale(d.freqBand[1]))
+            .attr('x', d => tempXScale(d.time))
+            .attr('y', d => this.initYScale(d.freqBand[1]))
+            .style('fill', d => this.initZScale(d.power));
+    }
+
+    /**
+     *
+     */
+    createDataEntries() {
+        let tempDataArr = [];
+        let freqCounter = 0;
+
+        for (let i = 0; i &lt; this.numBands; i++) {
+            let randomPower = Math.random() * (this.powerRange[1] - this.powerRange[0]) + this.powerRange[0];
+            tempDataArr.push({
+                time: Date.now(),
+                freqBand: [freqCounter, freqCounter + 400],
+                power: randomPower
+            });
+            freqCounter += 400;
+        }
+
+        console.log(tempDataArr)
+        return tempDataArr;
+    }
+
+
+    makeResponsive(svg) {
+        // container will be the DOM element
+        // that the svg is appended to
+        // we then measure the container
+        // and find its aspect ratio
+        const container = d3.select(svg.node().parentNode),
+            width = parseInt(svg.style('width'), 10),
+            height = parseInt(svg.style('height'), 10),
+            aspect = width / height;
+
+        // set viewBox attribute to the initial size
+        // control scaling with preserveAspectRatio
+        // resize svg on inital page load
+        svg.attr('viewBox', `0 0 ${width} ${height}`)
+            .attr('preserveAspectRatio', 'xMinYMid')
+            .call(resize);
+
+        // add a listener so the chart will be resized
+        // when the window resizes
+        // multiple listeners for the same event type
+        // requires a namespace, i.e., 'click.foo'
+        // api docs: https://goo.gl/F3ZCFr
+        d3.select(window).on(
+            'resize.' + container.attr('id'),
+            resize
+        );
+
+        // this is the code that resizes the chart
+        // it will be called on load
+        // and in response to window resizes
+        // gets the width of the container
+        // and resizes the svg to fill it
+        // while maintaining a consistent aspect ratio
+        function resize() {
+            const w = parseInt(container.style('width'));
+            svg.attr('width', w - 5);
+            svg.attr('height', Math.round(w / aspect));
+        }
+    }
+}
+
+export default SpectrogramView;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+</div>
+
+
+<br class="clear">
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
