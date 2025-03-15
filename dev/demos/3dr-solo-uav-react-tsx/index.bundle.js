@@ -21779,7 +21779,7 @@ function svgToDataURL(svg) {
 }
 ;// CONCATENATED MODULE: ../../../source/core/datasource/worker/DataSource.worker.js
 function Worker_fn() {
-  return new Worker(__webpack_require__.p + "Worker.27043302306dc465eda8.js");
+  return new Worker(__webpack_require__.p + "Worker.3583a305d8c7f672a01a.js");
 }
 
 ;// CONCATENATED MODULE: ../../../source/core/worker/WorkerExt.js

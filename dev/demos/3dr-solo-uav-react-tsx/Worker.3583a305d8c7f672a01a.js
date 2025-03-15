@@ -10531,7 +10531,7 @@ function svgToDataURL(svg) {
  * @readonly
  * @enum {{name: string}}
  */
-const Status_Status = {
+const Status = {
   CONNECTING: "connecting",
   CONNECTED: "connected",
   DISCONNECTED: "disconnected",
@@ -10629,7 +10629,7 @@ class DataSourceHandler {
 
 
   onChangeStatus(status) {
-    if (status === Status_Status.DISCONNECTED) {
+    if (status === Status.DISCONNECTED) {
       this.flushAll();
     }
 
@@ -10817,13 +10817,13 @@ class DelegateBatchHandler extends DelegateHandler {
   }
 
   connect() {
-    this.context.onChangeStatus(Status_Status.FETCH_STARTED);
+    this.context.onChangeStatus(Status.FETCH_STARTED);
     this.fetchData(this.properties.startTime, this.properties.endTime).then(data => {
       if (!this.status.cancel) {
         this.handleData(data);
       }
     });
-    this.context.onChangeStatus(Status_Status.FETCH_ENDED);
+    this.context.onChangeStatus(Status.FETCH_ENDED);
   }
 
   async disconnect() {}
@@ -10875,7 +10875,7 @@ class DelegateReplayHandler extends DelegateHandler {
 
     try {
       let data = await this.context.nextBatch();
-      this.context.onChangeStatus(Status_Status.FETCH_STARTED);
+      this.context.onChangeStatus(Status.FETCH_STARTED);
 
       if (this.status.cancel) {
         return;
@@ -10956,8 +10956,8 @@ class DelegateReplayHandler extends DelegateHandler {
       } finally {
         try {
           this.promise = undefined;
-          this.context.onChangeStatus(Status_Status.FETCH_ENDED);
-          this.context.onChangeStatus(Status_Status.DISCONNECTED);
+          this.context.onChangeStatus(Status.FETCH_ENDED);
+          this.context.onChangeStatus(Status.DISCONNECTED);
           this.context.disconnect();
 
           if (isDefined(this.timeBc)) {
@@ -12056,7 +12056,7 @@ class BinaryDataParser extends parsers_GenericParser {
  * The DataConnector is the abstract class used to create different connectors.
  */
 
-class DataConnector_DataConnector {
+class DataConnector {
   /**
    * @param {String} url - The full url used to connect to the data stream
    */
@@ -12066,11 +12066,11 @@ class DataConnector_DataConnector {
     this.id = "DataConnector-" + randomUUID();
     this.reconnectTimeout = 1000 * 20; // 20 sec
 
-    this.status = Status_Status.DISCONNECTED;
+    this.status = Status.DISCONNECTED;
   }
 
   disconnect() {
-    this.checkStatus(Status_Status.DISCONNECTED);
+    this.checkStatus(Status.DISCONNECTED);
     this.checkAndClearReconnection();
   }
   /**
@@ -12166,7 +12166,7 @@ class DataConnector_DataConnector {
 
 }
 
-/* harmony default export */ var connector_DataConnector = (DataConnector_DataConnector);
+/* harmony default export */ var connector_DataConnector = (DataConnector);
 ;// CONCATENATED MODULE: ../../../source/core/connector/WebSocketConnector.js
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -12245,12 +12245,12 @@ class WebSocketConnector extends connector_DataConnector {
 
       this.ws = new WebSocket(fullUrl);
       this.ws.binaryType = 'arraybuffer';
-      this.checkStatus(Status_Status.CONNECTING);
+      this.checkStatus(Status.CONNECTING);
       console.warn('WebSocket stream connecting');
 
       this.ws.onopen = function (event) {
         this.checkAndClearReconnection();
-        this.checkStatus(Status_Status.CONNECTED);
+        this.checkStatus(Status.CONNECTED);
         console.warn('WebSocket stream connected');
       }.bind(this);
 
@@ -12265,7 +12265,7 @@ class WebSocketConnector extends connector_DataConnector {
 
       this.ws.onerror = function (event) {
         console.error('WebSocket stream error');
-        this.checkStatus(Status_Status.CLOSED_ERROR);
+        this.checkStatus(Status.CLOSED_ERROR);
         this.init = false;
         this.lastReceiveTime = -1;
         this.createReconnection();
@@ -12276,10 +12276,10 @@ class WebSocketConnector extends connector_DataConnector {
         console.warn('WebSocket stream closed: ', event.reason, event.code);
 
         if (event.code !== 1000 && !this.closed) {
-          this.checkStatus(Status_Status.CLOSED_ERROR);
+          this.checkStatus(Status.CLOSED_ERROR);
           this.createReconnection();
         } else {
-          this.checkStatus(Status_Status.DISCONNECTED);
+          this.checkStatus(Status.DISCONNECTED);
         }
 
         this.onClose(event.code);
@@ -12315,13 +12315,13 @@ class WebSocketConnector extends connector_DataConnector {
 
         this.ws = new WebSocket(fullUrl);
         this.ws.binaryType = 'arraybuffer';
-        this.checkStatus(Status_Status.CONNECTING);
+        this.checkStatus(Status.CONNECTING);
         console.warn('WebSocket stream connecting');
         const results = [];
 
         this.ws.onopen = function (event) {
           this.checkAndClearReconnection();
-          this.checkStatus(Status_Status.CONNECTED);
+          this.checkStatus(Status.CONNECTED);
           console.warn('WebSocket stream connected');
         }.bind(this);
 
@@ -12337,7 +12337,7 @@ class WebSocketConnector extends connector_DataConnector {
 
         this.ws.onerror = function (event) {
           console.error('WebSocket stream error');
-          this.checkStatus(Status_Status.CLOSED_ERROR);
+          this.checkStatus(Status.CLOSED_ERROR);
           this.init = false;
           this.lastReceiveTime = -1;
           this.createReconnection();
@@ -12349,10 +12349,10 @@ class WebSocketConnector extends connector_DataConnector {
           console.warn('WebSocket stream closed: ', event.reason, event.code);
 
           if (event.code !== 1000 && !this.closed) {
-            this.checkStatus(Status_Status.CLOSED_ERROR);
+            this.checkStatus(Status.CLOSED_ERROR);
             this.createReconnection();
           } else {
-            this.checkStatus(Status_Status.DISCONNECTED);
+            this.checkStatus(Status.DISCONNECTED);
           }
 
           this.onClose(event.code);
@@ -12507,13 +12507,13 @@ class WebSocketFetchConnector extends connector_WebSocketConnector {
 
       this.ws = new WebSocket(fullUrl);
       this.ws.binaryType = 'arraybuffer';
-      this.checkStatus(Status_Status.CONNECTING);
+      this.checkStatus(Status.CONNECTING);
       console.warn('WebSocket stream connecting');
       const results = [];
 
       this.ws.onopen = function (event) {
         this.checkAndClearReconnection();
-        this.checkStatus(Status_Status.CONNECTED);
+        this.checkStatus(Status.CONNECTED);
         console.warn('WebSocket stream connected');
       }.bind(this);
 
@@ -12529,7 +12529,7 @@ class WebSocketFetchConnector extends connector_WebSocketConnector {
 
       this.ws.onerror = function (event) {
         console.error('WebSocket stream error');
-        this.checkStatus(Status_Status.CLOSED_ERROR);
+        this.checkStatus(Status.CLOSED_ERROR);
         this.init = false;
         this.lastReceiveTime = -1;
         this.createReconnection();
@@ -12541,7 +12541,7 @@ class WebSocketFetchConnector extends connector_WebSocketConnector {
         console.warn('WebSocket stream closed: ', event.reason, event.code);
 
         if (event.code !== 1000 && !this.closed) {
-          this.checkStatus(Status_Status.CLOSED_ERROR);
+          this.checkStatus(Status.CLOSED_ERROR);
           this.createReconnection();
         }
 
@@ -14135,7 +14135,7 @@ class MqttConnector extends connector_DataConnector {
       console.warn("Stored MQTT provider into cache: ".concat(fullUrl));
       this.mqttProvider.connect();
       this.mqttProvider.checkStatus = this.checkStatus;
-      this.checkStatus(Status_Status.CONNECTED);
+      this.checkStatus(Status.CONNECTED);
     } else {
       console.warn("Getting MQTT provider from cache: ".concat(fullUrl));
     }
@@ -14157,7 +14157,7 @@ class MqttConnector extends connector_DataConnector {
     let queryString = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
     const mqttProvider = this.getMqttProvider();
     mqttProvider.subscribe(topic, this.onMessage).then(() => {
-      this.onChangeStatus(Status_Status.CONNECTED);
+      this.onChangeStatus(Status.CONNECTED);
     });
   }
 
@@ -14918,7 +14918,7 @@ class SweApiContext extends DataSource_context {
  * @extends DataConnector
  */
 
-class MqttTopicConnector extends (/* unused pure expression or super */ null && (DataConnector)) {
+class MqttTopicConnector extends connector_DataConnector {
   /**
    *
    * @param properties -
@@ -15027,7 +15027,7 @@ class MqttTopicConnector extends (/* unused pure expression or super */ null && 
 
 }
 
-/* harmony default export */ var connector_MqttTopicConnector = ((/* unused pure expression or super */ null && (MqttTopicConnector)));
+/* harmony default export */ var connector_MqttTopicConnector = (MqttTopicConnector);
 ;// CONCATENATED MODULE: ../../../source/core/sweapi/SensorWebApi.js
 /***************************** BEGIN LICENSE BLOCK ***************************
 
@@ -15115,7 +15115,12 @@ class SensorWebApi {
     const url = networkProperties.streamProtocol + tls + '://' + endpoint;
 
     if (networkProperties.streamProtocol === 'mqtt') {
-      return new connector_MqttConnector(url, networkProperties); // return new MqttTopicConnector(networkProperties.mqttOpts.bcId, networkProperties);
+      if (isDefined(networkProperties.mqttOpts.shared) && networkProperties.mqttOpts.shared) {
+        return new connector_MqttTopicConnector(networkProperties.mqttOpts.bcId, networkProperties);
+      } else {
+        return new connector_MqttConnector(url, networkProperties);
+      } //
+
     } else if (networkProperties.streamProtocol === 'ws') {
       return new connector_WebSocketConnector(url);
     }

@@ -9,6 +9,7 @@ import {Mode} from "osh-js/core/datasource/Mode";
 // #region snippet_datasource_mqttswejson
 
 const mqttProps = {
+    shared: true,
     prefix: '/api',
     endpointUrl: 'api.georobotix.io:443/ogc/t18',
     username: 'uxs-team',

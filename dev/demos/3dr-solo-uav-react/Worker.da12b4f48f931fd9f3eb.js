@@ -13261,8 +13261,12 @@ class SensorWebApi_SensorWebApi {
     const tls = networkProperties.tls ? 's' : '';
     const url = networkProperties.streamProtocol + tls + '://' + endpoint;
     if (networkProperties.streamProtocol === 'mqtt') {
-      return new connector_MqttConnector(url, networkProperties);
-      // return new MqttTopicConnector(networkProperties.mqttOpts.bcId, networkProperties);
+      if (isDefined(networkProperties.mqttOpts.shared) && networkProperties.mqttOpts.shared) {
+        return new connector_MqttTopicConnector(networkProperties.mqttOpts.bcId, networkProperties);
+      } else {
+        return new connector_MqttConnector(url, networkProperties);
+      }
+      //
     } else if (networkProperties.streamProtocol === 'ws') {
       return new connector_WebSocketConnector(url);
     }
