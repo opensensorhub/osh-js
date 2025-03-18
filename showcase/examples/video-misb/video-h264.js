@@ -31,7 +31,7 @@ let videoView = new VideoView({
   framerate: 25,
   showTime: true,
   showStats: true,
-  useWebCodecApi: false,
+  useWebCodecApi: true,
   layers: [
     new VideoDataLayer({
       dataSourceId: videoDataSource.id,
