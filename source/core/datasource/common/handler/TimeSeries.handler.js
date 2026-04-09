@@ -295,7 +295,8 @@ class TimeSeriesHandler extends DataSourceHandler {
         try {
             this.timeBroadcastChannel.postMessage({
                 dataSourceId: this.dataSourceId,
-                type: EventType.TIME_CHANGED
+                type: EventType.TIME_CHANGED,
+                clearLayers: properties.clearLayers || true
             });
             await this.disconnect();
 
