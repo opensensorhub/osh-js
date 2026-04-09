@@ -463,7 +463,8 @@ class DataSynchronizerReplay {
     async setTimeRange(startTime = this.getStartTimeAsIsoDate(),
                        endTime = this.getEndTimeAsIsoDate(),
                        replaySpeed = this.getReplaySpeed(),
-                       reconnect = false) {
+                       reconnect = false,
+                       clearLayers = true) {
         await this.disconnect();
         this.incVersion();
         // update properties of DataSynchronizer
@@ -481,7 +482,8 @@ class DataSynchronizerReplay {
                 this.getReplaySpeed(),
                 false,
                 this.getMode(),
-                this.version()
+                this.version(),
+                clearLayers
             ));
         }
         return Promise.all(promises);

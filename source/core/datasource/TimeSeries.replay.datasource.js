@@ -308,7 +308,8 @@ class TimeSeriesReplayDatasource extends DataSource {
                        replaySpeed = this.getReplaySpeed(),
                        reconnect = false,
                        mode = this.getMode(),
-                       version = this.version()
+                       version = this.version(),
+                       clearLayers = true
     ) {
         await this.checkInit();
 
@@ -330,7 +331,8 @@ class TimeSeriesReplayDatasource extends DataSource {
             replaySpeed: replaySpeed,
             reconnect: reconnect,
             mode: mode,
-            version: version
+            version: version,
+            clearLayers: clearLayers
         });
     }
     async reset() {

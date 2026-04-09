@@ -257,10 +257,11 @@ class TimeSeriesDatasource {
                        replaySpeed= this.getReplaySpeed(),
                        reconnect= false,
                        mode= this.getMode(),
-                       version = this.version()
+                       version = this.version(),
+                       clearLayers = true
                        ) {
 
-        return this.timeSeriesDataSource.setTimeRange(startTime,endTime,replaySpeed,reconnect,mode,version);
+        return this.timeSeriesDataSource.setTimeRange(startTime,endTime,replaySpeed,reconnect,mode,version,clearLayers);
     }
 
     /***********************************/
