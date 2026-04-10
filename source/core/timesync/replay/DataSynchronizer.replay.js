@@ -51,6 +51,7 @@ class DataSynchronizerReplay {
         this.properties.endTimestamp = undefined;
         this.properties.minTimestamp = undefined;
         this.properties.maxTimestamp = undefined;
+        this.properties.clearLayers = true;
         this.properties.version = 0;
 
         if (isDefined(properties)) {
@@ -220,6 +221,10 @@ class DataSynchronizerReplay {
      */
     getReplaySpeed() {
         return this.replaySpeed;
+    }
+
+    getClearLayers() {
+        return this.properties.clearLayers;
     }
 
     /**
@@ -418,7 +423,7 @@ class DataSynchronizerReplay {
         this.checkStartEndTime();
         await this.updateAlgo();
         for (let dataSource of this.dataSources) {
-            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true);
+            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true, this.getClearLayers());
         }
 
 
@@ -469,6 +474,7 @@ class DataSynchronizerReplay {
         this.incVersion();
         // update properties of DataSynchronizer
         this.replaySpeed = replaySpeed;
+        this.properties.clearLayers = clearLayers;
 
         await this.setStartTime(startTime, false);
         await this.setEndTime(endTime, false);
@@ -481,9 +487,9 @@ class DataSynchronizerReplay {
                 this.getEndTimeAsIsoDate(),
                 this.getReplaySpeed(),
                 false,
+                this.getClearLayers(),
                 this.getMode(),
                 this.version(),
-                clearLayers
             ));
         }
         return Promise.all(promises);
