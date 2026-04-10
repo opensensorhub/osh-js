@@ -307,9 +307,9 @@ class TimeSeriesReplayDatasource extends DataSource {
                        endTime = this.getEndTimeAsIsoDate(),
                        replaySpeed = this.getReplaySpeed(),
                        reconnect = false,
+                       clearLayers = true,
                        mode = this.getMode(),
-                       version = this.version(),
-                       clearLayers = true
+                       version = this.version()
     ) {
         await this.checkInit();
 

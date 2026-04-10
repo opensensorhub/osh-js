@@ -256,12 +256,12 @@ class TimeSeriesDatasource {
                        endTime= this.getEndTimeAsIsoDate(),
                        replaySpeed= this.getReplaySpeed(),
                        reconnect= false,
+                       clearLayers = true,
                        mode= this.getMode(),
-                       version = this.version(),
-                       clearLayers = true
+                       version = this.version()
                        ) {
 
-        return this.timeSeriesDataSource.setTimeRange(startTime,endTime,replaySpeed,reconnect,mode,version,clearLayers);
+        return this.timeSeriesDataSource.setTimeRange(startTime,endTime,replaySpeed,reconnect,clearLayers,mode,version);
     }
 
     /***********************************/

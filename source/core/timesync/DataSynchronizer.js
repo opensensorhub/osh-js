@@ -289,7 +289,7 @@ class DataSynchronizer {
                        replaySpeed = this.getReplaySpeed(),
                        reconnect = false,
                        clearLayers = true) {
-        return this.dataSynchronizer.setTimeRange(startTime,endTime, replaySpeed,reconnect, clearLayers);
+        return this.dataSynchronizer.setTimeRange(startTime, endTime, replaySpeed, reconnect, clearLayers);
     }
 
     async updateProperties(properties) {
