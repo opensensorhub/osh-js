@@ -292,11 +292,12 @@ class TimeSeriesHandler extends DataSourceHandler {
     }
 
     async updateProperties(properties) {
+        const clearLayers = properties.clearLayers == null ? true : properties.clearLayers; 
         try {
             this.timeBroadcastChannel.postMessage({
                 dataSourceId: this.dataSourceId,
                 type: EventType.TIME_CHANGED,
-                clearLayers: properties.clearLayers ?? true
+                clearLayers
             });
             await this.disconnect();
 
