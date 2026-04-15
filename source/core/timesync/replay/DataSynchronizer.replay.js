@@ -428,7 +428,7 @@ class DataSynchronizerReplay {
         this.checkStartEndTime();
         await this.updateAlgo();
         for (let dataSource of this.dataSources) {
-            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true);
+            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true, this.getStartReplayAction());
         }
 
 
