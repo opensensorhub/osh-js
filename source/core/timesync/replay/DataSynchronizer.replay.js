@@ -52,8 +52,7 @@ class DataSynchronizerReplay {
         this.properties.minTimestamp = undefined;
         this.properties.maxTimestamp = undefined;
         this.properties.version = 0;
-        // i want to improve this var name. also define an enum for valid values
-        this.properties.startReplayAction = undefined // start, resume, restart. what about init. or maybe just start and resume
+        this.properties.resumePlayback = false;
 
         if (isDefined(properties)) {
             if (isDefined(properties.minTime)) {
@@ -241,12 +240,12 @@ class DataSynchronizerReplay {
         return Mode.REPLAY;
     }
 
-    getStartReplayAction() {
-        return this.properties.startReplayAction;
+    getResumePlayback() {
+        return this.properties.resumePlayback;
     }
 
-    setStartReplayAction(startReplayAction) {
-        this.properties.startReplayAction = startReplayAction;
+    setResumePlayback(resumePlayback) {
+        this.properties.resumePlayback = resumePlayback;
     }
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
@@ -428,7 +427,7 @@ class DataSynchronizerReplay {
         this.checkStartEndTime();
         await this.updateAlgo();
         for (let dataSource of this.dataSources) {
-            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true, this.getStartReplayAction());
+            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true, this.getResumePlayback());
         }
 
 
@@ -490,7 +489,7 @@ class DataSynchronizerReplay {
                 this.getEndTimeAsIsoDate(),
                 this.getReplaySpeed(),
                 false,
-                this.getStartReplayAction(),
+                this.getResumePlayback(),
                 this.getMode(),
                 this.version(),
             ));
