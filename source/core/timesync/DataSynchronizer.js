@@ -288,8 +288,7 @@ class DataSynchronizer {
                        endTime = this.getEndTimeAsIsoDate(),
                        replaySpeed = this.getReplaySpeed(),
                        reconnect = false) {
-        const didStartTimeChange = startTime !== this.getStartTimeAsIsoDate();
-        return this.dataSynchronizer.setTimeRange(startTime, endTime, replaySpeed, reconnect, didStartTimeChange);
+        return this.dataSynchronizer.setTimeRange(startTime, endTime, replaySpeed, reconnect);
     }
 
     async updateProperties(properties) {

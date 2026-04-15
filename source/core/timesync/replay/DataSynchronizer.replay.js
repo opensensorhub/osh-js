@@ -51,8 +51,9 @@ class DataSynchronizerReplay {
         this.properties.endTimestamp = undefined;
         this.properties.minTimestamp = undefined;
         this.properties.maxTimestamp = undefined;
-        this.properties.clearLayers = true;
         this.properties.version = 0;
+        // i want to improve this var name. also define an enum for valid values
+        this.properties.startReplayAction = undefined // start, resume, restart. what about init. or maybe just start and resume
 
         if (isDefined(properties)) {
             if (isDefined(properties.minTime)) {
@@ -223,10 +224,6 @@ class DataSynchronizerReplay {
         return this.replaySpeed;
     }
 
-    getClearLayers() {
-        return this.properties.clearLayers;
-    }
-
     /**
      * Terminate the corresponding running WebWorker by calling terminate() on it.
      */
@@ -242,6 +239,14 @@ class DataSynchronizerReplay {
 
     getMode() {
         return Mode.REPLAY;
+    }
+
+    getStartReplayAction() {
+        return this.properties.startReplayAction;
+    }
+
+    setStartReplayAction(startReplayAction) {
+        this.properties.startReplayAction = startReplayAction;
     }
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
@@ -423,7 +428,7 @@ class DataSynchronizerReplay {
         this.checkStartEndTime();
         await this.updateAlgo();
         for (let dataSource of this.dataSources) {
-            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true, this.getClearLayers());
+            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true);
         }
 
 
@@ -468,13 +473,11 @@ class DataSynchronizerReplay {
     async setTimeRange(startTime = this.getStartTimeAsIsoDate(),
                        endTime = this.getEndTimeAsIsoDate(),
                        replaySpeed = this.getReplaySpeed(),
-                       reconnect = false,
-                       clearLayers = true) {
+                       reconnect = false) {
         await this.disconnect();
         this.incVersion();
         // update properties of DataSynchronizer
         this.replaySpeed = replaySpeed;
-        this.properties.clearLayers = clearLayers;
 
         await this.setStartTime(startTime, false);
         await this.setEndTime(endTime, false);
@@ -487,7 +490,7 @@ class DataSynchronizerReplay {
                 this.getEndTimeAsIsoDate(),
                 this.getReplaySpeed(),
                 false,
-                this.getClearLayers(),
+                this.getStartReplayAction(),
                 this.getMode(),
                 this.version(),
             ));

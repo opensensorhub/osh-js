@@ -292,12 +292,11 @@ class TimeSeriesHandler extends DataSourceHandler {
     }
 
     async updateProperties(properties) {
-        const didStartTimeChange = properties.didStartTimeChange == null ? false : properties.didStartTimeChange; 
         try {
             this.timeBroadcastChannel.postMessage({
                 dataSourceId: this.dataSourceId,
                 type: EventType.TIME_CHANGED,
-                didStartTimeChange
+                startReplayAction: properties.startReplayAction
             });
             await this.disconnect();
 

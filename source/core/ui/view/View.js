@@ -257,7 +257,7 @@ class View {
             const timeBroadcastChannel = new BroadcastChannel(DATASOURCE_TIME_TOPIC+dataSourceId);
             timeBroadcastChannel.onmessage = (event) => {
                 // skip data reset events for now
-                if (event.data.type === EventType.TIME_CHANGED && !event.data.didStartTimeChange) { // hm but are there scenarios where start time didnt change but we still want to clear?
+                if (event.data.type === EventType.TIME_CHANGED && event.data.startReplayAction !== 'resume') {
                     self.reset(); // on time changed
                 }
             };
