@@ -307,6 +307,7 @@ class TimeSeriesReplayDatasource extends DataSource {
                        endTime = this.getEndTimeAsIsoDate(),
                        replaySpeed = this.getReplaySpeed(),
                        reconnect = false,
+                       resumePlayback = false, 
                        mode = this.getMode(),
                        version = this.version()
     ) {
@@ -327,10 +328,11 @@ class TimeSeriesReplayDatasource extends DataSource {
         return this.updateProperties({
             startTime: this.getStartTimeAsIsoDate(),
             endTime: this.getEndTimeAsIsoDate(),
-            replaySpeed: replaySpeed,
-            reconnect: reconnect,
-            mode: mode,
-            version: version
+            replaySpeed,
+            reconnect,
+            resumePlayback,
+            mode,
+            version,
         });
     }
     async reset() {

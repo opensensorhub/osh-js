@@ -256,11 +256,12 @@ class TimeSeriesDatasource {
                        endTime= this.getEndTimeAsIsoDate(),
                        replaySpeed= this.getReplaySpeed(),
                        reconnect= false,
+                       resumePlayback = false,
                        mode= this.getMode(),
                        version = this.version()
                        ) {
 
-        return this.timeSeriesDataSource.setTimeRange(startTime,endTime,replaySpeed,reconnect,mode,version);
+        return this.timeSeriesDataSource.setTimeRange(startTime,endTime,replaySpeed,reconnect,resumePlayback,mode,version);
     }
 
     /***********************************/

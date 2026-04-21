@@ -52,6 +52,7 @@ class DataSynchronizerReplay {
         this.properties.minTimestamp = undefined;
         this.properties.maxTimestamp = undefined;
         this.properties.version = 0;
+        this.properties.resumePlayback = false;
 
         if (isDefined(properties)) {
             if (isDefined(properties.minTime)) {
@@ -239,6 +240,14 @@ class DataSynchronizerReplay {
         return Mode.REPLAY;
     }
 
+    getResumePlayback() {
+        return this.properties.resumePlayback;
+    }
+
+    setResumePlayback(resumePlayback) {
+        this.properties.resumePlayback = resumePlayback;
+    }
+
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
 
     async initDataSources() {
@@ -418,7 +427,7 @@ class DataSynchronizerReplay {
         this.checkStartEndTime();
         await this.updateAlgo();
         for (let dataSource of this.dataSources) {
-            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true);
+            await dataSource.setTimeRange(this.getStartTimeAsIsoDate(), this.getEndTimeAsIsoDate(), this.getReplaySpeed(), true, this.getResumePlayback());
         }
 
 
@@ -480,8 +489,9 @@ class DataSynchronizerReplay {
                 this.getEndTimeAsIsoDate(),
                 this.getReplaySpeed(),
                 false,
+                this.getResumePlayback(),
                 this.getMode(),
-                this.version()
+                this.version(),
             ));
         }
         return Promise.all(promises);
