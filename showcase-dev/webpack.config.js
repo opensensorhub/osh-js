@@ -77,7 +77,7 @@ module.exports = [{
 let directories = [
     'datasource-audio',
     'datasource-file',
-    'datasource-sweapifetch',
+    'datasource-consysapi',
     'datasource-swejson',
     'datasource-video',
     'datasources-synchronized',
@@ -86,7 +86,8 @@ let directories = [
     'multi-datasources-synchronized',
     'switch-realtime-batch',
     'videodata-with-control-vuejs-synchronized',
-    'datasynchronizer-dynamic-add-remove'
+    'datasynchronizer-dynamic-add-remove-realtime',
+    'datasynchronizer-dynamic-add-remove-replay'
 ];
 
 const plug = {};

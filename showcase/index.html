@@ -201,6 +201,14 @@
         height: 64px;
         width: 64px;
     }
+
+    span.badge {
+      background-color: red;
+      color: white;
+      padding: 4px 8px;
+      text-align: center;
+      border-radius: 0px;
+    }
   </style>
 
 </head>
@@ -224,13 +232,13 @@
 <div id="card-template" hidden="true" aria-hidden="true">
   <div class="col-md-4 p-3 d-flex">
     <div class="card shadow-sm flex-fill">
+      <span id="badge" class="badge">helo</span>
       <img class="bd-placeholder-img card-img-top" src=""/>
       <div class="card-body">
         <p class="card-text" style="margin-bottom:50px">sample description</p>
         <div class="d-flex justify-content-between align-items-center" style="position:absolute; bottom:20px">
           <div class="btn-group">
             <button role="button" class="btn btn-sm btn-outline-secondary">View</button>
-            <!--<button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>-->
           </div>
         </div>
       </div>

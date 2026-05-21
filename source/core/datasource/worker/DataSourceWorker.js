@@ -1,6 +1,7 @@
 import SosGetResultHandler from "../sos/handler/SosGetResult.handler";
 import SosGetFoisHandler from "../sos/handler/SosGetFois.handler";
 import SweApiHandler from "../sweapi/handler/SweApi.handler";
+import ConSysApiHandler from "../consysapi/handler/ConSysApi.handler";
 
 class DataSourceWorker {
     constructor() {
@@ -54,34 +55,44 @@ class DataSourceWorker {
 
     handleConnect(eventData, resp) {
         const dsId = eventData.dsId;
-        this.dataSourceHandlers[dsId].connect(eventData.startTime, eventData.version).then(() => {
-            this.postMessage(resp);
-        });
+        if(dsId in this.dataSourceHandlers) {
+            this.dataSourceHandlers[dsId].connect(eventData.startTime, eventData.version).then(() => {
+                this.postMessage(resp);
+            });
+        }
     }
 
     handleDisconnect(eventData, resp) {
         const dsId = eventData.dsId;
-        this.dataSourceHandlers[dsId].disconnect().then(() => {
-            this.postMessage(resp);
-        });
+        if(dsId in this.dataSourceHandlers) {
+            this.dataSourceHandlers[dsId].disconnect().then(() => {
+                this.postMessage(resp);
+            });
+        }
     }
 
     handleTopics(eventData, resp) {
         const dsId = eventData.dsId;
-        this.dataSourceHandlers[dsId].setTopics(eventData.topics);
-        this.postMessage(resp);
+        if(dsId in this.dataSourceHandlers) {
+            this.dataSourceHandlers[dsId].setTopics(eventData.topics);
+            this.postMessage(resp);
+        }
     }
 
     handleUpdateProperties(eventData, resp) {
         const dsId = eventData.dsId;
-        this.dataSourceHandlers[dsId].updateProperties(eventData.data);
-        this.postMessage(resp);
+        if(dsId in this.dataSourceHandlers) {
+            this.dataSourceHandlers[dsId].updateProperties(eventData.data);
+            this.postMessage(resp);
+        }
     }
 
     handleIsConnected(eventData, resp) {
         const dsId = eventData.dsId;
-        resp.data = this.dataSourceHandlers[dsId].isConnected();
-        this.postMessage(resp);
+        if(dsId in this.dataSourceHandlers) {
+            resp.data = this.dataSourceHandlers[dsId].isConnected();
+            this.postMessage(resp);
+        }
     }
 
     handleRemoveHandler(eventData, resp) {
@@ -106,6 +117,8 @@ class DataSourceWorker {
             return new SosGetFoisHandler();
         } else if (properties.type === 'SweApiStream') {
             return new SweApiHandler();
+        } else if (properties.type === 'ConSysApiStream') {
+            return new ConSysApiHandler();
         } else {
             throw Error('Unsupported SOS service Error');
         }

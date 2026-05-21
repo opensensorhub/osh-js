@@ -88,6 +88,7 @@ export default {
       endpointUrl:  'api.georobotix.io/ogc/t18/api',
       protocol: 'mqtt',
       mqttOpts: {
+        shared: true,
         prefix: '/api',
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },

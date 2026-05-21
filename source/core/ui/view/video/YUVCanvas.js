@@ -40,7 +40,7 @@ class YUVCanvas {
          * Draw the next output picture using WebGL
          */
         if (this.type === "yuv420") {
-            this.drawNextOuptutPictureGL = (par) => {
+            this.drawNextOutputPictureGL = (par) => {
                 var gl = this.contextGL;
                 var texturePosBuffer = this.texturePosBuffer;
                 var uTexturePosBuffer = this.uTexturePosBuffer;
@@ -128,7 +128,7 @@ class YUVCanvas {
                 gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             };
 
-            this.drawNextOuptutPictureBitmapGL = (par) => {
+            this.drawNextOutputPictureBitmapGL = (par) => {
                 var gl = this.contextGL;
                 var texturePosBuffer = this.texturePosBuffer;
 
@@ -179,7 +179,7 @@ class YUVCanvas {
             };
 
         } else if (this.type === "yuv422") {
-            this.drawNextOuptutPictureGL = (par) => {
+            this.drawNextOutputPictureGL = (par) => {
                 var gl = this.contextGL;
                 var texturePosBuffer = this.texturePosBuffer;
 
@@ -545,16 +545,16 @@ class YUVCanvas {
         var gl = this.contextGL;
 
         if (gl) {
-            this.drawNextOuptutPictureGL(width, height, croppingParams, data);
+            this.drawNextOutputPictureGL(width, height, croppingParams, data);
         } else {
-            this.drawNextOuptutPictureRGBA(width, height, croppingParams, data);
+            this.drawNextOutputPictureRGBA(width, height, croppingParams, data);
         }
     }
 
     /**
      * Draw next output picture using ARGB data on a 2d canvas.
      */
-    drawNextOuptutPictureRGBA(width, height, croppingParams, data) {
+    drawNextOutputPictureRGBA(width, height, croppingParams, data) {
         var canvas = this.canvasElement;
         var argbData = data;
         var ctx = canvas.getContext('2d');

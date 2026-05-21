@@ -105,7 +105,7 @@ class CanvasView extends View {
         const that = this;
 
         function handleVisibilityChange() {
-            if (this.currentDoc.hidden) {
+            if (that.currentDoc.hidden) {
                 that.skipFrame = true;
             } else {
                 that.skipFrame = false;

@@ -161,7 +161,7 @@ export default {
       return this.endTimestamp;
     },
     htmlCurrentTime() {
-      return this.parseTime(this.startTimestamp);
+       return this.parseTime(this.startTimestamp);
     },
     htmlEndTime() {
       return this.parseTime(this.endTimestamp);
@@ -178,9 +178,9 @@ export default {
     this.initComp();
   },
   methods: {
-    async initComp() {
+    initComp() {
       assertDefined(this.getDataSourceObject(), 'either dataSource properties or dataSynchronizer must be defined');
-      await this.checkInit();
+      this.checkInit();
       this.createTimeBc();
 
       // listen for datasource status
@@ -196,12 +196,12 @@ export default {
 
       if(isDefined(this.dataSynchronizer)) {
         this.dataSynchronizer.onAddedDataSource = async () => {
-          await this.checkInit();
+          this.checkInit();
         };
       }
 
     },
-    async checkInit() {
+    checkInit() {
       if (!this.init && this.dataSourceObject.getDataSources().length > 0) {
         try {
           this.dataSourceObject.isConnected().then(value => this.connected = value);
@@ -304,8 +304,7 @@ export default {
         this.rangeSliderInit = true;
         // HAS BEEN REPLACED
       }
-    }
-    ,
+    },
     doBackward() {
       if (!this.interval) {
         this.interval = setInterval(() => {

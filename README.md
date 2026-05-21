@@ -71,6 +71,7 @@ $ npm run prod
 
 
 ## Dependencies
+
 ### Cesium
 
 If you use the CesiumView, don't forget to install the corresponding npm package 'cesium'.

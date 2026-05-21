@@ -63,3 +63,5 @@ else if (typeof define === 'function' && define['amd'])
   define([], function() { return OSH; });
 else if (typeof exports === 'object')
   exports["OSH"] = OSH;
+
+export default OSH;

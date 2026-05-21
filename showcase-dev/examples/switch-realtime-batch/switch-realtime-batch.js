@@ -4,7 +4,7 @@ import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
-import SweApiDatasource from "../../../source/core/datasource/sweapi/SweApi.datasource";
+import ConSysApi from "../../../source/core/datasource/consysapi/ConSysApi.datasource";
 import {EventType} from "../../../source/core/event/EventType";
 
 function getRandomArbitrary(min, max) {
@@ -17,7 +17,7 @@ const dataContentElt = document.getElementById("data-content");
 const masterTimeElt = document.getElementById("master-time");
 
 let initSos = false;
-let initSweapi = false;
+let initConsysapi = false;
 
 let chartDataSource = new SosGetResult("weather", {
     endpointUrl: "sensiasoft.net/sensorhub/sos",
@@ -38,7 +38,7 @@ const sosDataSynchronizer = new DataSynchronizer({
 });
 
 async function startSosExample() {
-    await sweapiDataSynchronizer.disconnect();
+    await consysapiDataSynchronizer.disconnect();
     replayButtonElt.onclick = async () => {
         await sosDataSynchronizer.setTimeRange(
             new Date(Date.now() - 60 * 1000 * 60 * 2).toISOString(),
@@ -105,19 +105,19 @@ const commonDatasourceOpts = {
     prefetchBatchSize: 250
 };
 
-const droneLocationDataSource = new SweApiDatasource('MISB UAS - Platform Location', {
+const droneLocationDataSource = new ConSysApi('MISB UAS - Platform Location', {
     ...commonDatasourceOpts,
     resource: '/datastreams/fled6eics1cl4/observations',
     responseFormat: 'application/swe+json',
 });
 
-const droneOrientationDataSource = new SweApiDatasource('MISB UAS - Platform Attitude', {
+const droneOrientationDataSource = new ConSysApi('MISB UAS - Platform Attitude', {
     ...commonDatasourceOpts,
     resource: '/datastreams/adheadf9nghts/observations',
     responseFormat: 'application/swe+json',
 });
 
-const sweapiDataSynchronizer = new DataSynchronizer({
+const consysapiDataSynchronizer = new DataSynchronizer({
     replaySpeed: 2,
     masterTimeRefreshRate: 250,
     startTime: START_TIME,
@@ -125,11 +125,11 @@ const sweapiDataSynchronizer = new DataSynchronizer({
     dataSources: [droneOrientationDataSource, droneLocationDataSource]
 });
 
-async function startSweApiExample() {
+async function startConSysApiExample() {
     await sosDataSynchronizer.disconnect();
     replayButtonElt.onclick = async () => {
-        await sweapiDataSynchronizer.setMode(Mode.REPLAY);
-        // await sweapiDataSynchronizer.setTimeRange(
+        await consysapiDataSynchronizer.setMode(Mode.REPLAY);
+        // await consysapiDataSynchronizer.setTimeRange(
         //     START_TIME,
         //     END_TIME,
         //     2.0,
@@ -138,12 +138,12 @@ async function startSweApiExample() {
         // );
         replayButtonElt.disabled = true;
         realtimeButtonElt.disabled = false;
-        await sweapiDataSynchronizer.connect();
+        await consysapiDataSynchronizer.connect();
     }
 
     realtimeButtonElt.onclick = async () => {
-        await sweapiDataSynchronizer.setMode(Mode.REAL_TIME);
-        // await sweapiDataSynchronizer.setTimeRange(
+        await consysapiDataSynchronizer.setMode(Mode.REAL_TIME);
+        // await consysapiDataSynchronizer.setTimeRange(
         //     'now',
         //     '2055-01-01',
         //     1.0,
@@ -153,11 +153,11 @@ async function startSweApiExample() {
         realtimeButtonElt.disabled = true;
         replayButtonElt.disabled = false;
 
-        await sweapiDataSynchronizer.connect();
+        await consysapiDataSynchronizer.connect();
     }
 
-    sweapiDataSynchronizer.subscribe(message => displayData(message), [EventType.DATA]);
-    sweapiDataSynchronizer.subscribe(message => displayMasterTime(message), [EventType.MASTER_TIME]);
+    consysapiDataSynchronizer.subscribe(message => displayData(message), [EventType.DATA]);
+    consysapiDataSynchronizer.subscribe(message => displayMasterTime(message), [EventType.MASTER_TIME]);
 }
 
 const listBoxElement = document.getElementById('services');
@@ -165,8 +165,8 @@ listBoxElement.onchange = (event) => {
     let value = event.target.value;
     if(value === 'sos') {
         startSosExample();
-    } else if(value === 'sweapi') {
-        startSweApiExample()
+    } else if(value === 'consysapi') {
+        startConSysApiExample()
     }
 }
 

@@ -1,4 +1,3 @@
-import DecodeWorker from './workers/ffmpeg.decode.audio.worker.js';
 import {randomUUID} from "../../../../utils/Utils";
 
 class FfmpegAudio {
@@ -7,7 +6,7 @@ class FfmpegAudio {
         this.codec = properties.codec;
 
         try {
-            this.audioDecoderWorker = new DecodeWorker();
+            this.audioDecoderWorker = new Worker(new URL('./workers/ffmpeg.decode.audio.worker.js', import.meta.url), { type: 'module' });
             // const drawWorker = new DrawWorker();
             this.audioDecoderWorker.id = randomUUID();
 

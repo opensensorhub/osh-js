@@ -37,7 +37,7 @@ const config = {
     toUrlUndefined: true
   },
   devServer: {
-    https: true,
+    https: false,
     compress: false,
     hot: true,
   },

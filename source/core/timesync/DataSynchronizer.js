@@ -201,7 +201,9 @@ class DataSynchronizer {
      * Terminate the corresponding running WebWorker by calling terminate() on it.
      */
     terminate() {
-        return this.dataSynchronizer.terminate();
+        if(this.dataSynchronizer) {
+            return this.dataSynchronizer.terminate();
+        }
     }
 
     getMode() {
@@ -224,7 +226,7 @@ class DataSynchronizer {
      * @param {TimeSeriesDataSource} dataSource - the new datasource to add
      */
     async addDataSource(dataSource) {
-        await this.dataSynchronizerRt.addDataSource(dataSource);
+        this.dataSynchronizerRt.addDataSource(dataSource);
         return this.dataSynchronizerReplay.addDataSource(dataSource);
     }
 
@@ -329,7 +331,8 @@ class DataSynchronizer {
         this.dataSynchronizerReplay.computeMinMax();
         this.dataSynchronizerReplay.timeChanged();
     }
-    onTimeChanged(start, min) {}
+    onTimeChanged(start, min) {
+    }
 
     onRemovedDataSource(dataSourceId) {
     }

@@ -19,6 +19,7 @@ import SensorWebApi from "../SensorWebApi";
 import Collection from "../Collection";
 import API from "../routes.conf";
 import SweCollectionDataParser from "../../parsers/sweapi/collection/SweCollectionDataParser";
+import SweApiFetchFeatureOfInterestParser from "../../parsers/sweapi/collection/SweApiFetchFeatureOfInterest.parser";
 
 class FeaturesOfInterest extends SensorWebApi {
     /**
@@ -32,7 +33,7 @@ class FeaturesOfInterest extends SensorWebApi {
      */
     constructor(networkProperties) {
         super(networkProperties);
-        this.sweCollectionDataParser = new SweCollectionDataParser(networkProperties);
+        this.sweApiFetchParser = new SweApiFetchFeatureOfInterestParser(networkProperties);
     }
 
     /**
@@ -44,7 +45,7 @@ class FeaturesOfInterest extends SensorWebApi {
      * @return {Promise<Collection<FeaturesOfInterest>>} - A Collection of FeaturesOfInterest
      */
     async searchFeaturesOfInterest(featureOfInterestFilter = new FeatureOfInterestFilter(), pageSize= 10) {
-        return new Collection(this.baseUrl() + API.fois, featureOfInterestFilter, pageSize,this.sweCollectionDataParser);
+        return new Collection(this.baseUrl() + API.fois.search, featureOfInterestFilter, pageSize,this.sweApiFetchParser);
     }
 
     /**

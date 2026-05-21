@@ -15,10 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import DataConnector from "./DataConnector";
-import {assertDefined, isDefined, randomUUID} from "../utils/Utils";
+import {isDefined, randomUUID} from "../utils/Utils";
 import {Status} from "./Status";
 import MqttProvider from "../mqtt/MqttProvider";
-import ObservationFilter from "../sweapi/observation/ObservationFilter";
 
 /**
  * Defines the MqttConnector to connect to a remote server by creating a Mqtt channel.

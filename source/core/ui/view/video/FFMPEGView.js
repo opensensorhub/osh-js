@@ -10,7 +10,6 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {assertDefined, isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
-import DecodeWorker from './workers/ffmpeg.decode.video.worker.js';
 import '../../../resources/css/ffmpegview.css';
 import YUVCanvas from "./YUVCanvas";
 import CanvasView from "./CanvasView";
@@ -117,7 +116,7 @@ class FFMPEGView extends CanvasView {
         }
         let nodata = new Uint8Array(1);
         nodata[0] = 128;
-        this.yuvCanvas.drawNextOuptutPictureGL({
+        this.yuvCanvas.drawNextOutputPictureGL({
             yData: nodata,
             yDataPerRow: 1,
             yRowCnt: 1,
@@ -143,7 +142,7 @@ class FFMPEGView extends CanvasView {
      * @private
      */
     initFFMPEG_DECODER_WORKER(codec) {
-        this.decodeWorker = new DecodeWorker();
+        this.decodeWorker = new Worker(new URL('./workers/ffmpeg.decode.video.worker.js', import.meta.url), { type: 'module' });
         // const drawWorker = new DrawWorker();
         this.decodeWorker.id = randomUUID();
 
@@ -165,6 +164,13 @@ class FFMPEGView extends CanvasView {
         //     framerate: this.framerate,
         //     dataSourceId: this.dataSourceId
         // }, [offscreenCanvas]);
+
+        this.decodeWorker.onerror = (e) => {
+            console.error('Decode worker error:', e);
+        };
+        this.decodeWorker.onmessageerror = (e) => {
+            console.error('Decode worker message error:', e);
+        };
 
         const that = this;
         this.decodeWorker.onmessage = function (e) {
@@ -194,7 +200,7 @@ class FFMPEGView extends CanvasView {
             this.width = decodedFrame.frame_width;
             this.height = decodedFrame.frame_height;
         }
-        this.yuvCanvas.drawNextOuptutPictureGL({
+        this.yuvCanvas.drawNextOutputPictureGL({
             yData: decodedFrame.frameYData,
             yDataPerRow: decodedFrame.frame_width,
             yRowCnt: decodedFrame.frame_height,
@@ -217,14 +223,15 @@ class FFMPEGView extends CanvasView {
      */
     async decode(pktSize, pktData, timestamp, roll) {
         if(pktSize > 0) {
-            let arrayBuffer = pktData.buffer;
+            const clone = new Uint8Array(pktData);
+            let arrayBuffer = clone.buffer;
 
             this.decodeWorker.postMessage({
                 message: 'data',
                 pktSize: pktSize,
                 pktData: arrayBuffer,
                 roll: roll,
-                byteOffset: pktData.byteOffset,
+                byteOffset: 0,
                 codec: this.codec,
                 timestamp: timestamp,
                 dataSourceId: this.dataSourceId
@@ -249,7 +256,7 @@ class FFMPEGView extends CanvasView {
 
     drawBlank() {
         let nodata = new Uint8Array(1);
-        this.yuvCanvas.drawNextOuptutPictureGL({
+        this.yuvCanvas.drawNextOutputPictureGL({
             yData: nodata,
             yDataPerRow: 1,
             yRowCnt: 1,

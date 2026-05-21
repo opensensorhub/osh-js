@@ -1,6 +1,6 @@
 import MqttProvider from "osh-js/core/mqtt/MqttProvider";
 import {randomUUID} from "osh-js/core/utils/Utils";
-import ObservationFilter from "../../../source/core/sweapi/observation/ObservationFilter";
+import ObservationFilter from "../../../source/core/consysapi/observation/ObservationFilter";
 
 const textAreaElement0 =  document.getElementById("data-container0");
 const textAreaElement1 =  document.getElementById("data-container1");

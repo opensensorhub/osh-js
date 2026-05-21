@@ -30,7 +30,7 @@ function display(e) {
             self.yuvCanvas.resize(e.width, e.height);
         }
 
-        self.yuvCanvas.drawNextOuptutPictureGL({
+        self.yuvCanvas.drawNextOutputPictureGL({
             yData: e.yData,
             yDataPerRow: e.yDataPerRow,
             yRowCnt: e.yRowCnt,
@@ -54,7 +54,7 @@ setInterval(() => {
 function reset() {
 // clear canvas
     let nodata = new Uint8Array(1);
-    self.yuvCanvas.drawNextOuptutPictureGL({
+    self.yuvCanvas.drawNextOutputPictureGL({
         yData: nodata,
         yDataPerRow: 1,
         yRowCnt: 1,

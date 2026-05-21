@@ -21,13 +21,13 @@ var samples = [
         url: "datasource-file"
     },
     {
-        name: "DataSource SweApiFetch",
-        description: "Display GPS data using the SweApiFetch datasource",
-        url: "datasource-sweapifetch"
+        name: "Connected Systems DataSource",
+        description: "Display GPS data using the ConSysApi datasource",
+        url: "datasource-consysapi"
     },
     {
-        name: "DataSource SweApiFetch Json",
-        description: "Display data using the SweApiFetch datasource in JSON format",
+        name: "SOS DataSource Swe Json",
+        description: "Display data using the SOS datasource in SWE JSON format",
         url: "datasource-swejson"
     },
     {
@@ -56,8 +56,8 @@ var samples = [
         url: "multi-datasources-synchronized"
     },
     {
-        name: 'Switch between Replay & realtime using SOS or SWEAPI service',
-        description: 'Switch between Replay & realtime using SOS or SWEAPI service',
+        name: 'Switch between Replay & realtime using SOS or Connected Systems API service',
+        description: 'Switch between Replay & realtime using SOS or Connected Systems API service',
         url: 'switch-realtime-batch'
     },
     {
@@ -67,9 +67,19 @@ var samples = [
         code: 'vue/App_examples/videodata-with-control-vuejs-synchronized.vue'
     },
     {
-        name: 'Add/Remove DataSource(s) to/from DataSynchronizer',
+        name: 'Add/Remove DataSource(s) to/from DataSynchronizer in Realtime mode',
         description: 'Add/Remove DataSource(s) to/from DataSynchronizer even if DataSynchronizer is running',
-        url: 'datasynchronizer-dynamic-add-remove'
+        url: 'datasynchronizer-dynamic-add-remove-realtime'
+    },
+    {
+        name: 'Add/Remove DataSource(s) to/from DataSynchronizer in REPLAY mode',
+        description: 'Add/Remove DataSource(s) to/from DataSynchronizer even if DataSynchronizer is running',
+        url: 'datasynchronizer-dynamic-add-remove-replay'
+    },
+    {
+        name: 'Read and display GeoJSON using generic Layer',
+        description: 'Read and display GeoJSON using generic Layer',
+        url: 'datasource-geojson'
     },
 ];
 

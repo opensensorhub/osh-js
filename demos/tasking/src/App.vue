@@ -81,6 +81,7 @@ export default {
     const cmdStreamId = "rtbajuvqi9b54";
 
     const mqttProps = {
+      shared: true,
       prefix: '/api',
       endpointUrl: 'api.georobotix.io:443/ogc/t18',
       username: 'uxs-team',

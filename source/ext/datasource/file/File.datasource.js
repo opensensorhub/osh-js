@@ -17,9 +17,7 @@
 
 
 import DataSource from "../../../core/datasource/DataSource.datasource";
-import FileDataSourceWorker from "../worker/DataSource.file.worker";
 import WorkerExt from "../../../core/worker/WorkerExt";
-import DataSourceWorker from "../../../core/datasource/worker/DataSource.worker";
 
 /**
  * This datasource provides generic parsing for File input. It is agnostic of the content of the file.
@@ -51,7 +49,7 @@ class FileDataSource extends DataSource {
 
 
     createWorker(properties) {
-        return new WorkerExt(new FileDataSourceWorker());
+        return new WorkerExt(new Worker(new URL('../worker/DataSource.file.worker.js', import.meta.url), { type: 'module' }));
     }
 }
 

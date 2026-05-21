@@ -9,7 +9,12 @@ self.onmessage = async function (e) {
     }
 
     if (isDefined(ffmpegDecoder)) {
-        const decodedFrame = await ffmpegDecoder.decode(e.data);
+        // Clone incoming data to avoid buffer detachment issues
+        const msg = { ...e.data };
+        if (msg.pktData instanceof ArrayBuffer) {
+            msg.pktData = msg.pktData.slice(0);
+        }
+        const decodedFrame = await ffmpegDecoder.decode(msg);
         if (isDefined(decodedFrame)) {
             self.postMessage(decodedFrame,
                 [
@@ -22,5 +27,9 @@ self.onmessage = async function (e) {
 }
 
 self.onerror = (e) => {
-    console.log('closing worker');
+    console.error('Decode worker error:', e);
+}
+
+self.onmessageerror = (e) => {
+    console.error('Decode worker message error:', e);
 }

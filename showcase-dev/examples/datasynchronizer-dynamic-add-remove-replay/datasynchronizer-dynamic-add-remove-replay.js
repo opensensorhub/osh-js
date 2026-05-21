@@ -1,5 +1,5 @@
 import {EventType} from 'osh-js/core/event/EventType';
-import SweApiDatasource from "osh-js/core/datasource/sweapi/SweApi.datasource.js";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
 import {Mode} from "osh-js/core/datasource/Mode";
 import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
 
@@ -18,19 +18,19 @@ const commonDatasourceOpts = {
   prefetchBatchSize: 50
 };
 
-const ds0 = new SweApiDatasource('MISB Drone - Video', {
+const ds0 = new ConSysApi('MISB Drone - Video', {
   ...commonDatasourceOpts,
   resource: '/datastreams/8ni90dbu4uf0g/observations',
   responseFormat: 'application/swe+binary',
 });
 
-const ds1 = new SweApiDatasource('MISB UAS - Platform Location', {
+const ds1 = new ConSysApi('MISB UAS - Platform Location', {
   ...commonDatasourceOpts,
   resource: '/datastreams/fled6eics1cl4/observations',
   responseFormat: 'application/swe+json',
 });
 
-const ds2 = new SweApiDatasource('MISB UAS - Platform Attitude', {
+const ds2 = new ConSysApi('MISB UAS - Platform Attitude', {
   ...commonDatasourceOpts,
   resource: '/datastreams/adheadf9nghts/observations',
   responseFormat: 'application/swe+json',

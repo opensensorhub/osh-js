@@ -16,7 +16,6 @@
 
 import {isDefined, randomUUID} from '../utils/Utils.js';
 import {DATASOURCE_DATA_TOPIC} from "../Constants";
-import DataSourceWorker from './worker/DataSource.worker';
 import {Mode} from "./Mode";
 import WorkerExt from "../worker/WorkerExt";
 import MqttConnector from "../connector/MqttConnector";
@@ -87,7 +86,7 @@ class DataSource {
 
     //----------- ASYNCHRONOUS FUNCTIONS -----------------//
     createWorker(properties) {
-        return new WorkerExt(new DataSourceWorker());
+        return new WorkerExt(new Worker(new URL('./worker/DataSource.worker.js', import.meta.url), { type: 'module' }));
     }
 
     /**

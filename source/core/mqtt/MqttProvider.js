@@ -14,7 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import mqtt from './mqtt.min.js';
+import * as mqttModule from './mqtt.min.js';
+const mqtt = mqttModule.default || mqttModule;
 import {isDefined} from "../utils/Utils.js";
 
 let mqttCallbacks = {};

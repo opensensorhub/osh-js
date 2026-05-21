@@ -341,6 +341,7 @@ export default {
         tls: this.$store.state.server.tls,
         endpointUrl: this.$store.state.server.url,
         mqttOpts: {
+          shared: false,
           prefix: this.$store.state.server.mqtt.prefix,
           endpointUrl: this.$store.state.server.mqtt.url
         }

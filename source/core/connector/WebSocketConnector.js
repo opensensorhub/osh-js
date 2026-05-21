@@ -38,8 +38,6 @@ import {Status} from './Status.js';
  *
  */
 
-let reconnectionInterval = -1;
-
 class WebSocketConnector extends DataConnector {
     /**
      *
@@ -51,6 +49,7 @@ class WebSocketConnector extends DataConnector {
         this.interval = -1;
         this.lastReceiveTime = 0;
         this.extraUrl = '';
+        this.reconnectionInterval = -1;
         this.reconnectRetry = (properties && properties.reconnectRetry) || 10;
     }
 
@@ -109,10 +108,7 @@ class WebSocketConnector extends DataConnector {
                 }
                 this.onClose(event.code);
             };
-            if(this.reconnectionInterval !== -1) {
-                clearInterval(this.reconnectionInterval);
-                this.reconnectionInterval = -1;
-            }
+            this.checkAndClearReconnection();
         }
     }
 
@@ -177,10 +173,7 @@ class WebSocketConnector extends DataConnector {
                     this.onClose(event.code);
                     resolve(results);
                 };
-                if (this.reconnectionInterval !== -1) {
-                    clearInterval(this.reconnectionInterval);
-                    this.reconnectionInterval = -1;
-                }
+                this.checkAndClearReconnection();
             }
         });
     }
@@ -196,23 +189,23 @@ class WebSocketConnector extends DataConnector {
     }
 
     checkAndClearReconnection() {
-        if(reconnectionInterval !== -1) {
-            clearInterval(reconnectionInterval);
-            reconnectionInterval = -1;
+        if(this.reconnectionInterval !== -1) {
+            clearInterval(this.reconnectionInterval);
+            this.reconnectionInterval = -1;
         }
     }
 
     createReconnection() {
-        if(!this.closed && reconnectionInterval === -1 && this.onReconnect()) {
+        if(!this.closed && this.reconnectionInterval === -1 && this.onReconnect()) {
             let count = 0;
             const url = this.url;
-            reconnectionInterval =  setInterval(function () {
+            this.reconnectionInterval =  setInterval(function () {
                 let delta = Date.now() - this.lastReceiveTime;
                 // -1 means the WS went in error
                 if (this.lastReceiveTime === -1 || (delta >= this.reconnectTimeout)) {
                     if(count++ >= this.reconnectRetry) {
                         console.warn(`Maximum reconnection retries attempted: ${this.reconnectRetry}`)
-                        clearInterval(reconnectionInterval);
+                        this.checkAndClearReconnection();
                     } else {
                         let fullUrl = url;
                         if(isDefined(this.extraUrl)) {

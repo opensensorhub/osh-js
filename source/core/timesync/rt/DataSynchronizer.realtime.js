@@ -15,7 +15,6 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import {assertDefined, isDefined, randomUUID} from "../../utils/Utils.js";
-import DataSynchronizerWorker from './DataSynchronizer.realtime.worker.js';
 import {DATA_SYNCHRONIZER_TOPIC, TIME_SYNCHRONIZER_TOPIC} from "../../Constants.js";
 import {Mode} from "../../datasource/Mode";
 import WorkerExt from "../../worker/WorkerExt";
@@ -33,7 +32,7 @@ class DataSynchronizerRealtime {
     constructor(properties, timeSync) {
         this.bufferingTime = 1000; // default
         this.id = properties.id || randomUUID();
-        this.dataSources = properties.dataSources || [];
+        this.dataSources = (properties.dataSources) ? [...properties.dataSources] : [];
         this.timerResolution = properties.timerResolution || 5;
         this.masterTimeRefreshRate = properties.masterTimeRefreshRate || 250;
         this.initialized = false;
@@ -66,7 +65,7 @@ class DataSynchronizerRealtime {
      * Terminate the corresponding running WebWorker by calling terminate() on it.
      */
     terminate() {
-        if (this.synchronizerWorker !== null) {
+        if (isDefined(this.synchronizerWorker)) {
             this.synchronizerWorker.terminate();
             this.synchronizerWorker = null;
         }
@@ -88,7 +87,7 @@ class DataSynchronizerRealtime {
                 const dataSourceForWorker = await this.createDataSourceForWorker(dataSource);
                 dataSourcesForWorker.push(dataSourceForWorker);
             }
-            this.synchronizerWorker = new WorkerExt(new DataSynchronizerWorker());
+            this.synchronizerWorker = new WorkerExt(new Worker(new URL('./DataSynchronizer.realtime.worker.js', import.meta.url), { type: 'module' }));
             return this.synchronizerWorker.postMessageWithAck({
                 message: 'init',
                 dataSources: dataSourcesForWorker,
@@ -150,21 +149,23 @@ class DataSynchronizerRealtime {
      * @param {TimeSeriesDatasource} dataSource - the new datasource to add
      */
     async removeDataSource(dataSource) {
-        await dataSource.removeDataSynchronizer();
-        this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
-        await dataSource.setDataSynchronizer(null);
-        if (this.dataSources.length === 0) {
-            await this.reset();
-        }
-        if (!this.initialized) {
-            console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
-        } else {
-            return this.synchronizerWorker.postMessageWithAck({
-                message: 'remove',
-                dataSourceIds: [dataSource.getId()],
-            }).then(() => {
-                this.onRemovedDataSource(dataSource.id);
-            });
+        if(this.dataSources.map(ds => ds.id).includes(dataSource.id)) {
+            dataSource.removeDataSynchronizer();
+            this.dataSources = this.dataSources.filter(elt => elt.id !== dataSource.getId());
+            dataSource.setDataSynchronizer(null);
+            if (this.dataSources.length === 0) {
+                await this.reset();
+            }
+            if (!this.initialized) {
+                console.log(`DataSynchronizer not initialized yet, remove DataSource ${dataSource.id} as it`);
+            } else {
+                return this.synchronizerWorker.postMessageWithAck({
+                    message: 'remove',
+                    dataSourceIds: [dataSource.getId()],
+                }).then(() => {
+                    this.onRemovedDataSource(dataSource.id);
+                });
+            }
         }
     }
 
