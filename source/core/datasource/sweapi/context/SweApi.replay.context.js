@@ -122,6 +122,8 @@ class SweApiReplayContext extends SweApiContext {
                             this.relativeStartTimestamp = results[results.length-1].timestamp;
                             resolve(data);
                         }
+                    } else {
+                        resolve([])
                     }
                 }
 
