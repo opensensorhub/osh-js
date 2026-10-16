@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Showcase Examples</title>
   <link rel="stylesheet" href="lib/bootstrap.min.css"/>
   <link href="lib/prism.css" rel="stylesheet" />
@@ -198,6 +201,14 @@
         height: 64px;
         width: 64px;
     }
+
+    span.badge {
+      background-color: red;
+      color: white;
+      padding: 4px 8px;
+      text-align: center;
+      border-radius: 0px;
+    }
   </style>
 
 </head>
@@ -221,13 +232,13 @@
 <div id="card-template" hidden="true" aria-hidden="true">
   <div class="col-md-4 p-3 d-flex">
     <div class="card shadow-sm flex-fill">
+      <span id="badge" class="badge">helo</span>
       <img class="bd-placeholder-img card-img-top" src=""/>
       <div class="card-body">
         <p class="card-text" style="margin-bottom:50px">sample description</p>
         <div class="d-flex justify-content-between align-items-center" style="position:absolute; bottom:20px">
           <div class="btn-group">
             <button role="button" class="btn btn-sm btn-outline-secondary">View</button>
-            <!--<button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>-->
           </div>
         </div>
       </div>
@@ -257,5 +268,12 @@
     </div>
   </div>
 </div>
+<script type="module">
+    // Init cesium token
+    import {Ion} from "cesium";
+
+    Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+        'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
+</script>
 </body>
 </html>

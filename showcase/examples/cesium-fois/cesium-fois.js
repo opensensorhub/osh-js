@@ -1,20 +1,20 @@
 // #region snippet_cesium_fois
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import SosGetFois from 'osh-js/core/datasource/SosGetFois';
+import SosGetFois from 'osh-js/core/datasource/sos/SosGetFois.datasource';
 import {
-    Cartesian3
-} from 'cesium';
+    Cartesian3, Ion
+} from '@cesium/engine';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer';
 
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
 // create data source for Fois
 let sosGetFois = new SosGetFois('fois', {
-    protocol: 'http',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-    batchSize: 50,
-    procedureId: 'urn:usgs:water:network'
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
+    procedureId: 'urn:usgs:water:network',
+    tls: true
 });
 
 // create Cesium view
@@ -44,6 +44,8 @@ let cesiumView = new CesiumView({
             labelColor: '#ffffff',
             labelSize: 28,
             labelOffset: [0, 10],
+            labelBackgroundColor: 'rgba(0,0,0,0.5)',
+            labelOutlineColor: 'rgba(150,150,150,1.0)'
         })
     ]
 });
@@ -59,6 +61,3 @@ cesiumView.viewer.camera.flyTo({
 sosGetFois.connect();
 
 // #endregion snippet_cesium_fois
-
-const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[7];

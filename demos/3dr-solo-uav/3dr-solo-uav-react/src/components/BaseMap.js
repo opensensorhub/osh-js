@@ -1,61 +1,31 @@
 import * as React from "react";
-import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
-import SosGetResultJson from "osh/core/datasource/SosGetResultJson.js";
+import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "@cesium/engine";
 import PointMarkerLayer from "osh/core/ui/layer/PointMarkerLayer.js";
+import PolygonLayer from "osh/core/ui/layer/PolygonLayer.js";
+import CoPlanarPolygonLayer from "osh/core/ui/layer/CoPlanarPolygonLayer.js";
+
 import CesiumView from "osh/core/ui/view/map/CesiumView.js";
 import {randomUUID} from "osh/core/utils/Utils.js";
 import ImageDrapingLayer from "osh/core/ui/layer/ImageDrapingLayer.js";
-
-window.CESIUM_BASE_URL = './';
 
 class BaseMap extends React.Component {
   constructor(props) {
     super(props);
     this.divId = randomUUID();
+    this.platformLocationDataSource = props.platformLocationDataSource;
+    this.platformOrientationDataSource = props.platformOrientationDataSource;
+    this.gimbalOrientationDataSource = props.gimbalOrientationDataSource;
   }
 
   componentDidMount() {
     let videoCanvas = document.getElementById("video-container").getElementsByTagName("canvas")[0];
 
-    // create data source for Android phone GPS
-    let platformLocationDataSource = new SosGetResultJson('android-GPS', {
-      protocol: 'ws',
-      service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:nav2',
-      observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
-      replaySpeed: 1
-    });
-
-    let platformOrientationDataSource = new SosGetResultJson('android-Heading', {
-      protocol: 'ws',
-      service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:nav2',
-      observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
-      replaySpeed: 1
-    });
-
-    let gimbalOrientationDataSource = new SosGetResultJson('android-Heading', {
-      protocol: 'ws',
-      service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:nav2',
-      observedProperty: 'http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation',
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
-      replaySpeed: 1
-    });
-
-// add 3D model marker to Cesium view
+    // add 3D model marker to Cesium view
     let pointMarkerLayer = new PointMarkerLayer({
+      dataSourceIds: [this.platformLocationDataSource.id, this.platformOrientationDataSource.id],
       label: "3DR Solo",
       getLocation : {
-        dataSourceIds : [platformLocationDataSource.getId()],
+        dataSourceIds : [this.platformLocationDataSource.getId()],
         handler : function(rec) {
           return {
             x : rec.loc.lon,
@@ -65,7 +35,7 @@ class BaseMap extends React.Component {
         }
       },
       getOrientation : {
-        dataSourceIds : [platformOrientationDataSource.getId()],
+        dataSourceIds : [this.platformOrientationDataSource.getId()],
         handler : function(rec) {
           return {
             heading : rec.attitude.yaw
@@ -73,13 +43,57 @@ class BaseMap extends React.Component {
         }
       },
       icon: "./models/Drone+06B.glb",
+      iconScale: 12.0,
       name: 'Solo draping marker'
+    });
+
+    let polygonLayer = new PolygonLayer({
+      dataSourceId: this.platformLocationDataSource.id,
+      getVertices: (rec) => {
+          return [
+              rec.loc.lon-0.001,
+              rec.loc.lat,
+              rec.loc.lon,
+              rec.loc.lat+0.001,
+              rec.loc.lon+0.001,
+              rec.loc.lat,
+              rec.loc.lon,
+              rec.loc.lat-0.001,
+              rec.loc.lon-0.001,
+              rec.loc.lat,
+          ]
+      },
+      getPolygonId: (rec) =>  "my-id",
+      color: 'rgba(0,157,255,0.5)',
+      opacity: 0.5,
+      outlineWidth: 1,
+      outlineColor: 'rgba(255,169,17,0.5)',
+    });
+
+    let coplanarPolygonLayer = new CoPlanarPolygonLayer({
+      dataSourceId: this.platformLocationDataSource.id,
+      getVertices: (rec) => {
+        // (lon, lat, alt)
+        let p0 = [rec.loc.lon-0.001,rec.loc.lat,0];
+        let p1 = [rec.loc.lon, rec.loc.lat+0.001,0];
+        let p2 = [rec.loc.lon+0.001,rec.loc.lat,0];
+        let p3 = [rec.loc.lon,rec.loc.lat-0.001,0];
+        let c = [rec.loc.lon, rec.loc.lat, rec.loc.alt-180];
+
+        return [...p0,...p1,...p2,...p3,...p0,...c,]
+      },
+      getPolygonId: (rec) =>  "my-id",
+      color: 'rgba(233,244,255,0.2)',
+      opacity: 0.5,
+      outlineWidth: 1,
+      outlineColor: 'rgba(255,169,17,0.5)',
     });
 
     // style it with a moving point marker
     let imageDrapingLayer = new ImageDrapingLayer({
+      dataSourceIds: [this.platformLocationDataSource.id, this.platformOrientationDataSource.id, this.gimbalOrientationDataSource.id],
       getPlatformLocation: {
-        dataSourceIds: [platformLocationDataSource.getId()],
+        dataSourceIds: [this.platformLocationDataSource.getId()],
         handler: function (rec) {
           return {
             x: rec.loc.lon,
@@ -89,7 +103,7 @@ class BaseMap extends React.Component {
         }
       },
       getPlatformOrientation: {
-        dataSourceIds: [platformOrientationDataSource.getId()],
+        dataSourceIds: [this.platformOrientationDataSource.getId()],
         handler: function (rec) {
           return {
             heading : rec.attitude.yaw,
@@ -99,7 +113,7 @@ class BaseMap extends React.Component {
         }
       },
       getGimbalOrientation: {
-        dataSourceIds: [gimbalOrientationDataSource.getId()],
+        dataSourceIds: [this.gimbalOrientationDataSource.getId()],
         handler: function (rec) {
           return {
             heading : rec.attitude.yaw,
@@ -122,12 +136,12 @@ class BaseMap extends React.Component {
     });
 
     // create Cesium view
-    Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
-        'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
-        '2WfIX0QHiZcOjVaXI92stjDh4fI';
+    Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+        'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
+
     let cesiumView = new CesiumView({
       container: this.divId,
-      layers: [pointMarkerLayer, imageDrapingLayer],
+      layers: [pointMarkerLayer, polygonLayer, coplanarPolygonLayer, imageDrapingLayer],
     });
 
     cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
@@ -139,12 +153,6 @@ class BaseMap extends React.Component {
     // select bing maps as default imagery
     const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
     baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
-
-
-// start streaming
-    platformLocationDataSource.connect();
-    platformOrientationDataSource.connect();
-    gimbalOrientationDataSource.connect();
   }
 
   render() {

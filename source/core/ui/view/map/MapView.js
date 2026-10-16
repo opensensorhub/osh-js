@@ -33,9 +33,24 @@ class MapView extends View {
 
         // map Layer id to array of corresponding polylines
         this.layerIdToEllipsoids= {};
+
+        // map Layer id to array of corresponding polygons
+        this.layerIdToPolygon= {};
+
+        // map Layer id to array of corresponding frustums
+        this.layerIdToFrustum= {};
+
+        // map Layer id to array of corresponding draping
+        this.layerIdToDrapedImage= {};
+
+        // map Layer id to array of corresponding lobs
+        this.layerIdToLob= {};
     }
 
-    setData(dataSourceId, data) {
+    async setData(dataSourceId, data) {
+        if (this._destroyed) {
+            return;
+        };
         const values = data.values;
         for(let i=0;i < values.length;i++) {
             const d = values[i];
@@ -43,12 +58,24 @@ class MapView extends View {
                 this.updateMarker(d);
             } else if(data.type === 'polyline') {
                 this.updatePolyline(d);
-            } else if(data.type === 'draping') {
+            } else if(data.type === 'drapedImage') {
                 this.updateDrapedImage(d);
             } else if(data.type === 'ellipse') {
                 this.updateEllipse(d);
-            }
+            } else if (data.type === 'polygon') {
+                this.updatePolygon(d);
+            } else if (data.type === 'coplanarPolygon') {
+                this.updateCoPlanarPolygon(d);
+            } else if(data.type === 'frustum') {
+                this.updateFrustum(d);
+            } else if(data.type === 'lob') {
+				this.updateLob(d);
+			}
         }
+    }
+
+    async addPolygonToLayer(props, polygon) {
+        this.layerIdToPolygon[props.polygonId] = polygon;
     }
 
     /**
@@ -57,13 +84,18 @@ class MapView extends View {
      * @param {PointMarkerLayer.props} layer - the Layer object
      * @param {Object} markerObject - the Map marker object
      */
-    addMarkerToLayer(props, markerObject) {
-        const currentLayer = this.getLayer(props);
-        // associate the list of markers owning by a specific marker
-        if(!(props.id in this.layerIdToMarkers)) {
-            this.layerIdToMarkers[props.id] = {};
-        }
-        this.layerIdToMarkers[props.id][props.markerId] = markerObject;
+    async addMarkerToLayer(props, markerObject) {
+        this.layerIdToMarkers[props.markerId] = markerObject;
+    }
+
+    /**
+     * Associate a LoB to a Layer for a fast lookup
+     * @protected
+     * @param {LoB.props} layer - the Layer object
+     * @param {Object} lobObject - the Map lob object
+     */
+    async addLobToLayer(props, lobObject) {
+        this.layerIdToLob[props.lobId] = lobObject;
     }
 
     /**
@@ -72,12 +104,9 @@ class MapView extends View {
      * @param {Polyline.props} layer - the Layer object
      * @param {Object} polylineObject - the Map polyline object
      */
-    addPolylineToLayer(props, polylineObject) {
-        // associate the list of markers owning by a specific marker
-        if(!(props.id in this.layerIdToPolylines)) {
-            this.layerIdToPolylines[props.id] = {};
-        }
-        this.layerIdToPolylines[props.id][props.polylineId] = polylineObject;
+    async addPolylineToLayer(props, polylineObject) {
+        // Use props.id for LoB
+        this.layerIdToPolylines[props.polylineId ?? props.id] = polylineObject;
     }
 
     /**
@@ -86,12 +115,37 @@ class MapView extends View {
      * @param {Ellipse.props} layer - the Layer object
      * @param {Object} ellipseObject - the Map ellipse object
      */
-    addEllipseToLayer(props, ellipseObject) {
-        // associate the list of markers owning by a specific marker
-        if(!(props.id in this.layerIdToEllipsoids)) {
-            this.layerIdToEllipsoids[props.id] = {};
+    async addEllipseToLayer(props, ellipseObject) {
+        this.layerIdToEllipsoids[props.ellipseId] = ellipseObject;
+    }
+
+    /**
+     * Associate a drapedImageId to a Layer for a fast lookup
+     * @protected
+     * @param {ImageDraping.props} layer - the Layer object
+     * @param {Object} drapedImageObject - the Map drapedImage object
+     */
+    async addDrapedImageToLayer(props, drapedImageObject) {
+        this.layerIdToDrapedImage[props.drapedImageId] = drapedImageObject;
+    }
+
+    async addFrustumToLayer(props, frustum) {
+        this.layerIdToFrustum[props.frustumId] = frustum;
+    }
+
+    getPolygons() {
+        const array = [];
+        for(let id in this.layerIdToPolygon) {
+            array.push(this.layerIdToPolygon[id]);
         }
-        this.layerIdToEllipsoids[props.id][props.ellipseId] = ellipseObject;
+        return array;
+    }
+
+    getPolygon(props) {
+        if(!(props.polygonId in  this.layerIdToPolygon)) {
+            return null;
+        }
+        return this.layerIdToPolygon[props.polygonId];
     }
 
     /**
@@ -100,10 +154,10 @@ class MapView extends View {
      * @param {PointMarkerLayer.props} props - the Layer Object
      */
     getMarker(props) {
-        if(!(props.id in  this.layerIdToMarkers)) {
+        if(!(props.markerId in this.layerIdToMarkers)) {
             return null;
         }
-        return this.layerIdToMarkers[props.id][props.markerId];
+        return this.layerIdToMarkers[props.markerId];
     }
 
     /**
@@ -113,11 +167,16 @@ class MapView extends View {
     getMarkers() {
         const array = [];
         for(let id in this.layerIdToMarkers) {
-            for(let markerId in this.layerIdToMarkers[id]) {
-                array.push(this.layerIdToMarkers[id][markerId]);
-            }
+            array.push(this.layerIdToMarkers[id]);
         }
         return array;
+    }
+
+    listMarkers() {
+        console.log('---- Markers ----');
+        for(let id in this.layerIdToMarkers) {
+            console.log('mv: ' + id);
+        }
     }
 
     /**
@@ -127,9 +186,7 @@ class MapView extends View {
     getPolylines() {
         const array = [];
         for(let id in this.layerIdToPolylines) {
-            for(let polylineId in this.layerIdToPolylines[id]) {
-                array.push(this.layerIdToPolylines[id][polylineId]);
-            }
+            array.push(this.layerIdToPolylines[id]);
         }
         return array;
     }
@@ -141,9 +198,7 @@ class MapView extends View {
     getEllipsoids() {
         const array = [];
         for(let id in this.layerIdToEllipsoids) {
-            for(let ellipseId in this.layerIdToEllipsoids[id]) {
-                array.push(this.layerIdToEllipsoids[id][ellipseId]);
-            }
+            array.push(this.layerIdToEllipsoids[id]);
         }
         return array;
     }
@@ -153,23 +208,11 @@ class MapView extends View {
      * @protected
      * @param {Ellipse.props} layer - the Layer Object
      */
-    getPolyline(props) {
-        if(!(props.id in  this.layerIdToEllipsoids)) {
-            return null;
-        }
-        return this.layerIdToEllipsoids[props.id][props.ellipseId];
-    }
-
-    /**
-     * Get the ellipse associate to the Layer
-     * @protected
-     * @param {Ellipse.props} layer - the Layer Object
-     */
     getEllipse(props) {
-        if(!(props.id in  this.layerIdToEllipsoids)) {
+        if(!(props.ellipseId in  this.layerIdToEllipsoids)) {
             return null;
         }
-        return this.layerIdToEllipsoids[props.id][props.ellipseId];
+        return this.layerIdToEllipsoids[props.ellipseId];
     }
 
     /**
@@ -178,10 +221,38 @@ class MapView extends View {
      * @param {Polyline.props} layer - the Layer Object
      */
     getPolyline(props) {
-        if(!(props.id in  this.layerIdToPolylines)) {
+        // Use props.id for LoB
+        if(!(props.polylineId in this.layerIdToPolylines) && !(props.id in this.layerIdToPolylines)) {
             return null;
         }
-        return this.layerIdToPolylines[props.id][props.polylineId];
+        return this.layerIdToPolylines[props.polylineId ?? props.id];
+    }
+
+    /**
+     * Get the draped image associate to the Layer
+     * @protected
+     * @param {ImageDrapingLayer.props} layer - the Layer Object
+     */
+    getDrapedImage(props) {
+        if(!(props.drapedImageId in  this.layerIdToDrapedImage)) {
+            return null;
+        }
+        return this.layerIdToDrapedImage[props.drapedImageId];
+    }
+
+    getFrustums() {
+        const array = [];
+        for(let id in this.layerIdToFrustum) {
+            array.push(this.layerIdToFrustum[id]);
+        }
+        return array;
+    }
+
+    getFrustum(props) {
+        if(!(props.frustumId in  this.layerIdToFrustum)) {
+            return null;
+        }
+        return this.layerIdToFrustum[props.frustumId];
     }
 
     /**
@@ -192,11 +263,33 @@ class MapView extends View {
     getLayer(layerId) {
         // find corresponding layer
         for (let currentLayer of this.layers) {
-            if (currentLayer.props.id === layerId) {
+            if (layerId in currentLayer.propsById) {
                 return currentLayer;
             }
         }
+
         return null;
+    }
+
+    getLayerObject(id) {
+         if((id in  this.layerIdToMarkers)) {
+            return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToPolylines)) {
+              return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToEllipsoids)) {
+              return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToPolygon)) {
+              return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToFrustum)) {
+              return this.layerIdToMarkers[id];
+          }
+          if((id in  this.layerIdToDrapedImage)) {
+              return this.layerIdToDrapedImage[id];
+          }
     }
 
     /**
@@ -204,12 +297,35 @@ class MapView extends View {
      * @param {Layer} layer - The layer object
      */
     removeAllFromLayer(layer) {
-        super.removeAllFromLayer(layer);
         // check for marker
         this.removeMarkers(layer);
 
         // check for polylines
         this.removePolylines(layer);
+
+        this.removeEllipsoids(layer);
+
+        this.removePolygons(layer);
+
+        this.removeDrapedImages(layer);
+
+        this.removeFrustums(layer);
+
+        super.removeAllFromLayer(layer);
+
+    }
+
+    removePolygons(layer) {
+        const ids = layer.getIds() || [];
+        for(let id of ids) {
+            const polygon = this.layerIdToPolygon[id];
+            if (isDefined(polygon)) {
+                this.removePolygonFromLayer(polygon);
+            }
+
+            // remove markers ids from Layer map
+            delete this.layerIdToPolygon[id];
+        }
     }
 
     /**
@@ -217,17 +333,33 @@ class MapView extends View {
      * @param {PointMarkerLayer} layer - the layer to remove the markers from
      */
     removeMarkers(layer) {
-        if(isDefined(layer.props.markerId)) {
-            const markersMap = this.layerIdToMarkers[layer.props.id];
-            if(isDefined(markersMap)) {
-                for(let markerId in markersMap) {
-                    const marker = markersMap[markerId];
-                    this.removeMarkerFromLayer(marker);
-                }
+        const ids = layer.getIds() || [];
+        for(let id of ids) {
+            const marker = this.layerIdToMarkers[id];
+            if (isDefined(marker)) {
+                this.removeMarkerFromLayer(marker);
             }
 
             // remove markers ids from Layer map
-            delete this.layerIdToMarkers[layer.props.id];
+            delete this.layerIdToMarkers[id];
+        }
+    }
+
+    /**
+     * Remove the markers corresponding to a Lob Layer
+     * @param {LoB} layer - the layer to remove the markers from
+     */
+    removeLobs(layer) {
+        const ids = layer.getIds() || [];
+        for(let id of ids) {
+            const lob = this.layerIdToLob[id];
+            console.log(lob);
+            if (isDefined(lob)) {
+                this.removeLobFromLayer(lob);
+            }
+
+            // remove lobs ids from Layer map
+            delete this.layerIdToLob[id];
         }
     }
 
@@ -236,17 +368,15 @@ class MapView extends View {
      * @param {Ellipse} ellipse - the layer to remove the ellipsoids from
      */
     removeEllipsoids(ellipse) {
-        if(isDefined(ellipse.props.polylineId)) {
-            const ellipseMap = this.layerIdToEllipsoids[ellipse.props.id];
-            if(isDefined(ellipseMap)) {
-                for(let ellipseId in ellipseMap) {
-                    const ellipse = ellipseMap[ellipseId];
-                    this.removeEllipseFromLayer(ellipse);
-                }
+        const ids = ellipse.getIds() || [];
+        for(let id of ids) {
+            const ellipse = this.layerIdToEllipsoids[id];
+            if(isDefined(ellipse)) {
+                this.removeEllipseFromLayer(ellipse);
             }
 
             // remove polylines ids from Layer map
-            delete this.layerIdToEllipsoids[polyline.props.id];
+            delete this.layerIdToEllipsoids[id];
         }
     }
 
@@ -255,20 +385,51 @@ class MapView extends View {
      * @param {Polyline} polyline - the layer to remove the polylines from
      */
     removePolylines(polyline) {
-        if(isDefined(polyline.props.polylineId)) {
-            const polylinesMap = this.layerIdToPolylines[polyline.props.id];
-            if(isDefined(polylinesMap)) {
-                for(let polylineId in polylinesMap) {
-                    const polyline = polylinesMap[polylineId];
-                    this.removePolylineFromLayer(polyline);
-                }
+        const ids = polyline.getIds() || [];
+        for(let id of ids) {
+            const polyline = this.layerIdToPolylines[id];
+            if(isDefined(polyline)) {
+                this.removePolylineFromLayer(polyline);
             }
 
             // remove polylines ids from Layer map
-            delete this.layerIdToPolylines[polyline.props.id];
+            delete this.layerIdToPolylines[id];
         }
     }
 
+    /**
+     * Remove the drapedImage corresponding to a ImageDraping Layer
+     * @param {ImageDraping} imageDraping - the layer to remove the drapedImage from
+     */
+    removeDrapedImages(drapedImage) {
+        const ids = drapedImage.getIds() || [];
+        for(let id of ids) {
+            const drapedImage = this.layerIdToDrapedImage[id];
+            if(isDefined(drapedImage)) {
+                this.removeDrapedImageFromLayer(drapedImage);
+            }
+
+            // remove drapedImage ids from Layer map
+            delete this.layerIdToDrapedImage[id];
+        }
+    }
+
+    /**
+     * Remove the frustums corresponding to a Frustum Layer
+     * @param {FrustumLayer} polyline - the layer to remove the Frustum from
+     */
+    removeFrustums(layer) {
+        const ids = layer.getIds() || [];
+        for(let id of ids) {
+            const frustum = this.layerIdToFrustum[id];
+            if(isDefined(frustum)) {
+                this.removeFrustumFromLayer(frustum);
+            }
+
+            // remove markers ids from Layer map
+            delete this.layerIdToFrustum[id];
+        }
+    }
     /**
      * Abstract method to remove a marker from its corresponding layer.
      * This is library dependant.
@@ -278,12 +439,36 @@ class MapView extends View {
     removeMarkerFromLayer(marker) {}
 
     /**
+     * Abstract method to remove a lob from its corresponding layer.
+     * This is library dependant.
+     * @protected
+     * @param {Object} lob - The lob object
+     */
+    removeLobFromLayer(lob) {}
+
+    /**
      * Abstract method to remove a polyline from its corresponding layer.
      * This is library dependant.
      * @protected
      * @param {Object} polyline - The Map polyline object
      */
     removePolylineFromLayer(polyline) {}
+
+    /**
+     * Abstract method to remove a draped image from its corresponding layer.
+     * This is library dependant.
+     * @protected
+     * @param {Object} drapedImage - The Map drapedImage object
+     */
+    removeDrapedImageFromLayer(drapedImage) {}
+
+    /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependant.
+     * @protected
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(marker) {}
 
     /**
      * Method to call onLeftClick Layer method if exists
@@ -367,6 +552,22 @@ class MapView extends View {
         }
         return null;
     }
+
+	getLob(props) {
+		if(!(props.lobId in this.layerIdToLob)) {
+			return null;
+		}
+		return this.layerIdToLob[props.lobId];
+	}
+
+    async updateMarker() {}
+    async updatePolyline() {}
+    async updatePolygon() {}
+    async updateEllipse() {}
+    async updateCoPlanarPolygon() {}
+    async updateDrapedImage() {}
+	async updateLob() {}
+
 }
 
 export default MapView;

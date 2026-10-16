@@ -1,17 +1,25 @@
-import SweJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import Polyline from 'osh-js/core/ui/layer/PolylineLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
-import {DATASOURCE_DATA_TOPIC} from 'osh-js/core/Constants';
 import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView';
+import MapboxView from 'osh-js/core/ui/view/map/MapboxView';
+import {EventType} from 'osh-js/core/event/EventType';
 
 import {
-    Cartographic, Math
-} from "cesium";
+    Cartographic, Ion, Math as MathCesium
+} from "@cesium/engine";
+import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
+import mapboxgl from "mapbox-gl/dist/mapbox-gl";
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
+mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FrZXdhMzk0MCIsImEiOiJja2I4ZDZkdDAwMzc5MzFwazZubmFhNzVvIn0.i4O5Cls0aaVSVREIzK151w';
 
 const currentSelectedElt = document.getElementById("current-marker");
 
@@ -20,15 +28,21 @@ const currentSelectedElt = document.getElementById("current-marker");
 /************************************************************/
 
 // setup DataSource. The datasource contains multiple ids.
-let avlDataSource = new SweJson("AVL", {
-    protocol: "ws",
-    service: "SOS",
-    endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+let avlDataSource = new SosGetResult("AVL", {
+    endpointUrl: "sensiasoft.net/sensorhub/sos",
     offeringID: "urn:mysos:avl",
     observedProperty: "http://www.opengis.net/def/property/OGC/0/SensorLocation",
     startTime: "2014-03-29T07:00:12Z",
     endTime: "2014-04-29T14:26:12Z",
-    replaySpeed: 200
+    mode: Mode.REPLAY,
+    tls: true
+});
+
+const dataSynchronizer = new DataSynchronizer({
+    replaySpeed: 200,
+    startTime: "2014-03-29T07:00:12Z",
+    endTime: "2014-04-29T14:26:12Z",
+    dataSources: [avlDataSource]
 });
 
 /**************************************************************/
@@ -80,7 +94,8 @@ const commonMarkerConf = {
         if (rec['veh-id'] === 'FE4') {
             return './images/firemen1.png';
         } else if (rec['veh-id'] === 'FR6') {
-            return './images/firemen2.png';
+            const rand = Math.floor(Math.random() * 2);
+            return rand < 1 ? './images/firemen2.png' : './images/firemen2-alt.png';
         } else if (rec['veh-id'] === 'FL12') {
             return './images/firemen3.png';
         } else if (rec['veh-id'] === 'FE12') {
@@ -108,14 +123,38 @@ const commonPolylineConf = {
     maxPoints: 200
 };
 
-let leafletMapView, olMapView, cesiumMapView;
+// Create a common configuration for polylines. This one can be shared between stylers
+const commonPolygonConf = {
+    dataSourceId: avlDataSource.id,
+    getVertices: (rec) => {
+        return [
+            rec.location.lon-0.001,
+            rec.location.lat,
+            rec.location.lon,
+            rec.location.lat+0.001,
+            rec.location.lon+0.001,
+            rec.location.lat,
+            rec.location.lon,
+            rec.location.lat-0.001,
+            rec.location.lon-0.001,
+            rec.location.lat,
+        ]
+    },
+    getPolygonId: (rec) =>  rec['veh-id'],
+    color: 'rgba(200,0,255, 0.5)',
+    opacity: 0.5,
+    outlineWidth: 3,
+    getOutlineWidth: (rec) => Math.floor(Math.random() * 2) < 1 ? 3: 10,
+    outlineColor: 'rgba(255,169,17,0.5)',
+    getColor: (rec) => Math.floor(Math.random() * 2) < 1 ? 'rgba(200,0,255, 0.5)' : 'rgba(0,157,255,0.5)'
+};
 
 /**************************************************************/
 /*************************** VIEWS ***************************/
 /************************************************************/
 
 // create Leaflet view
-leafletMapView = new LeafletView({
+const leafletMapView = new LeafletView({
     container: 'leafletMap',
     autoZoomOnFirstMarker: true,
     follow: false,
@@ -132,12 +171,15 @@ leafletMapView = new LeafletView({
             },
             onHover: (markerId, markerObject, event) => updateInfos(markerId, event.latlng, event.containerPoint)
         }),
-        new Polyline({...commonPolylineConf})
+        new Polyline({...commonPolylineConf}),
+        new PolygonLayer({
+            ...commonPolygonConf
+        })
     ]
 });
 
 // create OL view
-olMapView = new OpenLayerView({
+const olMapView = new OpenLayerView({
     container: 'olMap',
     autoZoomOnFirstMarker: true,
     layers: [
@@ -152,11 +194,14 @@ olMapView = new OpenLayerView({
             },
             onHover: (markerId, feature, event) => updateInfos(markerId, feature.getGeometry().getCoordinates(), event.mapBrowserEvent.pixel),
         }),
-        new Polyline({...commonPolylineConf})
+        new Polyline({...commonPolylineConf}),
+        new PolygonLayer({
+            ...commonPolygonConf
+        })
     ]
 });
 
-cesiumMapView = new CesiumView({
+const cesiumMapView = new CesiumView({
     container: 'cesiumMap',
     layers: [
         new PointMarkerLayer({
@@ -164,10 +209,10 @@ cesiumMapView = new CesiumView({
             onLeftClick: (markerId, billboard, event) => {
                 // transform into LonLat to display into info panel
                 const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
-                const longitudeString = Math.toDegrees(
+                const longitudeString = MathCesium.toDegrees(
                     cartographic.longitude
                 ).toFixed(2);
-                const latitudeString = Math.toDegrees(
+                const latitudeString = MathCesium.toDegrees(
                     cartographic.latitude
                 ).toFixed(2);
 
@@ -180,10 +225,10 @@ cesiumMapView = new CesiumView({
             onHover: (markerId, billboard, event) => {
                 // transform into LonLat to display into info panel
                 const cartographic = Cartographic.fromCartesian(billboard.primitive.position);
-                const longitudeString = Math.toDegrees(
+                const longitudeString = MathCesium.toDegrees(
                     cartographic.longitude
                 ).toFixed(2);
-                const latitudeString = Math.toDegrees(
+                const latitudeString = MathCesium.toDegrees(
                     cartographic.latitude
                 ).toFixed(2);
 
@@ -193,6 +238,9 @@ cesiumMapView = new CesiumView({
         new Polyline({
             ...commonPolylineConf,
             clampToGround: true
+        }),
+        new PolygonLayer({
+            ...commonPolygonConf
         })
     ]
 });
@@ -203,7 +251,7 @@ const deckView = new DeckGlView({
     layers: [
         new PointMarkerLayer({
             ...commonMarkerConf,
-            iconScale: 7,
+            iconScale: 1.5,
             onHover: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
             onLeftClick: (markerId, pickingInfo, event) => updateInfos(markerId, pickingInfo.lngLat , pickingInfo.pixel),
             onRightClick: (markerId, pickingInfo, event) => {
@@ -214,10 +262,32 @@ const deckView = new DeckGlView({
         new Polyline({
             ...commonPolylineConf,
             color: [255, 102, 0, 127]
+        }),
+        new PolygonLayer({
+            ...commonPolygonConf
         })
     ]
 });
 
+
+const mapboxView = new MapboxView({
+    mapProperties: {
+        container: 'mapboxMap',
+        style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+    },
+    autoZoomOnFirstMarker:true,
+    layers: [
+        new PointMarkerLayer({
+            ...commonMarkerConf,
+        }),
+        new Polyline({
+            ...commonPolylineConf
+        }),
+        new PolygonLayer({
+            ...commonPolygonConf
+        })
+    ]
+});
 /**************************************************************/
 /********************* Update UI  ****************************/
 /************************************************************/
@@ -227,28 +297,20 @@ const timeElt = document.getElementById("time");
 const loadElt = document.getElementById("load");
 const removeAllElt = document.getElementById("removeall");
 
-const bc = new BroadcastChannel(DATASOURCE_DATA_TOPIC + avlDataSource.id)
-
-bc.onmessage = (event) => {
-    if (event.data.type === 'data') {
-        for (let i = 0; i < event.data.values.length; i++) {
-            timeElt.innerText = new Date(event.data.values[i].timeStamp).toISOString();
-        }
-    }
-}
+dataSynchronizer.subscribe((message) =>  timeElt.innerText = new Date(message.timestamp).toISOString(), [EventType.TIME]);
 
 removeAllElt.setAttribute("disabled", "");
 
 // connect AVL datasource manually
 loadElt.onclick = () => {
-    avlDataSource.connect();
+    dataSynchronizer.connect();
     removeAllElt.removeAttribute("disabled");
     loadElt.setAttribute("disabled", "");
 };
 
 // disconnect AVL datasource manually and remove Markers/polylines from the View
 removeAllElt.onclick = async () => {
-    avlDataSource.disconnect();
+    dataSynchronizer.disconnect();
     removeAllElt.setAttribute("disabled", "");
     loadElt.removeAttribute("disabled");
 
@@ -261,5 +323,6 @@ removeAllElt.onclick = async () => {
         olMapView.removeAllFromLayers();
         deckView.removeAllFromLayers();
         cesiumMapView.removeAllFromLayers();
+        mapboxView.removeAllFromLayers();
     }, 100);
 };

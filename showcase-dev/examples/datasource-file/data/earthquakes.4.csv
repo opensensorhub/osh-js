@@ -1,0 +1,381 @@
+2014-01-16T15:03:48.438Z,61.129,-152.4039,130.9,1.9,ml,,,,0.47,ak,ak014qpjsuz,2019-05-14T01:57:29.247Z,"Southern Alaska",earthquake,,0.5,,,reviewed,ak,ak
+2014-01-16T14:56:01.790Z,33.3393333,-116.2396667,8.866,0.69,ml,15,165,0.1647,0.11,ci,ci11414482,2016-03-12T02:17:28.565Z,"16km NE of Borrego Springs, CA",earthquake,0.5,0.88,0.055,8,reviewed,ci,ci
+2014-01-16T14:51:18.330Z,38.8395,-122.8291667,2.09,1.57,md,49,49,0.005019,0.03,nc,nc72141280,2018-09-27T04:36:13.480Z,"9km NW of The Geysers, CA",earthquake,0.14,0.21,0.135,18,reviewed,nc,nc
+2014-01-16T14:51:00.110Z,20.1995,120.4717,10.29,4.3,mb,,157,2.666,1.19,us,usc000mei3,2014-03-22T00:05:17.000Z,"147km W of Sabtang, Philippines",earthquake,,2,0.266,4,reviewed,us,us
+2014-01-16T14:48:27.500Z,18.4598,-66.0285,26,2.7,Md,3,342,0.69709266,0.28,pr,pr14016065,2014-03-22T00:05:17.000Z,"8km E of San Juan, Puerto Rico",earthquake,5.3,23.8,0,1,reviewed,pr,pr
+2014-01-16T14:44:15.000Z,52.2681,-169.2826,19,2.5,ml,,334,0.748,0.73,us,usb000m5qw,2019-05-20T22:53:20.813Z,"79km SSW of Nikolski, Alaska",earthquake,,8.6,,4,reviewed,ak,ak
+2014-01-16T14:44:12.930Z,-16.2578,-176.4832,34.98,4,mb,,175,5.11,0.41,us,usc000mei2,2014-03-22T00:05:17.000Z,"282km SE of Sigave, Wallis and Futuna",earthquake,,18.7,0.366,2,reviewed,us,us
+2014-01-16T14:43:53.370Z,38.8131676,-122.8161697,1.99,0.55,md,9,90,0.01081,0.02,nc,nc72141275,2017-02-02T22:37:50.618Z,"6km NW of The Geysers, California",earthquake,0.55,0.63,,1,automatic,nc,nc
+2014-01-16T14:29:00.720Z,33.4805,-116.401,11.564,0.62,ml,18,127,0.1387,0.1,ci,ci11414474,2016-03-11T22:33:14.517Z,"22km SSW of La Quinta, CA",earthquake,0.35,0.92,0.065,13,reviewed,ci,ci
+2014-01-16T14:28:15.208Z,61.405,-146.6127,5.5,1.9,ml,,,,0.58,ak,ak014qp3nlc,2019-05-20T22:53:20.419Z,"34km NNW of Valdez, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-16T14:19:23.220Z,35.297,-117.4548333,5.274,1.08,ml,11,104,0.1865,0.13,ci,ci11414458,2016-03-11T14:53:51.452Z,"18km ESE of Johannesburg, CA",earthquake,0.39,2.02,0.042,4,reviewed,ci,ci
+2014-01-16T14:18:52.950Z,36.727,-121.4355,7.527,0.43,md,18,61,0.02523,0.09,nc,nc72141265,2017-02-02T22:37:45.514Z,"11km SSW of Ridgemark, California",earthquake,0.32,0.25,0.191,16,reviewed,nc,nc
+2014-01-16T14:17:31.047Z,58.8849,-152.6126,68.7,2.1,ml,,,,0.54,ak,ak014qp1bxs,2019-05-20T22:53:19.976Z,"103km SW of Homer, Alaska",earthquake,,0.9,,,reviewed,ak,ak
+2014-01-16T14:07:37.030Z,36.0701667,-120.4905,6.071,0.87,md,18,256,0.07117,0.06,nc,nc72141260,2017-02-02T22:37:40.354Z,"14km WSW of Coalinga, California",earthquake,1.66,0.78,0.203,9,reviewed,nc,nc
+2014-01-16T14:03:11.620Z,37.3405,-119.9325,24.221,1.84,md,6,105,0.1703,0.08,nc,nc72141255,2017-02-02T22:37:35.117Z,"16km S of Mariposa, California",earthquake,0.39,0.46,0.2,13,reviewed,nc,nc
+2014-01-16T14:01:54.970Z,38.8201675,-122.7614975,2.184,0.41,md,9,89,0.01171,0.01,nc,nc72141250,2017-02-02T22:37:29.572Z,"3km W of Cobb, California",earthquake,0.48,1.22,0.07,2,automatic,nc,nc
+2014-01-16T13:54:02.000Z,19.1315,-66.6837,40,3.1,Md,12,248.4,0.66565163,0.25,pr,pr14016064,2014-03-22T00:05:17.000Z,"72km NNE of Hatillo, Puerto Rico",earthquake,1.4,5.1,0,7,reviewed,pr,pr
+2014-01-16T13:48:56.490Z,37.4476667,-118.5508333,13.177,0.96,md,13,76,0.0955,0.05,nc,nc72141245,2017-02-02T22:37:24.133Z,"12km NW of West Bishop, California",earthquake,0.43,1.23,0.124,12,reviewed,nc,nc
+2014-01-16T13:47:40.307Z,36.8835,-115.9642,6.9,0.8,ml,15,186.22,0.066,0.1181,nn,nn00434651,2018-06-29T23:01:07.814Z,"70km E of Beatty, Nevada",earthquake,,2.1,0.33,11,reviewed,nn,nn
+2014-01-16T13:46:15.930Z,6.8138,-76.3581,5.66,4.2,mb,,65,0.99,1.19,us,usb000m25w,2014-03-22T00:05:17.000Z,"22km WSW of Uramita, Colombia",earthquake,,6.2,0.373,2,reviewed,us,us
+2014-01-16T13:44:08.520Z,38.8224983,-122.7671661,1.894,0.95,md,16,51,0.008108,0.03,nc,nc72141240,2017-02-02T22:37:19.000Z,"3km W of Cobb, California",earthquake,0.22,0.45,0.07,6,automatic,nc,nc
+2014-01-16T13:34:56.450Z,36.0993333,-117.8906667,3.077,0.98,ml,11,157,0.03434,0.08,ci,ci11414450,2016-03-12T02:17:27.296Z,"8km NE of Coso Junction, CA",earthquake,0.46,0.49,0.247,4,reviewed,ci,ci
+2014-01-16T13:28:07.770Z,38.1201,141.8585,46.69,4.6,mb,,122,3.307,1.19,us,usc000mehz,2014-03-22T00:05:17.000Z,"58km SE of Ishinomaki, Japan",earthquake,,4.8,0.146,16,reviewed,us,us
+2014-01-16T13:19:08.300Z,37.4013333,-118.809,2.642,0.81,md,13,151,0.1036,0.04,nc,nc72141235,2017-02-02T22:37:13.951Z,"30km SSE of Mammoth Lakes, California",earthquake,1,4.02,0.217,13,reviewed,nc,nc
+2014-01-16T13:14:37.730Z,51.5513,-178.1191,11.8,2.2,ml,,,,0.53,ak,ak014qof9p9,2019-05-14T01:57:14.223Z,"Andreanof Islands, Aleutian Islands, Alaska",earthquake,,0.2,,,reviewed,ak,ak
+2014-01-16T13:02:36.530Z,23.6427,36.4081,10,4.2,mb,,237,8.344,1.33,us,usc000meil,2014-03-22T00:05:17.000Z,"175km WSW of Yanbu` al Bahr, Saudi Arabia",earthquake,,2,0.198,7,reviewed,us,us
+2014-01-16T12:56:15.580Z,46.826,-121.9261667,7.382,0.81,md,21,72,0.09477,0.12,uw,uw60671672,2016-07-22T19:22:23.660Z,"26km E of Eatonville, Washington",earthquake,0.39,0.37,0.1,10,reviewed,uw,uw
+2014-01-16T12:55:15.718Z,57.5416,-156.4353,9.8,2.9,ml,,,,0.85,ak,ak014qo2kr7,2019-05-20T22:53:19.538Z,"128km S of King Salmon, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-16T12:38:23.300Z,18.6133,-66.176,68,2.8,Md,3,342,0.36112274,0.09,pr,pr14016063,2014-03-22T00:05:17.000Z,"17km NNW of San Juan, Puerto Rico",earthquake,6.6,1.9,0,1,reviewed,pr,pr
+2014-01-16T12:38:04.440Z,33.701,-117.5208333,7.439,1.44,ml,38,115,0.1194,0.16,ci,ci11414442,2016-03-11T22:33:13.164Z,"7km NE of Trabuco Canyon, CA",earthquake,0.38,0.65,0.174,57,reviewed,ci,ci
+2014-01-16T12:35:37.500Z,18.7455,-66.3003,69,2.9,Md,3,352.8,0.58390493,0.15,pr,pr14016062,2014-03-22T00:05:17.000Z,"31km N of Dorado, Puerto Rico",earthquake,11.5,2.5,0,2,reviewed,pr,pr
+2014-01-16T12:31:41.265Z,38.5726,-118.4401,7.6,1.3,ml,10,92.88,0.085,0.064,nn,nn00434642,2018-06-29T23:01:08.107Z,"16km ENE of Hawthorne, Nevada",earthquake,,2.3,0.27,3,reviewed,nn,nn
+2014-01-16T12:29:13.592Z,39.6614,-119.6958,11.1,0.3,ml,5,150.4,0.117,0.0979,nn,nn00434652,2018-06-29T23:01:11.105Z,"1km NE of Spanish Springs, Nevada",earthquake,,4.4,0,1,reviewed,nn,nn
+2014-01-16T12:28:56.930Z,38.821167,-122.8434982,1.629,1.13,md,19,77,0.007207,0.04,nc,nc72141225,2017-02-02T22:37:08.916Z,"9km WNW of The Geysers, California",earthquake,0.23,0.37,0.11,5,automatic,nc,nc
+2014-01-16T12:27:58.380Z,37.5288333,-118.8363333,2.399,0.62,md,14,138,0.06126,0.07,nc,nc72141230,2017-02-02T22:37:03.323Z,"17km SE of Mammoth Lakes, California",earthquake,0.74,2.05,0.133,11,reviewed,nc,nc
+2014-01-16T12:23:57.480Z,44.8025,-110.5266667,7.26,1.87,ml,20,93,0.08546,0.19,uu,uu60052022,2018-09-12T18:26:42.360Z,"44km NNE of Old Faithful Geyser, Wyoming",earthquake,0.43,0.95,0.768,3,reviewed,uu,uu
+2014-01-16T12:23:57.390Z,44.81,-110.5243333,7.77,1.87,ml,20,96,0.09273,0.16,uu,uu60052027,2018-09-12T18:26:40.900Z,"45km NNE of Old Faithful Geyser, Wyoming",earthquake,0.42,0.69,0.768,3,reviewed,uu,uu
+2014-01-16T12:22:18.590Z,48.5355,-122.5695,22.482,1.14,md,19,68,0.2058,0.21,uw,uw60671667,2016-07-22T19:22:23.380Z,"4km NE of Anacortes, Washington",earthquake,0.49,1.55,0.245,6,reviewed,uw,uw
+2014-01-16T12:22:17.260Z,38.8526,142.6323,51.52,4.5,mb,,130,3.184,0.73,us,usc000mei9,2014-03-22T00:05:17.000Z,"79km SE of Kamaishi, Japan",earthquake,,7.2,0.127,18,reviewed,us,us
+2014-01-16T12:19:26.970Z,19.5325,-155.605,6.386,1.02,md,12,134,,0.13,hv,hv60624471,2020-07-06T20:43:12.680Z,"28 km ENE of Honaunau-Napoopoo, Hawaii",earthquake,0.48,0.66,0.138,3,reviewed,hv,hv
+2014-01-16T12:14:35.170Z,38.7868333,-122.7633333,0.333,1.96,md,67,38,0.01441,0.06,nc,nc72141215,2017-02-02T22:36:56.580Z,"1km NNW of The Geysers, California",earthquake,0.09,0.16,0.187,43,reviewed,nc,nc
+2014-01-16T12:09:26.850Z,33.6361667,-116.7096667,13.885,0.36,ml,11,130,0.04428,0.04,ci,ci37169573,2016-03-11T07:42:05.882Z,"10km NNW of Anza, CA",earthquake,0.45,0.76,0.084,4,reviewed,ci,ci
+2014-01-16T12:09:23.890Z,34.1431667,-117.4481667,6.093,1.27,ml,39,49,0.04418,0.2,ci,ci11414434,2016-03-11T07:42:04.566Z,"5km N of Fontana, CA",earthquake,0.29,0.87,0.109,47,reviewed,ci,ci
+2014-01-16T12:09:07.610Z,36.8143333,-121.534,3.833,1.9,md,58,28,0.03874,0.09,nc,nc72141210,2017-02-02T22:36:46.580Z,"3km S of San Juan Bautista, California",earthquake,0.13,0.27,0.218,66,reviewed,nc,nc
+2014-01-16T12:07:14.157Z,38.5683,-118.4318,7.5,1.1,ml,10,93.64,0.093,0.086,nn,nn00434641,2018-06-29T23:01:10.991Z,"17km ENE of Hawthorne, Nevada",earthquake,,2.2,0.09,3,reviewed,nn,nn
+2014-01-16T12:06:19.250Z,38.6848333,-122.774,5.522,1.22,md,38,67,0.02883,0.05,nc,nc72141205,2017-02-02T22:36:36.830Z,"10km S of The Geysers, California",earthquake,0.17,0.37,0.216,19,reviewed,nc,nc
+2014-01-16T12:04:57.370Z,38.7874985,-122.7634964,0.607,0.77,md,12,86,0.01712,0.02,nc,nc72141200,2017-02-02T22:36:27.912Z,"1km NNW of The Geysers, California",earthquake,0.25,0.81,0.22,4,automatic,nc,nc
+2014-01-16T12:03:33.411Z,38.5812,-118.4399,10.2,0.4,ml,5,117.31,0.08,0.1549,nn,nn00434640,2018-06-29T23:01:13.786Z,"21km ENE of Hawthorne, Nevada",earthquake,,4.3,0,1,reviewed,nn,nn
+2014-01-16T12:02:16.630Z,36.575,-121.0348333,7.407,1.12,md,30,110,0.005405,0.09,nc,nc72141195,2017-02-02T22:36:20.710Z,"30km ENE of Soledad, California",earthquake,0.29,0.46,0.155,26,reviewed,nc,nc
+2014-01-16T11:56:34.682Z,38.5732,-118.4409,8,-0.3,ml,4,198.52,0.084,0.0878,nn,nn00434639,2018-06-29T23:01:13.997Z,"Nevada",earthquake,,7.7,0,1,reviewed,nn,nn
+2014-01-16T11:50:59.400Z,37.5561667,-118.8888333,4.327,0.18,md,16,242,0.05495,0.11,nc,nc72141190,2017-02-02T22:36:10.302Z,"12km SE of Mammoth Lakes, California",earthquake,0.82,0.95,0.117,16,reviewed,nc,nc
+2014-01-16T11:50:31.182Z,64.5042,-147.2172,5,0.4,ml,,,,0.33,ak,ak014qng3ri,2019-05-14T01:57:28.158Z,"Central Alaska",earthquake,,0,,,reviewed,ak,ak
+2014-01-16T11:45:49.040Z,46.3045,-122.351,14.29,-0.01,md,7,242,0.006268,0.11,uw,uw60671662,2016-07-22T19:22:23.150Z,"28km SSW of Morton, Washington",earthquake,0.73,0.89,0.055,3,reviewed,uw,uw
+2014-01-16T11:36:53.110Z,47.523,-122.7416667,21.031,0.47,md,9,163,0.03976,0.19,uw,uw60671657,2016-07-22T19:22:22.920Z,"6km WSW of Navy Yard City, Washington",earthquake,0.95,0.91,0.382,5,reviewed,uw,uw
+2014-01-16T11:34:16.500Z,18.9615,-66.7293,54,2.8,Md,3,288,0.61085439,0.07,pr,pr14016061,2014-03-22T00:05:17.000Z,"53km N of Hatillo, Puerto Rico",earthquake,1.5,2.4,0,2,reviewed,pr,pr
+2014-01-16T11:30:02.403Z,59.8398,-152.9399,94.4,1.9,ml,,,,0.43,ak,ak014qnbr80,2019-05-20T22:53:19.094Z,"62km W of Anchor Point, Alaska",earthquake,,0.6,,,reviewed,ak,ak
+2014-01-16T11:28:38.700Z,18.2849,-65.88,20,2.8,Md,4,324,0.64499037,0.28,pr,pr14016060,2014-03-22T00:05:17.000Z,"1km N of Benitez, Puerto Rico",earthquake,2.5,25.6,0,3,reviewed,pr,pr
+2014-01-16T11:28:24.560Z,38.8139992,-122.8161697,2.58,0.65,md,7,85,0.01081,0.02,nc,nc72141185,2017-02-02T22:36:04.996Z,"6km NW of The Geysers, California",earthquake,0.77,1.83,0.28,2,automatic,nc,nc
+2014-01-16T11:26:22.217Z,39.6705,-119.6913,5.5,-0.1,ml,3,173.02,0.217,0.073,nn,nn00434650,2018-06-29T23:01:10.885Z,"Nevada",earthquake,,18.8,0.25,2,reviewed,nn,nn
+2014-01-16T11:24:01.530Z,35.7178333,-90.2281667,12.03,2.1,md,23,88,0.05465,0.15,nm,nm610262,2016-04-07T17:35:52.470Z,"9km ESE of Caraway, Arkansas",earthquake,0.4,0.8,0.094,13,reviewed,nm,nm
+2014-01-16T11:21:56.700Z,17.7231,-66.9148,24,2.1,Md,3,313.2,0.27398616,0.15,pr,pr14016059,2014-01-17T05:44:44.365Z,"27km S of Guanica, Puerto Rico",earthquake,2.8,5.7,0,3,reviewed,pr,pr
+2014-01-16T11:11:08.500Z,19.0744,-66.6309,31,3,Md,4,284.4,0.73212696,0.31,pr,pr14016058,2014-03-22T00:05:17.000Z,"67km N of Arecibo, Puerto Rico",earthquake,4,18.7,0,2,reviewed,pr,pr
+2014-01-16T11:03:25.751Z,61.8228,-149.0011,14.5,1.3,ml,,,,0.62,ak,ak014qn60ov,2019-05-20T22:53:18.650Z,"11km WNW of Sutton-Alpine, Alaska",earthquake,,0.2,,,reviewed,ak,ak
+2014-01-16T11:01:32.510Z,37.8835,-122.2091667,6.915,0.43,md,14,110,0.01081,0.08,nc,nc72141180,2017-02-02T22:35:59.627Z,"2km WNW of Orinda, California",earthquake,0.23,0.24,0.211,9,reviewed,nc,nc
+2014-01-16T10:59:51.251Z,61.7613,-149.014,16.3,1.1,ml,,,,0.48,ak,ak014qmwn5h,2019-05-14T01:57:13.540Z,"Southern Alaska",earthquake,,0.2,,,reviewed,ak,ak
+2014-01-16T10:59:16.500Z,18.4328,-65.9561,6,2.8,Md,3,342,0.76177136,0.15,pr,pr14016057,2014-01-17T04:15:29.162Z,"5km N of Carolina, Puerto Rico",earthquake,11.3,10.8,0,3,reviewed,pr,pr
+2014-01-16T10:47:24.435Z,62.1502,-150.0243,57.8,1.4,ml,,,,0.59,ak,ak014qmu0hn,2019-05-20T22:53:18.203Z,"14km SW of Y, Alaska",earthquake,,0.6,,,reviewed,ak,ak
+2014-01-16T10:46:54.250Z,33.074,-116.452,4.075,1.08,ml,33,94,0.1224,0.18,ci,ci11414426,2016-03-11T20:41:48.870Z,"14km E of Julian, CA",earthquake,0.33,0.9,0.156,29,reviewed,ci,ci
+2014-01-16T10:45:32.880Z,34.1328333,-117.4383333,2.512,1.42,ml,50,60,0.03318,0.16,ci,ci11414418,2016-03-11T04:04:00.148Z,"4km NNE of Fontana, CA",earthquake,0.25,0.63,0.127,65,reviewed,ci,ci
+2014-01-16T10:41:13.500Z,18.1193,-66.6266,121,2.8,Md,4,172.8,0.42400481,0.23,pr,pr14016055,2014-03-22T00:05:17.000Z,"10km NE of Tallaboa Alta, Puerto Rico",earthquake,6.9,2.1,0,3,reviewed,pr,pr
+2014-01-16T10:40:06.780Z,37.9306667,-122.1525,7.493,0.89,md,21,136,0.01171,0.1,nc,nc72141175,2017-02-02T22:35:54.404Z,"5km NNW of Lafayette, California",earthquake,0.28,0.4,0.247,17,reviewed,nc,nc
+2014-01-16T10:35:12.417Z,38.5781,-118.448,8.2,-0.3,ml,5,171.32,0.077,0.0639,nn,nn00434870,2018-06-29T23:01:13.685Z,"Nevada",earthquake,,5.2,0,1,reviewed,nn,nn
+2014-01-16T10:33:14.100Z,19.037,-66.6122,46,3,Md,8,280.8,0.56144705,0.28,pr,pr14016054,2014-03-22T00:05:17.000Z,"63km N of Arecibo, Puerto Rico",earthquake,1.9,4.4,0,6,reviewed,pr,pr
+2014-01-16T10:32:00.597Z,39.6631,-119.6953,10.6,0.2,ml,3,176.28,0.212,0.0205,nn,nn00434649,2018-06-29T23:01:10.791Z,"1km NE of Spanish Springs, Nevada",earthquake,,11.3,0,1,reviewed,nn,nn
+2014-01-16T10:30:43.945Z,39.6585,-119.6985,11,0.2,ml,5,151.43,0.114,0.0823,nn,nn00434648,2018-06-29T23:01:10.695Z,"1km NE of Spanish Springs, Nevada",earthquake,,4.2,0.44,2,reviewed,nn,nn
+2014-01-16T10:27:47.500Z,19.1016,-66.681,46,3.1,Md,8,288,0.63690554,0.28,pr,pr14016049,2014-01-17T02:14:39.038Z,"69km N of Arecibo, Puerto Rico",earthquake,2.1,5.1,0,7,reviewed,pr,pr
+2014-01-16T10:27:47.400Z,19.121,-66.6867,42,3.2,Md,12,280.8,0.65666847,0.34,pr,pr14016004,2014-03-22T00:05:17.000Z,"71km NNE of Hatillo, Puerto Rico",earthquake,1.5,5.7,0,11,reviewed,pr,pr
+2014-01-16T10:21:19.900Z,19.0025,-66.654,71,3.1,Md,6,280.8,0.65936342,0.34,pr,pr14016048,2014-03-22T00:05:17.000Z,"59km N of Arecibo, Puerto Rico",earthquake,4.4,6.4,0,4,reviewed,pr,pr
+2014-01-16T10:15:54.160Z,38.832,-122.8043333,1.15,1.29,md,45,47,0.009692,0.04,nc,nc72141170,2018-09-27T04:56:47.410Z,"7km W of Cobb, CA",earthquake,0.12,0.2,0.14,15,reviewed,nc,nc
+2014-01-16T10:15:13.900Z,37.4003,68.8956,44.57,4.4,mb,,64,2.856,1.06,us,usb000m243,2014-03-22T00:05:16.000Z,"18km SSE of Orzu, Tajikistan",earthquake,,7.2,0.12,20,reviewed,us,us
+2014-01-16T10:11:54.100Z,19.0067,-66.6484,52,3.1,Md,8,284.4,0.66385499,0.3,pr,pr14016047,2014-03-22T00:05:16.000Z,"59km N of Arecibo, Puerto Rico",earthquake,2.6,6.1,0,8,reviewed,pr,pr
+2014-01-16T10:07:24.867Z,61.5191,-151.9412,9.8,1.2,ml,,,,0.51,ak,ak014qmlfvq,2019-05-20T22:53:17.783Z,"98km NNW of Nikiski, Alaska",earthquake,,0.1,,,reviewed,ak,ak
+2014-01-16T10:00:57.949Z,38.5683,-118.4412,7.6,0,ml,5,167.51,0.087,0.0631,nn,nn00436122,2018-06-29T23:01:08.891Z,"Nevada",earthquake,,8.3,0,1,reviewed,nn,nn
+2014-01-16T09:59:57.251Z,38.5843,-118.4351,8.4,0.3,ml,5,181.57,0.081,0.0872,nn,nn00434869,2018-06-29T23:01:10.594Z,"Nevada",earthquake,,5.7,0,1,reviewed,nn,nn
+2014-01-16T09:55:04.050Z,-59.4811,-25.663,41.28,4,mb,,125,15.289,0.75,us,usc000mehu,2014-03-22T00:05:16.000Z,"69km SE of Bristol Island, South Sandwich Islands",earthquake,,9.2,0.298,4,reviewed,us,us
+2014-01-16T09:52:33.957Z,51.1011,-179.0194,2,2.4,ml,,,,0.74,ak,ak014qm9o77,2019-05-20T22:53:17.144Z,"18km SSE of Amatignak Island, Alaska",earthquake,,1.5,,,reviewed,ak,ak
+2014-01-16T09:50:03.770Z,34.1376667,-117.4376667,2.38,3.19,ml,131,19,0.03801,0.21,ci,ci11414410,2016-03-11T05:55:10.640Z,"5km NNE of Fontana, CA",earthquake,0.14,0.5,0.158,239,reviewed,ci,ci
+2014-01-16T09:49:12.800Z,17.518,-92.85,45.9,4.1,md,,,,1.3,us,usc000mhbr,2014-03-22T00:05:16.000Z,"9km SSW of Tacotalpa, Mexico",earthquake,,9.5,,16,reviewed,unm,unm
+2014-01-16T09:49:03.630Z,46.3325,-120.8736667,0.986,1.14,md,15,76,0.2327,0.36,uw,uw60671577,2016-07-22T19:22:22.670Z,"31km SW of Ahtanum, Washington",earthquake,0.91,1.87,0.114,4,reviewed,uw,uw
+2014-01-16T09:48:32.203Z,39.6636,-119.6922,9.9,0.3,ml,4,150.13,0.121,0.0375,nn,nn00434647,2018-06-29T23:01:10.494Z,"Nevada",earthquake,,6.8,0.41,3,reviewed,nn,nn
+2014-01-16T09:44:26.814Z,39.6622,-119.691,9.7,0.2,ml,13,74.34,0.121,0.0976,nn,nn00434646,2018-06-29T23:01:10.379Z,"2km NE of Spanish Springs, Nevada",earthquake,,2.1,0.52,6,reviewed,nn,nn
+2014-01-16T09:43:58.830Z,51.1555,-179.1146,22.4,2.4,ml,,,,0.43,ak,ak014qm7sob,2019-05-20T22:53:16.743Z,"11km S of Amatignak Island, Alaska",earthquake,,1.2,,,reviewed,ak,ak
+2014-01-16T09:43:12.787Z,39.663,-119.6887,11.1,-0.6,ml,3,176.92,0.217,0.0414,nn,nn00434798,2018-06-29T23:01:10.258Z,"Nevada",earthquake,,10.2,0.22,2,reviewed,nn,nn
+2014-01-16T09:42:17.880Z,51.5163,-178.125,6.7,1.9,ml,,,,0.48,ak,ak014qm7hss,2019-05-14T01:57:12.116Z,"Andreanof Islands, Aleutian Islands, Alaska",earthquake,,0.4,,,reviewed,ak,ak
+2014-01-16T09:37:14.960Z,38.8383331,-122.7845001,1.144,0.51,md,13,115,0.004505,0.01,nc,nc72141160,2017-02-02T22:35:43.862Z,"5km WNW of Cobb, California",earthquake,0.27,0.57,0.05,3,automatic,nc,nc
+2014-01-16T09:35:08.352Z,39.6675,-119.691,9.9,-0.6,ml,3,174.48,0.217,0.057,nn,nn00434796,2018-06-29T23:01:10.166Z,"Nevada",earthquake,,14.3,0.21,2,reviewed,nn,nn
+2014-01-16T09:34:28.162Z,60.2128,-152.7827,90.8,1.8,ml,,,,0.81,ak,ak014qm5sv4,2019-05-20T22:53:16.258Z,"30km S of Redoubt Volcano, Alaska",earthquake,,0.5,,,reviewed,ak,ak
+2014-01-16T09:27:35.100Z,19.0834,-66.6922,47,2.8,Md,7,277.2,0.62253249,0.37,pr,pr14016046,2014-03-22T00:05:16.000Z,"67km NNE of Hatillo, Puerto Rico",earthquake,2.7,6.5,0,6,reviewed,pr,pr
+2014-01-16T09:25:04.000Z,19.1305,-66.6763,43,2.9,Md,8,295.2,0.66475331,0.2,pr,pr14016045,2014-03-22T00:05:16.000Z,"72km N of Arecibo, Puerto Rico",earthquake,2.2,5.1,0,8,reviewed,pr,pr
+2014-01-16T09:13:35.370Z,38.9428333,-111.396,1.97,1.35,md,5,199,0.164,0.06,uu,uu60052017,2018-09-12T18:13:40.400Z,"28km SW of Ferron, Utah",earthquake,1.46,31.61,0.423,3,reviewed,uu,uu
+2014-01-16T09:13:26.066Z,60.5779,-147.5261,9.7,1.8,ml,,,,0.7,ak,ak014qm1any,2019-05-20T22:53:15.827Z,"62km ESE of Whittier, Alaska",earthquake,,0.4,,,reviewed,ak,ak
+2014-01-16T09:13:25.000Z,18.8145,-67.3093,15,2.6,Md,7,219.6,0.39256378,0.46,pr,pr14016044,2014-03-22T00:05:16.000Z,"42km NNW of San Antonio, Puerto Rico",earthquake,2.2,3,0,6,reviewed,pr,pr
+2014-01-16T09:11:58.600Z,17.8614,-65.6685,7,2.1,Md,5,226.8,0.25781649,0.37,pr,pr14016042,2014-01-17T02:17:48.684Z,"27km SE of Emajagua, Puerto Rico",earthquake,1.6,2.9,0,5,reviewed,pr,pr
+2014-01-16T09:09:28.400Z,18.9972,-66.6183,53,3,Md,11,234,0.5228195,0.37,pr,pr14016040,2014-03-22T00:05:16.000Z,"58km N of Arecibo, Puerto Rico",earthquake,2.3,4.5,0,8,reviewed,pr,pr
+2014-01-16T09:07:09.900Z,19.0583,-66.6585,63,2.7,Md,5,291.6,0.71326234,0.23,pr,pr14016039,2014-03-22T00:05:16.000Z,"65km N of Arecibo, Puerto Rico",earthquake,3.2,5.3,0,4,reviewed,pr,pr
+2014-01-16T09:02:15.447Z,39.6623,-119.692,8.8,-0.4,ml,4,150.98,0.12,0.0137,nn,nn00434645,2018-06-29T23:01:10.070Z,"2km NE of Spanish Springs, Nevada",earthquake,,13.4,0.44,2,reviewed,nn,nn
+2014-01-16T08:56:40.400Z,19.1432,-67.7165,19,2.8,Md,5,262.8,0.88304392,0.37,pr,pr14016038,2014-03-22T00:05:16.000Z,"95km NE of Punta Cana, Dominican Republic",earthquake,7.1,12,0,5,reviewed,pr,pr
+2014-01-16T08:56:13.340Z,-3.373,130.0393,34.97,4.1,mb,,151,2.251,0.82,us,usc000meik,2014-03-22T00:05:16.000Z,"124km E of Amahai, Indonesia",earthquake,,3.1,0.302,3,reviewed,us,us
+2014-01-16T08:53:24.000Z,18.8048,-66.5565,63,2.5,Md,4,266.4,0.49137846,0.31,pr,pr14016036,2014-03-22T00:05:16.000Z,"38km N of Tierras Nuevas Poniente, Puerto Rico",earthquake,4.8,4.3,0,4,reviewed,pr,pr
+2014-01-16T08:51:54.500Z,19.1378,-66.674,53,2.6,Md,4,291.6,0.79051745,0.25,pr,pr14016035,2014-03-22T00:05:16.000Z,"73km N of Arecibo, Puerto Rico",earthquake,2.9,7.2,0,4,reviewed,pr,pr
+2014-01-16T08:49:15.800Z,18.9006,-66.6026,76,2.5,Md,4,342,0.56953189,0.28,pr,pr14016034,2014-03-22T00:05:16.000Z,"48km NNE of Arecibo, Puerto Rico",earthquake,9.6,4.3,0,4,reviewed,pr,pr
+2014-01-16T08:41:10.260Z,12.4799,142.3555,144.09,4.3,mb,,122,2.685,0.29,us,usc000mehr,2014-03-22T00:05:16.000Z,"265km WSW of Merizo Village, Guam",earthquake,,9.8,0.188,8,reviewed,us,us
+2014-01-16T08:41:07.860Z,38.822834,-122.809166,3.141,0.76,md,11,92,0.01802,0.02,nc,nc72141150,2017-02-02T22:35:38.747Z,"6km NW of The Geysers, California",earthquake,0.39,0.89,0.16,2,automatic,nc,nc
+2014-01-16T08:34:08.000Z,50.992,-179.368,26.1,2.9,ml,,,,0.17,us,usb000m5r9,2019-05-14T01:57:11.394Z,"35km SSW of Amatignak Island, Alaska",earthquake,,8,,14,reviewed,ak,ak
+2014-01-16T08:29:38.750Z,37.8291667,-121.9525,5.6,0.6,md,9,85,0.04324,0.09,nc,nc72141145,2017-02-02T22:35:33.886Z,"0km SE of Diablo, California",earthquake,0.28,0.89,0.147,6,reviewed,nc,nc
+2014-01-16T08:28:14.080Z,43.8066667,-70.4166667,5,1.52,ml,8,127,,0.34,ld,ld60056306,2016-05-26T21:25:55.630Z,"6km NW of South Windham, Maine",earthquake,0.86,31.61,0.23,20,reviewed,ld,ld
+2014-01-16T08:23:57.000Z,18.7705,-66.6565,65,2.5,Md,4,266.4,0.43119134,0.5,pr,pr14016056,2014-03-22T00:05:16.000Z,"33km N of Arecibo, Puerto Rico",earthquake,5.6,5.4,0,4,reviewed,pr,pr
+2014-01-16T08:20:24.100Z,19.0979,-66.6546,39,2.7,Md,16,255.6,0.6288207,0.23,pr,pr14016003,2014-03-22T00:05:16.000Z,"69km N of Arecibo, Puerto Rico",earthquake,1.3,4.7,0,2,reviewed,pr,pr
+2014-01-16T08:19:50.940Z,37.8241667,-121.9448333,6.11,0.9,md,15,89,0.05135,0.07,nc,nc72141135,2017-02-02T22:35:28.969Z,"1km SE of Diablo, California",earthquake,0.22,0.58,0.158,11,reviewed,nc,nc
+2014-01-16T08:19:40.502Z,63.2571,-150.3717,125.4,1.5,ml,,,,0.4,ak,ak014qlh6gy,2019-05-14T01:57:10.671Z,"Central Alaska",earthquake,,0.5,,,reviewed,ak,ak
+2014-01-16T08:17:09.120Z,51.2,-179.142,6.7,2.6,ml,,,,1.08,us,usb000m5r8,2019-05-14T01:57:11.042Z,"7km SSW of Amatignak Island, Alaska",earthquake,,7.3,,18,reviewed,ak,ak
+2014-01-16T08:14:47.270Z,73.7655,8.6289,10,5.3,mb,,46,4.814,0.94,us,usb000m22z,2014-03-22T00:05:16.000Z,"Greenland Sea",earthquake,,1.7,0.029,438,reviewed,us,us
+2014-01-16T08:12:22.426Z,40.2587,-119.7464,11.8,-0.1,ml,4,302.2,0.089,0.0551,nn,nn00436121,2018-06-29T23:01:08.800Z,"Nevada",earthquake,,3,0.18,3,reviewed,nn,nn
+2014-01-16T08:09:06.900Z,18.7169,-66.5846,78,2.5,Md,5,316.8,0.40154693,0.23,pr,pr14016053,2014-03-22T00:05:16.000Z,"29km N of Barceloneta, Puerto Rico",earthquake,3.2,2.2,0,5,reviewed,pr,pr
+2014-01-16T08:09:06.700Z,18.6919,-66.3735,61,2.6,Md,4,345.6,0.49766667,0.31,pr,pr14016052,2014-01-17T02:54:37.578Z,"25km N of Brenas, Puerto Rico",earthquake,10.1,4,0,4,reviewed,pr,pr
+2014-01-16T08:06:27.200Z,19.0191,-66.6652,54,2.9,Md,5,280.8,0.67373646,0.27,pr,pr14016051,2014-03-22T00:05:16.000Z,"60km N of Arecibo, Puerto Rico",earthquake,4.1,6.3,0,4,reviewed,pr,pr
+2014-01-16T08:05:21.200Z,19.0025,-66.6449,47,2.9,Md,5,280.8,0.66026173,0.4,pr,pr14016050,2014-03-22T00:05:16.000Z,"59km N of Arecibo, Puerto Rico",earthquake,4.1,9.7,0,4,reviewed,pr,pr
+2014-01-16T08:04:28.374Z,51.2792,-178.9842,20.2,2.3,ml,,,,0.35,ak,ak014qldxsl,2019-05-20T22:53:15.395Z,"8km ENE of Amatignak Island, Alaska",earthquake,,3.5,,,reviewed,ak,ak
+2014-01-16T08:04:11.500Z,19.0755,-66.5426,78,3,Md,4,342,0.75099158,0.37,pr,pr14016043,2014-03-22T00:05:16.000Z,"68km N of Tierras Nuevas Poniente, Puerto Rico",earthquake,12.4,7.3,0,4,reviewed,pr,pr
+2014-01-16T08:02:28.680Z,51.1725,-179.1139,25.6,2.4,ml,,,,0.22,ak,ak014qldidw,2019-05-20T22:53:14.998Z,"9km S of Amatignak Island, Alaska",earthquake,,23.3,,,reviewed,ak,ak
+2014-01-16T08:02:27.374Z,63.5514,-151.0136,5.3,1,ml,,,,0.69,ak,ak014qldia9,2019-05-20T22:53:14.574Z,"105km W of Cantwell, Alaska",earthquake,,0.1,,,reviewed,ak,ak
+2014-01-16T07:57:34.600Z,19.0967,-66.6635,51,3.2,Md,12,255.6,0.6288207,0.62,pr,pr14016041,2014-03-22T00:05:16.000Z,"69km N of Arecibo, Puerto Rico",earthquake,3.4,8.3,0,11,reviewed,pr,pr
+2014-01-16T07:57:15.430Z,38.8353348,-122.8014984,1.59,0.56,md,8,123,0.009009,0.02,nc,nc72141125,2017-02-02T22:35:23.558Z,"6km WNW of Cobb, California",earthquake,0.44,1.21,,1,automatic,nc,nc
+2014-01-16T07:57:01.140Z,38.835,-122.8026667,1.615,1.71,md,53,54,0.00991,0.04,nc,nc72141130,2017-02-02T22:35:16.600Z,"7km WNW of Cobb, California",earthquake,0.1,0.17,0.191,25,reviewed,nc,nc
+2014-01-16T07:56:46.800Z,36.7521667,-121.4513333,7.089,1.09,md,26,47,0.01261,0.12,nc,nc72141115,2017-02-02T22:35:00.180Z,"10km SW of Ridgemark, California",earthquake,0.3,0.36,0.31,23,reviewed,nc,nc
+2014-01-16T07:50:09.368Z,58.5967,-153.6587,72,3,ml,,,,0.58,ak,ak014ql2bns,2019-05-20T22:53:14.096Z,"111km NNW of Kodiak Station, Alaska",earthquake,,0.4,,,reviewed,ak,ak
+2014-01-16T07:45:37.090Z,51.114,-179.118,25.2,5,mb,,,,1.25,us,usb000m22d,2019-05-20T22:53:13.685Z,"16km S of Amatignak Island, Alaska",earthquake,,4,0.037,264,reviewed,ak,us
+2014-01-16T07:43:30.500Z,19.1478,-66.6563,41,2.9,Md,6,284.4,0.67732972,0.47,pr,pr14016037,2014-03-22T00:05:16.000Z,"75km N of Arecibo, Puerto Rico",earthquake,3.6,10.6,0,5,reviewed,pr,pr
+2014-01-16T07:42:20.300Z,19.0744,-66.665,42,3.1,Md,13,255.6,0.60636282,0.44,pr,pr14016033,2014-03-22T00:05:16.000Z,"66km N of Arecibo, Puerto Rico",earthquake,2,6.7,0,12,reviewed,pr,pr
+2014-01-16T07:40:32.500Z,19.0711,-66.6556,46,3,Md,14,255.6,0.60187124,0.38,pr,pr14016029,2014-03-22T00:05:16.000Z,"66km N of Arecibo, Puerto Rico",earthquake,2,5.9,0,12,reviewed,pr,pr
+2014-01-16T07:40:06.110Z,33.8293333,-117.687,9.955,3.63,ml,167,19,0.07323,0.24,ci,ci11414394,2016-03-11T18:39:49.851Z,"12km E of Villa Park, CA",earthquake,0.14,0.47,0.306,248,reviewed,ci,ci
+2014-01-16T07:38:47.190Z,51.187,-178.991,1,3.1,ml,,,,0.99,us,usb000m5r7,2019-05-14T01:57:09.074Z,"11km SE of Amatignak Island, Alaska",earthquake,,6.3,,24,reviewed,ak,ak
+2014-01-16T07:38:10.700Z,19.149,-66.6705,37,3.6,Md,28,255.6,0.67732972,0.34,pr,pr14016002,2014-03-22T00:05:16.000Z,"74km N of Carrizales, Puerto Rico",earthquake,1.2,5.8,0,16,reviewed,pr,pr
+2014-01-16T07:36:51.920Z,36.1481667,-118.066,-1.013,1.32,ml,16,82,0.1736,0.17,ci,ci11414386,2016-03-12T00:26:18.035Z,"16km NW of Coso Junction, CA",earthquake,0.35,0.91,0.138,10,reviewed,ci,ci
+2014-01-16T07:33:09.690Z,51.1701,-179.2252,27,5.5,mwb,,70,0.681,1.14,us,usb000m225,2019-05-20T22:53:13.274Z,"13km SW of Amatignak Island, Alaska",earthquake,,1.7,0.035,77,reviewed,us,us
+2014-01-16T07:29:04.520Z,32.9066667,-116.2676667,4.216,0.96,ml,12,85,0.01584,0.14,ci,ci11414378,2016-03-11T07:42:03.048Z,"26km ENE of Pine Valley, CA",earthquake,0.37,0.57,0.094,16,reviewed,ci,ci
+2014-01-16T07:24:32.091Z,38.5754,-118.4367,8.7,-0.2,ml,5,174.4,0.085,0.0729,nn,nn00434864,2018-06-29T23:01:13.901Z,"Nevada",earthquake,,5.6,0,1,reviewed,nn,nn
+2014-01-16T07:22:36.105Z,37.175,-116.6002,7.1,-0.2,ml,7,155.27,0.102,0.0647,nn,nn00436118,2018-06-29T23:01:08.703Z,"Nevada",earthquake,,2.7,0.24,6,reviewed,nn,nn
+2014-01-16T07:15:38.701Z,64.2508,-140.3148,2.1,1.1,ml,,,,0.79,ak,ak014qkuvv2,2019-05-14T01:57:08.414Z,"Southern Yukon Territory, Canada",earthquake,,3.3,,,reviewed,ak,ak
+2014-01-16T07:13:14.160Z,34.1355,-117.4285,7.622,1.48,ml,48,59,0.03684,0.19,ci,ci11414370,2016-03-12T00:26:16.754Z,"5km NNE of Fontana, CA",earthquake,0.24,0.58,0.133,68,reviewed,ci,ci
+2014-01-16T07:10:52.250Z,34.1405,-117.4311667,2.431,0.85,ml,20,107,0.08797,0.14,ci,ci11414362,2016-03-11T18:39:46.883Z,"5km NNE of Fontana, CA",earthquake,0.46,0.88,0.172,16,reviewed,ci,ci
+2014-01-16T07:07:45.840Z,19.0947,-66.6537,46.84,3.4,md,,259,0.632,0.8,us,usb000m2gl,2014-03-22T00:05:16.000Z,"69km N of Arecibo, Puerto Rico",earthquake,,9.6,,22,reviewed,pr,pr
+2014-01-16T07:05:37.283Z,63.1915,-150.6331,126.6,1.6,ml,,,,0.54,ak,ak014qksqlc,2019-05-20T22:53:12.856Z,"87km WSW of Cantwell, Alaska",earthquake,,0.1,,,reviewed,ak,ak
+2014-01-16T06:53:59.000Z,19.0543,-66.6552,47,3.2,Md,13,266.4,0.58659988,0.25,pr,pr14016022,2014-03-22T00:05:16.000Z,"64km N of Arecibo, Puerto Rico",earthquake,1.5,3.7,0,11,reviewed,pr,pr
+2014-01-16T06:52:29.242Z,38.5613,-118.4403,8.3,1.1,ml,11,91.28,0.093,0.0734,nn,nn00434627,2018-06-29T23:01:07.436Z,"16km ENE of Hawthorne, Nevada",earthquake,,1.6,0.25,3,reviewed,nn,nn
+2014-01-16T06:47:32.500Z,19.1089,-66.688,44,3.2,Md,14,259.2,0.64588869,0.5,pr,pr14016019,2014-03-22T00:05:16.000Z,"70km NNE of Hatillo, Puerto Rico",earthquake,2.4,7.9,0,11,reviewed,pr,pr
+2014-01-16T06:46:20.000Z,19.138,-66.6445,37,2.7,Md,10,259.2,0.66565163,0.47,pr,pr14016018,2014-03-22T00:05:16.000Z,"74km N of Arecibo, Puerto Rico",earthquake,2.4,10.3,0,10,reviewed,pr,pr
+2014-01-16T06:44:15.608Z,39.1945,-119.6444,3.6,0.4,ml,7,102.51,0.101,0.0526,nn,nn00436116,2018-06-29T23:01:08.598Z,"6km SW of Dayton, Nevada",earthquake,,4.6,0.22,4,reviewed,nn,nn
+2014-01-16T06:42:06.225Z,51.2548,-175.1228,25.4,2.2,ml,,,,0.47,ak,ak014qkf632,2019-05-20T22:53:12.416Z,"122km SSW of Atka, Alaska",earthquake,,2.3,,,reviewed,ak,ak
+2014-01-16T06:41:39.075Z,63.0118,-149.0788,77.2,1.3,ml,,,,0.45,ak,ak014qkf0wj,2019-05-20T22:53:11.954Z,"43km S of Cantwell, Alaska",earthquake,,0.2,,,reviewed,ak,ak
+2014-01-16T06:34:21.850Z,33.7245,-116.8218333,17.856,0.93,ml,20,155,0.09072,0.08,ci,ci11414354,2016-03-12T02:17:25.984Z,"7km ESE of Valle Vista, CA",earthquake,0.57,0.6,0.195,26,reviewed,ci,ci
+2014-01-16T06:33:08.900Z,19.0417,-66.6205,14,2.9,Md,8,270,0.56773526,0.58,pr,pr14016015,2014-03-22T00:05:16.000Z,"63km N of Arecibo, Puerto Rico",earthquake,2.8,4.8,0,8,reviewed,pr,pr
+2014-01-16T06:20:08.500Z,18.03,-66.1812,16,2.1,Md,3,277.2,0.09522142,0.1,pr,pr14016074,2014-01-17T21:47:38.833Z,"3km SE of La Plena, Puerto Rico",earthquake,1.4,0.6,0,3,reviewed,pr,pr
+2014-01-16T06:15:15.800Z,18.8985,-66.583,59,2.7,Md,6,273.6,0.42220818,0.1,pr,pr14016075,2014-03-22T00:05:16.000Z,"49km NNE of Arecibo, Puerto Rico",earthquake,1.2,1.2,0,6,reviewed,pr,pr
+2014-01-16T06:14:11.550Z,36.1936667,-120.756,7.14,1.65,md,39,133,0.04324,0.05,nc,nc72141090,2017-02-02T22:34:47.610Z,"33km E of King City, California",earthquake,0.21,0.32,0.19,35,reviewed,nc,nc
+2014-01-16T06:13:29.620Z,38.8338318,-122.7985001,1.889,0.56,md,7,97,0.008108,0.01,nc,nc72141085,2017-02-02T22:34:37.791Z,"Northern California",earthquake,0.51,0.84,,1,automatic,nc,nc
+2014-01-16T06:13:20.800Z,19.1145,-66.6595,43,3.3,Md,18,252,0.64588869,0.33,pr,pr14016001,2014-03-22T00:05:16.000Z,"71km N of Arecibo, Puerto Rico",earthquake,1.4,5,0,13,reviewed,pr,pr
+2014-01-16T06:09:56.300Z,19.1123,-66.6587,33,3.1,Md,9,259.2,0.64229543,0.34,pr,pr14016072,2014-03-22T00:05:16.000Z,"71km N of Arecibo, Puerto Rico",earthquake,1.7,8.7,0,8,reviewed,pr,pr
+2014-01-16T06:07:31.300Z,19.118,-66.6885,37,2.9,Md,11,259.2,0.65487184,0.43,pr,pr14016070,2014-03-22T00:05:16.000Z,"71km NNE of Hatillo, Puerto Rico",earthquake,2.1,8.8,0,9,reviewed,pr,pr
+2014-01-16T06:04:34.770Z,38.8153343,-122.8171692,2.449,0.88,md,15,79,0.00991,0.02,nc,nc72141080,2017-02-02T22:34:32.792Z,"6km NW of The Geysers, California",earthquake,0.29,0.59,0.06,3,automatic,nc,nc
+2014-01-16T06:03:12.700Z,19.1089,-66.6585,37,3.2,Md,14,252,0.63870217,0.43,pr,pr14016069,2014-03-22T00:05:16.000Z,"70km N of Arecibo, Puerto Rico",earthquake,1.8,7.8,0,14,reviewed,pr,pr
+2014-01-16T06:02:49.880Z,-12.145,166.4657,55.44,4.6,mb,,91,6.945,0.84,us,usc000mehm,2014-03-22T00:05:16.000Z,"172km SSE of Lata, Solomon Islands",earthquake,,8.2,0.123,20,reviewed,us,us
+2014-01-16T06:01:10.900Z,18.964,-66.649,63,2.7,Md,4,291.6,0.62073586,0.54,pr,pr14016028,2014-03-22T00:05:16.000Z,"54km N of Arecibo, Puerto Rico",earthquake,6.4,9.5,0,4,reviewed,pr,pr
+2014-01-16T06:00:08.000Z,18.9037,-66.6881,60,2.7,Md,4,277.2,0.81656859,0.62,pr,pr14016025,2014-03-22T00:05:16.000Z,"47km N of Arecibo, Puerto Rico",earthquake,10.4,19.5,0,2,reviewed,pr,pr
+2014-01-16T05:58:58.700Z,19.118,-66.6804,33,2.9,Md,10,277.2,0.6521769,0.27,pr,pr14016023,2014-03-22T00:05:16.000Z,"71km N of Arecibo, Puerto Rico",earthquake,1.3,6.8,0,10,reviewed,pr,pr
+2014-01-16T05:58:55.511Z,40.1863,-120.0596,6.8,0.4,ml,4,237.79,0.251,0.0463,nn,nn00436111,2018-06-29T23:01:08.500Z,"41km ESE of Janesville, California",earthquake,,16.3,0.35,3,reviewed,nn,nn
+2014-01-16T05:57:13.993Z,63.1893,-151.5206,17.7,1.1,ml,,,,0.64,ak,ak014qjwytj,2019-05-20T22:53:11.520Z,"120km NW of Talkeetna, Alaska",earthquake,,0.1,,,reviewed,ak,ak
+2014-01-16T05:56:59.260Z,-30.9575,-177.9678,35.1,4.2,mb,,206,1.707,0.46,us,usc000mehw,2014-03-22T00:05:16.000Z,"103km ENE of L'Esperance Rock, New Zealand",earthquake,,3.3,0.305,3,reviewed,us,us
+2014-01-16T05:56:24.400Z,19.2304,-66.672,50,2.7,Md,4,288,0.86507762,0.37,pr,pr14016020,2014-03-22T00:05:15.000Z,"83km N of Hatillo, Puerto Rico",earthquake,3.2,9.6,0,2,reviewed,pr,pr
+2014-01-16T05:55:27.300Z,19.1123,-66.6845,33,2.8,Md,9,277.2,0.64768532,0.56,pr,pr14016017,2014-03-22T00:05:15.000Z,"70km NNE of Hatillo, Puerto Rico",earthquake,3,14.3,0,9,reviewed,pr,pr
+2014-01-16T05:54:24.300Z,19.1643,-66.6193,25,2.6,Md,6,280.8,0.68721119,0.34,pr,pr14016014,2014-03-22T00:05:15.000Z,"77km N of Arecibo, Puerto Rico",earthquake,2.2,19.8,0,6,reviewed,pr,pr
+2014-01-16T05:54:11.900Z,33.052,-116.0376667,4.453,1.12,ml,13,336,0.647,0.07,ci,ci11414346,2016-03-11T13:02:21.170Z,"13km SE of Ocotillo Wells, CA",earthquake,1.81,31.61,0.113,6,reviewed,ci,ci
+2014-01-16T05:52:11.438Z,38.5657,-118.4419,5.1,-0.3,ml,5,165.54,0.089,0.08,nn,nn00434863,2018-06-29T23:01:13.485Z,"Nevada",earthquake,,21.3,0,1,reviewed,nn,nn
+2014-01-16T05:50:36.900Z,19.0636,-66.6072,40,2.6,Md,5,262.8,0.5874982,0.56,pr,pr14016011,2014-03-22T00:05:15.000Z,"66km N of Arecibo, Puerto Rico",earthquake,4,10.3,0,2,reviewed,pr,pr
+2014-01-16T05:48:20.900Z,19.076,-66.6439,41,3.4,Md,24,248.4,0.6054645,0.36,pr,pr14016000,2014-03-22T00:05:15.000Z,"67km N of Arecibo, Puerto Rico",earthquake,1.2,4.7,0,20,reviewed,pr,pr
+2014-01-16T05:47:18.807Z,59.7662,-138.8474,7.3,1.9,ml,,,,0.66,ak,ak014qjuu14,2019-05-20T22:53:11.064Z,"55km ENE of Yakutat, Alaska",earthquake,,0.4,,,reviewed,ak,ak
+2014-01-16T05:44:23.380Z,39.7941,-119.3298,11.6,0.2,ml,4,230.31,0.094,0.0668,nn,nn00436109,2018-06-29T23:01:08.405Z,"21km NNW of Fernley, Nevada",earthquake,,3.4,0.29,4,reviewed,nn,nn
+2014-01-16T05:38:32.316Z,63.1607,-150.9666,127.4,1.5,ml,,,,0.49,ak,ak014qjsxmn,2019-05-20T22:53:10.655Z,"103km NNW of Talkeetna, Alaska",earthquake,,0.5,,,reviewed,ak,ak
+2014-01-16T05:34:32.630Z,38.7596664,-122.7286682,1.162,0.92,md,10,61,0.01441,0.03,nc,nc72141070,2017-02-02T22:34:27.379Z,"3km SE of The Geysers, California",earthquake,0.32,0.84,0.03,3,automatic,nc,nc
+2014-01-16T05:32:30.690Z,38.8396683,-122.8281631,1.744,1.19,md,21,52,0.006306,0.02,nc,nc72141065,2017-02-02T22:34:22.073Z,"9km WNW of Cobb, California",earthquake,0.22,0.45,0.16,5,automatic,nc,nc
+2014-01-16T05:27:17.400Z,36.1238333,-117.9203333,3.567,0.71,ml,9,223,0.05337,0.09,ci,ci11414338,2016-03-11T02:14:52.971Z,"9km NNE of Coso Junction, CA",earthquake,0.65,1.94,0.033,1,reviewed,ci,ci
+2014-01-16T05:26:49.440Z,19.412,-155.2809,1,-9,mh,0,,,,hv,hv60624261,2020-08-26T21:06:35.200Z,"5 km SW of Volcano, Hawaii",earthquake,,,,0,reviewed,hv,hv
+2014-01-16T05:25:59.712Z,62.6832,-150.3684,74.6,1.5,ml,,,,0.53,ak,ak014qjq7fn,2019-05-14T01:57:07.624Z,"Central Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-16T05:18:22.760Z,38.7491667,-122.6978333,1.62,-0.15,md,5,111,0.004058,0.03,nc,nc72141060,2018-09-27T05:00:32.881Z,"3km S of Anderson Springs, CA",earthquake,0.77,2.01,,1,reviewed,nc,nc
+2014-01-16T05:16:23.550Z,38.8183327,-122.8115005,2.94,0.43,md,8,157,0.005405,0.03,nc,nc72141055,2017-02-02T22:34:11.212Z,"6km NW of The Geysers, California",earthquake,0.54,0.95,0.13,2,automatic,nc,nc
+2014-01-16T05:15:29.450Z,38.8115005,-122.7646637,-0.817,0.47,md,6,192,0.01261,0.02,nc,nc72141050,2017-02-02T22:34:05.606Z,"3km WSW of Cobb, California",earthquake,0.6,2.9,0.09,2,automatic,nc,nc
+2014-01-16T05:15:03.800Z,38.829,-122.7528333,0.37,1.73,md,54,42,0.00964,0.07,nc,nc72141030,2018-09-27T05:30:22.770Z,"3km WNW of Cobb, CA",earthquake,0.13,0.19,0.238,26,reviewed,nc,nc
+2014-01-16T05:14:22.690Z,38.8328323,-122.7570038,0.829,0.99,md,8,187,0.004505,0.01,nc,nc72141045,2017-02-02T22:33:53.365Z,"3km WNW of Cobb, California",earthquake,0.96,1.08,,1,automatic,nc,nc
+2014-01-16T05:14:17.220Z,38.8308333,-122.7521667,0.49,0.75,md,26,90,0.00863,0.04,nc,nc72141040,2018-09-27T06:58:44.026Z,"3km WNW of Cobb, CA",earthquake,0.17,0.27,0.069,6,reviewed,nc,nc
+2014-01-16T05:13:57.590Z,38.8278351,-122.7518311,-0.93,0.54,md,6,140,0.01081,0.03,nc,nc72141035,2017-02-02T22:33:38.230Z,"2km WNW of Cobb, California",earthquake,0.42,2.63,0.03,2,automatic,nc,nc
+2014-01-16T05:13:07.970Z,38.8308334,-122.7531662,0.615,1.18,md,12,88,0.008108,0.02,nc,nc72141025,2017-02-02T22:33:32.723Z,"2km WNW of Cobb, California",earthquake,0.23,0.39,0.04,5,automatic,nc,nc
+2014-01-16T05:10:40.810Z,36.7555,-116.2517,7.1,-0.2,ml,5,262.87,0.042,0.0232,nn,nn00436108,2018-06-29T23:01:08.310Z,"Nevada",earthquake,,2.5,0.04,2,reviewed,nn,nn
+2014-01-16T05:08:53.400Z,19.1417,-66.6658,44,2.6,Md,4,306,0.79500903,0.21,pr,pr14016032,2014-03-22T00:05:15.000Z,"74km N of Arecibo, Puerto Rico",earthquake,2.8,9.9,0,4,reviewed,pr,pr
+2014-01-16T05:01:24.430Z,36.0136667,-117.7988333,0.152,1.47,ml,18,71,0.02861,0.12,ci,ci11414330,2016-03-11T02:14:51.716Z,"13km NE of Little Lake, CA",earthquake,0.28,0.41,0.139,15,reviewed,ci,ci
+2014-01-16T04:59:56.800Z,33.2353333,-116.0583333,4.474,1.22,ml,33,79,0.07538,0.19,ci,ci11414322,2016-03-11T09:31:01.929Z,"12km SW of Salton City, CA",earthquake,0.26,0.96,0.151,32,reviewed,ci,ci
+2014-01-16T04:48:54.080Z,1.3917,126.4751,44.89,5,mb,,44,1.083,0.84,us,usb000m20t,2014-03-22T00:05:15.000Z,"119km NW of Kota Ternate, Indonesia",earthquake,,5,0.06,94,reviewed,us,us
+2014-01-16T04:38:24.500Z,19.0179,-66.6915,51,2.5,Md,4,284.4,0.66924489,0.18,pr,pr14016031,2014-03-22T00:05:15.000Z,"60km N of Arecibo, Puerto Rico",earthquake,2.5,5,0,3,reviewed,pr,pr
+2014-01-16T04:37:39.260Z,63.5999,-150.7601,10.9,1.2,ml,,,,0.69,ak,ak014qj7aue,2019-05-20T22:53:10.231Z,"95km WNW of Cantwell, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-16T04:35:56.762Z,38.5657,-118.4341,9,1.3,ml,10,92.89,0.093,0.0755,nn,nn00434624,2018-06-29T23:01:07.580Z,"17km ENE of Hawthorne, Nevada",earthquake,,1.9,0.03,3,reviewed,nn,nn
+2014-01-16T04:32:10.948Z,38.556,-118.4581,7.1,-0.1,ml,4,151.97,0.088,0.0506,nn,nn00434862,2018-06-29T23:01:09.965Z,"Nevada",earthquake,,7.3,0,1,reviewed,nn,nn
+2014-01-16T04:20:16.230Z,19.3725,-155.2391667,28.569,1.5,md,14,85,,0.09,hv,hv60624231,2020-07-06T20:39:09.170Z,"Island of Hawaii, Hawaii",earthquake,0.88,0.94,0.047,7,reviewed,hv,hv
+2014-01-16T04:13:25.100Z,38.8163338,-122.8485031,5.546,0.57,md,6,308,0.01712,0.01,nc,nc72141020,2017-02-02T22:33:27.269Z,"Northern California",earthquake,3.18,5.55,,1,automatic,nc,nc
+2014-01-16T04:12:03.650Z,37.9406667,-118.5376667,4.916,1.47,md,31,151,0.227,0.06,nc,nc72141015,2018-06-29T23:01:07.693Z,"50km NE of Mammoth Lakes, California",earthquake,0.39,6.07,0.268,27,reviewed,nc,nc
+2014-01-16T04:11:54.280Z,6.5951,126.0327,71.73,4.2,mb,,134,0.652,0.67,us,usc000mehj,2014-03-22T00:05:15.000Z,"7km SW of Sigaboy, Philippines",earthquake,,7.5,0.215,6,reviewed,us,us
+2014-01-16T04:10:31.500Z,37.4201667,-118.6198333,7.932,0.93,md,24,79,0.02703,0.07,nc,nc72141010,2018-06-29T23:01:09.861Z,"15km WNW of West Bishop, California",earthquake,0.29,0.62,0.197,20,reviewed,nc,nc
+2014-01-16T04:07:32.420Z,19.0778333,-155.3723333,33.779,2.72,ml,64,200,,0.11,hv,hv60624226,2020-07-06T20:38:53.740Z,"17 km SE of Pāhala, Hawaii",earthquake,0.56,0.69,0.134,25,reviewed,hv,hv
+2014-01-16T03:49:23.160Z,35.6495,-121.0705,4.29,0.59,md,13,89,0.05225,0.06,nc,nc72141000,2017-02-02T22:33:03.671Z,"9km N of Cambria, California",earthquake,0.21,0.69,0.175,12,reviewed,nc,nc
+2014-01-16T03:47:19.260Z,36.0856667,-117.8763333,3.875,0.3,ml,7,199,0.03643,0.12,ci,ci11414314,2016-03-11T11:14:52.616Z,"8km NE of Coso Junction, CA",earthquake,0.99,1.07,0.042,1,reviewed,ci,ci
+2014-01-16T03:42:10.910Z,38.793335,-122.7203369,3.814,0.47,md,8,92,0.01982,0.01,nc,nc72140995,2017-02-02T22:32:57.807Z,"3km S of Cobb, California",earthquake,0.77,4.13,0.11,3,automatic,nc,nc
+2014-01-16T03:41:46.830Z,-11.9288,166.629,150.35,5,mb,,32,6.011,0.86,us,usb000m20a,2014-03-22T00:05:15.000Z,"159km SSE of Lata, Solomon Islands",earthquake,,4.5,0.041,210,reviewed,us,us
+2014-01-16T03:40:45.100Z,19.1382,-66.751,67,2.7,Md,5,295.2,0.78602587,0.21,pr,pr14016030,2014-03-22T00:05:15.000Z,"72km N of Hatillo, Puerto Rico",earthquake,4.3,10.3,0,5,reviewed,pr,pr
+2014-01-16T03:39:13.904Z,62.2404,-151.0015,75.4,1.6,ml,,,,0.23,ak,ak014qim8pq,2019-05-20T22:53:09.807Z,"35km W of Talkeetna, Alaska",earthquake,,0.4,,,reviewed,ak,ak
+2014-01-16T03:35:56.590Z,-52.4753,26.1986,10,4.8,mb,,77,20.462,0.66,us,usb000m20k,2014-03-22T00:05:15.000Z,"South of Africa",earthquake,,1.7,0.139,16,reviewed,us,us
+2014-01-16T03:35:23.100Z,37.9101667,-122.0788333,8.149,1.29,md,25,111,0.05856,0.06,nc,nc72140990,2017-02-02T22:32:52.423Z,"1km WNW of Walnut Creek, California",earthquake,0.2,0.43,0.165,18,reviewed,nc,nc
+2014-01-16T03:34:01.759Z,61.2323,-150.8276,46.8,1.3,ml,,,,0.65,ak,ak014qil573,2019-05-20T22:53:09.320Z,"49km W of Anchorage, Alaska",earthquake,,0.6,,,reviewed,ak,ak
+2014-01-16T03:32:40.000Z,-27.918,-66.908,174,4.6,mb,,,,0.87,us,usb000m204,2014-03-22T00:05:15.000Z,"31km SE of Londres, Argentina",earthquake,,5.6,0.158,16,reviewed,sja,us
+2014-01-16T03:21:56.620Z,34.1323333,-117.419,1.712,0.79,ml,13,121,0.1008,0.08,ci,ci11414306,2016-03-11T09:31:00.450Z,"5km NE of Fontana, CA",earthquake,0.53,2.09,0.252,9,reviewed,ci,ci
+2014-01-16T03:18:41.500Z,19.127,-64.821,49,3.1,Md,7,291.6,0.73212696,0.25,pr,pr14016012,2014-03-22T00:05:15.000Z,"81km NNW of Road Town, British Virgin Islands",earthquake,5.5,11.3,0,5,reviewed,pr,pr
+2014-01-16T02:57:45.300Z,19.0508,-66.8336,21,2.7,Md,9,280.8,0.63690554,0.37,pr,pr14016008,2014-03-22T00:05:15.000Z,"62km N of Hatillo, Puerto Rico",earthquake,2,28.7,0,9,reviewed,pr,pr
+2014-01-16T02:57:20.912Z,60.4065,-147.8212,3.6,1.5,ml,,,,0.76,ak,ak014qi4ojf,2019-05-20T22:53:08.871Z,"62km SE of Whittier, Alaska",earthquake,,0.6,,,reviewed,ak,ak
+2014-01-16T02:54:28.030Z,34.1438333,-117.4475,5.747,1.77,ml,56,91,0.04474,0.17,ci,ci11414298,2016-03-11T20:41:47.581Z,"5km N of Fontana, CA",earthquake,0.23,0.63,0.131,86,reviewed,ci,ci
+2014-01-16T02:48:26.900Z,19.0443,-66.583,44,2.6,Md,4,284.4,0.71236402,0.38,pr,pr14016007,2014-03-22T00:05:15.000Z,"64km NNE of Arecibo, Puerto Rico",earthquake,4.1,11.3,0,4,reviewed,pr,pr
+2014-01-16T02:45:54.100Z,16.939,-95.0699,116.3,4,mb,,,,0.96,us,usc000mehg,2014-03-22T00:05:15.000Z,"4km NNW of Rincon Viejo, Mexico",earthquake,,4,0.149,12,reviewed,unm,us
+2014-01-16T02:40:47.150Z,37.5873333,-118.94,7.259,0.36,md,16,92,0.03153,0.02,nc,nc72140985,2017-02-02T22:32:46.982Z,"7km SSE of Mammoth Lakes, California",earthquake,0.55,0.93,0.12,12,reviewed,nc,nc
+2014-01-16T02:35:46.900Z,34.1478333,-117.4353333,3.281,0.71,ml,13,114,0.0802,0.16,ci,ci11414290,2016-03-12T06:01:15.168Z,"6km NNE of Fontana, CA",earthquake,0.77,0.95,0.105,8,reviewed,ci,ci
+2014-01-16T02:30:55.900Z,38.7919998,-122.7386703,1.222,0.37,md,7,82,0.009009,0.01,nc,nc72140980,2017-02-02T22:32:41.825Z,"2km NE of The Geysers, California",earthquake,0.35,1.3,0.29,3,automatic,nc,nc
+2014-01-16T02:28:08.262Z,60.0734,-152.8602,109.7,1.7,ml,,,,0.53,ak,ak014qhyfsq,2019-05-20T22:53:08.457Z,"46km S of Redoubt Volcano, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-16T02:21:47.200Z,18.9657,-66.769,54,3,Md,12,270,0.53629422,0.47,pr,pr14016005,2014-03-22T00:05:15.000Z,"53km N of Hatillo, Puerto Rico",earthquake,2.4,4.5,0,12,reviewed,pr,pr
+2014-01-16T02:17:29.200Z,19.0207,-66.1027,11,2.7,Md,3,284.4,0.78063598,0.1,pr,pr14016026,2014-03-22T00:05:15.000Z,"61km N of San Juan, Puerto Rico",earthquake,4.9,6.1,0,3,reviewed,pr,pr
+2014-01-16T02:10:21.920Z,62.8905,-150.5642,87.2,1.6,ml,,,,0.43,ak,ak014qhulyo,2019-05-20T22:53:08.039Z,"69km NNW of Talkeetna, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-16T02:07:10.570Z,38.8273315,-122.8526688,2.269,1.08,md,10,99,0.01802,0.02,nc,nc72140975,2017-02-02T22:32:36.843Z,"10km WNW of The Geysers, California",earthquake,0.34,0.76,0.14,4,automatic,nc,nc
+2014-01-16T02:05:02.900Z,18.082,-66.1211,40,2.3,Md,3,331.2,0.65577016,0.05,pr,pr14016024,2014-01-16T21:04:05.788Z,"5km SE of Cayey, Puerto Rico",earthquake,2.9,6.5,0,3,reviewed,pr,pr
+2014-01-16T01:50:10.700Z,17.926,-65.3756,16,2,Md,4,338.4,0.23895187,0.05,pr,pr14016021,2014-01-16T20:36:01.342Z,"21km SSE of Esperanza, Puerto Rico",earthquake,1.6,0.6,0,3,reviewed,pr,pr
+2014-01-16T01:49:25.160Z,35.7421667,-118.0411667,7.868,0.86,ml,12,94,0.139,0.09,ci,ci11414282,2016-03-11T04:03:58.641Z,"23km WNW of Inyokern, CA",earthquake,0.33,0.74,0.065,5,reviewed,ci,ci
+2014-01-16T01:49:12.370Z,45.3158333,-121.6541667,6.563,0.85,md,9,82,0.006821,0.13,uw,uw60671312,2016-07-22T19:22:22.390Z,"25km E of Mount Hood Village, Oregon",earthquake,0.51,0.49,0.25,8,reviewed,uw,uw
+2014-01-16T01:47:57.668Z,60.8851,-150.3586,50.3,1.3,ml,,,,0.42,ak,ak014qhh6ly,2019-05-20T22:53:07.597Z,"44km SW of Anchorage, Alaska",earthquake,,0.2,,,reviewed,ak,ak
+2014-01-16T01:47:23.760Z,38.841835,-122.8259964,1.698,0.68,md,7,131,0.008108,0.01,nc,nc72140970,2017-02-02T22:32:31.754Z,"9km WNW of Cobb, California",earthquake,0.92,2.15,0.11,2,automatic,nc,nc
+2014-01-16T01:41:53.304Z,63.5381,-151.0942,10.2,1.1,ml,,,,0.84,ak,ak014qhfvz6,2019-05-14T01:57:06.167Z,"Central Alaska",earthquake,,0.1,,,reviewed,ak,ak
+2014-01-16T01:41:37.151Z,38.5754,-118.4386,7,0.9,ml,7,173.56,0.084,0.0946,nn,nn00434606,2018-06-29T23:01:09.751Z,"19km ENE of Hawthorne, Nevada",earthquake,,3,0,1,reviewed,nn,nn
+2014-01-16T01:35:28.462Z,37.1617,-116.6455,4.1,0.4,ml,10,141.11,0.063,0.1364,nn,nn00434605,2018-06-29T23:01:09.616Z,"29km NNE of Beatty, Nevada",earthquake,,3.3,0.36,8,reviewed,nn,nn
+2014-01-16T01:30:43.510Z,38.8393333,-122.8273333,2,1.2,md,40,47,0.006411,0.03,nc,nc72140965,2018-09-27T07:14:32.870Z,"9km WNW of Cobb, CA",earthquake,0.15,0.24,0.148,12,reviewed,nc,nc
+2014-01-16T01:15:45.000Z,13.816,-90.492,81,4.1,mb,,,,0.94,us,usb000m4fl,2014-03-22T00:05:15.000Z,"26km ESE of Iztapa, Guatemala",earthquake,,7.2,0.111,24,reviewed,snet,us
+2014-01-16T01:15:11.630Z,36.574,-121.0373333,7.457,0.64,md,12,109,0.004505,0.08,nc,nc72140960,2017-02-02T22:32:21.042Z,"30km ENE of Soledad, California",earthquake,0.42,0.59,0.189,12,reviewed,nc,nc
+2014-01-16T01:12:17.710Z,40.1151,142.8184,51.83,5.1,mb,,108,1.915,0.71,us,usb000m1z7,2014-03-22T00:05:15.000Z,"91km NE of Miyako, Japan",earthquake,,5.3,0.04,223,reviewed,us,us
+2014-01-16T01:06:36.060Z,51.499,-178.0689,13.2,2.1,ml,,,,0.6,ak,ak014qh8cl2,2019-05-14T01:57:05.812Z,"Andreanof Islands, Aleutian Islands, Alaska",earthquake,,0.6,,,reviewed,ak,ak
+2014-01-16T01:04:37.990Z,35.033,-117.6871667,-0.964,1.64,ml,16,105,0.09867,0.1,ci,ci11414274,2016-03-11T22:33:11.609Z,"5km NW of Boron, CA",quarry blast,0.58,31.61,0.175,29,reviewed,ci,ci
+2014-01-16T01:01:32.690Z,34.2585,-116.7461667,0.088,1.27,ml,39,81,0.1118,0.14,ci,ci11414266,2016-03-11T11:14:51.318Z,"9km E of Big Bear City, CA",earthquake,0.24,0.6,0.162,38,reviewed,ci,ci
+2014-01-16T00:59:52.400Z,18.0865,-66.1145,21,2.1,Md,6,234,0.11947593,0.03,pr,pr14016016,2014-01-16T19:06:59.213Z,"4km SSW of G. L. Garcia, Puerto Rico",earthquake,0.7,0.9,0,3,reviewed,pr,pr
+2014-01-16T00:49:58.810Z,44.7338333,-111.1315,10.5,0.66,md,14,69,0.04913,0.15,uu,uu60051982,2018-09-12T18:26:39.560Z,"8km NNW of West Yellowstone, Montana",earthquake,0.51,1.07,0.22,3,reviewed,uu,uu
+2014-01-16T00:49:25.200Z,19.0513,-66.8535,41,2.9,Md,14,280.8,0.6288207,0.12,pr,pr14016013,2014-03-22T00:05:15.000Z,"62km N of Hatillo, Puerto Rico",earthquake,0.7,2.2,0,11,reviewed,pr,pr
+2014-01-16T00:48:50.760Z,44.7338333,-111.1353333,12.33,1.74,ml,19,68,0.04658,0.15,uu,uu60051977,2018-09-12T18:26:38.050Z,"8km NNW of West Yellowstone, Montana",earthquake,0.46,0.71,0.311,4,reviewed,uu,uu
+2014-01-16T00:46:40.760Z,34.3635,-117.0183333,-1.547,1.78,ml,30,77,0.1029,0.17,ci,ci11414258,2016-03-11T11:14:49.572Z,"10km SSW of Lucerne Valley, CA",quarry blast,0.47,31.61,0.158,78,reviewed,ci,ci
+2014-01-16T00:46:38.050Z,35.9786667,-117.9191667,1.362,1.25,ml,23,56,0.03722,0.22,ci,ci11414250,2016-03-11T05:55:08.309Z,"5km NNW of Little Lake, CA",earthquake,0.32,0.54,0.283,11,reviewed,ci,ci
+2014-01-16T00:46:05.400Z,19.1142,-66.8539,21,3,Md,12,288,0.68721119,0.05,pr,pr14016009,2014-03-22T00:05:15.000Z,"69km N of Hatillo, Puerto Rico",earthquake,0.5,8.4,0,12,reviewed,pr,pr
+2014-01-16T00:44:52.080Z,-2.4228,138.0823,46.16,4.1,mb,,129,2.621,1.37,us,usc000mehe,2014-03-22T00:05:15.000Z,"253km NE of Enarotali, Indonesia",earthquake,,15.4,0.369,2,reviewed,us,us
+2014-01-16T00:40:03.169Z,63.2412,-150.6788,128.4,1.9,ml,,,,0.4,ak,ak014qgu4sc,2019-05-20T22:53:07.200Z,"73km WSW of Cantwell, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-16T00:29:50.910Z,44.783,-111.0151667,2.71,0.56,md,9,147,0.02452,0.14,uu,uu60051972,2018-09-12T18:26:36.730Z,"15km NNE of West Yellowstone, Montana",earthquake,0.6,0.97,0.35,4,reviewed,uu,uu
+2014-01-16T00:24:54.610Z,26.6848,-110.9906,10,4.1,md,,214,1.282,1.26,us,usc000mhbk,2014-03-22T00:05:15.000Z,"82km NNE of Loreto, Mexico",earthquake,,2,,6,reviewed,us,unm
+2014-01-16T00:24:20.570Z,38.8011667,-122.7895,3.052,0.25,md,17,59,0.008108,0.02,nc,nc72140945,2017-02-02T22:32:15.239Z,"3km NW of The Geysers, California",earthquake,0.3,0.46,0.027,4,reviewed,nc,nc
+2014-01-16T00:23:11.750Z,34.1346667,-117.432,2.571,1.36,ml,40,95,0.09203,0.2,ci,ci11414242,2016-03-11T20:41:44.812Z,"5km NNE of Fontana, CA",earthquake,0.29,0.75,0.143,49,reviewed,ci,ci
+2014-01-16T00:23:07.134Z,40.0701,-119.6704,15.2,-0.3,ml,4,114.65,0.111,0.0385,nn,nn00436099,2018-06-29T23:01:08.214Z,"Nevada",earthquake,,3.1,0.82,4,reviewed,nn,nn
+2014-01-16T00:18:34.100Z,18.8735,-66.7328,63,3,Md,6,280.8,0.43747954,0.09,pr,pr14016006,2014-03-22T00:05:15.000Z,"43km NNE of Hatillo, Puerto Rico",earthquake,1.4,1.1,0,4,reviewed,pr,pr
+2014-01-16T00:13:40.473Z,62.0565,-145.1858,15.9,1.2,ml,,,,0.68,ak,ak014qgofbz,2019-05-20T22:53:06.808Z,"19km ESE of Glennallen, Alaska",earthquake,,0.9,,,reviewed,ak,ak
+2014-01-16T00:07:47.120Z,34.1441667,-117.4468333,2.641,0.83,ml,17,108,0.07709,0.13,ci,ci11414234,2016-03-11T20:41:42.077Z,"5km NNE of Fontana, CA",earthquake,0.52,1.06,0.204,12,reviewed,ci,ci
+2014-01-16T00:06:52.910Z,64.9916,-147.3507,0,1.3,ml,,,,0.43,ak,ak014qgmya3,2019-05-20T22:53:06.379Z,"18km NE of Fairbanks, Alaska",explosion,,0,,,reviewed,ak,ak
+2014-01-15T23:57:27.000Z,35.6091,-97.1491,2.702,2.6,ml,,,,0.74,us,usc000myxb,2014-03-22T00:05:15.000Z,"7km SE of Luther, Oklahoma",earthquake,,6.3,,,reviewed,tul,tul
+2014-01-15T23:57:15.900Z,29.42,51.29,5,4.6,mb,,,,1.2,us,usb000m1yc,2014-03-22T00:05:15.000Z,"18km NNE of Borazjan, Iran",earthquake,,1.8,0.074,61,reviewed,thr,us
+2014-01-15T23:55:24.400Z,19.2572,-65.9804,37,3,Md,8,270,0.93334958,0.07,pr,pr14015032,2014-03-22T00:05:15.000Z,"88km N of San Juan, Puerto Rico",earthquake,0.9,4.8,0,7,reviewed,pr,pr
+2014-01-15T23:54:40.680Z,17.4721,40.1323,12.95,4.2,mb,,113,5.008,0.71,us,usc000mehl,2014-03-22T00:05:15.000Z,"197km ENE of Nak'fa, Eritrea",earthquake,,4.3,0.186,8,reviewed,us,us
+2014-01-15T23:50:16.700Z,38.8041667,-122.8178333,2.88,0.21,md,12,121,0.00991,0.01,nc,nc72140940,2017-02-02T22:32:09.404Z,"6km WNW of The Geysers, California",earthquake,0.33,0.91,0.05,2,reviewed,nc,nc
+2014-01-15T23:47:40.202Z,59.9438,-140.0805,12.6,1.6,ml,,,,0.71,ak,ak014p71c2s,2019-05-20T22:53:05.894Z,"48km NNW of Yakutat, Alaska",earthquake,,0.6,,,reviewed,ak,ak
+2014-01-15T23:36:41.000Z,51.4677,-178.2515,26.5,2.5,ml,,244,0.388,0.89,us,usb000m3ig,2019-05-20T22:53:05.486Z,"46km S of Tanaga Volcano, Alaska",earthquake,,8.6,,3,reviewed,ak,ak
+2014-01-15T23:35:07.400Z,19.1604,-67.0371,96,3,Md,4,298.8,0.8525012,0.05,pr,pr14015031,2014-03-22T00:05:15.000Z,"73km N of Isabela, Puerto Rico",earthquake,1.8,2.3,0,2,reviewed,pr,pr
+2014-01-15T23:35:04.790Z,51.484,-178.247,25.6,3,ml,,,,0.83,us,usb000m3if,2019-05-20T22:53:05.065Z,"45km S of Tanaga Volcano, Alaska",earthquake,,7.9,,20,reviewed,ak,ak
+2014-01-15T23:31:50.163Z,37.3067,-117.2166,0,0.5,ml,5,295.09,0.358,0.1183,nn,nn00434788,2018-06-29T23:01:04.393Z,"44km S of Goldfield, Nevada",earthquake,,0,0.34,5,reviewed,nn,nn
+2014-01-15T23:30:43.240Z,36.5688333,-121.0378333,7.262,1.32,md,27,87,0.00991,0.12,nc,nc72140935,2017-02-02T22:32:02.650Z,"30km ENE of Soledad, California",earthquake,0.29,0.52,0.193,27,reviewed,nc,nc
+2014-01-15T23:25:02.655Z,61.0954,-149.7473,42.6,1.2,ml,,,,0.19,ak,ak014p6wjfd,2019-05-20T22:53:04.664Z,"15km SSE of Anchorage, Alaska",earthquake,,0.2,,,reviewed,ak,ak
+2014-01-15T23:22:55.950Z,46.9,-121.9678333,5.504,0.3,md,12,211,0.04431,0.1,uw,uw60671257,2016-07-22T19:22:21.680Z,"23km E of Eatonville, Washington",earthquake,0.69,0.78,0.271,11,reviewed,uw,uw
+2014-01-15T23:22:49.888Z,60.0946,-153.4394,159.5,2.4,ml,,,,0.68,ak,ak014p6vzx8,2019-05-20T22:53:04.163Z,"58km SW of Redoubt Volcano, Alaska",earthquake,,0.4,,,reviewed,ak,ak
+2014-01-15T23:20:41.514Z,37.307,-117.2308,0,0.4,ml,4,317.17,0.363,0.0849,nn,nn00434787,2018-06-29T23:01:04.299Z,"Nevada",earthquake,,0,0.24,4,reviewed,nn,nn
+2014-01-15T23:14:20.000Z,17.9547,-68.5258,97,3.1,Md,4,284.4,0.57222684,0.27,pr,pr14015030,2014-03-22T00:05:15.000Z,"47km S of Boca de Yuma, Dominican Republic",earthquake,6,4.3,0,3,reviewed,pr,pr
+2014-01-15T23:11:40.680Z,41.9535,142.4029,65.62,4.5,mb,,89,0.565,0.87,us,usb000m1x6,2014-03-22T00:05:15.000Z,"42km S of Shizunai, Japan",earthquake,,6.6,0.106,30,reviewed,us,us
+2014-01-15T23:07:51.300Z,18.3355,-65.9793,49,2,Md,3,327.6,0.13295066,0.34,pr,pr14015029,2014-01-16T14:04:47.178Z,"3km SE of Trujillo Alto, Puerto Rico",earthquake,7.2,2.8,0,1,reviewed,pr,pr
+2014-01-15T23:05:23.150Z,-19.4383,-177.5907,568.21,4.2,mb,,116,4.461,0.99,us,usc000mehc,2014-03-22T00:05:15.000Z,"177km NE of Ndoi Island, Fiji",earthquake,,9.9,0.264,5,reviewed,us,us
+2014-01-15T23:02:04.637Z,60.2286,-152.5481,99.7,1.6,ml,,,,0.28,ak,ak014p6rm3z,2019-05-20T22:53:03.715Z,"30km SSE of Redoubt Volcano, Alaska",earthquake,,0.7,,,reviewed,ak,ak
+2014-01-15T22:55:43.930Z,37.5001667,-118.8536667,5.252,0.45,md,6,166,0.09189,0.02,nc,nc72140925,2017-02-02T22:31:51.786Z,"Central California",earthquake,1.2,3.53,0.124,6,reviewed,nc,nc
+2014-01-15T22:52:36.770Z,35.4536667,-120.8676667,-0.273,0.73,md,14,110,0.01261,0.13,nc,nc72140920,2017-02-02T22:31:46.813Z,"2km ENE of Cayucos, California",quarry blast,0.46,31.61,0.301,13,reviewed,nc,nc
+2014-01-15T22:50:10.711Z,38.5688,-118.4451,8.2,0.5,ml,6,126.08,0.085,0.0675,nn,nn00434589,2018-06-29T23:01:06.705Z,"21km ENE of Hawthorne, Nevada",earthquake,,4.3,0,1,reviewed,nn,nn
+2014-01-15T22:47:33.240Z,33.5905,-116.6268333,13.756,1.51,ml,43,39,0.02397,0.12,ci,ci11414218,2016-03-11T14:53:50.235Z,"6km NE of Anza, CA",earthquake,0.22,0.34,0.12,39,reviewed,ci,ci
+2014-01-15T22:44:03.480Z,-14.2532,171.0493,628.9,4.1,mb,,122,4.358,0.38,us,usc000mehb,2014-03-22T00:05:15.000Z,"Vanuatu region",earthquake,,10,0.303,4,reviewed,us,us
+2014-01-15T22:35:56.760Z,42.6513333,-122.4476667,-1.48,2.52,md,10,112,0.2919,0.27,uw,uw60671227,2016-07-22T19:22:21.440Z,"30km E of Shady Cove, Oregon",explosion,0.8,31.61,0.353,6,reviewed,uw,uw
+2014-01-15T22:17:01.790Z,36.8321667,-121.3671667,7.638,0.6,md,15,125,0.05405,0.06,nc,nc72140895,2017-02-02T22:31:41.493Z,"2km N of Ridgemark, California",earthquake,0.32,0.65,0.185,10,reviewed,nc,nc
+2014-01-15T22:03:53.826Z,38.5614,-118.4461,8.8,0.3,ml,5,160.95,0.09,0.0601,nn,nn00434785,2018-06-29T23:01:04.193Z,"16km ENE of Hawthorne, Nevada",earthquake,,6.7,0,1,reviewed,nn,nn
+2014-01-15T22:01:56.365Z,61.3597,-139.8059,10,1.3,ml,,,,0.47,ak,ak014p662s4,2019-05-20T22:53:03.289Z,"141km WNW of Haines Junction, Canada",earthquake,,0,,,reviewed,ak,ak
+2014-01-15T22:01:13.890Z,64.2318,-149.9272,10,0.7,ml,,,,0.83,ak,ak014p65zi5,2019-05-20T22:53:02.879Z,"55km SW of North Nenana, Alaska",earthquake,,0,,,reviewed,ak,ak
+2014-01-15T21:58:51.462Z,51.6201,-177.6666,62.5,2.2,ml,,,,0.31,ak,ak014p5wum2,2019-05-20T22:53:02.288Z,"44km SE of Tanaga Volcano, Alaska",earthquake,,0.4,,,reviewed,ak,ak
+2014-01-15T21:57:15.228Z,38.5629,-118.4441,7.1,0.2,ml,5,162.75,0.09,0.0724,nn,nn00434783,2018-06-29T23:01:04.102Z,"16km ENE of Hawthorne, Nevada",earthquake,,7.9,0,1,reviewed,nn,nn
+2014-01-15T21:49:35.550Z,3.004,127.7432,66.59,4.3,mb,,123,2.248,1.33,us,usc000meha,2014-03-22T00:05:15.000Z,"144km NNW of Tobelo, Indonesia",earthquake,,10.8,0.266,6,reviewed,us,us
+2014-01-15T21:47:20.330Z,36.5711667,-121.1665,2.51,1.84,md,39,45,0.08108,0.07,nc,nc72140890,2017-02-02T22:31:34.800Z,"21km NE of Soledad, California",earthquake,0.16,0.94,0.252,38,reviewed,nc,nc
+2014-01-15T21:45:06.220Z,47.8115,-122.9073333,-0.38,0.77,md,6,179,0.003169,0.58,uw,uw60671187,2016-07-22T19:22:21.200Z,"18km W of Lofall, Washington",explosion,2.18,31.61,0.431,4,reviewed,uw,uw
+2014-01-15T21:40:31.910Z,32.9015,-116.2633333,5.783,1.34,ml,29,86,0.01703,0.15,ci,ci11414202,2016-03-12T00:26:15.127Z,"26km ENE of Pine Valley, CA",earthquake,0.37,0.71,0.114,17,reviewed,ci,ci
+2014-01-15T21:36:30.300Z,-6.0983,103.1508,18.94,4.6,mb,,90,1.737,0.68,us,usb000m1tw,2014-03-22T00:05:15.000Z,"129km SW of Biha, Indonesia",earthquake,,4.9,0.141,20,reviewed,us,us
+2014-01-15T21:34:17.074Z,36.7154,-116.3248,4.4,-0.4,ml,5,262.98,0.091,0.1218,nn,nn00434780,2018-06-29T23:01:04.005Z,"Nevada",earthquake,,7.4,0.28,2,reviewed,nn,nn
+2014-01-15T21:33:12.080Z,51.3138,-179.0957,24.1,2.4,ml,,,,0.41,ak,ak014p5reo8,2019-05-20T22:53:01.811Z,"5km N of Amatignak Island, Alaska",earthquake,,2.1,,,reviewed,ak,ak
+2014-01-15T21:31:00.520Z,37.5383333,-118.8315,3.039,0.07,md,10,145,0.05225,0.03,nc,nc72140885,2017-02-02T22:31:25.092Z,"Central California",earthquake,0.88,1.38,0.181,9,reviewed,nc,nc
+2014-01-15T21:25:13.862Z,38.5679,-118.4269,6.7,0.7,ml,7,114.06,0.096,0.0788,nn,nn00434573,2018-06-29T23:01:02.105Z,"17km ENE of Hawthorne, Nevada",earthquake,,4.4,0,1,reviewed,nn,nn
+2014-01-15T21:22:42.117Z,62.8617,-148.4948,73.4,0.9,ml,,,,0.11,ak,ak014p5p443,2019-05-20T22:53:01.280Z,"63km SSE of Cantwell, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-15T21:21:31.170Z,38.8339996,-122.8079987,1.524,0.18,md,7,100,0.01081,0.02,nc,nc72140880,2017-02-02T22:31:18.733Z,"Northern California",earthquake,0.58,1,0.11,2,automatic,nc,nc
+2014-01-15T21:19:42.200Z,47.4988333,-122.6675,-0.222,0.62,md,7,301,0.06775,0.11,uw,uw60671162,2016-07-22T19:22:20.950Z,"2km W of Bethel, Washington",explosion,0.75,31.61,0.011,5,reviewed,uw,uw
+2014-01-15T21:17:43.734Z,61.7299,-149.9822,28.8,1.5,ml,,,,0.35,ak,ak014p5o1np,2019-05-20T22:53:00.795Z,"3km ESE of Willow, Alaska",earthquake,,0.7,,,reviewed,ak,ak
+2014-01-15T21:15:00.374Z,62.8238,-149.4273,69.9,1.2,ml,,,,0.47,ak,ak014p5nivp,2019-05-20T22:53:00.333Z,"65km NNE of Talkeetna, Alaska",earthquake,,0.5,,,reviewed,ak,ak
+2014-01-15T21:05:02.014Z,60.9096,-151.8533,90.7,1.4,ml,,,,0.34,ak,ak014p5lduh,2019-05-20T22:52:59.926Z,"39km NW of Nikiski, Alaska",earthquake,,0.6,,,reviewed,ak,ak
+2014-01-15T20:53:58.460Z,34.1206667,-118.4026667,2.965,1.67,ml,30,106,0.01964,0.17,ci,ci11414194,2016-03-11T14:53:48.452Z,"3km SSW of Studio City, CA",earthquake,0.33,0.57,0.203,37,reviewed,ci,ci
+2014-01-15T20:52:29.620Z,-8.5171,119.3845,178.12,4.2,mb,,122,3.499,1.03,us,usc000meh9,2014-03-22T00:05:15.000Z,"14km WNW of Komodo, Indonesia",earthquake,,10,0.176,11,reviewed,us,us
+2014-01-15T20:44:14.150Z,36.9351667,-121.528,6.305,1.06,md,32,41,0.01892,0.23,nc,nc72140870,2017-02-02T22:31:11.360Z,"8km SSE of Gilroy, California",earthquake,0.4,1.08,0.155,26,reviewed,nc,nc
+2014-01-15T20:41:17.346Z,63.0603,-150.5542,116.4,1.5,ml,,,,0.54,ak,ak014p57p7a,2019-05-20T22:52:59.517Z,"85km NNW of Talkeetna, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-15T20:37:08.980Z,36.0986667,-117.9175,1.817,0.04,ml,8,259,0.05419,0.12,ci,ci11414186,2016-03-11T07:42:01.676Z,"7km NNE of Coso Junction, CA",earthquake,1.11,1.44,0.225,3,reviewed,ci,ci
+2014-01-15T20:30:13.356Z,59.4404,-152.9941,77.7,1.6,ml,,,,0.44,ak,ak014p55c0n,2019-05-20T22:52:59.115Z,"75km WSW of Anchor Point, Alaska",earthquake,,0.8,,,reviewed,ak,ak
+2014-01-15T20:30:00.100Z,19.0006,-66.8062,9,2.7,Md,3,291.6,0.65127858,0.28,pr,pr14015028,2014-03-22T00:05:15.000Z,"56km N of Hatillo, Puerto Rico",earthquake,2.5,4,0,2,reviewed,pr,pr
+2014-01-15T20:29:02.020Z,38.8364983,-122.7911682,2.032,0.56,md,7,139,0.01351,0.28,nc,nc72140865,2017-02-02T22:31:02.973Z,"Northern California",earthquake,1.84,1.09,,1,automatic,nc,nc
+2014-01-15T20:14:13.980Z,34.3933333,-119.6185,0.125,1.7,ml,17,101,0.09269,0.21,ci,ci11414178,2016-03-11T09:30:59.054Z,"5km SSE of Montecito, CA",earthquake,0.49,0.89,0.136,19,reviewed,ci,ci
+2014-01-15T20:02:30.311Z,60.7694,-150.8146,69.2,2.1,ml,,,,0.63,ak,ak014p4zd9z,2019-05-20T22:52:58.637Z,"26km N of Sterling, Alaska",earthquake,,0.4,,,reviewed,ak,ak
+2014-01-15T20:02:04.170Z,37.939,-118.5348333,6.675,2.25,md,41,80,0.03153,0.06,nc,nc72140860,2018-06-29T23:01:06.557Z,"50km NE of Mammoth Lakes, California",earthquake,0.24,0.61,0.137,37,reviewed,nc,nc
+2014-01-15T20:00:17.460Z,52.399,-171.164,26.5,3,ml,,,,1.36,us,usb000m3ij,2019-05-20T22:52:58.214Z,"11km SSE of Amukta Island, Alaska",earthquake,,6.1,,16,reviewed,ak,ak
+2014-01-15T19:55:55.179Z,61.2049,-141.4317,7.6,1.3,ml,,,,0.33,ak,ak014p4pcjh,2019-05-20T22:52:57.588Z,"138km NNE of Cape Yakataga, Alaska",earthquake,,0.7,,,reviewed,ak,ak
+2014-01-15T19:51:32.970Z,38.8203316,-122.8516693,3.089,0.57,md,5,324,0.02252,0.02,nc,nc72140855,2017-02-02T22:30:44.295Z,"Northern California",earthquake,7.34,3.78,,1,automatic,nc,nc
+2014-01-15T19:46:48.522Z,61.0574,-151.0869,60.8,2.3,ml,,,,0.45,ak,ak014p4nel0,2019-05-20T22:52:56.931Z,"42km NNE of Nikiski, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-15T19:44:40.880Z,38.8213348,-122.7990036,-0.9,0.95,md,13,88,0.009009,0.1,nc,nc72140850,2017-02-02T22:30:38.748Z,"6km W of Cobb, California",earthquake,0.24,1.17,0.07,4,automatic,nc,nc
+2014-01-15T19:41:23.274Z,60.3201,-150.981,60.4,1.3,ml,,,,0.21,ak,ak014p4ma1z,2019-05-20T22:52:55.976Z,"18km ESE of Cohoe, Alaska",earthquake,,0.7,,,reviewed,ak,ak
+2014-01-15T19:32:17.880Z,62.4435,-151.1407,15.3,1.1,ml,,,,0.56,ak,ak014p4kc70,2019-05-20T22:52:55.562Z,"54km WNW of Talkeetna, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-15T19:27:10.540Z,36.0978333,-117.9178333,2.842,0.2,ml,9,258,0.05474,0.1,ci,ci11414162,2016-03-11T18:39:44.085Z,"6km NNE of Coso Junction, CA",earthquake,0.84,0.98,0.32,3,reviewed,ci,ci
+2014-01-15T19:22:45.980Z,18.9615,120.2967,11.09,4.2,mb,,133,1.409,0.63,us,usb000m1p8,2014-03-22T00:05:15.000Z,"61km NNW of Davila, Philippines",earthquake,,5.5,0.187,10,reviewed,us,us
+2014-01-15T19:18:05.990Z,-58.8531,-25.674,26.93,4.4,mb,,130,15.852,0.7,us,usc000meip,2014-03-22T00:05:15.000Z,"52km ENE of Bristol Island, South Sandwich Islands",earthquake,,7.1,0.309,4,reviewed,us,us
+2014-01-15T19:17:30.710Z,37.5393333,-118.8585,7.457,0.45,md,14,150,0.05586,0.02,nc,nc72140840,2017-02-02T22:30:32.512Z,"15km SE of Mammoth Lakes, California",earthquake,0.72,1.44,0.19,11,reviewed,nc,nc
+2014-01-15T19:16:10.730Z,37.4005,-118.5568333,10.032,0.29,md,4,204,0.04775,0.04,nc,nc72140835,2017-02-02T22:30:26.110Z,"Central California",earthquake,0.47,0.61,0.073,4,reviewed,nc,nc
+2014-01-15T19:12:37.430Z,36.6313333,-121.242,4.83,1.81,md,34,40,0.04324,0.04,nc,nc72140830,2017-02-02T22:30:18.420Z,"22km NE of Gonzales, California",earthquake,0.15,0.47,0.228,29,reviewed,nc,nc
+2014-01-15T19:05:01.990Z,38.8014984,-122.817337,2.063,0.88,md,18,129,0.01171,0.03,nc,nc72140825,2017-02-02T22:30:07.922Z,"5km WNW of The Geysers, California",earthquake,0.23,0.39,0.09,6,automatic,nc,nc
+2014-01-15T19:02:00.569Z,62.2128,-150.125,17.4,1.2,ml,,,,0.55,ak,ak014p4dvdk,2019-05-20T22:52:55.122Z,"12km S of Talkeetna, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-15T18:59:25.299Z,59.9262,-151.8687,60.8,1.1,ml,,,,0.23,ak,ak014p44pht,2019-05-20T22:52:54.714Z,"16km N of Anchor Point, Alaska",earthquake,,0.8,,,reviewed,ak,ak
+2014-01-15T18:56:25.070Z,23.6452,-44.9985,10,4.4,mb,,117,32.248,0.9,us,usc000meh8,2014-03-22T00:05:15.000Z,"Northern Mid-Atlantic Ridge",earthquake,,1.9,0.24,12,reviewed,us,us
+2014-01-15T18:55:54.257Z,64.4742,-149.5205,11.6,0.6,ml,,,,0.68,ak,ak014p43wv5,2019-05-20T22:52:54.284Z,"22km WSW of North Nenana, Alaska",earthquake,,0.6,,,reviewed,ak,ak
+2014-01-15T18:54:40.140Z,38.7505,-122.7191667,0.754,0.61,md,15,69,0.01171,0.07,nc,nc72140820,2017-02-02T22:30:01.291Z,"4km SE of The Geysers, California",earthquake,0.18,0.45,0.102,3,reviewed,nc,nc
+2014-01-15T18:51:04.900Z,36.0138333,-117.6853333,3.216,0.36,ml,9,82,0.06799,0.07,ci,ci11414154,2016-03-11T20:41:40.729Z,"22km ENE of Little Lake, CA",earthquake,0.33,0.81,0.174,3,reviewed,ci,ci
+2014-01-15T18:50:40.200Z,25.8412,126.6363,58.15,4.6,mb,,116,1.771,0.76,us,usc000meh7,2014-03-22T00:05:15.000Z,"108km WSW of Itoman, Japan",earthquake,,7.8,0.117,24,reviewed,us,us
+2014-01-15T18:50:23.280Z,40.0938,-119.6741,14.4,0.1,ml,4,128.83,0.089,0.0169,nn,nn00434669,2018-06-29T23:01:06.436Z,"Nevada",earthquake,,3.5,0.19,3,reviewed,nn,nn
+2014-01-15T18:47:13.610Z,38.8103333,-122.8184967,2.913,0.87,md,19,99,0.008108,0.02,nc,nc72140810,2017-02-02T22:29:55.061Z,"6km NW of The Geysers, California",earthquake,0.27,0.47,0.08,5,automatic,nc,nc
+2014-01-15T18:41:03.950Z,33.323,-116.3906667,5.308,1.03,ml,27,105,0.02005,0.14,ci,ci11414146,2016-03-11T20:41:39.456Z,"8km N of Borrego Springs, CA",earthquake,0.29,0.62,0.151,24,reviewed,ci,ci
+2014-01-15T18:39:06.885Z,61.7878,-150.0409,42.2,1.5,ml,,,,0.39,ak,ak014p40dr4,2019-05-20T22:52:53.886Z,"4km N of Willow, Alaska",earthquake,,0.5,,,reviewed,ak,ak
+2014-01-15T18:38:34.250Z,33.0051667,-116.2288333,4.814,1.4,ml,34,48,0.09127,0.22,ci,ci11414138,2016-03-11T02:14:49.970Z,"18km SSW of Ocotillo Wells, CA",earthquake,0.31,3,0.144,38,reviewed,ci,ci
+2014-01-15T18:27:49.280Z,38.8025,-122.816,2.02,1.27,md,43,85,0.0121,0.04,nc,nc72140805,2018-09-28T04:46:55.670Z,"6km WNW of The Geysers, CA",earthquake,0.13,0.21,0.188,16,reviewed,nc,nc
+2014-01-15T18:22:49.640Z,38.5673,-118.4396,7,0.6,ml,6,124.04,0.089,0.0819,nn,nn00434563,2018-06-29T23:01:06.338Z,"Nevada",earthquake,,4.8,0,1,reviewed,nn,nn
+2014-01-15T18:19:12.450Z,36.0345,-117.7736667,0.932,0.01,ml,9,67,0.008934,0.12,ci,ci11414130,2016-03-11T05:55:06.842Z,"16km E of Coso Junction, CA",earthquake,0.38,0.61,0.165,3,reviewed,ci,ci
+2014-01-15T18:19:05.880Z,-16.9549,-174.2357,118.97,4.7,mb,,110,3.845,0.4,us,usc000meh6,2014-03-22T00:05:15.000Z,"122km SSW of Hihifo, Tonga",earthquake,,10.5,0.225,7,reviewed,us,us
+2014-01-15T18:16:21.290Z,36.034,-117.7765,1.011,-0.02,ml,7,133,0.01002,0.06,ci,ci11414122,2016-03-11T05:55:04.715Z,"16km E of Coso Junction, CA",earthquake,0.49,0.5,0.193,3,reviewed,ci,ci
+2014-01-15T18:14:21.190Z,33.3225,-116.3956667,5.808,0.98,ml,29,104,0.02425,0.16,ci,ci11414114,2016-03-11T13:02:19.950Z,"8km NNW of Borrego Springs, CA",earthquake,0.31,0.74,0.157,24,reviewed,ci,ci
+2014-01-15T18:09:57.385Z,61.587,-146.5059,15,1.4,ml,,,,0.77,ak,ak014p3u262,2019-05-20T22:52:53.428Z,"51km N of Valdez, Alaska",earthquake,,0.5,,,reviewed,ak,ak
+2014-01-15T18:02:03.100Z,34.0648333,-116.7908333,12.255,1.01,ml,13,165,0.03278,0.06,ci,ci11414106,2016-03-11T02:14:48.531Z,"16km N of Cabazon, CA",earthquake,0.52,1.11,0.104,8,reviewed,ci,ci
+2014-01-15T18:00:51.710Z,33.4908333,-116.4121667,8.917,0.66,ml,20,121,0.03439,0.15,ci,ci11414098,2016-03-11T05:55:03.297Z,"21km SSW of La Quinta, CA",earthquake,0.47,0.76,0.073,12,reviewed,ci,ci
+2014-01-15T17:59:08.132Z,37.1698,-118.1925,0,1.1,ml,7,192.59,0.205,0.0681,nn,nn00434562,2018-06-29T23:01:06.227Z,"8km ENE of Big Pine, California",earthquake,,0,0,1,reviewed,nn,nn
+2014-01-15T17:53:38.076Z,63.34,-151.4835,3,0.8,ml,,,,0.28,ak,ak014p3i0kv,2019-05-20T22:52:52.989Z,"126km W of Cantwell, Alaska",earthquake,,1,,,reviewed,ak,ak
+2014-01-15T17:51:10.280Z,38.467,-122.9261667,0.001,1.23,md,15,102,0.02342,0.16,nc,nc72140800,2017-02-02T22:29:43.037Z,"3km WSW of Forestville, California",earthquake,0.34,1.1,0.122,15,reviewed,nc,nc
+2014-01-15T17:50:01.100Z,18.9808,-66.7731,70,2.8,Md,5,288,0.62971901,0.3,pr,pr14015027,2014-03-22T00:05:15.000Z,"55km N of Hatillo, Puerto Rico",earthquake,3.8,5.1,0,2,reviewed,pr,pr
+2014-01-15T17:46:07.879Z,62.1525,-152.2488,109.8,1.5,ml,,,,0.36,ak,ak014p3gg8j,2019-05-20T22:52:52.582Z,"112km W of Talkeetna, Alaska",earthquake,,0.8,,,reviewed,ak,ak
+2014-01-15T17:42:49.830Z,38.8250008,-122.8164978,1.979,0.93,md,11,97,0.005405,0.02,nc,nc72140790,2017-02-02T22:29:37.468Z,"7km NW of The Geysers, California",earthquake,0.29,0.59,0.09,4,automatic,nc,nc
+2014-01-15T17:34:20.830Z,38.8376656,-122.8063354,1.514,0.56,md,6,131,0.01261,0.01,nc,nc72140785,2017-02-02T22:29:31.989Z,"7km WNW of Cobb, California",earthquake,0.82,1.75,,1,automatic,nc,nc
+2014-01-15T17:34:07.490Z,38.8120003,-122.82267,3.041,0.56,md,5,187,0.02162,0.03,nc,nc72140780,2017-02-02T22:29:26.709Z,"Northern California",earthquake,1.7,2.36,,1,automatic,nc,nc
+2014-01-15T17:31:38.100Z,18.5067,-66.8164,83,2.6,Md,7,194.4,0.16888327,0.34,pr,pr14015026,2014-03-22T00:05:15.000Z,"2km NNE of Hatillo, Puerto Rico",earthquake,2.1,1.7,0,5,reviewed,pr,pr
+2014-01-15T17:25:28.300Z,14.596,-92.061,84.9,4.3,mb,,,,1.08,us,usc000meh5,2014-03-22T00:05:15.000Z,"12km SE of Ciudad Tecun Uman, Guatemala",earthquake,,3.9,0.138,15,reviewed,unm,us
+2014-01-15T17:22:05.625Z,63.9424,-152.9381,19.4,1,ml,,,,0.58,ak,ak014p3bavm,2019-05-20T22:52:52.131Z,"143km SSW of Tanana, Alaska",earthquake,,0.3,,,reviewed,ak,ak
+2014-01-15T17:10:12.010Z,38.8123322,-122.8338318,2.99,0.56,md,6,164,0.01081,0.03,nc,nc72140775,2017-02-02T22:29:21.144Z,"Northern California",earthquake,0.78,1.43,,1,automatic,nc,nc
+2014-01-15T16:59:25.079Z,62.2143,-150.4308,33.2,1.2,ml,,,,0.29,ak,ak014p2xu9n,2019-05-20T22:52:51.697Z,"20km SW of Talkeetna, Alaska",earthquake,,0.5,,,reviewed,ak,ak

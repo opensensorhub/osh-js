@@ -20,10 +20,14 @@ class AudioTimeCanvasVisualizer extends AudioCanvasVisualizer {
     }
 
     draw(decodedSample) {
-        const dataArray = decodedSample[this.properties.type][this.properties.format];
+        this.decodedSample = decodedSample;
+        this.sampleNumber++;
+    }
+
+    render() {
+        const dataArray =  this.decodedSample[this.properties.type][this.properties.format];
 
         try {
-
             const WIDTH = this.canvas.width;
             const HEIGHT = this.canvas.height + (25*100/this.canvas.height);
 

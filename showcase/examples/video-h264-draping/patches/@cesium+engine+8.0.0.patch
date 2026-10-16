@@ -1,0 +1,36 @@
+diff --git a/node_modules/@cesium/engine/Source/Scene/Material.js b/node_modules/@cesium/engine/Source/Scene/Material.js
+index 53d4155..ae796a4 100644
+--- a/node_modules/@cesium/engine/Source/Scene/Material.js
++++ b/node_modules/@cesium/engine/Source/Scene/Material.js
+@@ -834,6 +834,31 @@ function createTexture2DUpdateFunction(uniformId) {
+       return;
+     }
+ 
++    if (uniformValue instanceof HTMLCanvasElement) {
++      if (!uniformValue.drawing) {
++        if (uniformChanged && defined(texture)) {
++          if (texture !== context.defaultTexture) {
++            texture.destroy();
++          }
++          texture = undefined;
++        }
++        if (!defined(texture) || texture === context.defaultTexture) {
++          texture = new Texture({
++            context: context,
++            source: uniformValue,
++          });
++          material._textures[uniformId] = texture;
++          return;
++        }
++        texture.copyFrom({
++          source: uniformValue,
++        });
++      } else if (!defined(texture)) {
++        material._textures[uniformId] = context.defaultTexture;
++      }
++      return;
++    }
++
+     if (uniformValue instanceof Texture && uniformValue !== texture) {
+       material._texturePaths[uniformId] = undefined;
+       const tmp = material._textures[uniformId];

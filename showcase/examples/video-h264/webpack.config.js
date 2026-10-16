@@ -44,7 +44,7 @@ module.exports = {
             {
                 test: /\.worker\.js$/,
                 use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
-            }
+            },
         ]
     },
     // Enable the Webpack dev server which will build, serve, and reload our
@@ -54,7 +54,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'video-h264.html'
+        index: 'video-h264.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [
@@ -76,6 +77,6 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'video-h264.html',
             template: path.resolve(__dirname, 'video-h264.html')
-        })
+        }),
     ]
 };

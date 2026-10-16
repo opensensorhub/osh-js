@@ -28,15 +28,15 @@ import {
 } from '../../utils/Utils.js';
 import '../../resources/css/view.css';
 import {DATASOURCE_DATA_TOPIC, DATASOURCE_TIME_TOPIC} from "../../Constants.js";
-import {Status} from "../../protocol/Status.js";
+import {Status} from "../../connector/Status.js";
 import {EventType} from "../../event/EventType.js";
-import DataLayer from "../layer/DataLayer";
 
 class View {
     /**
      * Create a View.
      * @param {Object} [properties={}] - the properties of the view
      * @param {string} properties.container - The div element to attach to
+     * @param {boolean} [properties.destroyAfterMutation=true]  - call view destroy() function after detecting div root Mutation
      * @param {string} properties.css - The css classes to set, can be multiple if separate by spaces
      * @param {string[]} properties.supportedLayers - List the supported layers of this View. It is corresponding to the the 'type' Layer property
      * @param {boolean} properties.visible - set the default behavior of the visibility of the view
@@ -47,6 +47,7 @@ class View {
         this.layers = [];
         this.lastRec = {};
         this.dataSources = [];
+        this.broadcastChannels = [];
 
         //this.divId = divId;
         this.id = "view-" + randomUUID();
@@ -73,19 +74,21 @@ class View {
     init(properties) {
 
         this.properties = properties;
+        let currentDoc = isDefined(properties.parentDoc) ? properties.parentDoc : document;
         this.elementDiv = document.createElement("div");
         this.elementDiv.setAttribute("id", this.id);
         this.elementDiv.setAttribute("class", this.css+" osh-view");
         this.divId = this.id;
 
-        let parentDivId = (isDefined(properties.container)? properties.container : document.body);
+        let parentDivId = (isDefined(properties.container)? properties.container : currentDoc.body);
+        let destroyAfterMutation = (isDefined(properties.destroyAfterMutation)? properties.destroyAfterMutation : true);
 
-        let div = document.getElementById(parentDivId);
+        let div = currentDoc.getElementById(parentDivId);
 
         if (!isDefined(div) || div === null) {
-            document.body.appendChild(this.elementDiv);
+            currentDoc.body.appendChild(this.elementDiv);
             this.hide();
-            this.container = document.body;
+            this.container = currentDoc.body;
         } else {
             div.appendChild(this.elementDiv);
             this.container = div;
@@ -100,14 +103,8 @@ class View {
                 }
             }
 
-            if(isDefined(properties.dataSourceId)) {
-                this.addLayer(new DataLayer({
-                    dataSourceId: properties.dataSourceId
-                }));
-            }
-
             if (isDefined(properties.visible)) {
-                document.getElementById(this.divId).style.display = (properties.visible) ? "block" : "none";
+                currentDoc.getElementById(this.divId).style.display = (properties.visible) ? "block" : "none";
             }
 
         }
@@ -126,16 +123,18 @@ class View {
         // Attach the mutation observer to blocker, and only when attribute values change
         observer.observe(this.elementDiv, {attributes: true});
 
-        const rootObserver = new MutationObserver(function(mutations) {
-            // try to get the div element by the id to check if it is still owned by the document object
-            if(!isDefined(document.getElementById(that.divId))){
-                this.disconnect();
-                that.destroy();
-            }
-        });
-        rootObserver.observe(document.body, {
-            childList: true,
-        });
+        if(destroyAfterMutation) {
+            const rootObserver = new MutationObserver(function (mutations) {
+                // try to get the div element by the id to check if it is still owned by the document object
+                if (!isDefined(currentDoc.getElementById(that.divId))) {
+                    this.disconnect();
+                    that.destroy();
+                }
+            });
+            rootObserver.observe(currentDoc.body, {
+                childList: true,
+            });
+        }
     }
 
     /**
@@ -201,7 +200,7 @@ class View {
      * @param {String} dataSourceId - The dataSource id of the source providing the data
      * @param {any[]} data - The data array to set
      */
-    setData(dataSourceId, data) {
+    async setData(dataSourceId, data) {
     }
 
     /**
@@ -212,6 +211,18 @@ class View {
     }
 
     destroy()  {
+        this.removeAllFromLayers();
+        for(let bc of this.broadcastChannels) {
+            bc.close();
+            console.log(`closing BC..`);
+        }
+        this.broadcastChannels = [];
+        // remove DOM element
+        // this.elementDiv?.remove(); // does not compile with older webpack version ..
+        if(isDefined(this.elementDiv)) {
+            this.elementDiv.remove();
+        }
+
     }
     /**
      * Adds a layer to the view. A broadcastChannel is going to listen the new dataSources
@@ -224,18 +235,20 @@ class View {
         let ds = layer.getDataSourcesIds();
         for (let i = 0; i < ds.length; i++) {
             const dataSourceId = ds[i];
-           // this.setData(dataSourceId, [layer.getProps()]);
+            // this.setData(dataSourceId, [layer.getProps()]);
             // observes the data come in
             let self = this;
             const broadcastChannel = new BroadcastChannel(DATASOURCE_DATA_TOPIC+dataSourceId);
-            broadcastChannel.onmessage = (event) => {
-                if(event.data.type === EventType.DATA) {
+            broadcastChannel.onmessage = async (event) => {
+                if (event.data.type === EventType.STATUS && event.data.status === Status.CLOSED_ERROR) {
+                    self.reset();
+                } else if (event.data.type === EventType.DATA) {
+                    const that = this;
 
                     // transform the data
-                    layer.setData(dataSourceId, event.data.values);
-
-                    // set the transformed data to the view
-                    this.setData(dataSourceId, layer.getProps());
+                    await layer.setData(dataSourceId, event.data.values);
+                        // set the transformed data to the view
+                    await that.setData(dataSourceId, layer.getProps());
 
                     // store as last record
                     self.lastRec[dataSourceId] = event.data;
@@ -249,6 +262,9 @@ class View {
                     self.reset(); // on time changed
                 }
             };
+
+            this.broadcastChannels.push(broadcastChannel);
+            this.broadcastChannels.push(timeBroadcastChannel);
         }
     }
 
@@ -258,11 +274,15 @@ class View {
      */
     removeAllFromLayer(layer) {
         if(this.layers.includes(layer)) {
+            layer._destroyed = true;
             // 1) remove from STYLER fn
             for(let ds in layer.dataSourcesToFn) {
                 delete this.lastRec[ds];
             }
+            layer.dataSourcesToFn = {};
+            layer.clear();
             layer.reset();
+            this.layers = this.layers.filter(l => l !== layer);
         }
     }
 
@@ -295,6 +315,7 @@ class View {
      * Calls for resetting the view.
      */
     reset() {
+        this.removeAllFromLayers();
     }
 }
 

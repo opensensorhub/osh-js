@@ -70,8 +70,8 @@ tt, code, kbd, samp {
 }
 
 #main {
-    width: 90%;
-    padding-left: 50px;
+    width: 100%;
+    padding-left: 0px;
 }
 
 article dl {
@@ -90,9 +90,9 @@ section
 {
     display: block;
     background-color: #fff;
-    padding: 12px 24px;
+    padding: 12px 12px;
     border-bottom: 1px solid #ccc;
-    margin-right: 30px;
+    margin-right: 0px;
 }
 
 .variation {
@@ -156,7 +156,7 @@ h1
     font-family: 'Open Sans Light', sans-serif;
     font-size: 30px;
     letter-spacing: -2px;
-    margin: 12px 24px 0px;
+    margin: 12px 12px 0px;
 }
 
 h2, h3.subsection-title

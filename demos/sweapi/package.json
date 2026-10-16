@@ -1,0 +1,45 @@
+{
+  "name": "video-display",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "prod": "webpack --config webpack.config.js --mode production",
+    "dev": "webpack-dev-server --config webpack.config.js --mode development"
+  },
+  "dependencies": {
+    "browserify-fs": "^1.0.0",
+    "buffer": "^6.0.3",
+    "mqtt": "^4.3.4",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "stream-browserify": "^3.0.0",
+    "vue": "2.6.11",
+    "vue-json-pretty": "^1.8.2",
+    "vue-plugin-load-script": "1.2.0",
+    "vue-router": "3.1.6",
+    "vuetify": "^2.6.0",
+    "vuex": "3.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.9.0",
+    "babel-core": "6.26.3",
+    "babel-loader": "8.1.0",
+    "babel-preset-env": "1.7.0",
+    "clean-webpack-plugin": "4.0.0",
+    "copy-webpack-plugin": "9.0.1",
+    "css-loader": "3.5.3",
+    "deepmerge": "^4.2.2",
+    "file-loader": "6.0.0",
+    "html-webpack-plugin": "5.3.2",
+    "path-browserify": "1.0.1",
+    "sass": "~1.32",
+    "sass-loader": "^12.3.0",
+    "style-loader": "1.2.0",
+    "vue-loader": "15.9.1",
+    "vue-template-compiler": "2.6.11",
+    "webpack": "^5.64.1",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.5.0",
+    "worker-loader": "^3.0.8",
+    "xml-beautify": "^1.2.3"
+  }
+}

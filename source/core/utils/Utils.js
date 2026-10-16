@@ -35,12 +35,22 @@ export function hasValue(v) {
 }
 
 /**
- Global helper method to transform hex color into RGBA
+ Global helper method to transform hex color into RGB
  */
 export function hex2rgb(hex){
     const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
     return [r, g, b];
 }
+
+export function hex2rgba(hex){
+    return [
+        parseInt(hex.slice(1, 3), 16),
+        parseInt(hex.slice(3, 5), 16),
+        parseInt(hex.slice(5, 7), 16),
+        parseInt(hex.slice(7, 9), 16) / 255
+    ];
+}
+
 /**
  Global helper method to test if a letiable or object attribute is of a particular type
  */
@@ -409,6 +419,15 @@ export function removeLastCharIfExist(value) {
 }
 
 /**
+ * Capitalize the first letter of a given string
+ * @param {String} str - the input string
+ * @returns {String} the result
+ */
+export function  capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+/**
  * Round off number to nearest 0.5
  * @param {Number} num - The number to round off
  * @return {number} The rounded number
@@ -491,7 +510,6 @@ export function throttle(func, wait, leading, trailing, context) {
             previous = now;
             result = func.apply(ctx, args);
         } else if (!timeout && trailing) {
-            // Sinon on s’endort pendant le temps restant
             timeout = setTimeout(later, remaining);
         }
         return result;
@@ -508,3 +526,18 @@ export function merge (target, source) {
     Object.assign(target || {}, source)
     return target
 };
+
+export function rgbaToArray(str) {
+    let startIdxValue = str.indexOf('(') + 1;
+    let endIdxValue = str.indexOf(')');
+    let values = str.substr(startIdxValue, endIdxValue-startIdxValue);
+    return values.split(',').map(Number);
+}
+
+export function svgToDataURL(svg) {
+    if(svg.endsWith('.svg')) {
+        return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    } else {
+        return svg;
+    }
+}

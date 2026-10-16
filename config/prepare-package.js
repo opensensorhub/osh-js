@@ -23,3 +23,8 @@ fs.copyFileSync(
   path.resolve(__dirname, '../README.md'),
   path.join(buildDir, 'README.md')
 );
+
+fs.copyFileSync(
+    path.resolve(__dirname, '../CHANGELOG.md'),
+    path.join(buildDir, 'CHANGELOG.md')
+);

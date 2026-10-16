@@ -17,9 +17,11 @@
 <script>
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
-import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 export default {
   components: {
@@ -35,77 +37,101 @@ export default {
     // setup video
     // create data source for UAV camera
     const opts = {
-      protocol: 'ws',
-      service: 'SOS',
-      endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+      endpointUrl: 'sensiasoft.net/sensorhub/sos',
       offeringID: 'urn:mysos:solo:video2',
       observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
       startTime: '2015-12-19T21:04:29.231Z',
       endTime: '2015-12-19T21:09:19.675Z',
-      replaySpeed: 2.6,
-      timeOut: 1500,
-      bufferingTime: 1500
+      prefetchBatchDuration: 10000,
+      mode: Mode.REPLAY,
+      tls: true
     };
 
-    const dataSource0 = new SosGetResultVideo("drone-Video", {
+    const dataSource0 = new SosGetResult("drone-Video", {
       ...opts
     });
 
-    const dataSource1 = new SosGetResultVideo("drone-Video1", {
+    const dataSource1 = new SosGetResult("drone-Video1", {
       ...opts
     });
 
-    const dataSource2 = new SosGetResultVideo("drone-Video2", {
+    const dataSource2 = new SosGetResult("drone-Video2", {
       ...opts
     });
 
-    const dataSource3 = new SosGetResultVideo("drone-Video3", {
+    const dataSource3 = new SosGetResult("drone-Video3", {
       ...opts
     });
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container0',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource0.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource0.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container1',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource1.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource1.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container2',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource2.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource2.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
-    this.views.push(new FFMPEGView({
+    this.views.push(new VideoView({
       container: 'container3',
       css: 'video-h264',
       name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      dataSourceId: dataSource3.id
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: dataSource3.id,
+          getFrameData: (rec) => rec.videoFrame,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
     }));
 
     this.dataSynchronizer = new DataSynchronizer({
-      replaySpeed: 2.6,
-      timerResolution: 5,
+      replaySpeed: 1.0,
+      masterTimeRefreshRate: 250, // millis
+      startTime: '2015-12-19T21:04:29.231Z',
+      endTime: '2015-12-19T21:09:19.675Z',
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();

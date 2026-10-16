@@ -1,0 +1,97 @@
+<style>
+    textarea {
+        resize: none;
+        height: 280px;
+        overflow: scroll;
+        white-space: pre;
+        overflow-wrap: normal;
+    }
+
+    textarea:invalid {
+        border: 2px dashed red;
+    }
+
+    textarea:valid {
+        border: 2px solid lime;
+    }
+
+    .text {
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: space-around;
+    }
+
+    label {
+        font-weight: bold;
+        padding: 10px;
+    }
+
+    .container-last {
+        display: flex;
+        flex-direction: column;
+        border: solid 1px red;
+        width: 280px;
+        padding: 10px;
+        margin: auto;
+        align-content: center;
+    }
+
+    .error, .error > textarea {
+        color: red;
+    }
+
+    hr {
+        border-top: 1px dotted red;
+        width: 100%;
+    }
+
+    button {
+        width: 100px;
+        margin: 5px;
+    }
+</style>
+<div class="container-last">
+    <span id="last-gps"></span>
+    <span id="last-orient"></span>
+    <span id="last-video"></span>
+    <hr>
+    <span id="last-time"></span>
+    <span id="master-time"></span>
+</div>
+<div class="container">
+    <div class="text gps">
+        <div class="top">
+            <label for="datasource-gps">GPS datasource</label>
+            <button id="connect-gps-button">Connect</button>
+            <button id="disconnect-gps-button">Disconnect</button>
+        </div>
+        <textarea id="datasource-gps" disabled></textarea>
+    </div>
+    <div class="text orient">
+        <div class="top">
+            <label for="datasource-orientation">Orientation datasource</label>
+            <button id="connect-orientation-button">Connect</button>
+            <button id="disconnect-orientation-button">Disconnect</button>
+        </div>
+        <textarea id="datasource-orientation" disabled></textarea>
+    </div>
+    <div class="text video">
+        <div class="top">
+            <label for="datasource-video">Video datasource(Only the 10 first elements)</label>
+            <button id="connect-video-button">Connect</button>
+            <button id="disconnect-video-button">Disconnect</button>
+        </div>
+        <textarea id="datasource-video" disabled></textarea>
+    </div>
+    <div class="text error">
+        <label for="error">Wrong timestamps</label>
+        <textarea id="error" disabled></textarea>
+    </div>
+</div>

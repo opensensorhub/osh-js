@@ -26,67 +26,104 @@ class CurveLayer extends Layer {
      * @param {Object} properties -
      * @param {String} [properties.xLabel=""] -
      * @param {String} [properties.yLabel=""] -
-     * @param {String} [properties.color="#000000"] - color in hex or rgba value
+     * @param {String} [properties.lineColor="#000000"] - color in hex or rgba value
+     * @param {String} [properties.backgroundColor="#000000"] - color in hex or rgba value
+     * @param {String} [properties.fill=false] -
+     * @param {Number} [properties.maxValues=10] - Defines the max values hold by the layer
      * @param {Number} [properties.stroke=1] -
      * @param {Number} [properties.x=0] -
      * @param {Number} [properties.y=[]] -
+     * @param {Number} [properties.maxValues=10] - The maximum values to display
      * @param {Function} properties.getStroke -
-     * @param {Function} properties.getColor -
+     * @param {Function} properties.getLineColor -
      * @param {Function} properties.getValues -
      *
      */
     constructor(properties) {
         super(properties);
         this.type = 'curve';
-        this.props.xLabel = "";
-        this.props.yLabel = "";
-        this.props.color = "#399ca5";
-        this.props.stroke = 1;
-        this.props.curveId = randomUUID();
-        this.props.x = 0;
-        this.props.y = 0;
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
+        const props = {
+            xLabel : "",
+            yLabel : "",
+            lineColor : "#399ca5",
+            backgroundColor : "#399ca5",
+            fill : false,
+            stroke : 1,
+            curveId : randomUUID(),
+            x : 0,
+            y : 0,
+            maxValues : 10
+        };
 
-        if (isDefined(properties.stroke)) {
-            this.props.stroke = properties.stroke;
+
+        if (isDefined(properties.yLabel)) {
+            props.yLabel = properties.yLabel;
         }
 
-        if (isDefined(properties.color)) {
-            this.props.color = properties.color;
+        if (isDefined(properties.stroke)) {
+            props.stroke = properties.stroke;
+        }
+
+        if (isDefined(properties.maxValues)) {
+            props.maxValues = properties.maxValues;
+        }
+
+        if (isDefined(properties.lineColor)) {
+            props.lineColor = properties.lineColor;
+        }
+
+        if (isDefined(properties.backgroundColor)) {
+            props.backgroundColor = properties.backgroundColor;
+        }
+
+        if (isDefined(properties.fill)) {
+            props.fill = properties.fill;
         }
 
         if (isDefined(properties.x)) {
-            this.props.x = properties.x;
+            props.x = properties.x;
         }
 
         if (isDefined(properties.y)) {
-            this.props.y = properties.y;
+            props.y = properties.y;
         }
 
-        const that = this;
+
+        this.definedId('curveId', props);
+
         if (isDefined(properties.getStroke)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.stroke = that.getFunc('getStroke')(rec,timeStamp,options);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('stroke',await this.getFunc('getStroke')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getStroke'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getStroke'), fn);
         }
 
-        if (isDefined(properties.getColor)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.color = that.getFunc('getColor')(rec,timeStamp,options);
+        if (isDefined(properties.getLineColor)) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('lineColor',await this.getFunc('getLineColor')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getColor'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getLineColor'), fn);
+        }
+
+        if (isDefined(properties.getBackgroundColor)) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('backgroundColor',await this.getFunc('getBackgroundColor')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getLineColor'), fn);
         }
 
         if (isDefined(properties.getValues)) {
-            let fn = function (rec, timeStamp, options) {
-                const value = that.getFunc('getValues')(rec,timeStamp,options);
-                that.props.x = value.x;
-                that.props.y = value.y;
+            let fn = async (rec, timestamp, options) => {
+                const value = await this.getFunc('getValues')(rec,timestamp,options);
+                this.updateProperty('x',value.x);
+                this.updateProperty('y',value.y);
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getValues'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getValues'), fn);
         }
-
-        this.saveState();
     }
 }
 export default CurveLayer;

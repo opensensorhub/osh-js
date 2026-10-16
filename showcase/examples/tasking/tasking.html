@@ -1,0 +1,69 @@
+<style>
+    #map {
+        height: 100%;
+        width: 70%;
+        float: left;
+    }
+
+    .map {
+        height: 100%;
+    }
+
+    #infos {
+        width: 30%;
+        float: left;
+    }
+
+    #data {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    #data pre {
+        overflow: auto;
+    }
+    #text_status {
+        max-width: 455px;
+        overflow: auto;
+    }
+</style>
+<div id="map"></div>
+<div id="infos">
+    <table id="data">
+        <tr>
+            <td>
+                <div>
+                    <b>
+                        <pre>UAV Location</pre>
+                    </b>
+                    <p></p>
+                    <pre id="text_loc">Waiting for first data packet...</pre>
+                    <p>&nbsp;</p>
+                    <b>
+                        <pre>UAV Attitude</pre>
+                    </b>
+                    <p></p>
+                    <pre id="text_att">Waiting for first data packet...</pre>
+                    <p>&nbsp;</p>
+                    <b>
+                        <pre>Gimbal Orientation</pre>
+                    </b>
+                    <p></p>
+                    <pre id="text_gimbal">Waiting for first data packet...</pre>
+                    <p>&nbsp;</p>
+                    <b>
+                        <pre>Status Info</pre>
+                    </b>
+                    <p></p>
+                    <pre id="text_status">Waiting for first data packet...</pre>
+                    <p>&nbsp;</p>
+                    <b>
+                        <pre>Commands ACK</pre>
+                    </b>
+                    <p></p>
+                    <pre id="text_commands">Waiting for first command...</pre>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

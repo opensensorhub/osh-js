@@ -9,7 +9,7 @@
  Author: Drew Botts <drew@botts-inc.com>
  ******************************* END LICENSE BLOCK ***************************/
 import Layer from "./Layer.js";
-import {isDefined} from "../../utils/Utils";
+import {assertNumber, hasValue, isDefined} from "../../utils/Utils";
 
 /**
  * @extends Layer
@@ -41,112 +41,106 @@ class EllipseLayer extends Layer {
      * @param {Number} [properties.rotation=null] - defines the rotation of the ellipse counter-clockwise from north.
      * @param {Boolean} [properties.clampToGround=false] - defines if the line has to be clamped to ground
      * @param {String} [properties.color='red'] - defines the color property of the ellipse
+     * @param {Number} [properties.zIndex=0] - z-ordering of ellipses
      * @param {Function} [properties.getPosition] - defines a function to return the location
      * @param {Function} [properties.getColor] - defines a function to return the color
      * @param {Function} [properties.getSemiMajorAxis] - defines a function to return the semiMajorAxis
      * @param {Function} [properties.getSemiMinorAxis] - defines a function to return the semiMinorAxis
      * @param {Function} [properties.getHeight] - defines a function to return the height of the ellipse above the ellipsoid
      * @param {Function} [properties.getRotation] - defines a function to return the rotation of the ellipse
-     * @param {Function} [properties.getEllipseID] - map an id to a unique ellipse
+     * @param {Function} [properties.getEllipseId] - map an id to a unique ellipse
      */
     constructor(properties) {
         super(properties);
         this.type = 'ellipse';
-        this.properties = properties;
-        this.props.position = {};
-        this.props.semiMajorAxis = null;
-        this.props.semiMinorAxis = null;
-        this.props.rotation = null;
-        this.props.clampToGround = false;
-        this.props.color = 'red';
-        this.props.ellipseId = 'ellipse';
-        this.props.name = '';
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
+        const props = {
+            position : {},
+            semiMajorAxis : null,
+            semiMinorAxis : null,
+            rotation : null,
+            clampToGround : false,
+            color : 'red',
+            ellipseId : 'ellipse',
+            zIndex : 0,
+        };
 
-
-        if (isDefined(properties.name)){
-            this.props.name = properties.name;
-        }
-
-        if (isDefined(properties.id)){
-            this.props.id = properties.id;
-        }
 
         if (isDefined(properties.color)){
-            this.props.color = properties.color;
+            props.color = properties.color;
         }
 
         if (isDefined(properties.clampToGround)){
-            this.props.clampToGround = properties.clampToGround;
+            props.clampToGround = properties.clampToGround;
         }
 
         if (isDefined(properties.rotation)){
-            this.props.rotation = properties.rotation;
+            props.rotation = properties.rotation;
         }
 
         if (isDefined(properties.semiMinorAxis)){
-            this.props.semiMinorAxis = properties.semiMinorAxis;
+            props.semiMinorAxis = properties.semiMinorAxis;
         }
 
         if (isDefined(properties.semiMajorAxis)){
-            this.props.semiMajorAxis = properties.semiMajorAxis;
+            props.semiMajorAxis = properties.semiMajorAxis;
         }
 
         if (isDefined(properties.position)){
-            this.props.position = properties.position;
+            props.position = properties.position;
         }
 
-        let that = this;
-
-        if (isDefined(properties.getEllipseID)){
-            let fn = function (rec) {
-                that.props.ellipseId = that.getFunc('getEllipseID')(rec);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getEllipseID'), fn);
+        if (hasValue(properties.zIndex)) {
+            assertNumber(properties.zIndex, "zIndex");
+            props.zIndex = properties.zIndex;
         }
+
+        this.definedId('ellipseId', props)
 
         if (isDefined(properties.getPosition)){
-            let fn = function (rec){
-                that.props.position = that.getFunc('getPosition')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('position',await this.getFunc('getPosition')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getPosition'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getPosition'), fn);
         }
 
         if (isDefined(properties.getSemiMajorAxis)){
-            let fn = function (rec){
-                that.props.semiMajorAxis = that.getFunc('getSemiMajorAxis')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('semiMajorAxis',await this.getFunc('getSemiMajorAxis')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getSemiMajorAxis'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getSemiMajorAxis'), fn);
         }
 
         if (isDefined(properties.getSemiMinorAxis)){
-            let fn = function (rec){
-                that.props.semiMinorAxis = that.getFunc('getSemiMinorAxis')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('semiMinorAxis',await this.getFunc('getSemiMinorAxis')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getSemiMinorAxis'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getSemiMinorAxis'), fn);
         }
 
         if (isDefined(properties.getHeight)){
-            let fn = function (rec){
-                that.props.height = that.getFunc('getHeight')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('height',await this.getFunc('getHeight')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getHeight'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getHeight'), fn);
         }
 
         if (isDefined(properties.getRotation)){
-            let fn = function (rec){
-                that.props.rotation = that.getFunc('getRotation')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('rotation',await this.getFunc('getRotation')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getRotation'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getRotation'), fn);
         }
 
         if (isDefined(properties.getColor)){
-            let fn = function (rec){
-                that.props.color = that.getFunc('getColor')(rec);
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('color',await this.getFunc('getColor')(rec, timestamp, options));
             };
-            this.addFn(that.getDataSourcesIdsByProperty('getColor'), fn);
+            this.addFn(this.getDataSourcesIdsByProperty('getColor'), fn);
         }
-
-        this.saveState();
     }
 }
 export default EllipseLayer;

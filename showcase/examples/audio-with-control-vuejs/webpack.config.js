@@ -63,7 +63,8 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
-    index: 'audio-with-control-vuejs.html'
+    index: 'audio-with-control-vuejs.html',
+    https:true
   },
   optimization: {
     splitChunks: {

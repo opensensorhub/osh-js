@@ -1,9 +1,12 @@
+import {randomUUID} from "../../../utils/Utils";
+
 class YUVCanvas {
     constructor(parOptions) {
 
         parOptions = parOptions || {};
 
         this.canvasElement = parOptions.canvas || document.createElement("canvas");
+        this.canvasElement.setAttribute('id', randomUUID());
         this.contextOptions = parOptions.contextOptions;
 
         this.type = parOptions.type || "yuv420";
@@ -37,7 +40,7 @@ class YUVCanvas {
          * Draw the next output picture using WebGL
          */
         if (this.type === "yuv420") {
-            this.drawNextOuptutPictureGL = (par) => {
+            this.drawNextOutputPictureGL = (par) => {
                 var gl = this.contextGL;
                 var texturePosBuffer = this.texturePosBuffer;
                 var uTexturePosBuffer = this.uTexturePosBuffer;
@@ -109,7 +112,6 @@ class YUVCanvas {
                 gl.bindBuffer(gl.ARRAY_BUFFER, vTexturePosBuffer);
                 gl.bufferData(gl.ARRAY_BUFFER, vTexturePosValues, gl.DYNAMIC_DRAW);
 
-
                 gl.activeTexture(gl.TEXTURE0);
                 gl.bindTexture(gl.TEXTURE_2D, yTextureRef);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, yDataPerRow, yRowCnt, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, yData);
@@ -126,8 +128,58 @@ class YUVCanvas {
                 gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             };
 
+            this.drawNextOutputPictureBitmapGL = (par) => {
+                var gl = this.contextGL;
+                var texturePosBuffer = this.texturePosBuffer;
+
+                var yTextureRef = this.yTextureRef;
+
+                var yData = par.yData;
+
+                var width = this.width;
+                var height = this.height;
+
+                var yDataPerRow = width;
+                var yRowCnt = height;
+
+                var tTop = 0;
+                var tLeft = 0;
+                var tBottom = height / yRowCnt;
+                var tRight = width / yDataPerRow;
+                var texturePosValues = new Float32Array([tRight, tTop, tLeft, tTop, tRight, tBottom, tLeft, tBottom]);
+
+                let roll = Math.round(par.roll/90) * 90;
+                if (roll > 180) roll -= 360;
+                if (Math.abs(roll) == 90) {
+                    this.canvasElement.width = this.height;
+                    this.canvasElement.height = this.width;
+                    gl.viewport(0, 0, height, width);
+                } else {
+                    this.canvasElement.width = this.width;
+                    this.canvasElement.height = this.height;
+                    gl.viewport(0, 0, width, height);
+                }
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, texturePosBuffer);
+                gl.bufferData(gl.ARRAY_BUFFER, texturePosValues, gl.DYNAMIC_DRAW);
+
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, yTextureRef);
+                // gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, yDataPerRow, yRowCnt, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, yData);
+                gl.texImage2D(
+                    gl.TEXTURE_2D, // target
+                    0, // mip level
+                    gl.RGBA, // internal format
+                    gl.RGBA, //format
+                    gl.UNSIGNED_BYTE, // type
+                    yData);
+
+                gl.uniform1f(this.rollUniform, roll*Math.PI/180.);
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            };
+
         } else if (this.type === "yuv422") {
-            this.drawNextOuptutPictureGL = (par) => {
+            this.drawNextOutputPictureGL = (par) => {
                 var gl = this.contextGL;
                 var texturePosBuffer = this.texturePosBuffer;
 
@@ -442,7 +494,6 @@ class YUVCanvas {
         var program = this.shaderProgram;
 
         if (this.type === "yuv420") {
-
             var yTextureRef = this.initTexture();
             var ySamplerRef = gl.getUniformLocation(program, 'ySampler');
             gl.uniform1i(ySamplerRef, 0);
@@ -494,18 +545,17 @@ class YUVCanvas {
         var gl = this.contextGL;
 
         if (gl) {
-            this.drawNextOuptutPictureGL(width, height, croppingParams, data);
+            this.drawNextOutputPictureGL(width, height, croppingParams, data);
         } else {
-            this.drawNextOuptutPictureRGBA(width, height, croppingParams, data);
+            this.drawNextOutputPictureRGBA(width, height, croppingParams, data);
         }
     }
 
     /**
      * Draw next output picture using ARGB data on a 2d canvas.
      */
-    drawNextOuptutPictureRGBA(width, height, croppingParams, data) {
+    drawNextOutputPictureRGBA(width, height, croppingParams, data) {
         var canvas = this.canvasElement;
-
         var argbData = data;
         var ctx = canvas.getContext('2d');
         var imageData = ctx.getImageData(0, 0, width, height);

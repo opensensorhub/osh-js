@@ -3,7 +3,7 @@ class WebCodecApi {
         // time audio position
         this.init = false;
         this.key = true;
-
+        this.codec = properties.codec || 'mp4a.40.2';
         try {
             // check for supported webcodec
             this.audioDecoder = new AudioDecoder({
@@ -21,19 +21,19 @@ class WebCodecApi {
         }
     }
 
-    async decode(data, timestamp) {
+    async decode(value, timestamp) {
         if (!this.init) {
             await this.audioDecoder.configure({
-                codec: 'mp4a.40.2',
+                codec: this.codec,
                 numberOfChannels: 1,
-                sampleRate: data.sampleRate
+                sampleRate: value.sampleRate
             });
             this.init = true;
         }
 
         const chunk = new EncodedAudioChunk({
             type:  this.key? "key" : "delta",
-            data: data.frameData.buffer,
+            data: value.frameData.data.buffer,
             timestamp: 0
         });
 

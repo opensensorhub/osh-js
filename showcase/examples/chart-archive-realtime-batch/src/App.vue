@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <div id="container"></div>
+    <div id="container">
+    </div>
     <TimeController
         :dataSource="dataSource"
         @event='onControlEvent'
@@ -13,9 +14,11 @@
 // @ is an alias to /src
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {isDefined} from 'osh-js/core/utils/Utils';
+import {Mode} from "osh-js/core/datasource/Mode";
+import DataSynchronizer from "../../../../source/core/timesync/DataSynchronizer";
 
 export default {
   components: {
@@ -29,28 +32,32 @@ export default {
   },
   mounted() {
 
-    let chartDataSource = new SosGetResultJson("weather", {
-      protocol: "ws",
-      service: "SOS",
-      endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
-      offeringID: "urn:mysos:offering04",
-      observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      endTime: (new Date(Date.now()).toISOString()),
-      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      maxTime: (new Date(Date.now()).toISOString())
-    });
+    let chartDataSource = new SosGetResult("weather", {
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
+          offeringID: "urn:mysos:offering04",
+          observedProperty: "http://sensorml.com/ont/swe/property/Weather",
+          startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
+          endTime: (new Date(Date.now()).toISOString()),
+          minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
+          maxTime: (new Date(Date.now()).toISOString()),
+          mode: Mode.BATCH,
+          tls: true
+        });
 
 // #region snippet_curve_layer
     let windSpeedLayerCurve = new CurveLayer({
       dataSourceId: chartDataSource.id,
-      getValues: (rec, timeStamp) => {
+      getValues: (rec, timestamp) => {
         return {
-          x: timeStamp,
+          x: timestamp,
           y: rec.windSpeed
         }
       },
-      name: 'Wind Speed (m/s)'
+      backgroundColor: 'rgba(141,242,246, 0.5)',
+      lineColor: 'rgba(183,183,183,0.83)',
+      fill: true,
+      name: 'Wind Speed (m/s)',
+      maxValues: 2500000
     });
 // #endregion snippet_curve_layer
 
@@ -59,38 +66,15 @@ export default {
       container: 'container',
       layers: [windSpeedLayerCurve],
       css: "chart-view",
-      chartjsProps: {
-        chartProps: {
-          scales: {
-            yAxes: [{
-              scaleLabel: {
-                labelString: "Wind Speed (m/s)"
-              },
-              ticks: {
-                maxTicksLimit: 5
-              }
-            }],
-            xAxes: [{
-              scaleLabel: {
-                labelString: "Time"
-              },
-              ticks: {
-                maxTicksLimit: 20
-              }
-            }],
-          },
-          maintainAspectRatio: false
-        },
-        datasetsProps: {
-          backgroundColor: 'rgba(141,242,246, 0.1)'
-        }
+      datasetOptions: {
+       tension: 0.2 // for 'line'
       }
     });
 
 // start streaming
     chartDataSource.connect();
-
     this.dataSource = chartDataSource;
+
   },
   methods: {
     onControlEvent(eventName) {

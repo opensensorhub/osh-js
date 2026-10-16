@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined, assert, assertDefined} from "../../../utils/Utils.js";
+import {isDefined, assertDefined} from "../../../utils/Utils.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import MapView from "./MapView";
@@ -61,12 +61,12 @@ class LeafletView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker','draping', 'polyline'],
+            supportedLayers: ['marker', 'draping', 'polyline', 'polygon', 'lob'],
             ...properties,
         });
 
         let cssClass = document.getElementById(this.divId).className;
-        document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
+        document.getElementById(this.divId).setAttribute('class', cssClass + ' ' + this.css);
     }
 
     beforeAddingItems(options) {
@@ -83,7 +83,7 @@ class LeafletView extends MapView {
         // #region snippet_leafletview_initial_view
         let initialView = {
             location: new L.LatLng(0, 0),
-            zoom: 3
+            zoom: 3,
         };
         // #endregion snippet_leafletview_initial_view
         this.first = true;
@@ -95,14 +95,18 @@ class LeafletView extends MapView {
 
         let baseLayers = {};
         let overlays = {};
+        for ( let i = 0; i < defaultLayers.length; i++ ) {
+            if (defaultLayers[i].overlay)
+                overlays[defaultLayers[i].name] = defaultLayers[i].layer;
+            else
+                baseLayers[defaultLayers[i].name] = defaultLayers[i].layer;
+        }
 
-        baseLayers[defaultLayers[0].name] = defaultLayers[0].layer;
-        overlays[defaultLayers[1].name] = defaultLayers[1].layer;
         if (isDefined(options)) {
             if (isDefined(options.initialView)) {
                 initialView = {
                     location: new L.LatLng(options.initialView.lat, options.initialView.lon),
-                    zoom: options.initialView.zoom
+                    zoom: options.initialView.zoom,
                 };
             }
             // checks autoZoom
@@ -133,14 +137,13 @@ class LeafletView extends MapView {
         // sets layers to map
         this.map = new L.Map(this.divId, {
             fullscreenControl: true,
-            layers: defaultLayer
+            layers: defaultLayer,
         });
 
         L.control.layers(baseLayers, overlays).addTo(this.map);
 
         this.map.setView(initialView.location, initialView.zoom);
 
-        //this.initLayers();
     }
 
     /**
@@ -153,29 +156,223 @@ class LeafletView extends MapView {
             maxZoom = options.maxZoom;
         }
         // copyrights
-        let mbAttr = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+        let mbAttr =
+                'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
             mbUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
         let esriLink = '<a href="http://www.esri.com/">Esri</a>';
-        let esriWholink = 'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+        let esriWholink =
+            'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
 
         // leaflet layers
         let esriLayer = L.tileLayer(
-            'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            {
                 attribution: '&copy; ' + esriLink + ', ' + esriWholink,
                 maxZoom: maxZoom,
-                maxNativeZoom: 19
-            });
+                maxNativeZoom: 19,
+            }
+        );
 
-        let streets = L.tileLayer(mbUrl, {id: 'mapbox.streets', attribution: mbAttr, maxZoom: maxZoom});
+        let esriPhysical= L.tileLayer(
+            'https://server.arcgisonline.com/arcgis/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}',
+            {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+            }
+        );
+        let esriShaded = L.tileLayer(
+            'https://server.arcgisonline.com/arcgis/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
+            {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+            }
+        );
+        let esriWorld = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+            {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+            }
+        );
+        let esriTopo = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+            {
+                attribution: 'Tiles &copy; Esri'
+            }
+        );
+        let esriTerrain = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
+            {
+                attribution: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, TANA, DeLorme, and NPS',
+                maxZoom: 13
+            }
+        );
+        let esriOcean = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',
+            {
+                attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
+                maxZoom: 13
+            }
+        );
+        var esriNatGeo = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}',
+            {
+                attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+                maxZoom: 16
+            }
+        );
+        var esriUSATopo = L.tileLayer(
+            'https://server.arcgisonline.com/arcgis/rest/services/USA_Topo_Maps/MapServer/tile/{z}/{y}/{x}',
+            {
+                attribution: 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC',
+                maxZoom: 16
+            }
+        );
 
-        return [{
-            name: "OSM Streets",
-            layer: streets
-        }, {
-            name: "Esri Satellite",
-            layer: esriLayer
-        }];
+        var openTopoMap = L.tileLayer(
+            'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+            {
+                maxZoom: 17,
+                attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+            }
+        );
+
+        let wmsLayer = L.tileLayer.wms('https://ows.mundialis.de/services/service?', {
+            layers: 'TOPO-OSM-WMS',  // or 'OSM-WMS'
+            format: 'image/png',
+            transparent: true
+        });
+
+        let stamenLabels = L.tileLayer(
+            'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}{r}.png',
+            {
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }
+        );
+
+        let openSeaMap = L.tileLayer(
+            'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
+            {
+                attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
+            }
+        );
+
+        let openRailwayMap = L.tileLayer(
+            'https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
+            {
+                attribution: 'Map data: &copy; <a href="https://www.openrailwaymap.org">OpenRailwayMap</a> contributors',
+                maxZoom: 19
+            }
+        );
+
+        let waymarkedTrailsHiking = L.tileLayer(
+            'https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png',
+            {
+                attribution: 'Map data: &copy; <a href="https://waymarkedtrails.org">Waymarked Trails</a>',
+                maxZoom: 18
+            }
+        );
+
+        let waymarkedTrailsCycling = L.tileLayer(
+            'https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png',
+            {
+                attribution: 'Map data: &copy; <a href="https://waymarkedtrails.org">Waymarked Trails</a>',
+                maxZoom: 18
+            }
+        );
+
+        let streets = L.tileLayer(mbUrl, {
+            id: 'mapbox.streets',
+            attribution: mbAttr,
+            maxZoom: maxZoom,
+        });
+
+        return [
+            {
+                name: 'OSM Streets',
+                layer: streets,
+                overlay: false
+            },
+            {
+                name: 'Esri Satellite',
+                layer: esriLayer,
+                overlay: false
+            },
+            {
+                name: 'OSM Topographic',
+                layer: openTopoMap,
+                overlay: false
+            },
+            {
+                name: 'Esri World Street',
+                layer: esriWorld,
+                overlay: false
+            },
+            {
+                name: 'Esri Topographic',
+                layer: esriTopo,
+                overlay: false
+            },
+            {
+                name: 'Esri NatGeo',
+                layer: esriNatGeo,
+                overlay: false
+            },
+            {
+                name: 'Esri Physical',
+                layer: esriPhysical,
+                overlay: false
+            },
+            {
+                name: 'Esri USA Topographic',
+                layer: esriUSATopo,
+                overlay: false
+            },
+            {
+                name: 'Esri Shaded',
+                layer: esriShaded,
+                overlay: false
+            },
+            {
+                name: 'Esri Terrain',
+                layer: esriTerrain,
+                overlay: false
+            },
+            {
+                name: 'Esri Ocean',
+                layer: esriOcean,
+                overlay: false
+            },
+            {
+                name: 'WMS States',
+                layer: wmsLayer,
+                overlay: true
+            },
+            {
+                name: 'Stamen Labels',
+                layer: stamenLabels,
+                overlay: true
+            },
+            {
+                name: 'OpenSeaMap',
+                layer: openSeaMap,
+                overlay: true
+            },
+            {
+                name: 'OpenRailwayMap',
+                layer: openRailwayMap,
+                overlay: true
+            },
+            {
+                name: 'Hiking Trails',
+                layer: waymarkedTrailsHiking,
+                overlay: true
+            },
+            {
+                name: 'Cycling Trails',
+                layer: waymarkedTrailsCycling,
+                overlay: true
+            },
+        ];
     }
 
     /**
@@ -184,11 +381,12 @@ class LeafletView extends MapView {
     initLayers() {
         // create the tile layer with correct attribution
         let osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        let osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+        let osmAttrib =
+            'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
         let osm = new L.tileLayer(osmUrl, {
             minZoom: 1,
             maxZoom: 22,
-            attribution: osmAttrib
+            attribution: osmAttrib,
         });
         this.map.addLayer(osm);
     }
@@ -199,43 +397,50 @@ class LeafletView extends MapView {
      * @return {Object} the the new created marker
      */
     addMarker(properties) {
-        assertDefined(properties.location,'location');
+        assertDefined(properties.location, 'location');
         //create marker
         let marker = null;
         if (properties.icon !== null) {
             let markerIcon = L.icon({
                 iconAnchor: properties.iconAnchor,
                 iconUrl: properties.icon,
-                iconSize: properties.iconSize
+                iconSize: properties.iconSize,
             });
 
             marker = L.marker([properties.location.y, properties.location.x], {
-                icon: markerIcon
+                icon: markerIcon,
+                opacity: properties.iconOpacity,
             });
         } else {
-            marker = L.marker([properties.location.y, properties.location.x]);
+            marker = L.marker([properties.location.y, properties.location.x], {
+                opacity: properties.iconOpacity,
+            });
         }
 
         if (properties.label !== null) {
             marker.bindTooltip(properties.label, {
                 permanent: false,
                 direction: 'center',
-                offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
+                offset: L.point(properties.labelOffset[0], properties.labelOffset[1]),
             });
         }
 
-        let name = properties.hasOwnProperty("name") && properties.label != null ? properties.label : "";
-        let desc = properties.hasOwnProperty("description") && properties.description != null ? properties.description : "";
+        let name =
+            properties.hasOwnProperty('name') && properties.label != null ? properties.label : '';
+        let desc =
+            properties.hasOwnProperty('description') && properties.description != null
+                ? properties.description
+                : '';
         if (!isDefined(properties.onLeftClick) && (name.length > 0 || desc.length > 0)) {
-            marker.bindPopup(name + '<div>' + desc + '</div>',{
-                offset: L.point(properties.labelOffset[0], properties.labelOffset[1])
+            marker.bindPopup(name + '<div>' + desc + '</div>', {
+                offset: L.point(properties.labelOffset[0], properties.labelOffset[1]),
             });
         }
 
         marker.setZIndexOffset(properties.zIndex);
-        marker.id = properties.id+"$"+properties.markerId;
+        marker.id = properties.id + '$' + (properties.markerId ?? properties.id);
         marker.addTo(this.map);
-        if(properties.hasOwnProperty(properties.orientation)) {
+        if (properties.hasOwnProperty(properties.orientation)) {
             marker.setRotationAngle(properties.orientation.heading);
         }
 
@@ -244,23 +449,15 @@ class LeafletView extends MapView {
 
     /**
      * Add a polyline to the map.
-     * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
-     * @param {String} properties.color
-     * @param {Number} properties.weight
-     * @param {Number} properties.opacity
-     * @param {Number} properties.smoothFactor
-     * @return {string} the id of the new created polyline
      */
-    addPolyline(locations, properties) {
+    addPolyline(properties) {
+        const locations = properties.locations;
         let polylinePoints = [];
 
-        if(isDefined(locations) && locations.length > 0) {
+        if (isDefined(locations) && locations.length > 0) {
             for (let i = 0; i < locations.length; i++) {
-                polylinePoints.push(new L.LatLng(
-                    locations[i].y,
-                    locations[i].x)
-                );
+                polylinePoints.push(new L.LatLng(locations[i].y, locations[i].x));
             }
         }
 
@@ -269,31 +466,43 @@ class LeafletView extends MapView {
             color: properties.color,
             weight: properties.weight,
             opacity: properties.opacity,
-            smoothFactor: properties.smoothFactor
+            smoothFactor: properties.smoothFactor,
         }).addTo(this.map);
 
         return polyline;
     }
 
     /**
+     *  Adds an image to the map.
+     * @param {imageURL}
+     * @param {bounds}
+     * @param {options}
+     */
+    addImageOverlay(imageURL, bounds, options) {
+        let overlay = new L.ImageOverlay(imageURL, bounds, options)
+            .addTo(this.map);
+
+        return overlay;
+    }
+
+
+    /**
      * Updates the marker associated to the layer.
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(props) {
+    async updateMarker(props) {
         let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
-             const markerObject = this.addMarker(props);
-            this.addMarkerToLayer(props, markerObject);
+            marker = this.addMarker(props);
+            this.addMarkerToLayer(props, marker);
             const mId = props.markerId; //need to freeze
-            markerObject.on('click', (event) => this.onMarkerLeftClick(mId,markerObject, props, event));
-            markerObject.on('contextmenu', (event) => this.onMarkerRightClick(mId,markerObject, props, event));
-            markerObject.on('mouseover', (event) => this.onMarkerHover(mId,markerObject, props, event));
-
+            marker.on('click', (event) => this.onMarkerLeftClick(mId, marker, props, event));
+            marker.on('contextmenu', (event) => this.onMarkerRightClick(mId, marker, props, event));
+            marker.on('mouseover', (event) => this.onMarkerHover(mId, marker, props, event));
         }
 
         // get the current marker corresponding to the current markerId value of the PointMarker
-        marker = this.getMarker(props);
         // updates position
         let lon = props.location.x;
         let lat = props.location.y;
@@ -301,19 +510,19 @@ class LeafletView extends MapView {
         if (!isNaN(lon) && !isNaN(lat)) {
             let newLatLng = new L.LatLng(lat, lon);
             marker.setLatLng(newLatLng);
-            if((this.first && this.autoZoomOnFirstMarker) || this.follow) {
-                const markerBounds = L.latLngBounds([newLatLng ]);
+            if ((this.first && this.autoZoomOnFirstMarker) || this.follow) {
+                const markerBounds = L.latLngBounds([newLatLng]);
                 this.map.fitBounds(markerBounds, {
-                    maxZoom: props.zoomLevel
+                    maxZoom: props.zoomLevel,
                 });
-                if(this.first) {
+                if (this.first) {
                     this.first = false;
                 }
             }
         }
 
         // updates orientation
-        if(isDefined(props.orientation)) {
+        if (isDefined(props.orientation)) {
             marker.setRotationAngle(props.orientation.heading);
         }
 
@@ -321,7 +530,7 @@ class LeafletView extends MapView {
             // updates icon
             let markerIcon = L.icon({
                 iconAnchor: props.iconAnchor,
-                iconUrl: props.icon
+                iconUrl: props.icon,
             });
             marker.setIcon(markerIcon);
         }
@@ -350,23 +559,122 @@ class LeafletView extends MapView {
      * Updates the polyline associated to the layer.
      * @param {PolylineLayer.props} props - The layer properties allowing the update of the polyline
      */
-    updatePolyline(props) {
+    async updatePolyline(props) {
         let polyline = this.getPolyline(props);
-        if (isDefined(polyline)) {
-            // removes the layer
-           this.removePolylineFromLayer(polyline);
+        if (!isDefined(polyline)) {
+            // adds a new polygon to the leaflet renderer
+            const polylineObj = this.addPolyline(props);
+            this.addPolylineToLayer(props, polylineObj);
+        } else {
+            let polylinePoints = [];
+            const locations = props.locations;
+
+            if (isDefined(locations) && locations.length > 0) {
+                for (let i = 0; i < locations.length; i++) {
+                    polylinePoints.push(new L.LatLng(locations[i].y, locations[i].x));
+                }
+            }
+            polyline.setLatLngs(polylinePoints);
+
+            // update style
+            polyline.setStyle({
+                color: props.color,
+                weight: props.weight,
+                opacity: props.opacity,
+            });
+        }
+    }
+
+    /**
+     * Updates the polygon associated to the layer.
+     * @param {Polygon.props} props - The layer properties allowing the update of the polygon
+     */
+    async updatePolygon(props) {
+        let polygon = this.getPolygon(props);
+        if (!isDefined(polygon)) {
+            // adds a new polygon to the leaflet renderer
+            const polygonObj = this.addPolygon(props);
+            this.addPolygonToLayer(props, polygonObj);
+        } else {
+            // update location
+            const vertices = props.vertices;
+
+            let polygonPoints = [];
+
+            if (isDefined(vertices) && vertices.length > 0) {
+                for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                    let latLon = new L.LatLng(vertices[i + 1], vertices[i]);
+                    polygonPoints.push([latLon.lat, latLon.lng]);
+                }
+            }
+            polygon.setLatLngs(polygonPoints);
+
+            // update style
+            polygon.setStyle({
+                color: props.outlineColor,
+                weight: props.outlineWidth,
+                fillColor: props.color,
+                fill: true,
+                fillOpacity: props.opacity,
+            });
+        }
+    }
+
+    /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(polygon) {
+        this.map.removeLayer(polygon);
+    }
+
+    /**
+     * Add a polygon to the map.
+     * @param {Object} properties
+     */
+    addPolygon(properties) {
+        const vertices = properties.vertices;
+
+        let polygonPoints = [];
+
+        if (isDefined(vertices) && vertices.length > 0) {
+            for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                let latLon = new L.LatLng(vertices[i + 1], vertices[i]);
+                polygonPoints.push([latLon.lat, latLon.lng]);
+            }
         }
 
-        // adds a new polyline to the leaflet renderer
-        const polylineObj = this.addPolyline(props.locations[props.polylineId],{
-            color: props.color,
-            weight: props.weight,
-            locations: props.locations,
-            maxPoints: props.maxPoints,
-            opacity: props.opacity,
-            smoothFactor: props.smoothFactor
-        });
-        this.addPolylineToLayer(props, polylineObj);
+        //create polygon
+        let polygon = new L.polygon(polygonPoints, {
+            color: properties.outlineColor,
+            weight: properties.outlineWidth,
+            fillColor: properties.color,
+            fill: true,
+            fillOpacity: properties.opacity,
+        }).addTo(this.map);
+        return polygon;
+    }
+
+    /**
+     * Adds a line of bearing (lob) to the map.
+     * @param props
+     * @returns {polyline}
+     */
+    addLob(props) {
+        let polyline = this.addPolyline(props);
+
+        return polyline;
+    }
+
+    /**
+     * Updates a line of bearing (lob) on the map.
+     * @param props
+     * @returns {Promise<void>}
+     */
+    async updateLob(props) {
+        let lob = this.getLob(props);
+        this.updatePolyline(props);
     }
 
     attachTo(parentElement) {
@@ -378,8 +686,9 @@ class LeafletView extends MapView {
     onResize() {
         super.onResize();
         let that = this;
-        setTimeout(function(){ that.map.invalidateSize()}, 100);
-
+        setTimeout(function () {
+            that.map.invalidateSize();
+        }, 100);
     }
 
     onChange(data) {}

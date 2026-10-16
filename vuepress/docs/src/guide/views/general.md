@@ -13,9 +13,7 @@ This is the list of actual supported Views in the Toolkit:
 - TimeLine
     - [NoUiSlider](./ext/rangeslider)  14.2.0
 - Video
-    - [MJPEG](./video/mjpeg)  native osh view
-    - [FFMPEG](./video/ffmpeg) native osh view based on emscripten 2.0 & FFMPEG.js 4.3
-    - VideCodecApi native osh view
+    - [Video](./video/video)  native osh view, emscripten 2.0 & FFMPEG.js 4.3, VideoCodecApi
 
 <DocumentationLoad path="/guide/api/View.html"/>
 
@@ -90,6 +88,14 @@ In this way, the View subscribes to the DataSource broadcast channel at initiali
 
 The subclasses of View have to therefore *override* the ***setData(dataSourceId, data)*** method to receive
  the data automatically.
+
+## Events
+
+When an event of type "time-changed" comes in the view, the view will call the generic reset() method which can of course be overloaded in the subclasses.
+
+For example, if we use the Time Controller with a Map View, and some layers have markers, polylines or other, calling the reset()
+method will delete them from their respective layer and will be automatically recreated in the respective update methods
+
 
 
 

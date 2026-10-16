@@ -13,8 +13,9 @@
  Author: Ian Patterson <cr31.dev@gmail.com>
 
  ******************************* END LICENSE BLOCK ***************************/
-import {isDefined} from "../../utils/Utils";
-import Layer from "./Layer";
+
+import Layer from "../../../core/ui/layer/Layer";
+import {isDefined} from "../../../core/utils/Utils";
 
 class Spectrogram extends Layer {
     constructor(properties) {
@@ -53,8 +54,8 @@ class Spectrogram extends Layer {
         }
 
         if (isDefined(properties.getValues)) {
-            let fn = function (rec, timeStamp, options) {
-                let values = properties.getValues.handler(rec, timeStamp, options);
+            let fn = function (rec, timestamp, options) {
+                let values = properties.getValues.handler(rec, timestamp, options);
 
                 if (Array.isArray(values)) {
                     self.props.latestData = values;

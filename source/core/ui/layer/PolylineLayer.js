@@ -14,8 +14,8 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Layer from "./Layer.js";
-import { isDefined } from "../../utils/Utils.js";
+import Layer from './Layer.js';
+import { isDefined } from '../../utils/Utils.js';
 
 /**
  * @extends Layer
@@ -43,115 +43,137 @@ import { isDefined } from "../../utils/Utils.js";
  */
 class PolylineLayer extends Layer {
 	/**
-		* Creates the PolylineLayer
-		* @param {Object} properties
-	 	* @param {Object[]} [properties.locations] - defines the default location of the polyline [lat, lon]
-	 	* @param {Number} [properties.weight=1] - defines the weight of the polyline
-	  	* @param {String} [properties.color='red'] - defines the color of the polyline
-		* @param {Number} [properties.opacity=1] - defines the opacity of the polyline
-		* @param {Number} [properties.smoothFactor=1] - defines the smoothFactor of the polyline
-		* @param {Number} [properties.maxPoints=10] - defines a number max of points
-	  	* @param {Boolean} [properties.clampToGround=false] - defines if the line has to be clamped to ground
-		* @param {Function} [properties.getLocation] - defines a function to return the location
-		* @param {Function} [properties.getColor] - defines a function to return the color
-		* @param {Function} [properties.getWeight] - defines a function to return the weight
-		* @param {Function} [properties.getOpacity] - defines a function to return the opacity
-		* @param {Function} [properties.getSmoothFactor] - defines a function to return the smoothFactor
-	  	* @param {Function} [properties.getPolylineId] - map an id to a unique polyline
+	 * Creates the PolylineLayer
+	 * @param {Object} properties
+	 * @param {Object[]} [properties.locations] - defines the default location of the polyline [lat, lon]
+	 * @param {Number} [properties.weight=1] - defines the weight of the polyline
+	 * @param {String} [properties.color='red'] - defines the color of the polyline
+	 * @param {Number} [properties.opacity=1] - defines the opacity of the polyline
+	 * @param {Number} [properties.smoothFactor=1] - defines the smoothFactor of the polyline
+	 * @param {Number} [properties.maxPoints=10] - defines a number max of points
+	 * @param {Boolean} [properties.clampToGround=true] - defines if the line has to be clamped to ground
+	 * @param {Function} [properties.getLocation] - defines a function to return the location
+	 * @param {Function} [properties.getColor] - defines a function to return the color
+	 * @param {Function} [properties.getWeight] - defines a function to return the weight
+	 * @param {Function} [properties.getOpacity] - defines a function to return the opacity
+	 * @param {Function} [properties.getSmoothFactor] - defines a function to return the smoothFactor
+	 * @param {Function} [properties.getPolylineId] - map an id to a unique polyline
+	 * 	@param {Function} [properties.getLocations] - defines a function to return the locations array
 	 */
 	constructor(properties) {
 		super(properties);
 		this.type = 'polyline';
-		this.properties = properties;
-		this.props.locations = {};
-		this.props.color = 'red';
-		this.props.weight = 1;
-		this.props.opacity = 1;
-		this.props.smoothFactor = 1;
-		this.props.maxPoints = 10;
-		this.props.polylineId = 'polyline';
-		this.props.clampToGround = false;
+	}
+	// call by super class
+	init(properties = this.properties) {
+		super.init(properties);
+		const props = {
+			polylineId: () => this.getId(),
+			locations: undefined,
+			color: 'red',
+			weight: 1,
+			opacity: 1,
+			smoothFactor: 1,
+			maxPoints: 10,
+			clampToGround: true,
+		};
 
-		if(isDefined(properties.color)){
-			this.props.color = properties.color;
+		if (isDefined(properties.color)) {
+			props.color = properties.color;
 		}
 
-		if(isDefined(properties.weight)){
-			this.props.weight = properties.weight;
+		if (isDefined(properties.weight)) {
+			props.weight = properties.weight;
 		}
 
-		if(isDefined(properties.opacity)){
-			this.props.opacity = properties.opacity;
+		if (isDefined(properties.opacity)) {
+			props.opacity = properties.opacity;
 		}
 
-		if(isDefined(properties.smoothFactor)){
-			this.props.smoothFactor = properties.smoothFactor;
+		if (isDefined(properties.smoothFactor)) {
+			props.smoothFactor = properties.smoothFactor;
 		}
 
-		if(isDefined(properties.maxPoints)){
-			this.props.maxPoints = properties.maxPoints;
+		if (isDefined(properties.maxPoints)) {
+			props.maxPoints = properties.maxPoints;
 		}
 
-		if(isDefined(properties.clampToGround)){
-			this.props.clampToGround = properties.clampToGround;
+		if (isDefined(properties.clampToGround)) {
+			props.clampToGround = properties.clampToGround;
 		}
 
-		let that = this;
-		// must be first to assign correctly the first location to the right id if it is defined
-		if(isDefined(properties.getPolylineId)) {
-			let fn = function(rec) {
-				that.props.polylineId = that.getFunc('getPolylineId')(rec);
-			};
-			this.addFn(that.getDataSourcesIdsByProperty('getPolylineId'),fn);
-		}
+		this.definedId('polylineId', props);
 
-		if(isDefined(properties.getLocation)) {
-			let fn = function(rec) {
-				let loc = that.getFunc('getLocation')(rec);
-				if(!(that.props.polylineId in that.props.locations)) {
-					that.props.locations[that.props.polylineId] = [];
+		if (isDefined(properties.getLocation)) {
+			let fn = async (rec, timestamp, options) => {
+				let loc = await this.getFunc('getLocation')(rec, timestamp, options);
+				const currentProps = this.getCurrentProps();
+				if (!currentProps.locations) {
+					currentProps.locations = [];
 				}
-				that.props.locations[that.props.polylineId].push(loc);
-				if(that.props.locations[that.props.polylineId].length > that.props.maxPoints) {
-					that.props.locations[that.props.polylineId].shift();
+				currentProps.locations.push(loc);
+				if (currentProps.locations.length > currentProps.maxPoints) {
+					currentProps.locations.shift();
 				}
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getLocation'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getLocation'), fn);
 		}
 
-		if(isDefined(properties.getColor)) {
-			let fn = function(rec) {
-				that.props.color = that.getFunc('getColor')(rec);
+		if (isDefined(properties.getColor)) {
+			let fn = async (rec, timestamp, options) => {
+				this.updateProperty(
+					'color',
+					await this.getFunc('getColor')(rec, timestamp, options)
+				);
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getColor'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getColor'), fn);
 		}
 
-		if(isDefined(properties.getWeight)) {
-			let fn = function(rec) {
-				that.props.weight = that.getFunc('getWeight')(rec);
+		if (isDefined(properties.getWeight)) {
+			let fn = async (rec, timestamp, options) => {
+				this.updateProperty(
+					'weight',
+					await this.getFunc('getWeight')(rec, timestamp, options)
+				);
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getWeight'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getWeight'), fn);
 		}
 
-		if(isDefined(properties.getOpacity)) {
-			let fn = function(rec) {
-				that.props.opacity = that.getFunc('getOpacity')(rec);
+		if (isDefined(properties.getOpacity)) {
+			let fn = async (rec, timestamp, options) => {
+				this.updateProperty(
+					'opacity',
+					await this.getFunc('getOpacity')(rec, timestamp, options)
+				);
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getOpacity'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getOpacity'), fn);
 		}
 
-		if(isDefined(properties.getSmoothFactor)) {
-			let fn = function(rec) {
-				that.props.smoothFactor = that.getFunc('getSmoothFactor')(rec);
+		if (isDefined(properties.getSmoothFactor)) {
+			let fn = async (rec, timestamp, options) => {
+				this.updateProperty(
+					'smoothFactor',
+					await this.getFunc('getSmoothFactor')(rec, timestamp, options)
+				);
 			};
-			this.addFn(that.getDataSourcesIdsByProperty('getSmoothFactor'),fn);
+			this.addFn(this.getDataSourcesIdsByProperty('getSmoothFactor'), fn);
 		}
 
-		this.saveState();
+		if (isDefined(properties.getLocations)) {
+			let fn = async (rec, timestamp, options) => {
+				const locs = await this.getFunc('getLocations')(rec, timestamp, options);
+				this.updateProperty('locations', locs);
+			};
+			this.addFn(this.getDataSourcesIdsByProperty('getLocations'), fn);
+		}
 	}
 
 	clear() {
-		this.props.locations[this.props.polylineId] = [];
+		const currentProps = this.getCurrentProps();
+		
+		if (currentProps) {
+			currentProps.locations = [];
+		}
 	}
 }
 

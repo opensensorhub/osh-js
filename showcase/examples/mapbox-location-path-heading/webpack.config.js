@@ -52,7 +52,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'mapbox-location-path-heading.html'
+        index: 'mapbox-location-path-heading.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

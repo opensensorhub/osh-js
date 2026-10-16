@@ -21,18 +21,24 @@ module.exports = (env) => {
                 ]
             },
             plugins: [
-                new CopyWebpackPlugin({
-                    patterns: [{
+                new CopyWebpackPlugin([
+                    {
                         from: path.resolve(__dirname, '../../../../showcase/dist'),
                         to: 'showcase'
-                    }]
-                }),
-                new CopyWebpackPlugin({
-                    patterns: [{
+                    }
+                ]),
+                new CopyWebpackPlugin([
+                    {
+                        from: path.resolve(__dirname, '../../../../showcase-dev/dist'),
+                        to: 'showcase-dev'
+                    }
+                ]),
+                new CopyWebpackPlugin([
+                    {
                         from: path.resolve(__dirname, '../../../../jsdoc/dist-iframe'),
                         to: 'guide/api'
-                    }]
-                })
+                    }
+                ])
             ]
         },
         /**
@@ -81,27 +87,39 @@ module.exports = (env) => {
                         {text: 'Showcase', link: `http://opensensorhub.github.io/osh-js/${target}/showcase/`},
                         {
                             text: 'Vue.js Video',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/video-display-vuejs/`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/video-display-vuejs/`
                         },
                         {
                             text: 'Vue.js  advanced',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/video-display-advanced-vuejs/`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/video-display-advanced-vuejs/`
                         },
-                        {text: 'React UAV', link: `http://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-react`},
-                        {text: 'Typescript React UAV', link: `http://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-react-tsx`},
+                        {text: 'React UAV', link: `https://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-react`},
+                        {text: 'Typescript React UAV', link: `https://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-react-tsx`},
                         {
                             text: 'Vue.js UAV',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-vuejs`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/3dr-solo-uav-vuejs`
                         },
                         {
                             text: 'Earthquakes Deck.gl',
-                            link: `http://opensensorhub.github.io/osh-js/${target}/demos/earthquake`
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/earthquake`
                         },
+                        {
+                            text: 'SensorWeb API Browser',
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/sweapi`
+                        },
+                        {
+                            text: 'SensorWeb API - UAV Video Draping',
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/misb`
+                        },
+                        {
+                            text: 'SensorWeb API - UAV Tasking',
+                            link: `https://opensensorhub.github.io/osh-js/${target}/demos/tasking`
+                        }
                     ]
                 },
                 {
                     text: 'API',
-                    link: `http://opensensorhub.github.io/osh-js/${target}/jsdoc/`
+                    link: `https://opensensorhub.github.io/osh-js/${target}/jsdoc/`
                 },
                 {
                     text: 'Blog',
@@ -145,19 +163,9 @@ module.exports = (env) => {
                         children: [
                             '/guide/datasources/general.md',
                             '/guide/protocol/general.md',
-                            {
-                                title: 'SOS',
-                                collapsable: true,
-                                children: [
-                                    '/guide/datasources/sos/general.md',
-                                    '/guide/datasources/sos/swejson.md',
-                                    '/guide/datasources/sos/video.md',
-                                    '/guide/datasources/sos/videoroll.md',
-                                    '/guide/datasources/sos/audio.md',
-                                    '/guide/datasources/sos/sosgetfois.md',
-                                    '/guide/datasources/sos/batch_replayspeed.md',
-                                ]
-                            },
+                            '/guide/datasources/batch_replayspeed.md',
+                            '/guide/datasources/sos.md',
+                            '/guide/datasources/sweapifetch.md',
                             {
                                 title: 'SPS',
                                 collapsable: true,
@@ -198,9 +206,7 @@ module.exports = (env) => {
                                 title: 'Video',
                                 collapsable: true,
                                 children: [
-                                    '/guide/views/video/ffmpeg.md',
-                                    '/guide/views/video/mjpeg.md',
-                                    '/guide/views/video/videocodec.md',
+                                    '/guide/views/video/video.md',
                                 ]
                             },
                             {
@@ -230,6 +236,16 @@ module.exports = (env) => {
                             '/guide/layers/polyline.md',
                             '/guide/layers/curve.md',
                             '/guide/layers/draping.md',
+                            '/guide/layers/video.md',
+                            '/guide/layers/audio.md',
+                        ]
+                    },
+                    {
+                        title: 'SweAPI',
+                        collapsable: true,
+                        children: [
+                            '/guide/sweapi/general.md',
+                            '/guide/sweapi/utility.md'
                         ]
                     },
                     {

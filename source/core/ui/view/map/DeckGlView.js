@@ -17,10 +17,13 @@
 import MapView from "./MapView";
 import {Deck, MapView as MapViewDeck} from '@deck.gl/core';
 import {IconLayer} from '@deck.gl/layers';
-import {hex2rgb, isDefined, randomUUID} from "../../../utils/Utils";
-import {BitmapLayer, PathLayer} from '@deck.gl/layers';
+import {hex2rgb, isDefined, randomUUID, rgbaToArray} from "../../../utils/Utils";
+import {BitmapLayer, PathLayer, PolygonLayer} from '@deck.gl/layers';
 import {TileLayer} from '@deck.gl/geo-layers';
 import '../../../resources/css/deck.css';
+import {ScenegraphLayer} from '@deck.gl/mesh-layers';
+import { registerLoaders } from "@loaders.gl/core";
+import { GLTFLoader } from "@loaders.gl/gltf";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the Deck.gl Map object.
@@ -38,10 +41,11 @@ class DeckGlView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'polyline'],
+            supportedLayers: ['marker', 'polyline', 'polygon'],
             ...properties,
         });
 
+        registerLoaders(GLTFLoader);
         let cssClass = document.getElementById(this.divId).className;
         document.getElementById(this.divId).setAttribute("class", cssClass+" "+this.css);
 
@@ -136,41 +140,107 @@ class DeckGlView extends MapView {
      * Updates the marker associated to the layer.
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
-    updateMarker(props) {
+    async updateMarker(props) {
         const id = props.id+'$'+props.markerId;
 
         const mId = props.markerId;
-        // in deck we create a new layer everytime => reactive programming
-        const iconLayer = new IconLayer({
-            id: id,
-            data: [{
-                position: [props.location.x, props.location.y, 1]
-            }],
-            pickable: true,
-            // iconAtlas and iconMapping are required
-            // getIcon: return a string
-            iconAtlas: props.icon,
-            iconMapping: {
-                marker: {
-                    x:0,
-                    y:0,
-                    anchorX:  props.iconAnchor[0],
-                    anchorY:  props.iconAnchor[1],
-                    width: props.iconSize[0],
-                    height: props.iconSize[1],
-                    mask: props.iconColor !== '#000000'
+
+        let iconColor = props.iconColor;
+        if(isDefined(iconColor)) {
+            iconColor = hex2rgb(props.iconColor);
+        } else {
+            iconColor = "#000000";
+        }
+
+        let iconLayer;
+
+        if(props.icon.endsWith('glb')) {
+            iconLayer = new ScenegraphLayer({
+                id: id,
+                data: [{
+                    position: [props.location.x, props.location.y, props.location.z]
+                }],
+                pickable: true,
+                scenegraph: props.icon,
+                getPosition: d =>  d.position,
+                getOrientation: d => [0,  props.orientation.yaw, 90],
+                _animations: {
+                    '*': {speed: 5}
+                },
+                sizeScale: props.iconScale,
+                _lighting: 'pbr'
+            });
+        }  else if(props.icon.endsWith('svg')) {
+            iconLayer = new IconLayer({
+                id: id,
+                data: [{
+                    position: [props.location.x, props.location.y, props.location.z]
+                }],
+                pickable: true,
+                // iconAtlas and iconMapping are required
+                // getIcon: return a string
+                iconAtlas: props.icon,
+                iconMapping: {
+                    marker: {
+                        x: 0,
+                        y: 0,
+                        anchorX: props.iconAnchor[0],
+                        anchorY: props.iconAnchor[1],
+                        width: props.iconSize[0] * props.iconScale,
+                        height: props.iconSize[1] * props.iconScale,
+                        mask: isDefined(props.iconColor) && props.iconColor !== '#000000'
+                    }
+                },
+                getIcon: d => 'marker',
+                getPosition: d => d.position,
+                sizeScale: 1.0,
+                getSize: d => props.iconSize[1] * props.iconScale,
+                getColor: d => iconColor,
+                onHover: (info, event) => this.onMarkerHover(mId, info, props, event),
+                onClick: (info, event) => event.leftButton ? this.onMarkerLeftClick(mId, info, props, event) :
+                    this.onMarkerRightClick(mId, info, props, event),
+                zIndex: props.zIndex,
+                loadOptions: {
+                    imagebitmap: {
+                        resizeWidth: props.iconSize[0] * props.iconScale,
+                        resizeHeight: props.iconSize[1] * props.iconScale,
+                        resizeQuality: 'high'
+                    }
                 }
-            },
-            getIcon: d => 'marker',
-            sizeScale: props.iconScale,
-            getPosition: d => d.position,
-            getSize: d => props.iconScale,
-            getColor: d =>  hex2rgb(props.iconColor),
-            onHover: (info, event) => this.onMarkerHover(mId,info, props, event),
-            onClick: (info, event) => event.leftButton ?  this.onMarkerLeftClick(mId,info, props, event) :
-                this.onMarkerRightClick(mId,info, props, event),
-            zIndex: props.zIndex
-        });
+            });
+        } else {
+            // in deck we create a new layer everytime => reactive programming
+            iconLayer = new IconLayer({
+                id: id,
+                data: [{
+                    position: [props.location.x, props.location.y, props.location.z]
+                }],
+                pickable: true,
+                // iconAtlas and iconMapping are required
+                // getIcon: return a string
+                iconAtlas: props.icon,
+                iconMapping: {
+                    marker: {
+                        x: 0,
+                        y: 0,
+                        anchorX: props.iconAnchor[0],
+                        anchorY: props.iconAnchor[1],
+                        width: props.iconSize[0],
+                        height: props.iconSize[1],
+                        mask: isDefined(props.iconColor) && props.iconColor !== '#000000'
+                    }
+                },
+                getIcon: d => 'marker',
+                getPosition: d => d.position,
+                sizeScale: props.iconScale,
+                getSize: d => props.iconSize[1],
+                getColor: d => iconColor,
+                onHover: (info, event) => this.onMarkerHover(mId, info, props, event),
+                onClick: (info, event) => event.leftButton ? this.onMarkerLeftClick(mId, info, props, event) :
+                    this.onMarkerRightClick(mId, info, props, event),
+                zIndex: props.zIndex,
+            });
+        }
 
         // is going to create or update the current entry into the layer map
         this.addMarkerToLayer(props, iconLayer);
@@ -192,13 +262,13 @@ class DeckGlView extends MapView {
     }
 
     /**
-     * Updates the marker associated to the layer.
-     * @param {Polyline} layer - The layer allowing the update of the marker
+     * Updates the polyline associated to the layer.
+     * @param {Polyline} layer - The layer allowing the update of the polyline
      */
-    updatePolyline(layer) {
+    async updatePolyline(layer) {
         const id = layer.id+'$'+layer.polylineId;
-        const path = layer.locations[layer.polylineId].map((coordinate) => {
-            return [coordinate.x, coordinate.y, 1]
+        const path = layer.locations.map((coordinate) => {
+            return [coordinate.x, coordinate.y, coordinate.z || 1]
         });
 
         const PATH_DATA =[
@@ -226,6 +296,66 @@ class DeckGlView extends MapView {
     }
 
     /**
+     * Updates the polyline associated to the layer.
+     * @param {Polyline} layer - The layer allowing the update of the polyline
+     */
+    async updatePolygon(layer) {
+        const id = layer.id+'$'+layer.polygonId;
+
+        // update locations
+        let polygonPoints = [];
+        const vertices = layer.vertices;
+        if(isDefined(vertices) && vertices.length > 0) {
+            for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                polygonPoints.push([vertices[i], vertices[i + 1]]);
+            }
+        }
+
+        let outlineColor = rgbaToArray(layer.outlineColor).map( (val, index, arr) => {
+            if(index >= 3) {
+                return parseInt(val * 255);
+            } else {
+                return val;
+            }
+        });
+        let color = rgbaToArray(layer.color).map( (val, index, arr) => {
+            if(index >= 3) {
+                return parseInt(val * 255);
+            } else {
+                return val;
+            }
+        });
+
+        const PATH_DATA =[
+            {
+                outlineWidth: layer.outlineWidth,
+                outlineColor: outlineColor,
+                name: layer.label,
+                color: color,
+                contour: [
+                    polygonPoints
+                ]
+            }
+        ];
+
+        const pathLayer = new PolygonLayer({
+            id: id,
+            data: PATH_DATA,
+            widthUnits: 'pixels',
+            lineWidthMinPixels: 1,
+            stroked: true,
+            filled: true,
+            getPolygon: d => d.contour,
+            getFillColor: d => d.color,
+            getLineWidth: d => d.outlineWidth,
+            getLineColor: d => d.outlineColor
+        });
+
+        this.addPolygonToLayer(layer, pathLayer);
+        this.render({});
+    }
+
+    /**
      * Override super method to render() at the end
      * @param {Object} marker - The Map marker object
      */
@@ -244,6 +374,15 @@ class DeckGlView extends MapView {
     }
 
     /**
+     * Override super method to render() at the end
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygons(polygon) {
+        super.removePolygons(polygon);
+        this.render({});
+    }
+
+    /**
      * Inner method to render in the order the different deck.gl layers
      * @private
      * @param {Object} extraProps - Extra deck props
@@ -251,12 +390,13 @@ class DeckGlView extends MapView {
     render(extraProps) {
         const markers = this.getMarkers();
         const polylines = this.getPolylines();
+        const polygons  = this.getPolygons();
 
-        // draw in order base -> polylines -> markers
+        // draw in order base -> polygons -> polylines -> markers
         markers.sort((a,b) => (a.props.zIndex > b.props.zIndex) ? 1 : ((b.props.zIndex > a.props.zIndex) ? -1 : 0))
 
         const props = {
-            layers: [...this.deckLayers,...polylines,...markers]
+            layers: [...this.deckLayers,...polygons,...polylines,...markers]
         };
         this.deckgl.setProps({
             ...extraProps,
@@ -265,6 +405,9 @@ class DeckGlView extends MapView {
     }
 
     rgbaToArray(str) {
+        if(Array.isArray(str)) {
+            return str;
+        }
         let startIdxValue = str.indexOf('(') + 1;
         let endIdxValue = str.indexOf(')');
         let values = str.substr(startIdxValue, endIdxValue-startIdxValue);

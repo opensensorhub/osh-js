@@ -52,7 +52,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'leaflet-location-path.html'
+        index: 'leaflet-location-path.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

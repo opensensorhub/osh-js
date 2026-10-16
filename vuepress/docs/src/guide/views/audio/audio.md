@@ -18,7 +18,7 @@ The view is composed of a decoder (either WebCodec API or FFMPEG.js) and one or 
 ## Supported layers
 
 The view supports type layers:
-- data
+- audioData
 
 ## Docoders
 

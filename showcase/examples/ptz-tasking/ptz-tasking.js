@@ -1,12 +1,12 @@
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
-import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
 import FoscamPtzTasking from 'osh-js/core/datapush/FoscamPtzTasking.js';
 import PtzTaskingView from 'osh-js/ext/ui/view/tasking/PtzTaskingView.js';
 
 // create data source for UAV camera
-let videoDataSource = new SosGetResultVideo("drone-Video", {
+let videoDataSource = new SosGetResult("drone-Video", {
     protocol: "ws",
-    service: "SOS",
+    ,
     endpointUrl: "localhost:8282/sensorhub/sos",
     offeringID: "foscam",
     observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
@@ -16,7 +16,7 @@ let videoDataSource = new SosGetResultVideo("drone-Video", {
 });
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new FFMPEGView("video-container", {
+let videoView = new VideoView("video-container", {
     dataSourceId: videoDataSource.id,
     css: "video-h264",
     name: "Foscam Video",

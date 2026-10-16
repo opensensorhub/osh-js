@@ -63,6 +63,7 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
+    https:true,
     index: 'audio-video-synchronized-with-control-vuejs.html'
   },
   optimization: {

@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import Ajax from '../protocol/Ajax.js';
+import Ajax from '../connector/Ajax.js';
 import {randomUUID} from "../utils/Utils.js";
 
 /**

@@ -19,15 +19,17 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResultAudio from 'osh-js/core/datasource/SosGetResultAudio.js';
-    import FFMPEGView from "osh-js/core/ui/view/video/FFMPEGView";
+    import VideoView from "osh-js/core/ui/view/video/VideoView";
     import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
-    import SosGetResultVideoWithRoll from "osh-js/core/datasource/SosGetResultVideoWithRoll";
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+    import AudioDataLayer from "osh-js/core/ui/layer/AudioDataLayer";
+    import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
+    import {Mode} from "osh-js/core/datasource/Mode";
 
     export default {
         components: {
@@ -44,29 +46,27 @@
       mounted() {
 
         const opts = {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
           startTime: "2021-04-12T10:48:45Z",
           endTime: "2021-04-12T10:49:45Z",
-          replaySpeed: 1.0,
-          bufferingTime: 1000
+          mode: Mode.REPLAY,
+          tls: true
         };
 
         // setup video
-        const videoDataSource = new SosGetResultVideoWithRoll("Live and archive data from Android Sensors [Nexus5X]", {
+        const videoDataSource = new SosGetResult("Live and archive data from Android Sensors [Nexus5X]", {
           ...opts,
           observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame"
         });
 
         // setup audio
-        const audioDataSource = new SosGetResultAudio("Live and archive data from Android Sensors [Nexus5X]", {
+        const audioDataSource = new SosGetResult("Live and archive data from Android Sensors [Nexus5X]", {
           ...opts,
           observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame"
         });
 
-        this.views.push(new FFMPEGView({
+        this.views.push(new VideoView({
           container: 'container-video',
           css: 'video-h264',
           name: 'UAV Video',
@@ -75,85 +75,63 @@
           showStats: true,
           width:800,
           height:600,
-          dataSourceId: videoDataSource.id
+          layers: [
+            new VideoDataLayer({
+              dataSourceId: videoDataSource.id,
+              getFrameData: (rec) => rec.img,
+              getTimestamp: (rec) => rec.timestamp,
+              getRoll: (rec) => rec.videoRoll
+            })
+          ]
         }));
 
         const audioView = new AudioView({
           name: "Audio",
           css: 'audio-css',
           container: 'audio-chart-container',
-          dataSource: audioDataSource,
-          gain: 1,
-          playSound: true
+          gain: 10,
+          playSound: true,
+          layers: [
+            new AudioDataLayer({
+              dataSourceId: audioDataSource.id,
+              getSampleRate: (rec) => rec.sampleRate,
+              getFrameData: (rec) => rec.samples,
+              getTimestamp: (rec) => rec.timestamp
+            })
+          ]
         });
 
         const audioChartFrequencyVisualizer = new AudioFrequencyChartJsVisualizer({
           css: 'audio-canvas',
           fftSize: 32,
           container: 'chart-frequency',
-          chartjsProps: {
-            datasetsProps: {
-              borderColor: 'rgba(0,0,0,0.5)',
-              backgroundColor: 'rgba(210,210,210,0.8)',
-              barThickness: 20,
-              borderWidth: 1
-            },
-          }
+          datasetOptions: {
+            borderColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(210,210,210,0.8)',
+            barThickness: 20,
+            borderWidth: 1
+          },
         });
 
         const audioChartTimeVisualizer = new AudioTimeChartJsVisualizer({
           css: 'audio-canvas',
           fftSize: 1024,
-          container: 'chart-time',
-          chartjsProps: {
-            chartProps: {
-              scales: {
-                yAxes: [{
-                  scaleLabel: {
-                    labelString: "Amplitude"
-                  },
-                  ticks: {
-                    maxTicksLimit: 5
-                  }
-                }],
-                xAxes: [{
-                  scaleLabel: {
-                    labelString: "Time"
-                  },
-                  ticks: {
-                    maxTicksLimit: 130,
-                    beginAtZero: true
-                  }
-                }],
-              },
-              maintainAspectRatio: false
-            },
-            datasetsProps: {
-              pointRadius: 0.1,
-              borderColor: 'rgba(0,0,0,0.5)',
-              backgroundColor: 'rgba(255,195,100,0.2)',
-              barThickness: 2,
-              borderWidth: 1
-            },
-            datasetsMinMaxProps: {
-              pointRadius: 0.0,
-              backgroundColor: 'rgba(0,139,141,1.0)',
-              barThickness: 2,
-              borderWidth: 1
-            }
-          }
+          container: 'chart-time'
         });
+
         const audioSpectrogramVisualizer = new AudioSpectrogramVisualizer({
           fftSize: 2048,
           container: 'spectrogram'
         });
+
         audioView.addVisualizer(audioChartFrequencyVisualizer);
         audioView.addVisualizer(audioChartTimeVisualizer);
         audioView.addVisualizer(audioSpectrogramVisualizer);
 
         this.dataSynchronizer = new DataSynchronizer({
           replaySpeed: 1,
-          timerResolution: 5,
+          startTime: "2021-04-12T10:48:45Z",
+          endTime: "2021-04-12T10:49:45Z",
           dataSources: [videoDataSource, audioDataSource]
         });
 

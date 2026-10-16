@@ -39,7 +39,7 @@ import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
 import LineString from "ol/geom/LineString";
 import {click, pointerMove} from "ol/events/condition";
-
+import Polygon, { fromCircle } from "ol/geom/Polygon";
 
 /**
  * This class is in charge of displaying GPS/orientation data by adding a marker to the OpenLayer Map object.
@@ -62,7 +62,7 @@ class OpenLayerView extends MapView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['marker', 'polyline'],
+            supportedLayers: ['marker', 'polyline','polygon', 'ellipse'],
             ...properties
         });
     }
@@ -72,95 +72,11 @@ class OpenLayerView extends MapView {
         this.initMap(options);
     }
 
-
-    /**
-     * Updates the marker associated to the layer.
-     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
-     */
-    updateMarker(props) {
-        let marker = this.getMarker(props);
-        if (!isDefined(marker)) {
-            // adds a new marker to the leaflet renderer
-            const markerObj = this.addMarker(props);
-
-            this.addMarkerToLayer(props, markerObj);
-        }
-
-        let markerFeature = this.getMarker(props);
-        // updates position
-        let lon = props.location.x;
-        let lat = props.location.y;
-
-        if (!isNaN(lon) && !isNaN(lat)) {
-            let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
-            markerFeature.getGeometry().setCoordinates(coordinates);
-        }
-
-        // updates orientation
-        if (props.icon !== null) {
-            // updates icon
-            let iconStyle = new Style({
-                image: new Icon({
-                    opacity: 0.75,
-                    anchor: props.iconAnchor,
-                    anchorYUnits: 'pixels',
-                    anchorXUnits: 'pixels',
-                    src: props.icon,
-                    rotation: props.orientation.heading * Math.PI / 180
-                }),
-                text: new Text({
-                    text: props.label,
-                    offsetX: props.labelOffset[0],
-                    offsetY: props.labelOffset[1],
-                }),
-                zIndex: props.zIndex
-            });
-            markerFeature.setStyle(iconStyle);
-        }
-    }
-
-    /**
-     * Updates the polyline associated to the layer.
-     * @param {Polyline.props} props - The layer allowing the update of the polyline
-     */
-    updatePolyline(props) {
-        let polyline = this.getPolyline(props);
-        if (isDefined(polyline)) {
-            // removes the layer
-            this.removePolylineFromLayer(polyline);
-        }
-
-        const polylineObj = this.addPolyline(props.locations[props.polylineId], {
-            color: props.color,
-            weight: props.weight,
-            locations: props.locations,
-            maxPoints: props.maxPoints,
-            opacity: props.opacity,
-            smoothFactor: props.smoothFactor,
-            name: props.name
-        });
-
-        this.addPolylineToLayer(props, polylineObj);
-
-        //TODO: handle opacity, smoothFactor, color and weight
-        // if (polylineId in this.polylines) {
-        //     let geometry = this.polylines[polylineId];
-        //
-        //     let polylinePoints = [];
-        //     for (let i = 0; i < layer.locations.length; i++) {
-        //         polylinePoints.push(transform([layer.locations[i].x, layer.locations[i].y], 'EPSG:4326', 'EPSG:900913'))
-        //     }
-        //
-        //     geometry.setCoordinates(polylinePoints);
-        // }
-    }
-
     //---------- MAP SETUP --------------//
     /**
      * @private
      */
     initMap(options) {
-
         this.map = null;
         this.first = true;
         let overlays = [];
@@ -226,26 +142,25 @@ class OpenLayerView extends MapView {
 
             // #endregion snippet_openlayerview_initial_map
 
-        }
+            this.map.setTarget(this.divId);
 
-        this.map.setTarget(this.divId);
+            if (!isDefined(this.map.getView())) {
+                this.map.setView(view);
+            }
 
-        if (!isDefined(this.map.getView())) {
-            this.map.setView(view);
-        }
+            this.map.getView().setMaxZoom(maxZoom);
 
-        this.map.getView().setMaxZoom(maxZoom);
-
-        // only if the map was not created with default layers
-        if(this.map.getLayers().getLength()  === 0) {
-            this.map.addLayer(new Group({
-                'title': 'Base maps',
-                layers: baseLayers
-            }));
-            this.map.addLayer(new Group({
-                title: 'Overlays',
-                layers: overlays
-            }));
+            // only if the map was not created with default layers
+            if(this.map.getLayers().getLength()  === 0) {
+                this.map.addLayer(new Group({
+                    'title': 'Base maps',
+                    layers: baseLayers
+                }));
+                this.map.addLayer(new Group({
+                    title: 'Overlays',
+                    layers: overlays
+                }));
+            }
         }
 
         // inits onLeftClick events
@@ -336,13 +251,13 @@ class OpenLayerView extends MapView {
             features: []
         });
 
-        let vectorMarkerLayer = new VectorLayer({
+        this.vectorMarkerLayer = new VectorLayer({
             source: this.vectorSource,
         });
 
-        vectorMarkerLayer.setZIndex(1);
+        this.vectorMarkerLayer.setZIndex(1);
 
-        this.map.addLayer(vectorMarkerLayer);
+        this.map.addLayer(this.vectorMarkerLayer);
         this.map.updateSize();
     }
 
@@ -356,6 +271,17 @@ class OpenLayerView extends MapView {
         });
         return [osm];
     }
+
+    onResize() {
+        super.onResize();
+        if(isDefined(this.map) && this.map !== null) {
+            this.map.updateSize();
+        }
+    }
+
+    // ----------------------------------------------------//
+    // ---------------------- LAYERS ---------------------//
+    // --------------------------------------------------//
 
     /**
      * Add a marker to the map.
@@ -379,15 +305,25 @@ class OpenLayerView extends MapView {
             if (isDefined(properties.icon) && properties.icon !== null) {
                 let iconStyle = new Style({
                     image: new Icon({
-                        opacity: 0.75,
+                        opacity: properties.iconOpacity,
                         src: properties.icon,
-                        rotation: properties.orientation.heading * Math.PI / 180
+                        anchor: properties.iconAnchor,
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
+                        rotation: properties.orientation.heading * Math.PI / 180,
+                        scale: properties.iconScale,
+                        size: properties.iconSize,
+                        color: properties.iconColor
                     }),
                     zIndex: properties.zIndex,
                     text: new Text({
                         text: properties.label,
                         offsetX: properties.labelOffset[0],
                         offsetY: properties.labelOffset[1],
+                        scale: properties.labelScale,
+                        fill: new Fill({
+                            color: properties.labelColor
+                        }),
                     })
                 });
                 markerFeature.setStyle(iconStyle);
@@ -402,11 +338,70 @@ class OpenLayerView extends MapView {
                 this.map.getView().setZoom(12);
             }
 
+            this.vectorMarkerLayer.setZIndex(properties.zIndex);
+
             return markerFeature;
         }
         this.onResize();
         //TODO: exception
         return null;
+    }
+
+    /**
+     * Updates the marker associated to the layer.
+     * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
+     */
+    async updateMarker(props) {
+        if (!isDefined(props.location)) {
+            return;
+        }
+        let markerFeature = this.getMarker(props);
+        if (!isDefined(markerFeature)) {
+            // adds a new marker to the leaflet renderer
+            const markerObj = this.addMarker(props);
+
+            this.addMarkerToLayer(props, markerObj);
+        } else {
+            // updates position
+            let lon = props.location.x;
+            let lat = props.location.y;
+
+            if (!isNaN(lon) && !isNaN(lat)) {
+                let coordinates = transform([lon, lat], 'EPSG:4326', this.projection);
+                markerFeature.getGeometry().setCoordinates(coordinates);
+            }
+
+            // update style
+            const style = markerFeature.getStyle();
+
+            // updates orientation
+            if (props.icon !== null) {
+                // ol.style.Icon doesn't have a setSrc method so you would need to create one for each source.
+                // Then either set that in your ol.style.Style as required
+                if ((style.getImage().getSrc() !== props.icon) || style.getImage().color !== props.iconColor) {
+                    const iconOpts = {
+                        anchorYUnits: 'pixels',
+                        anchorXUnits: 'pixels',
+                        src: props.icon,
+                        color: props.iconColor
+                    };
+                    style.setImage(new Icon(iconOpts));
+                }
+
+                // console.log(style.getImage().iconImage_)
+                // updates icon
+                style.getImage().setOpacity(props.iconOpacity);
+                style.getImage().setScale(props.iconScale);
+                style.getText().setText(props.label);
+                style.getText().setOffsetX(props.labelOffset[0]);
+                style.getText().setOffsetY(props.labelOffset[1]);
+                style.getText().setScale(props.labelScale);
+                style.getText().getFill().setColor(props.labelColor)
+                style.setZIndex(props.zIndex);
+                style.getImage().setAnchor(props.iconAnchor);
+                style.getImage().setRotation(props.orientation.heading * Math.PI / 180);
+            }
+        }
     }
 
     /**
@@ -419,25 +414,13 @@ class OpenLayerView extends MapView {
     }
 
     /**
-     * Abstract method to remove a polyline from its corresponding layer.
-     * This is library dependant.
-     * @param {Object} polyline - The Map polyline object
-     */
-    removePolylineFromLayer(polyline) {
-        this.map.removeLayer(polyline);
-    }
-
-    /**
      * Add a polyline to the map.
-     * @param {locations} locations - the coordinates [{x, y}]
      * @param {Object} properties
-     * @param {String} properties.color
-     * @param {Number} properties.weight
-     * @param {String} properties.name
-     * @return {string} the id of the new created polyline
      */
-    addPolyline(locations,properties) {
+    addPolyline(properties) {
         let polylinePoints = [];
+
+        const locations = properties.locations;
 
         for (let i = 0; i < locations.length; i++) {
             polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
@@ -473,12 +456,232 @@ class OpenLayerView extends MapView {
         return vectorPathLayer;
     }
 
-    onResize() {
-        super.onResize();
-        if(isDefined(this.map) && this.map !== null) {
-            this.map.updateSize();
+    /**
+     * Updates the polyline associated to the layer.
+     * @param {PolylineLayer.properties} props - The layer allowing the update of the polyline
+     */
+    async updatePolyline(props) {
+        if (!isDefined(props.locations) || props.locations.length < 2) {
+            return;
+        }
+
+        let polyline = this.getPolyline(props);
+        if (!isDefined(polyline)) {
+            // removes the layer
+            polyline = this.addPolyline(props)
+            this.addPolylineToLayer(props, polyline);
+        } else {
+            let vectorSource = polyline.getSource();
+
+            // update locations
+            let polylinePoints = [];
+            const locations = props.locations;
+
+            if(isDefined(locations) && locations.length > 0) {
+                for (let i = 0; i < locations.length; i++) {
+                    polylinePoints.push(transform([locations[i].x, locations[i].y], 'EPSG:4326', this.projection))
+                }
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates(polylinePoints)
+            }
+
+            // update style
+            const style = polyline.getStyle();
+            style.getStroke().setColor(props.color);
+            style.getStroke().setWidth(props.weight);
+            style.getFill().setColor(props.color);
         }
     }
+
+    /**
+     * Abstract method to remove a polyline from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polyline - The Map polyline object
+     */
+    removePolylineFromLayer(polyline) {
+        this.map.removeLayer(polyline);
+    }
+
+    /**
+     * Add a polygon to the map.
+     * @param {Object} properties
+     */
+    addPolygon(properties) {
+        let polygonPoints = [];
+
+        const vertices = properties.vertices;
+
+        for (let i = 0; i < vertices.length - 1; i = i +2) {
+            polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+        }
+        //create path
+        let pathGeometry = new Polygon([polygonPoints]);
+        let feature = new Feature({
+            geometry: pathGeometry,
+            name: 'Polygon'
+        });
+        let source = new VectorSource({
+            features: [feature]
+        });
+
+        let vectorPolygonLayer = new VectorLayer({
+            title: properties.name,
+            source: source,
+            style: new Style({
+                fill: new Fill({
+                    color: properties.color
+                }),
+                stroke: new Stroke({
+                    color: properties.color,
+                    width: properties.outlineWidth
+                })
+            })
+        });
+
+        vectorPolygonLayer.setZIndex(0);
+        this.map.addLayer(vectorPolygonLayer);
+
+        return vectorPolygonLayer;
+    }
+
+    /**
+     * Updates the polygon associated to the layer.
+     * @param {Object} props - The layer allowing the update of the polygon
+     */
+    async updatePolygon(props) {
+        let polygon = this.getPolygon(props);
+        if (!isDefined(polygon)) {
+            // removes the layer
+            polygon = this.addPolygon(props)
+            this.addPolygonToLayer(props, polygon);
+        } else {
+            let vectorSource = polygon.getSource();
+
+            // update locations
+            let polygonPoints = [];
+            const vertices = props.vertices;
+            if(isDefined(vertices) && vertices.length > 0) {
+                for (let i = 0; i < vertices.length - 1; i = i + 2) {
+                    polygonPoints.push(transform([vertices[i], vertices[i + 1]], 'EPSG:4326', this.projection))
+                }
+
+                vectorSource.getFeatures()[0].getGeometry().setCoordinates([polygonPoints])
+            }
+            // update style
+            const style = polygon.getStyle();
+            style.getStroke().setColor(props.outlineColor);
+            style.getStroke().setWidth(props.outlineWidth);
+            style.getFill().setColor(props.color);
+        }
+    }
+
+    /**
+     * Abstract method to remove a polygon from its corresponding layer.
+     * This is library dependant.
+     * @param {Object} polygon - The Map polygon object
+     */
+    removePolygonFromLayer(polygon) {
+        this.map.removeLayer(polygon);
+    }
+
+    addEllipse(properties) {
+        const position = properties.position;
+        const semiMajorAxis = properties.semiMajorAxis;
+        const semiMinorAxis = properties.semiMinorAxis;
+
+        let projPosition = transform([position.x, position.y], 'EPSG:4326', this.projection);
+
+        let coordinates = [];
+        const radinas = Math.PI / 180;
+        for (let angle = 1; angle <= 360; angle++) {
+            const px = semiMajorAxis * Math.cos(radinas * angle);
+            const py = semiMinorAxis * Math.sin(radinas * angle);
+            const pxii = projPosition[0] + px;
+            const pyii = projPosition[1] + py;
+            coordinates.push([pxii, pyii]);
+        }
+
+        //create path
+        let pathGeometry = new Polygon([coordinates]);
+
+        let feature = new Feature({
+            geometry: pathGeometry,
+            name: 'Ellipse'
+        });
+
+        feature.setId(properties.id+"$"+properties.markerId);
+
+        let source = new VectorSource({
+            features: [feature]
+        });
+
+        let vectorEllipseLayer = new VectorLayer({
+            title: properties.name,
+            source: source,
+            style: new Style({
+                fill: new Fill({
+                    color: properties.color
+                }),
+                stroke: new Stroke({
+                    color: properties.color,
+                    width: 1
+                })
+            })
+        });
+
+        vectorEllipseLayer.setZIndex(properties.zIndex);
+        this.map.addLayer(vectorEllipseLayer);
+
+        return vectorEllipseLayer;
+    }
+
+    async updateEllipse(props) {
+        if (!isDefined(props.position)) {
+            return;
+        }
+        let ellipse = this.getEllipse(props);
+        if (!isDefined(ellipse)) {
+            // removes the layer
+            ellipse = this.addEllipse(props)
+            this.addEllipseToLayer(props, ellipse);
+        } else {
+            // updates position
+            if (!isNaN(props.position.x) && !isNaN(props.position.y)) {
+                let vectorSource = ellipse.getSource();
+                const position = props.position;
+                const semiMajorAxis = props.semiMajorAxis;
+                const semiMinorAxis = props.semiMinorAxis;
+
+                let projPosition = transform([position.x, position.y], 'EPSG:4326', this.projection);
+
+                let coordinates = [];
+                const radinas = Math.PI / 180;
+
+                const nbPoints = 100;
+                const precision = 360 / nbPoints;
+
+                for (let angle = 1; angle <= 360; angle+=precision) {
+                    const px = semiMajorAxis * Math.cos(radinas * angle);
+                    const py = semiMinorAxis * Math.sin(radinas * angle);
+                    const pxii = projPosition[0] + px;
+                    const pyii = projPosition[1] + py;
+                    coordinates.push([pxii, pyii]);
+                }
+
+                const ellipseFeature = vectorSource.getFeatures()[0];
+                ellipseFeature.getGeometry().setCoordinates([coordinates]);
+
+                const style = ellipse.getStyle();
+                style.getStroke().setColor(props.color);
+                style.getStroke().setWidth(1);
+                style.getFill().setColor(props.color);
+            }
+        }
+    }
+
+    removeEllipseFromLayer(ellipse) {
+        this.map.removeLayer(ellipse);
+    }
+
 }
 
 export default  OpenLayerView;

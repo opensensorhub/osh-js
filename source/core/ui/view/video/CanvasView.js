@@ -14,10 +14,11 @@ class CanvasView extends View {
         super(properties);
 
         this.fps = 0;
-        this.width = "1920";
-        this.height = "1080";
+        this.width = 1920;
+        this.height = 1080;
         this.showTime = false;
         this.showStats = false;
+        this.currentDoc = document;
 
         this.statistics = {
             averageFps: 0,
@@ -51,30 +52,34 @@ class CanvasView extends View {
             }
 
             if (isDefined(properties.width)) {
-                this.width = properties.width+"";
+                this.width = properties.width;
             }
 
             if (isDefined(properties.height)) {
-                this.height = properties.height+"";
+                this.height = properties.height;
+            }
+
+            if (isDefined(properties.parentDoc)) {
+                this.currentDoc = properties.parentDoc;
             }
         }
 
-        let domNode = document.getElementById(this.divId);
+        let domNode = this.currentDoc.getElementById(this.divId);
 
         // if need to draw text
         if(this.showTime || this.showStats) {
-            this.textDiv = document.createElement("div");
-            this.textDiv.setAttribute("width",this.width);
+            this.textDiv = this.currentDoc.createElement("div");
+            this.textDiv.setAttribute("width",""+this.width);
             this.textDiv.setAttribute("height",15);
             this.textDiv.setAttribute("class","ffmpeg-info");
 
             if(this.showTime) {
-                this.textFpsDiv = document.createElement("div");
+                this.textFpsDiv = this.currentDoc.createElement("div");
                 this.textFpsDiv.setAttribute("class","ffmpeg-fps");
                 this.textDiv.appendChild(this.textFpsDiv);
             }
             if(this.showStats) {
-                this.textStatsDiv = document.createElement("div");
+                this.textStatsDiv = this.currentDoc.createElement("div");
                 this.textStatsDiv.setAttribute("class","ffmpeg-stats");
                 this.textDiv.appendChild(this.textStatsDiv);
             }
@@ -86,13 +91,13 @@ class CanvasView extends View {
         this.domNode = domNode;
         let hidden, visibilityChange;
 
-        if (isDefined(document.hidden)) { // Opera 12.10 and Firefox 18 and later support
+        if (isDefined(this.currentDoc.hidden)) { // Opera 12.10 and Firefox 18 and later support
             hidden = "hidden";
             visibilityChange = "visibilitychange";
-        } else if (isDefined(document.msHidden)) {
+        } else if (isDefined(this.currentDoc.msHidden)) {
             hidden = "msHidden";
             visibilityChange = "msvisibilitychange";
-        } else if (isDefined(document.webkitHidden)) {
+        } else if (isDefined(this.currentDoc.webkitHidden)) {
             hidden = "webkitHidden";
             visibilityChange = "webkitvisibilitychange";
         }
@@ -100,19 +105,18 @@ class CanvasView extends View {
         const that = this;
 
         function handleVisibilityChange() {
-            if (document.hidden) {
+            if (that.currentDoc.hidden) {
                 that.skipFrame = true;
             } else {
                 that.skipFrame = false;
             }
         }
 
-        document.addEventListener(visibilityChange, handleVisibilityChange, false);
+        this.currentDoc.addEventListener(visibilityChange, handleVisibilityChange, false);
 
     }
 
     /**
-     * @private
      */
     updateStatistics(pktSize) {
         this.statistics.frames++;
@@ -139,14 +143,14 @@ class CanvasView extends View {
     }
 
     destroy() {
-
+        super.destroy();
     }
 
     /**
      * Called after each decoded frame.
      * @event
      */
-    onAfterDecoded() {
+    onAfterDecoded(decodedFrame, frameType) {
     }
 }
 

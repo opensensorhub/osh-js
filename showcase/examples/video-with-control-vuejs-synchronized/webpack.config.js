@@ -1,6 +1,6 @@
 // webpack.config.common.js
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const { DefinePlugin, ProvidePlugin } = require('webpack');
+const { DefinePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
@@ -63,7 +63,8 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
-    index: 'video-with-control-vuejs-synchronized.html'
+    index: 'video-with-control-vuejs-synchronized.html',
+    https:true
   },
   optimization: {
     splitChunks: {

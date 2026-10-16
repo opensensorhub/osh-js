@@ -17,38 +17,38 @@
 /**
  *
  * From describe tasking:
- * swe:item name="relMove">
- <swe:Text definition="http://sensorml.com/ont/swe/property/CameraRelativeMovementName">
- <swe:label>Camera Relative Movements</swe:label>
- <swe:constraint>
- <swe:AllowedTokens>
- <swe:value>Down</swe:value>
- <swe:value>Up</swe:value>
- <swe:value>Left</swe:value>
- <swe:value>Right</swe:value>
- <swe:value>TopLeft</swe:value>
- <swe:value>TopRight</swe:value>
- <swe:value>BottomLeft</swe:value>
- <swe:value>BottomRight</swe:value>
- </swe:AllowedTokens>
- </swe:constraint>
- </swe:Text>
- </swe:item>
+ * sweapi:item name="relMove">
+ <sweapi:Text definition="http://sensorml.com/ont/swe/property/CameraRelativeMovementName">
+ <sweapi:label>Camera Relative Movements</sweapi:label>
+ <sweapi:constraint>
+ <sweapi:AllowedTokens>
+ <sweapi:value>Down</sweapi:value>
+ <sweapi:value>Up</sweapi:value>
+ <sweapi:value>Left</sweapi:value>
+ <sweapi:value>Right</sweapi:value>
+ <sweapi:value>TopLeft</sweapi:value>
+ <sweapi:value>TopRight</sweapi:value>
+ <sweapi:value>BottomLeft</sweapi:value>
+ <sweapi:value>BottomRight</sweapi:value>
+ </sweapi:AllowedTokens>
+ </sweapi:constraint>
+ </sweapi:Text>
+ </sweapi:item>
 
- <swe:item name="preset">
- <swe:Text definition="http://sensorml.com/ont/swe/property/CameraPresetPositionName">
- <swe:label>Preset Camera Position</swe:label>
- <swe:constraint>
- <swe:AllowedTokens>
- <swe:value>Reset</swe:value>
- <swe:value>TopMost</swe:value>
- <swe:value>BottomMost</swe:value>
- <swe:value>LeftMost</swe:value>
- <swe:value>RightMost</swe:value>
- </swe:AllowedTokens>
- </swe:constraint>
- </swe:Text>
- </swe:item>
+ <sweapi:item name="preset">
+ <sweapi:Text definition="http://sensorml.com/ont/swe/property/CameraPresetPositionName">
+ <sweapi:label>Preset Camera Position</sweapi:label>
+ <sweapi:constraint>
+ <sweapi:AllowedTokens>
+ <sweapi:value>Reset</sweapi:value>
+ <sweapi:value>TopMost</sweapi:value>
+ <sweapi:value>BottomMost</sweapi:value>
+ <sweapi:value>LeftMost</sweapi:value>
+ <sweapi:value>RightMost</sweapi:value>
+ </sweapi:AllowedTokens>
+ </sweapi:constraint>
+ </sweapi:Text>
+ </sweapi:item>
  */
 
 import PtzTasking from './PtzTasking.js';

@@ -1,0 +1,78 @@
+Arguments: 
+  /home/nevro/.nvm/versions/node/v8.17.0/bin/node /usr/bin/yarn
+
+PATH: 
+  /home/nevro/.nvm/versions/node/v8.17.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/home/nevro/.dotnet/tools:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/nevro/NVME_EXT/OSH/osh-js/node_modules/.bin:/home/nevro/.gem/ruby/3.0.0/bin:/home/nevro/softs/kdu:/run/media/nevro/9014351c-ebf9-45fb-8661-65ce5562215f/GDAL/gdal-master/dist3/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  8.17.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@types/node/-/node-20.3.1.tgz: ESOCKETTIMEDOUT
+      at ClientRequest.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:141517:19)
+      at Object.onceWrapper (events.js:313:30)
+      at emitNone (events.js:106:13)
+      at ClientRequest.emit (events.js:208:7)
+      at TLSSocket.emitTimeout (_http_client.js:718:34)
+      at Object.onceWrapper (events.js:313:30)
+      at emitNone (events.js:106:13)
+      at TLSSocket.emit (events.js:208:7)
+      at TLSSocket.Socket._onTimeout (net.js:422:8)
+      at ontimeout (timers.js:498:11)
+
+npm manifest: 
+  {
+    "name": "osh-js",
+    "version": "1.3.3",
+    "description": "OSH javascript Toolkit",
+    "main": "osh.js",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/opensensorhub/osh-js.git"
+    },
+    "keywords": [
+      "OSH",
+      "Sensors",
+      "Toolkit",
+      "Javascript",
+      "GIS",
+      "Spatial",
+      "OGC",
+      "SensorML"
+    ],
+    "author": "OSH community",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/opensensorhub/osh-js/issues"
+    },
+    "homepage": "https://github.com/opensensorhub/osh-js#readme",
+    "scripts": {
+      "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
+    },
+    "devDependencies": {
+      "clean-webpack-plugin": "3.0.0",
+      "copy-webpack-plugin": "5.1.1",
+      "html-webpack-plugin": "3.2.0",
+      "webpack": "4.42.0",
+      "webpack-cli": "3.3.11",
+      "webpack-dev-server": "3.10.3",
+      "css-loader": "3.4.2",
+      "file-loader": "5.1.0",
+      "style-loader": "1.1.3"
+    },
+    "dependencies": {
+      "leaflet": "1.6.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

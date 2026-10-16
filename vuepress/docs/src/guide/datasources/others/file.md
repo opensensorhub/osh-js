@@ -21,7 +21,7 @@ It uses a File connector that creates a ReadableStream which is then passed to t
 
 ## Example
 ```js
-import File from 'osh-js/core/datasource/File';
+import File from 'osh-js/ext/datasource/File';
 
 new File('Example',{
   name: 'Example',

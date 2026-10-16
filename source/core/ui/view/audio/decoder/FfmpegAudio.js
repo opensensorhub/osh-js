@@ -1,4 +1,4 @@
-import DecodeWorker from './workers/ffmpeg.decode.audio.worker.js';
+import {randomUUID} from "../../../../utils/Utils";
 
 class FfmpegAudio {
     constructor(properties) {
@@ -6,9 +6,17 @@ class FfmpegAudio {
         this.codec = properties.codec;
 
         try {
-            // create ffmpeg web worker
-            this.audioDecoderWorker = new DecodeWorker();
+            this.audioDecoderWorker = new Worker(new URL('./workers/ffmpeg.decode.audio.worker.js', import.meta.url), { type: 'module' });
+            // const drawWorker = new DrawWorker();
+            this.audioDecoderWorker.id = randomUUID();
 
+            console.log(this.codec)
+            this.audioDecoderWorker.postMessage({
+                'message': 'init',
+                'codec' : this.codec.toLowerCase()
+            });
+
+            // create ffmpeg web worker
             this.audioDecoderWorker.onmessage = (event) => {
                 const frame = event.data.frame;
                 let audioBuffer = audioCtx.createBuffer(1, frame.length, audioCtx.sampleRate);
@@ -21,12 +29,13 @@ class FfmpegAudio {
         }
     }
 
-    async decode(data, timestamp) {
+    async decode(value, timestamp) {
         try {
             this.audioDecoderWorker.postMessage({
-                pktData: data,
-                codec: this.codec
-            }, [data.frameData.buffer]);
+                pktData: value.frameData.data,
+                pktSize: value.frameData.data.length,
+                codec: value.frameData.compression.toLowerCase()
+            }, [value.frameData.data.buffer]);
         } catch (error) {
             console.error(error);
         }

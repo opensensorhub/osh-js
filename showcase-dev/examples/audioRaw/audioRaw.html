@@ -1,0 +1,58 @@
+<style>
+    body {
+        padding-left:10px;
+        background-color: black;
+        color: white;
+    }
+    #description {
+        padding-top: 5px;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    #canvas-frequency, #canvas-time, #chart-frequency, #chart-time, #spectrogram{
+        width: 400px;
+        height: 250px;
+        padding: 20px;
+    }
+    canvas.audio-canvas {
+        width: 100%;
+        height: 100%;
+    }
+    #listen {
+        margin-right: 10px;
+    }
+    .range-slider-chart {
+        display: flex;
+        align-self: baseline;
+    }
+</style>
+<div id="description">
+  <p>
+    New APIs are being released such as the WebCodec API and allow more flexible support for video streaming.
+      This experimental version can be used in chrome >= 86 and with the 'Experimental Web Platform features' flag
+      enabled. Details of the API can be found here: https://github.com/WICG/web-codecs and here https://wicg.github.io/web-codecs/.
+  </p>
+  <p>This new API allows, among other things, to decode Video frames using Hardware acceleration. Fmpeg.js would be used as fallback</p>
+</div>
+<p><strong>Bar chart = Frequency domain</strong></p>
+<p><strong>Sin wave = Time domain</strong></p>
+
+<div class="range-slider-chart">
+    <button id="listen">Listen 1.0x</button>
+    <span class="range-value">Gain</span>
+    <input id="input-range-chart" class="input-range" type="range" step="1" value="5" min="1" max="20">
+    <span id="range-value-chart" class="range-value">5</span>
+</div>
+
+<div class="container">
+  <div id="canvas-frequency"></div>
+  <div id="canvas-time"></div>
+  <div id="chart-frequency"></div>
+  <div id="chart-time"></div>
+  <div id="spectrogram"></div>
+
+</div>

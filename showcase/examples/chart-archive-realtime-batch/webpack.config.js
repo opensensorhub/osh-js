@@ -85,7 +85,8 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
-    index: 'chart-archive-realtime-batch.html'
+    index: 'chart-archive-realtime-batch.html',
+    https:true
   },
   plugins: [
     new VueLoaderPlugin(),
@@ -96,7 +97,6 @@ const config = {
       favicon: path.resolve(__dirname,'favicon.ico')
     }),
     new DefinePlugin({
-      // Define relative base path in cesium for loading assets
       BASE_URL: JSON.stringify('/')
     }),
   ],

@@ -5,9 +5,8 @@
 </template>
 
 <script>
-  window.CESIUM_BASE_URL = './';
   import {EllipsoidTerrainProvider, Matrix3,Cartesian3,Cartesian2,Ion } from "cesium";
-  import CesiumView from "../../../../../source/core/ui/view/map/CesiumView.js";
+  import CesiumView from "osh-js/core/ui/view/map/CesiumView.js";
   // @ is an alias to /src
   import ImageDrapingLayer from "osh-js/core/ui/layer/ImageDrapingLayer.js";
   import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
@@ -25,6 +24,7 @@
         // add 3D model marker to Cesium view
         let pointMarkerLayer = new PointMarkerLayer({
           label: "3DR Solo",
+          dataSourceIds: [this.platformLocationDataSource.id, this.platformOrientationDataSource.id],
           getLocation : {
             dataSourceIds : [this.platformLocationDataSource.id],
             handler : function(rec) {
@@ -43,11 +43,14 @@
               };
             }
           },
-          icon: "./models/Drone+06B.glb"
+          icon: "./images/quadcopter.png",
+          iconSize: [32, 32],
+          iconScale: 1.5
         });
 
         // style it with a moving point marker
         let imageDrapingLayer = new ImageDrapingLayer({
+          dataSourceIds: [this.platformLocationDataSource.id, this.platformOrientationDataSource.id, this.gimbalOrientationDataSource.id],
           getPlatformLocation: {
             dataSourceIds: [this.platformLocationDataSource.getId()],
             handler: function (rec) {
@@ -89,9 +92,8 @@
         });
 
         // create Cesium view
-        Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
-            'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
-            '2WfIX0QHiZcOjVaXI92stjDh4fI';
+        Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+            'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
         let cesiumView = new CesiumView({
           container: "cesium-container",
           layers: [pointMarkerLayer, imageDrapingLayer]

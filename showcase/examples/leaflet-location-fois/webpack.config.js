@@ -53,7 +53,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'leaflet-location-fois.html'
+        index: 'leaflet-location-fois.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [
@@ -80,7 +81,7 @@ module.exports = {
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
         new CopyWebpackPlugin([
-        {from: path.resolve(__dirname,'images'), to: 'images', force:true}
+            {from: path.resolve(__dirname,'images'), to: 'images', force:true},
         ])
     ]
 };

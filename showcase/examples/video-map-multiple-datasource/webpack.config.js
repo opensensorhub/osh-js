@@ -49,8 +49,8 @@ module.exports = {
                 use: ['style-loader', 'css-loader'],
             }, {
                 test: /\.worker\.js$/,
-                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
-            }
+                use: { loader: 'worker-loader' }
+            },
         ]
     },
     // Enable the Webpack dev server which will build, serve, and reload our
@@ -60,7 +60,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'video-map-multiple-datasource.html'
+        index: 'video-map-multiple-datasource.html',
+        https:true
     },
     devtool: 'eval-source-map',
     plugins: [

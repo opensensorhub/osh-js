@@ -1,78 +1,86 @@
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {
-    EllipsoidTerrainProvider,
     Matrix3,
     Cartesian3,
-    Cartesian2, Ion
-} from "cesium";
-import SosGetResultVideo from 'osh-js/core/datasource/SosGetResultVideo.js';
-import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView.js';
+    Cartesian2, Ion,
+    EllipsoidTerrainProvider
+} from "@cesium/engine";
+
+import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
 import ImageDrapingLayer from 'osh-js/core/ui/layer/ImageDrapingLayer.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+import {Mode} from 'osh-js/core/datasource/Mode';
+
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 
 window.CESIUM_BASE_URL = './';
 
-let videoDataSource = new SosGetResultVideo("drone-Video", {
-    protocol: 'ws',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+let videoDataSource = new SosGetResult("drone-Video", {
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:video2',
     observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    replaySpeed: 1
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new FFMPEGView({
+let videoView = new VideoView({
     container: 'video-h264-draping-container',
     css: "video-h264",
     name: "UAV Video",
     framerate:25,
     showTime: true,
     showStats: true,
-    dataSourceId: videoDataSource.id
+    useWebCodecApi: false,
+    layers: [
+        new VideoDataLayer({
+            dataSourceId: videoDataSource.id,
+            getFrameData: (rec) => rec.videoFrame,
+            getTimestamp: (rec) => rec.timestamp
+        })
+    ]
 });
 
-let videoCanvas = document.getElementById("video-h264-draping-container").getElementsByTagName("canvas")[0];
-
 // create data source for Android phone GPS
-let platformLocationDataSource = new SosGetResultJson('android-GPS', {
-    protocol: 'ws',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+let platformLocationDataSource = new SosGetResult('android-GPS', {
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    replaySpeed: 1
+    mode: Mode.REPLAY,
+    tls: true
 });
 
-let platformOrientationDataSource = new SosGetResultJson('android-Heading', {
-    protocol: 'ws',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+let platformOrientationDataSource = new SosGetResult('android-Heading', {
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    replaySpeed: 1
+    mode: Mode.REPLAY,
+    tls: true
 });
 
-let gimbalOrientationDataSource = new SosGetResultJson('android-Heading', {
-    protocol: 'ws',
-    service: 'SOS',
-    endpointUrl: 'sensiasoft.net:8181/sensorhub/sos',
+let gimbalOrientationDataSource = new SosGetResult('android-Heading', {
+    endpointUrl: 'sensiasoft.net/sensorhub/sos',
     offeringID: 'urn:mysos:solo:nav2',
     observedProperty: 'http://sensorml.com/ont/swe/property/OSH/0/GimbalOrientation',
     startTime: '2015-12-19T21:04:29.231Z',
     endTime: '2015-12-19T21:09:19.675Z',
-    replaySpeed: 1
+    mode: Mode.REPLAY,
+    tls: true
 });
 
 // add 3D model marker to Cesium view
 let pointMarkerLayer = new PointMarkerLayer({
+    dataSourceIds: [platformLocationDataSource.id, platformOrientationDataSource.id],
     label: "3DR Solo",
     getLocation : {
         dataSourceIds : [platformLocationDataSource.getId()],
@@ -98,6 +106,8 @@ let pointMarkerLayer = new PointMarkerLayer({
 
 // #region snippet_image_draping_layer
 // style it with an image draping
+let canvas;
+
 let imageDrapingLayer = new ImageDrapingLayer({
     getPlatformLocation: {
         dataSourceIds: [platformLocationDataSource.getId()],
@@ -138,19 +148,24 @@ let imageDrapingLayer = new ImageDrapingLayer({
     },
     icon: 'images/car-location.png',
     iconAnchor: [16, 40],
-    imageSrc: videoCanvas,
+    dataSourceId: videoDataSource.id, // define canvas refresh rate
+    getImageSrc: async () => videoView.getVideoCanvas(),
     name: 'Solo draping'
 });
-// #endregion snippet_image_draping_layer
 
-// create Cesium view
-Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4MjczNTA4NS1jNjBhLTQ3OGUtYTQz' +
-    'Ni01ZjcxOTNiYzFjZGQiLCJpZCI6MzIzODMsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1OTY4OTU3MjB9.hT6fWdvIqu4GIHR7' +
-    '2WfIX0QHiZcOjVaXI92stjDh4fI';
+videoView.getVideoCanvas().then(canvasElt => {
+    canvas = canvasElt;
+});
+
+// #endregion snippet_image_draping_layer
 
 let cesiumView = new CesiumView({
     container: 'cesium-h264-draping-container',
-    layers: [pointMarkerLayer, imageDrapingLayer]
+    // layers: [pointMarkerLayer, imageDrapingLayer],
+    layers: [pointMarkerLayer, imageDrapingLayer],
+    options: {
+        layers: ['Bing Maps Aerial', 'Bing Maps Aerial with Labels', 'Bing Maps Roads']
+    },
 });
 
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
@@ -159,12 +174,18 @@ cesiumView.viewer.camera.setView({
     destination : Cartesian3.fromDegrees(-86.5812,34.6904,1000)
 });
 
-// select bing maps as default imagery
-const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;
-baseLayerPickerViewModel.selectedImagery = baseLayerPickerViewModel.imageryProviderViewModels[0];
-
 // start streaming
-videoDataSource.connect();
-platformLocationDataSource.connect();
-platformOrientationDataSource.connect();
-gimbalOrientationDataSource.connect();
+const dataSynchronizer = new DataSynchronizer({
+    masterTimeRefreshRate: 250,
+    replaySpeed: 1.0,
+    startTime: '2015-12-19T21:04:29.231Z',
+    endTime: '2015-12-19T21:09:19.675Z',
+    dataSources: [
+        videoDataSource,
+        platformLocationDataSource,
+        platformOrientationDataSource,
+        gimbalOrientationDataSource
+    ]
+});
+dataSynchronizer.connect();
+

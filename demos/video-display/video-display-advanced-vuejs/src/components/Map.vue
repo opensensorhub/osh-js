@@ -8,6 +8,8 @@
     // @ is an alias to /src
 import LeafletView from "osh-js/core/ui/view/map/LeafletView.js";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
+import {EventType} from "osh-js/core/event/EventType";
+    import {Status} from "../../../../../source/core/connector/Status";
 
 export default {
   name: "Map",
@@ -30,9 +32,9 @@ export default {
             };
           }
         },
-        getOrientation : {
-          dataSourceIds :  [this.headingDataSource.getId()],
-          handler : function(rec) {
+        getOrientation: {
+          dataSourceIds: [this.headingDataSource.getId()],
+          handler: function (rec) {
             let qx = rec.orient.qx;
             let qy = rec.orient.qy;
             let qz = rec.orient.qz;
@@ -44,37 +46,39 @@ export default {
             let z = -1;
 
             // compute quat * vector
-            let ix =  qw * x + qy * z - qz * y;
-            let iy =  qw * y + qz * x - qx * z;
-            let iz =  qw * z + qx * y - qy * x;
-            let iw = - qx * x - qy * y - qz * z;
+            let ix = qw * x + qy * z - qz * y;
+            let iy = qw * y + qz * x - qx * z;
+            let iz = qw * z + qx * y - qy * x;
+            let iw = -qx * x - qy * y - qz * z;
 
             // compute result * inverse quat
-            let xp = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-            let yp = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-            let zp = iz * qw + iw * - qz + ix * - qy - iy * - qx;
+            let xp = ix * qw + iw * -qx + iy * -qz - iz * -qy;
+            let yp = iy * qw + iw * -qy + iz * -qx - ix * -qz;
+            let zp = iz * qw + iw * -qz + ix * -qy - iy * -qx;
 
-            let yaw = 90 - (180/Math.PI*Math.atan2(yp, xp));
+            let yaw = 90 - (180 / Math.PI * Math.atan2(yp, xp));
 
             return {
-              heading : yaw+70
+              heading: yaw + 70
             };
           }
         },
         icon: './images/car-topview.png',
         iconAnchor: [16, 16],
-        iconSize: [16,32],
+        iconSize: [16, 32],
         zoomLevel: 17,
         name: "Android Phone GPS"
       });
       // create Leaflet view
       this.view = new LeafletView({
-          container: "map",
-          layers: [markerLayer],
-          follow: false,
-          autoZoomOnFirstMarker:true
+        container: "map",
+        layers: [markerLayer],
+        follow: false,
+        autoZoomOnFirstMarker: true
       });
-    },
+
+      this.locationDataSource.subscribe((message) => {if(message.status === Status.DISCONNECTED) this.view.reset()}, [EventType.STATUS]);
+    }
   }
 };
 </script>

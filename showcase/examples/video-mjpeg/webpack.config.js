@@ -53,7 +53,8 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        index: 'video-mjpeg.html'
+        index: 'video-mjpeg.html',
+        https:true
     },
     devtool: 'source-map',
     plugins: [

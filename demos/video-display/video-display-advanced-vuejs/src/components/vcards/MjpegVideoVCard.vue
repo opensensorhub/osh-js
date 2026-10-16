@@ -15,6 +15,7 @@
 <script>
   import MjpegView from "osh-js/core/ui/view/video/MjpegView";
   import {randomUUID} from "osh-js/core/utils/Utils";
+  import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 
   export default {
     name: "MjpegVideoVCard",
@@ -34,8 +35,14 @@
         name: "Android Video",
         keepRatio: true,
         showTime: true,
-        dataSourceId: this.dataSource.id
-      });
+        layers: [
+          new VideoDataLayer({
+            dataSourceId: this.dataSource.id,
+            getFrameData: (rec) => rec.videoFrame,
+            getTimestamp: (rec) => rec.timestamp
+          })
+        ]
+      })
     }
   }
 </script>

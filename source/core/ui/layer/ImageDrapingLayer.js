@@ -14,8 +14,52 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined} from "../../utils/Utils.js";
+import {isDefined, randomUUID} from "../../utils/Utils.js";
 import Layer from "./Layer.js";
+
+/**
+ * Enumeration of the ways that the camera's position and orientation can be
+ * specified for a draped image.
+ */
+ const ImageDrapingPositionMode = Object.freeze({
+  /**
+   * Constant indicating that the position provided to the draping layer is
+   * in the form of a latitude (in degrees), longitude (in degrees), and
+   * altitude above ellipsoid (in meters). This also indicates that platform
+   * orientation is provided as heading, pitch, and roll, in degrees; and
+   * gimbal orientation is provided as yaw, pitch, and roll, in degrees.
+   */
+  LONLATALT_WITH_EULER_ANGLES: 1,
+
+  /**
+   * Constant indicating that the position provided to the draping layer is
+   * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+   * the platform and gimbal orientations are provided as 3x3 rotation
+   * matrices.
+   */
+  ECEF_WITH_MATRICES: 2,
+
+  /**
+   * Constant indicating that the position provided to the draping layer is
+   * in the form of ECEF 3-D coordinates (in meters). This also indicates that
+   * the platform and gimbal orientations are provided as quaternions.
+   */
+  ECEF_WITH_QUATERNIONS: 3,
+});
+
+/**
+ * When gimbal orientation is applied, which order do we apply the rotations?
+ * This only matters when the position mode is LONLATALT_WITH_EULER_ANGLES.
+ */
+const GimbalEulerAngleOrder = Object.freeze({
+  YAW_PITCH_ROLL: 1,
+  YAW_ROLL_PITCH: 2,
+  PITCH_YAW_ROLL: 3,
+  PITCH_ROLL_YAW: 4,
+  ROLL_YAW_PITCH: 5,
+  ROLL_PITCH_YAW: 6
+});
+
 
 /**
  * @extends Layer
@@ -83,77 +127,98 @@ class ImageDrapingLayer extends Layer {
      * @param {Function} properties.getGimbalOrientation -
      * @param {Function} properties.getCameraModel -
      * @param {Function} properties.getSnapshot -
+     * @param {Function} properties.getImageSrc -
      *
      * @param properties
      */
     constructor(properties) {
         super(properties);
-        this.type = 'draping';
-
-        this.properties = properties;
-        this.props.cameraModel = null;
-        this.props.imageSrc = null;
-        this.props.getSnapshot = null;
-        this.props.platformLocation = null;
-        this.props.platformOrientation = null;
-        this.props.gimbalOrientation = null;
-
-        const that = this;
+        this.type = 'drapedImage';
+    }
+    // call by super class
+    init(properties=this.properties) {
+        super.init(properties);
+        const props = {
+            cameraModel : null,
+            imageSrc : null,
+            getSnapshot : null,
+            platformLocation : null,
+            platformOrientation : null,
+            gimbalOrientation : null,
+            positionMode: ImageDrapingPositionMode.LONLATALT_WITH_EULER_ANGLES,
+            gimbalEulerAngleOrder: GimbalEulerAngleOrder.YAW_ROLL_PITCH
+        };
 
         if (isDefined(properties.platformLocation)) {
-            this.props.platformLocation = properties.platformLocation;
+            props.platformLocation = properties.platformLocation;
         }
 
         if (isDefined(properties.platformOrientation)) {
-            this.props.platformOrientation = properties.platformOrientation;
+            props.platformOrientation = properties.platformOrientation;
         }
 
         if (isDefined(properties.gimbalOrientation)) {
-            this.props.gimbalOrientation = properties.gimbalOrientation;
+            props.gimbalOrientation = properties.gimbalOrientation;
         }
 
         if (isDefined(properties.cameraModel)) {
-            this.props.cameraModel = properties.cameraModel;
+            props.cameraModel = properties.cameraModel;
         }
 
         if (isDefined(properties.imageSrc)) {
-            this.props.imageSrc = properties.imageSrc;
-        }
-
-        if (isDefined(properties.getPlatformLocation)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.platformLocation = that.getFunc('getPlatformLocation')(rec,timeStamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getPlatformLocation'), fn);
-        }
-
-        if (isDefined(properties.getPlatformOrientation)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.platformOrientation = that.getFunc('getPlatformOrientation')(rec,timeStamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getPlatformOrientation'), fn);
-        }
-
-        if (isDefined(properties.getGimbalOrientation)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.gimbalOrientation = that.getFunc('getGimbalOrientation')(rec,timeStamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getGimbalOrientation'), fn);
-        }
-
-        if (isDefined(properties.getCameraModel)) {
-            let fn = function (rec, timeStamp, options) {
-                that.props.cameraModel = that.getFunc('getCameraModel')(rec,timeStamp,options);
-            };
-            this.addFn(that.getDataSourcesIdsByProperty('getCameraModel'), fn);
+            props.imageSrc = properties.imageSrc;
         }
 
         if (isDefined(properties.getSnapshot)) {
-            this.props.getSnapshot = properties.getSnapshot;
+            props.getSnapshot = properties.getSnapshot;
         }
 
-        this.saveState();
+        if (isDefined(properties.positionMode)) {
+          props.positionMode = properties.positionMode;
+        }
+
+        if (isDefined(properties.gimbalEulerAngleOrder)) {
+          props.gimbalEulerAngleOrder = properties.gimbalEulerAngleOrder;
+        }
+
+        this.definedId('drapedImageId', props);
+
+        if (isDefined(properties.getPlatformLocation)) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('platformLocation',await this.getFunc('getPlatformLocation')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getPlatformLocation'), fn);
+        }
+
+        if (isDefined(properties.getPlatformOrientation)) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('platformOrientation',await this.getFunc('getPlatformOrientation')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getPlatformOrientation'), fn);
+        }
+
+        if (isDefined(properties.getGimbalOrientation)) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('gimbalOrientation',await this.getFunc('getGimbalOrientation')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getGimbalOrientation'), fn);
+        }
+
+        if (isDefined(properties.getCameraModel)) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('cameraModel',await this.getFunc('getCameraModel')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getCameraModel'), fn);
+        }
+
+        if (this.checkFn("getImageSrc")) {
+            let fn = async (rec, timestamp, options) => {
+                this.updateProperty('imageSrc',await this.getFunc('getImageSrc')(rec, timestamp, options));
+            };
+            this.addFn(this.getDataSourcesIdsByProperty('getImageSrc'), fn);
+        }
     }
 }
 
 export default  ImageDrapingLayer;
+export { ImageDrapingPositionMode, GimbalEulerAngleOrder };

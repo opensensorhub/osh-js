@@ -7,19 +7,20 @@
         @event='onControlEvent'
         :skipTimeStep="'60s'"
         :parseTime='parseTime'
+        :trackRealtime="'1h'"
         v-if="dataSynchronizer"
-        :key="key"
     ></TimeController>
   </div>
 </template>
 <script>
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResultJson from 'osh-js/core/datasource/SosGetResultJson.js';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {isDefined} from 'osh-js/core/utils/Utils';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 export default {
   components: {
@@ -28,32 +29,30 @@ export default {
   data: function () {
     return {
       dataSynchronizer: null,
-      view: null,
-      key: 0
+      view: null
     }
   },
   mounted() {
 
+    let startTime = (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString());
+    let endTime = (new Date().toISOString());
+
     const opts = {
-      protocol: "ws",
-      service: "SOS",
-      endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+      endpointUrl: "sensiasoft.net/sensorhub/sos",
       offeringID: "urn:mysos:offering04",
       observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
-      endTime: (new Date(Date.now()).toISOString()),
-      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
-      maxTime: (new Date(Date.now()).toISOString()),
-      bufferingTime: 100,
+      startTime: startTime,
+      endTime: endTime,
       timeOut: 100,
-      replaySpeed: 2.0
+      mode: Mode.REPLAY,
+      tls: true
     };
 
-    let chartDataSource1 = new SosGetResultJson("weather", {
+    let chartDataSource1 = new SosGetResult("weather", {
       ...opts
     });
 
-    let chartDataSource2 = new SosGetResultJson("weather", {
+    let chartDataSource2 = new SosGetResult("weather", {
       ...opts
     });
 
@@ -62,80 +61,57 @@ export default {
       layers: [
           new CurveLayer({
           dataSourceId: chartDataSource1.id,
-          getValues: (rec, timeStamp) => {
+          getValues: (rec, timestamp) => {
             return {
-              x: timeStamp,
+              x: timestamp,
               y: rec.windSpeed
             }
           },
-          color: 'rgba(0,220,204,0.5)',
-          getCurveId:(rec, timeStamp) => 2,
-          name: 'Wind Speed 1 (m/s)'
+          lineColor: 'rgba(0,220,204,0.5)',
+          backgroundColor: 'rgba(0,220,204,0.5)',
+          fill:true,
+          getCurveId:(rec, timestamp) => 2,
+          name: 'Wind Speed 1 (m/s)',
+          maxValues: 25
         }),
         new CurveLayer({
           dataSourceId: chartDataSource2.id,
-          getValues: (rec, timeStamp) => {
+          getValues: (rec, timestamp) => {
             return {
-              x: timeStamp,
+              x: timestamp,
               y: rec.windSpeed - 0.02
 
             }
           },
-          color: 'rgba(59,210,29,0.5)',
-          getCurveId:(rec, timeStamp) => 1,
-          name: 'Wind Speed 2 (m/s)'
+          lineColor: 'rgba(59,210,29,0.5)',
+          backgroundColor: 'rgba(59,210,29,0.5)',
+          fill:true,
+          getCurveId:(rec, timestamp) => 1,
+          name: 'Wind Speed 2 (m/s)',
+          maxValues: 25
         })
       ],
       css: "chart-view",
-      chartjsProps: {
-        chartProps: {
-          scales: {
-            yAxes: [{
-              scaleLabel: {
-                labelString: "Wind Speed (m/s)"
-              },
-              ticks: {
-                maxTicksLimit: 10
-              }
-            }],
-            xAxes: [{
-              scaleLabel: {
-                labelString: "Time"
-              },
-              ticks: {
-                maxTicksLimit: 20
-              }
-            }],
-          },
-          maintainAspectRatio: false
-        }
+      datasetOptions: {
+       tension: 0.2 // for 'line'
       }
     });
 
 // start streaming
     const dataSynchronizer = new DataSynchronizer({
       replaySpeed: 1.0,
-      timerResolution: 5,
-      dataSources: []
+      dataSources: [chartDataSource1, chartDataSource2]
     })
 
-    const that = this;
-    setTimeout(() => {
-      dataSynchronizer.addDataSource(chartDataSource1);
-      dataSynchronizer.addDataSource(chartDataSource2);
-      dataSynchronizer.reset();
-      dataSynchronizer.connect();
-      that.key = 1;
-    },5000);
-// connects each DataSource
     dataSynchronizer.connect();
+    // connects each DataSource
     this.dataSynchronizer = dataSynchronizer;
   },
   methods: {
     onControlEvent(eventName) {
       if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
           || eventName === 'replaySpeed'
-          || (eventName === 'play' && (!isDefined(this.dataSynchronizer.properties.replaySpeed)))) {
+          || (eventName === 'play')) {
         this.view.reset();
       }
     },

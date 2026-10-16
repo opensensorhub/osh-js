@@ -1,0 +1,168 @@
+/***************************** BEGIN LICENSE BLOCK ***************************
+
+ The contents of this file are subject to the Mozilla Public License, v. 2.0.
+ If a copy of the MPL was not distributed with this file, You can obtain one
+ at http://mozilla.org/MPL/2.0/.
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ for the specific language governing rights and limitations under the License.
+
+ Copyright (C) 2015-2022 Georobotix Inc. All Rights Reserved.
+
+ Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
+
+ ******************************* END LICENSE BLOCK ***************************/
+
+import WebSocketConnector from "../connector/WebSocketConnector";
+import {assertDefined, isDefined} from "../utils/Utils";
+import MqttTopicConnector from "../connector/MqttTopicConnector";
+import MqttConnector from "../connector/MqttConnector";
+import {getOAuthClient} from "osh-js/source/core/oauth/OAuthClient";
+
+class SensorWebApi {
+
+    /**
+     * @param {Object} [networkProperties={}]
+     * @param {String} networkProperties.endpointUrl - defines the Http(s) endpoint URL
+     * @param {Boolean} networkProperties.tls - defines is use Http or Https secure protocol for fetching data
+     * @param {String} [networkProperties.streamProtocol='ws'] - the Stream protocol to use: 'ws' pr 'mqtt'
+     * @param {Object} [networkProperties.mqttOpts={}] - the Mqtt options if stream protocol is 'mqtt'
+     * @param {String} networkProperties.mqttOpts.prefix - the Mqtt prefix value
+     * @param {String} networkProperties.mqttOpts.endpointUrl - the Mqtt specific endpointUrl
+     * @param {Object} networkProperties.connectorOpts - Specific connector options
+     */
+    constructor(networkProperties) {
+        assertDefined(networkProperties.endpointUrl, 'endpointUrl');
+        this.networkProperties = networkProperties;
+
+        let endpoint = networkProperties.endpointUrl;
+        if (endpoint.endsWith('/')) {
+            endpoint = endpoint.substring(0, endpoint.length - 1);
+        }
+
+        const tls = (networkProperties.tls) ? 's' : '';
+        this.url = 'http' + tls + '://' + endpoint;
+
+        this._network = {}
+        if (isDefined(networkProperties.connector)) {
+            this._network.stream = {
+                connector: networkProperties.connector,
+            };
+        } else if(isDefined(networkProperties.streamProtocol)){
+            this._network.stream = {
+                connector: this.createStreamConnector(networkProperties)
+            }
+        } else {
+            // default Stream to WS
+            this._network.stream = {
+                connector: this.createStreamConnector({
+                    ...networkProperties,
+                    streamProtocol: 'ws'
+                })
+            }
+        }
+    }
+
+    baseUrl() {
+        return this.url;
+    }
+
+    stream() {
+        return this._network.stream.connector;
+    }
+
+    createStreamConnector(networkProperties) {
+        assertDefined(networkProperties.streamProtocol, 'streamProtocol');
+
+        let endpoint = networkProperties.endpointUrl;
+        if(networkProperties.streamProtocol === 'mqtt' && isDefined(networkProperties.mqttOpts)) {
+            endpoint = networkProperties.mqttOpts.endpointUrl;
+        }
+
+        if (endpoint.endsWith('/')) {
+            endpoint = endpoint.substring(0, endpoint.length - 1);
+        }
+
+        const tls = (networkProperties.tls) ? 's' : '';
+        const url = networkProperties.streamProtocol + tls + '://' + endpoint;
+
+        if(networkProperties.streamProtocol === 'mqtt') {
+            if(isDefined(networkProperties.mqttOpts.shared) && networkProperties.mqttOpts.shared) {
+                return new MqttTopicConnector(networkProperties.mqttOpts.bcId, networkProperties);
+            } else {
+                return new MqttConnector(url, networkProperties);
+            }
+            //
+        } else if(networkProperties.streamProtocol === 'ws') {
+            return new WebSocketConnector(url);
+        }
+    }
+
+    connect() {
+        this._network.stream.connector.connect();
+    }
+
+    async getHeaders() {
+        const headers = {};
+
+        const oAuthClient = getOAuthClient();
+        if (oAuthClient !== null) {
+            const token = await oAuthClient.getValidToken();
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+        } else if ('connectorOpts' in this.networkProperties) {
+            const opts = this.networkProperties.connectorOpts;
+            if ('username' in opts && 'password' in opts) {
+                headers['Authorization'] = 'Basic ' + btoa(opts.username + ':' + opts.password);
+            } else {
+                for (const key in opts) {
+                    headers[key] = opts[key];
+                }
+            }
+        }
+        return headers;
+    }
+
+    async fetchAsJson(apiUrl, queryString) {
+        const fullUrl = this.baseUrl() + apiUrl + '?' + queryString;
+
+        const headers = await this.getHeaders();
+
+        const response = await fetch(fullUrl, {
+            method: 'GET',
+            credentials: 'include',
+            headers: headers
+        });
+
+        if (!response.ok) {
+            const err = new Error(`Got ${response.status} response from ${this.baseUrl()}`);
+            err.response = response;
+            throw err;
+        }
+        return response.json();
+    }
+
+    async postAsJson(apiUrl, jsonPayload) {
+        const fullUrl = this.baseUrl() + apiUrl;
+
+        const headers = await this.getHeaders();
+        headers['Accept'] = 'application/json';
+        headers['Content-Type'] = 'application/json';
+
+        const response = await fetch(fullUrl, {
+            method: 'POST',
+            headers: headers,
+            credentials: 'include',
+            body: jsonPayload
+        });
+
+        if (!response.ok) {
+            const err = new Error(`Got ${response.status} response from ${fullUrl}`);
+            err.response = response;
+            throw err;
+        }
+    }
+}
+export default SensorWebApi;

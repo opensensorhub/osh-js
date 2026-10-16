@@ -7,10 +7,10 @@
     </div>
     <div class="footer">
       <TimeController
-          :dataSource="dataSource"
+          :dataSynchronizer="dataSynchronizer"
           @event='onControlEvent'
           :skipTimeStep="'10s'"
-          v-if="dataSource "
+          v-if="dataSynchronizer "
       ></TimeController>
     </div>
   </div>
@@ -18,19 +18,23 @@
 <script>
     // @ is an alias to /src
     import TimeController from 'osh-js/vue/components/TimeController.vue';
-    import SosGetResultAudio from 'osh-js/core/datasource/SosGetResultAudio.js';
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
     import AudioView from "osh-js/core/ui/view/audio/AudioView";
     import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
       from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
     import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
+    import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
+    import {Mode} from "osh-js/core/datasource/Mode";
+    import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+
     export default {
         components: {
           TimeController
         },
         data: function () {
             return {
-                dataSource: null
+              dataSynchronizer: null
             }
         },
         beforeMount() {
@@ -38,82 +42,63 @@
       mounted() {
         // setup video
         // create data source for UAV camera
-        let audioDataSource = new SosGetResultAudio("alex-audio", {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: "sensiasoft.net:8181/sensorhub/sos",
+        let audioDataSource = new SosGetResult("alex-audio", {
+          endpointUrl: "sensiasoft.net/sensorhub/sos",
           offeringID: "urn:android:device:dd90fceba7fd5b47-sos",
           observedProperty: "http://sensorml.com/ont/swe/property/AudioFrame",
           startTime: "2021-04-12T10:48:45Z",
           endTime: "2021-04-12T10:49:45Z",
-          replaySpeed: 1.0,
-          bufferingTime: 1000
+          mode: Mode.REPLAY,
+          tls: true
+        });
+
+        this.dataSynchronizer = new DataSynchronizer({
+          replaySpeed: 1,
+          startTime: "2021-04-12T10:48:45Z",
+          endTime: "2021-04-12T10:49:45Z",
+          dataSources: [audioDataSource]
         });
 
         this.view = new AudioView({
           name: "Audio",
           css: 'audio-css',
           container: 'audio-chart-container',
-          dataSource: audioDataSource,
-          gain: 1,
-          playSound: true
+          gain: 10,
+          playSound: true,
+          layers: [
+            new AudioDataLayer({
+              dataSourceId: audioDataSource.id,
+              getSampleRate: (rec) => rec.sampleRate,
+              getFrameData: (rec) => rec.samples,
+              getTimestamp: (rec) => rec.timestamp
+            })
+          ]
         });
 
         const audioChartFrequencyVisualizer = new AudioFrequencyChartJsVisualizer({
           css: 'audio-canvas',
           fftSize: 32,
           container: 'chart-frequency',
-          chartjsProps: {
-            datasetsProps: {
-              borderColor: 'rgba(0,0,0,0.5)',
-              backgroundColor: 'rgba(210,210,210,0.8)',
-              barThickness: 20,
-              borderWidth: 1
-            },
-          }
+          datasetOptions: {
+            borderColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(210,210,210,0.8)',
+            barThickness: 20,
+            borderWidth: 1
+          },
         });
 
         const audioChartTimeVisualizer = new AudioTimeChartJsVisualizer({
           css: 'audio-canvas',
           fftSize: 1024,
           container: 'chart-time',
-          chartjsProps: {
-            chartProps: {
-              scales: {
-                yAxes: [{
-                  scaleLabel: {
-                    labelString: "Amplitude"
-                  },
-                  ticks: {
-                    maxTicksLimit: 5
-                  }
-                }],
-                xAxes: [{
-                  scaleLabel: {
-                    labelString: "Time"
-                  },
-                  ticks: {
-                    maxTicksLimit: 130,
-                    beginAtZero: true
-                  }
-                }],
-              },
-              maintainAspectRatio: false
-            },
-            datasetsProps: {
-              pointRadius: 0.1,
-              borderColor: 'rgba(0,0,0,0.5)',
-              backgroundColor: 'rgba(255,195,100,0.2)',
-              barThickness: 2,
-              borderWidth: 1
-            },
-            datasetsMinMaxProps: {
-              pointRadius: 0.0,
-              backgroundColor: 'rgba(0,139,141,1.0)',
-              barThickness: 2,
-              borderWidth: 1
-            }
-          }
+          datasetOptions: {
+            pointRadius: 0.1,
+            borderColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(255,195,100,0.2)',
+            barThickness: 2,
+            borderWidth: 1
+          },
+          colorReadData: 'rgb(22,255,0)'
         });
         const audioSpectrogramVisualizer = new AudioSpectrogramVisualizer({
           fftSize: 2048,
@@ -122,14 +107,14 @@
         this.view.addVisualizer(audioChartFrequencyVisualizer);
         this.view.addVisualizer(audioChartTimeVisualizer);
         this.view.addVisualizer(audioSpectrogramVisualizer);
-
-        this.dataSource = audioDataSource;
       },
 
       methods: {
         onControlEvent(eventName) {
-          if (eventName === 'forward' || eventName === 'backward' || eventName === 'end' || eventName === 'replaySpeed') {
-            this.view.reset()
+          if (eventName === 'time-changed') {
+            for (let view of this.views) {
+              view.reset();
+            }
           }
         },
       }

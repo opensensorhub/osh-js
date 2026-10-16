@@ -9,12 +9,11 @@
  Author: Mathieu Dhainaut <mathieu.dhainaut@gmail.com>
  ******************************* END LICENSE BLOCK ***************************/
 
-import View from "../View.js";
-import {isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
-import DecodeWorker from './workers/ffmpeg.decode.worker.js';
+import {assertDefined, isDefined, isWebWorker, randomUUID} from "../../../utils/Utils.js";
 import '../../../resources/css/ffmpegview.css';
 import YUVCanvas from "./YUVCanvas";
 import CanvasView from "./CanvasView";
+import {FrameType} from "./FrameType";
 
 /**
  * This class is in charge of displaying H264 data by decoding ffmpeg.js library and displaying into them a YUV canvas.
@@ -30,7 +29,13 @@ import CanvasView from "./CanvasView";
   framerate:25,
   showTime: true,
   showStats: true,
- dataSourceId: videoDataSource.id
+    layers: [
+      new VideoDataLayer({
+        dataSourceId: videoDataSource.id,
+        getFrameData: (rec) => rec.videoFrame,
+        getTimestamp: (rec) => rec.timestamp
+      })
+  ]
 });
  */
 
@@ -52,10 +57,9 @@ class FFMPEGView extends CanvasView {
      */
     constructor(properties) {
         super({
-            supportedLayers: ['data'],
+            supportedLayers: ['videoData'],
             ...properties
         });
-
         this.directPlay = false;
         this.codec = 'h264';
 
@@ -65,26 +69,33 @@ class FFMPEGView extends CanvasView {
 
         this.buf = [];
         this.bufferingTime = 2 * 1000;
+
     }
 
     createCanvas(width, height, style) {
         return new YUVCanvas({width: width, height: height, contextOptions: {preserveDrawingBuffer: true}});
     }
 
-    setData(dataSourceId, data) {
-        const values = data.values;
-        for(let i=0; i < values.length;i++) {
-            if (!this.skipFrame) {
-                if (this.decodeWorker == null) {
-                    this.initFFMPEG_DECODER_WORKER();
-                }
-
-                const value = values.shift();
-                let pktData = value.data.frameData;
-                let roll = value.data.roll;
-                let pktSize = pktData.length;
-                this.decode(pktSize, pktData, value.timeStamp, roll);
+    async setData(dataSourceId, data) {
+        if(data.type === 'videoData') {
+            const values = data.values;
+            for(let i=0;i < values.length;i++) {
+                this.updateVideo(values[i]);
             }
+        }
+    }
+
+    async updateVideo(props) {
+        if (!this.skipFrame) {
+            if (this.decodeWorker == null) {
+                this.initFFMPEG_DECODER_WORKER(props.frameData.compression);
+            }
+            return this.decode(
+                props.frameData.data.length,
+                props.frameData.data,
+                props.timestamp,
+                props.roll || 0
+            );
         }
     }
 
@@ -93,14 +104,16 @@ class FFMPEGView extends CanvasView {
      * @override
      */
     reset() {
-        if(isDefined(this.decodeWorker)) {
-            this.decodeWorker.terminate();
-            this.decodeWorker = null;
+        this.skipFrame = true;
+
+        if(this.decodeWorker) {
+            this.decodeWorker.postMessage({
+                message: 'release'
+            });
         }
-        this.resetCalled = true;
         let nodata = new Uint8Array(1);
         nodata[0] = 128;
-        this.yuvCanvas.drawNextOuptutPictureGL({
+        this.yuvCanvas.drawNextOutputPictureGL({
             yData: nodata,
             yDataPerRow: 1,
             yRowCnt: 1,
@@ -111,6 +124,7 @@ class FFMPEGView extends CanvasView {
             vDataPerRow: 1,
             vRowCnt: 1
         });
+        this.skipFrame = false;
     }
 
 //-- FFMPEG DECODING PART
@@ -124,56 +138,35 @@ class FFMPEGView extends CanvasView {
      * This location cannot be changed. Be sure to have the right file at the right place.
      * @private
      */
-    initFFMPEG_DECODER_WORKER() {
-        this.decodeWorker = new DecodeWorker();
-        // const drawWorker = new DrawWorker();
+    initFFMPEG_DECODER_WORKER(codec) {
+
+        if (isDefined(codec)) {
+            this.codec = codec.toLowerCase();
+        }
+
+        this.decodeWorker = new Worker(new URL('./workers/ffmpeg.decode.video.worker.js', import.meta.url), { type: 'module' });
         this.decodeWorker.id = randomUUID();
 
-        // const offscreenCanvas = this.canvas.transferControlToOffscreen();
-        // let canvas = document.createElement('canvas');
-        // canvas.setAttribute('width', this.width);
-        // canvas.setAttribute('height', this.height);
-        // this.domNode.appendChild(canvas);
+        this.decodeWorker.postMessage({
+            'message': 'init',
+            'codec' : codec.toLowerCase()
+        });
 
-        // const offscreenCanvas = canvas.transferControlToOffscreen();
-        // drawWorker.postMessage({
-        //     canvas: offscreenCanvas,
-        //     width: this.width,
-        //     height: this.height,
-        //     framerate: this.framerate,
-        //     dataSourceId: this.dataSourceId
-        // }, [offscreenCanvas]);
+        this.decodeWorker.onerror = (e) => {
+            console.error('Decode worker error:', e);
+        };
+        this.decodeWorker.onmessageerror = (e) => {
+            console.error('Decode worker message error:', e);
+        };
 
         const that = this;
         this.decodeWorker.onmessage = function (e) {
             let decodedFrame = e.data;
-            if(that.width !== decodedFrame.frame_width ||
-                that.height !== decodedFrame.frame_height) {
-                //re-create the canvas
-                that.yuvCanvas.resize(decodedFrame.frame_width,decodedFrame.frame_height);
-                that.width = decodedFrame.frame_width;
-                that.height = decodedFrame.frame_height;
-            }
-
-            that.yuvCanvas.canvasElement.drawing = true;
-            that.yuvCanvas.drawNextOuptutPictureGL({
-                yData: decodedFrame.frameYData,
-                yDataPerRow: decodedFrame.frame_width,
-                yRowCnt: decodedFrame.frame_height,
-                uData: decodedFrame.frameUData,
-                uDataPerRow: decodedFrame.frame_width / 2,
-                uRowCnt: decodedFrame.frame_height / 2,
-                vData: decodedFrame.frameVData,
-                vDataPerRow: decodedFrame.frame_width / 2,
-                vRowCnt: decodedFrame.frame_height / 2,
-                roll: decodedFrame.roll
-            });
-
-            that.yuvCanvas.canvasElement.drawing = false;
-
+            that.drawFrame(decodedFrame);
+            this.onAfterDecoded(decodedFrame, FrameType.ARRAY);
             this.updateStatistics(decodedFrame.pktSize);
             if(this.showTime) {
-                this.textFpsDiv.innerText = new Date(decodedFrame.timeStamp).toISOString()+' ';
+                this.textFpsDiv.innerText = new Date(decodedFrame.timestamp).toISOString()+' ';
             }
             if(this.showStats) {
                 this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
@@ -185,23 +178,49 @@ class FFMPEGView extends CanvasView {
         }.bind(this);
     }
 
+    drawFrame(decodedFrame) {
+        this.yuvCanvas.canvasElement.drawing = true;
+        if(this.width !== decodedFrame.frame_width ||
+            this.height !== decodedFrame.frame_height) {
+            //re-create the canvas
+            this.yuvCanvas.resize(decodedFrame.frame_width,decodedFrame.frame_height);
+            this.width = decodedFrame.frame_width;
+            this.height = decodedFrame.frame_height;
+        }
+        this.yuvCanvas.drawNextOutputPictureGL({
+            yData: decodedFrame.frameYData,
+            yDataPerRow: decodedFrame.frame_width,
+            yRowCnt: decodedFrame.frame_height,
+            uData: decodedFrame.frameUData,
+            uDataPerRow: decodedFrame.frame_width / 2,
+            uRowCnt: decodedFrame.frame_height / 2,
+            vData: decodedFrame.frameVData,
+            vDataPerRow: decodedFrame.frame_width / 2,
+            vRowCnt: decodedFrame.frame_height / 2,
+            roll: decodedFrame.roll
+        });
+
+        this.yuvCanvas.canvasElement.drawing = false;
+    }
     /**
      * @private
      * @param pktSize
      * @param pktData
-     * @param timeStamp
+     * @param timestamp
      */
-    decode(pktSize, pktData, timeStamp, roll) {
+    async decode(pktSize, pktData, timestamp, roll) {
         if(pktSize > 0) {
-            let arrayBuffer = pktData.buffer;
+            const clone = new Uint8Array(pktData);
+            let arrayBuffer = clone.buffer;
 
             this.decodeWorker.postMessage({
+                message: 'data',
                 pktSize: pktSize,
                 pktData: arrayBuffer,
                 roll: roll,
-                byteOffset: pktData.byteOffset,
+                byteOffset: 0,
                 codec: this.codec,
-                timeStamp: timeStamp,
+                timestamp: timestamp,
                 dataSourceId: this.dataSourceId
             }, [arrayBuffer]);
             pktData = null;
@@ -210,15 +229,32 @@ class FFMPEGView extends CanvasView {
 
     destroy() {
         super.destroy();
-        if(isDefined(this.interval)) {
-            clearInterval(this.interval);
+        if(isDefined(this.decodeWorker)) {
+            this.decodeWorker.postMessage({
+                message: 'release'
+            });
+            this.decodeWorker.terminate();
         }
-        this. decodeWorker.postMessage({
-            message: 'release'
+    }
+
+    async getCanvas() {
+        return this.yuvCanvas.canvasElement;
+    }
+
+    drawBlank() {
+        let nodata = new Uint8Array(1);
+        this.yuvCanvas.drawNextOutputPictureGL({
+            yData: nodata,
+            yDataPerRow: 1,
+            yRowCnt: 1,
+            uData: nodata,
+            uDataPerRow: 1,
+            uRowCnt: 1,
+            vData: nodata,
+            vDataPerRow: 1,
+            vRowCnt: 1
         });
-        this.decodeWorker.terminate();
     }
 }
 
 export default FFMPEGView;
-
