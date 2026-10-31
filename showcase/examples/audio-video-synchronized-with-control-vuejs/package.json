@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch",
-    "prod": "webpack --config webpack.config.js --mode production"
+    "dev": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --config webpack.config.js --mode development --watch",
+    "prod": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack.config.js --mode production"
   },
   "dependencies": {
     "chart.js": "3.5.1",
@@ -28,7 +28,7 @@
     "html-webpack-plugin": "4.2.0",
     "less": "3.11.1",
     "less-loader": "6.0.0",
-    "node-sass": "4.14.0",
+    "sass": "~1.32.13",
     "nouislider": "14.4.0",
     "patch-package": "6.2.2",
     "sass-loader": "8.0.2",
