@@ -24,20 +24,20 @@ import {FrameType} from "./FrameType";
  import FFMPEGView from 'core/ui/view/video/FFMPEGView.js';
 
  let videoView = new FFMPEGView({
-  container: 'video-h264-container',
-  css: 'video-h264',
-  name: 'UAV Video',
-  framerate:25,
-  showTime: true,
-  showStats: true,
-    layers: [
-      new VideoDataLayer({
-        dataSourceId: videoDataSource.id,
-        getFrameData: (rec) => rec.videoFrame,
-        getTimestamp: (rec) => rec.timestamp
-      })
-  ]
-});
+ container: 'video-h264-container',
+ css: 'video-h264',
+ name: 'UAV Video',
+ framerate:25,
+ showTime: true,
+ showStats: true,
+ layers: [
+ new VideoDataLayer({
+ dataSourceId: videoDataSource.id,
+ getFrameData: (rec) => rec.videoFrame,
+ getTimestamp: (rec) => rec.timestamp
+ })
+ ]
+ });
  */
 
 class FFMPEGView extends CanvasView {
@@ -129,7 +129,15 @@ class FFMPEGView extends CanvasView {
             vRowCnt: 1
         });
         this.skipFrame = false;
+        // the decoder has been released, a new keyframe is needed to restart decoding
+        this.onKeyFrameRequired();
     }
+
+    /**
+     * Called when the decoder needs a new keyframe before decoding again (reset, decoding error...).
+     * VideoView overrides it to go back to "skip until keyframe" mode.
+     */
+    onKeyFrameRequired() {}
 
 //-- FFMPEG DECODING PART
 
@@ -173,7 +181,7 @@ class FFMPEGView extends CanvasView {
             this.onAfterDecoded(decodedFrame, FrameType.ARRAY);
             this.updateStatistics(decodedFrame.pktSize);
             if(this.showTime) {
-                this.textFpsDiv.innerText = new Date(decodedFrame.timestamp).toISOString()+' ';
+                this.textFpsDiv.textContent = new Date(decodedFrame.timestamp).toISOString()+' ';
             }
             if(this.showStats) {
                 this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +

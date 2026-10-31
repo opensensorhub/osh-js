@@ -13,14 +13,20 @@ class FfmpegVideoDecoder extends FfmpegDecoder {
     }
 
     handleAvFrame(avFrame, pktSize, timestamp) {
-        const frame_width = this.Module.getValue(avFrame + 68, 'i32');
-        const frame_height = this.Module.getValue(avFrame + 72, 'i32');
+        const HEAPU8 = this.Module.HEAPU8;
+        // AVFrame fields: data[0..2] at 0/4/8, width at 68, height at 72
+        const avFrameFields = new Uint32Array(HEAPU8.buffer, avFrame, 19);
+        const frame_width = avFrameFields[17] | 0;
+        const frame_height = avFrameFields[18] | 0;
         //console.log("Decoded Frame, W=" + frame_width + ", H=" + frame_height);
 
         // copy Y channel to canvas
-        const frameYDataPtr = this.Module.getValue(avFrame, '*');
-        const frameUDataPtr = this.Module.getValue(avFrame + 4, '*');
-        const frameVDataPtr = this.Module.getValue(avFrame + 8, '*');
+        const frameYDataPtr = avFrameFields[0];
+        const frameUDataPtr = avFrameFields[1];
+        const frameVDataPtr = avFrameFields[2];
+
+        const ySize = frame_width * frame_height;
+        const uvSize = frame_width / 2 * frame_height / 2;
 
         return {
             frame_width: frame_width,
@@ -28,9 +34,9 @@ class FfmpegVideoDecoder extends FfmpegDecoder {
             frameYDataPtr: frameYDataPtr,
             frameUDataPtr: frameUDataPtr,
             frameVDataPtr: frameVDataPtr,
-            frameYData: new Uint8Array(this.Module.HEAPU8.buffer.slice(frameYDataPtr, frameYDataPtr + frame_width * frame_height)),
-            frameUData: new Uint8Array(this.Module.HEAPU8.buffer.slice(frameUDataPtr, frameUDataPtr + frame_width / 2 * frame_height / 2)),
-            frameVData: new Uint8Array(this.Module.HEAPU8.buffer.slice(frameVDataPtr, frameVDataPtr + frame_width / 2 * frame_height / 2)),
+            frameYData: HEAPU8.slice(frameYDataPtr, frameYDataPtr + ySize),
+            frameUData: HEAPU8.slice(frameUDataPtr, frameUDataPtr + uvSize),
+            frameVData: HEAPU8.slice(frameVDataPtr, frameVDataPtr + uvSize),
             timestamp: timestamp,
             pktSize: pktSize,
             codec: this.codec

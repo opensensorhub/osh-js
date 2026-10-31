@@ -22,17 +22,17 @@ import {FrameType} from "./FrameType";
  import WebCodecView from 'core/ui/view/video/WebCodecView.js';
 
  let videoView = new WebCodecView({
-  container: 'video-h264-container',
-  css: 'video-h264',
-  name: 'UAV Video',
-  layers: [
-      new DataLayer({
-        dataSourceId: videoDataSource.id,
-        getFrameData: (rec) => rec.videoFrame,
-        getTimestamp: (rec) => rec.timestamp
-      })
-  ]
-});
+ container: 'video-h264-container',
+ css: 'video-h264',
+ name: 'UAV Video',
+ layers: [
+ new DataLayer({
+ dataSourceId: videoDataSource.id,
+ getFrameData: (rec) => rec.videoFrame,
+ getTimestamp: (rec) => rec.timestamp
+ })
+ ]
+ });
  */
 
 class WebCodecView extends CanvasView {
@@ -53,7 +53,7 @@ class WebCodecView extends CanvasView {
             ...properties
         });
 
-        if (!'VideoEncoder' in window) {
+        if (!('VideoDecoder' in window)) {
             // WebCodecs API is not supported.
             throw Error('WebCodec API is not supported');
         }
@@ -94,7 +94,7 @@ class WebCodecView extends CanvasView {
         this.codec = this.codecMap['h264'];
 
         if(isDefined(properties.codec)) {
-            if(!properties.codec in this.codecMap) {
+            if(!(properties.codec in this.codecMap)) {
                 throw Error(`The codec properties.codec is not supported, the list of supported codec: this.codecMap`);
             } else {
                 this.codec = this.codecMap[properties.codec];
@@ -138,7 +138,7 @@ class WebCodecView extends CanvasView {
             }
         }
     }
-    async updateVideo(props) {
+    async updateVideo(props, keyFrame) {
         if (!this.skipFrame) {
             if (!this.codecConfigured) {
                 this.codec = this.codecMap[props.frameData.compression.toLowerCase()]
@@ -149,7 +149,8 @@ class WebCodecView extends CanvasView {
                 props.frameData.data.length,
                 props.frameData.data,
                 props.timestamp,
-                props.roll || 0
+                props.roll || 0,
+                keyFrame
             );
         }
     }
@@ -161,37 +162,35 @@ class WebCodecView extends CanvasView {
     reset() {
     }
 
+    /**
+     * Called when the decoder needs a new keyframe before decoding again (decoding error...).
+     * VideoView overrides it to go back to "skip until keyframe" mode.
+     */
+    onKeyFrameRequired() {}
+
     initDecoder() {
-        this.gl = this.canvasElt.getContext("bitmaprenderer");
+        this.gl = this.canvasElt.getContext("2d");
 
         const init = {
             output: async (videoFrame) => {
                 // check picture width
-                let isReconfigure = false;
                 if (this.width !== videoFrame.codedWidth || this.height !== videoFrame.codedHeight) {
                     this.width = videoFrame.codedWidth;
                     this.height = videoFrame.codedHeight;
 
                     this.updateCanvasSize(this.width ,this.height);
-                    isReconfigure = true;
                 }
-                if(this.videoDecoder.state === 'closed' || isReconfigure) {
-                    this.videoDecoder.configure({
-                        codec: this.codec,
-                        codedWidth: this.width,
-                        codedHeight:this.height,
-                    });
-                }
-                const bitmap = await createImageBitmap(videoFrame);
+                const queueElt = this.queue.shift();
                 try {
-                    await this.handleDocodedFrame(bitmap, this.width, this.height, videoFrame.timestamp, this.queue.shift());
+                    await this.handleDocodedFrame(videoFrame, this.width, this.height, videoFrame.timestamp, queueElt);
                 } finally {
                     videoFrame.close();
                 }
             },
             error: (error) => {
-                this.queue.shift();
+                this.queue.length = 0;
                 console.error(error);
+                this.onKeyFrameRequired();
                 if(this.videoDecoder.state === 'closed') {
                     this.initDecoder();
                 }
@@ -199,11 +198,16 @@ class WebCodecView extends CanvasView {
         };
         try {
             this.videoDecoder = new VideoDecoder(init);
-            this.videoDecoder.configure({
+            const config = {
                 codec: this.codec,
                 codedWidth: this.width,
                 codedHeight: this.height,
-            });
+                optimizeForLatency: true,
+            };
+            // data is expected in Annex B format (start codes 00 00 01)
+            if (this.codec.startsWith('avc1')) config.avc = { format: 'annexb' };
+            if (this.codec.startsWith('hev1') || this.codec.startsWith('hvc1')) config.hevc = { format: 'annexb' };
+            this.videoDecoder.configure(config);
             this.codecConfigured = true;
         }catch (ex) {
             this.elementDiv.remove(); // remove reserved div element
@@ -221,19 +225,19 @@ class WebCodecView extends CanvasView {
                 scale = this.height / this.width;
             }
             const angleRad = roll*Math.PI/180.;
-            if((this.angleRad && this.angleRad !== angleRad) || (this.scale && this.scale !== scale) || !this.angleRad || !this.scale) {
+            if (this.angleRad !== angleRad || this.scale !== scale) {
                 this.canvasElt.style = `transform:rotate(${angleRad}rad) scale(${scale})`;
                 this.angleRad = angleRad;
                 this.scale = scale;
             }
 
-            this.gl.transferFromImageBitmap(videoFrame);
+            this.gl.drawImage(videoFrame, 0, 0);
 
             // update stats
             this.onAfterDecoded(videoFrame, FrameType.ARRAY);
             this.updateStatistics(queueElt.pktSize);
             if(this.showTime) {
-                this.textFpsDiv.innerText = new Date(timestamp).toISOString()+' ';
+                this.textFpsDiv.textContent = new Date(timestamp).toISOString()+' ';
             }
             if(this.showStats) {
                 this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
@@ -248,30 +252,136 @@ class WebCodecView extends CanvasView {
     }
 
     /**
+     * Build the H264 codec string (avc1.PPCCLL) from the SPS (NAL type 7) found in an Annex B packet.
+     * @private
+     * @param pktData
+     * @return {String|null} the codec string, or null if the packet does not contain a SPS
+     */
+    getH264CodecString(pktData) {
+        for (let i = 0; i + 7 < pktData.length; i++) {
+            if (pktData[i] === 0 && pktData[i + 1] === 0 &&
+                (pktData[i + 2] === 1 || (pktData[i + 2] === 0 && pktData[i + 3] === 1))) {
+                const nal = i + (pktData[i + 2] === 1 ? 3 : 4);
+                const nalType = pktData[nal] & 0x1f;
+                if (nalType === 1 || nalType === 5) return null;
+                if (nalType === 7) {
+                    const hex = (b) => b.toString(16).padStart(2, '0');
+                    return 'avc1.' + hex(pktData[nal + 1]) + hex(pktData[nal + 2]) + hex(pktData[nal + 3]);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Build the H265 codec string (hev1.[space]profile.compatFlags.[tier]level.constraints) from the SPS
+     * (NAL type 33) found in an Annex B packet.
+     * @private
+     * @param pktData
+     * @return {String|null} the codec string, or null if the packet does not contain a SPS
+     */
+    getH265CodecString(pktData) {
+        for (let i = 0; i + 7 < pktData.length; i++) {
+            if (pktData[i] === 0 && pktData[i + 1] === 0 &&
+                (pktData[i + 2] === 1 || (pktData[i + 2] === 0 && pktData[i + 3] === 1))) {
+                const nal = i + (pktData[i + 2] === 1 ? 3 : 4);
+                const nalType = (pktData[nal] >> 1) & 0x3f;
+                if (nalType < 32) return null;
+                if (nalType === 33) {
+                    // skip the 2-byte NAL header and remove the emulation prevention bytes (00 00 03)
+                    const rbsp = [];
+                    for (let j = nal + 2; j < pktData.length && rbsp.length < 15; j++) {
+                        const n = rbsp.length;
+                        if (pktData[j] === 3 && n >= 2 && rbsp[n - 1] === 0 && rbsp[n - 2] === 0) continue;
+                        rbsp.push(pktData[j]);
+                    }
+                    if (rbsp.length < 13) return null;
+
+                    // rbsp[0]: vps id / max sub layers / nesting flag, then profile_tier_level()
+                    const profileSpace = ['', 'A', 'B', 'C'][rbsp[1] >> 6];
+                    const tier = (rbsp[1] & 0x20) ? 'H' : 'L';
+                    const profileIdc = rbsp[1] & 0x1f;
+
+                    // compatibility flags: the codec string uses the reversed bit order
+                    const flags = ((rbsp[2] << 24) | (rbsp[3] << 16) | (rbsp[4] << 8) | rbsp[5]) >>> 0;
+                    let reversed = 0;
+                    for (let b = 0; b < 32; b++) {
+                        reversed = (reversed << 1) | ((flags >>> b) & 1);
+                    }
+                    reversed = reversed >>> 0;
+
+                    // 6 constraint bytes, trailing zero bytes are omitted
+                    let last = 11;
+                    while (last > 6 && rbsp[last] === 0) last--;
+                    const constraints = rbsp.slice(6, last + 1)
+                        .map((b) => b.toString(16).toUpperCase().padStart(2, '0')).join('.');
+
+                    const levelIdc = rbsp[12];
+                    return 'hev1.' + profileSpace + profileIdc + '.' + reversed.toString(16).toUpperCase() +
+                        '.' + tier + levelIdc + '.' + constraints;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * @private
      * @param pktSize
      * @param pktData
      * @param timestamp
+     * @param keyFrame - true if the packet is a keyframe (computed by VideoView)
      */
-    async decode(pktSize, pktData, timestamp, roll) {
+    async decode(pktSize, pktData, timestamp, roll, keyFrame) {
         if (this.codecConfigured) {
-            let key = false;
-            if(this.codec === this.codecMap['h264']) {
-                // optimize for H264
-                // H264 logic
-                key = pktData[26] === 101 && pktData[25] === 1 && pktData[24] === 0 && pktData[23] === 0;
+            if (!keyFrame && this.videoDecoder.decodeQueueSize > 10) {
+                this.onKeyFrameRequired();
+                return;
             }
-
-            this.queue.push({
-                roll: roll,
-                pktSize: pktSize
-            });
             let chunk = new EncodedVideoChunk({
                 timestamp: timestamp,
-                type: key ? 'key' : 'delta',
+                type: keyFrame ? 'key' : 'delta',
                 data: pktData
             });
-            this.videoDecoder.decode(chunk);
+            try {
+                if (keyFrame && this.codec.startsWith('avc1')) {
+                    // use the profile/level declared in the SPS of the stream
+                    const codec = this.getH264CodecString(pktData);
+                    if (codec && codec !== this.codec) {
+                        this.codec = codec;
+                        this.videoDecoder.configure({
+                            codec: this.codec,
+                            codedWidth: this.width,
+                            codedHeight: this.height,
+                            optimizeForLatency: true,
+                            avc: { format: 'annexb' }
+                        });
+                    }
+                }
+                if (keyFrame && (this.codec.startsWith('hev1') || this.codec.startsWith('hvc1'))) {
+                    // use the profile/tier/level declared in the SPS of the stream
+                    const codec = this.getH265CodecString(pktData);
+                    if (codec && codec !== this.codec) {
+                        this.codec = codec;
+                        this.videoDecoder.configure({
+                            codec: this.codec,
+                            codedWidth: this.width,
+                            codedHeight: this.height,
+                            optimizeForLatency: true,
+                            hevc: { format: 'annexb' }
+                        });
+                    }
+                }
+                this.videoDecoder.decode(chunk);
+                // push only if decode() did not throw, to keep the queue in sync with the output frames
+                this.queue.push({
+                    roll: roll,
+                    pktSize: pktSize
+                });
+            } catch (e) {
+                console.error("Error during decode chunk:", e);
+                this.onKeyFrameRequired();
+            }
         } else {
             console.warn('decoder has not been initialized yet');
         }
@@ -290,4 +400,3 @@ class WebCodecView extends CanvasView {
 }
 
 export default WebCodecView;
-

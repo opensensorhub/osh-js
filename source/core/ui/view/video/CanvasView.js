@@ -24,7 +24,8 @@ class CanvasView extends View {
             frames: 0,
             firstTime: 0,
             bitRate: 0,
-            averageBitRate:0
+            averageBitRate:0,
+            pktSize: 0
         };
 
         this.framerate = 29.67;
@@ -104,10 +105,15 @@ class CanvasView extends View {
                 that.skipFrame = true;
             } else {
                 that.skipFrame = false;
+                // frames were dropped while hidden, a new keyframe is needed to decode again
+                that.onKeyFrameRequired();
             }
         }
 
         document.addEventListener(visibilityChange, handleVisibilityChange, false);
+        // kept to remove the listener on destroy
+        this.visibilityChange = visibilityChange;
+        this.handleVisibilityChange = handleVisibilityChange;
 
     }
 
@@ -133,12 +139,35 @@ class CanvasView extends View {
         this.statistics.firstTime = currentTime;
     }
 
+    /**
+     * Update the stats text, only when updateStatistics() has computed new values (about once per second).
+     * @protected
+     * @param {Number} width - the picture width
+     * @param {Number} height - the picture height
+     * @param {String} codec - the codec name to display
+     */
+    updateStatsText(width, height, codec) {
+        if(this.statsUpdateTime !== this.statistics.firstTime) {
+            this.statsUpdateTime = this.statistics.firstTime;
+            this.textStatsDiv.innerText  = this.statistics.averageFps.toFixed(2) + ' fps, ' +
+                (this.statistics.averageBitRate/1000).toFixed(2)+' kB/s @'+
+                width+"x"+height+'\n '+codec;
+        }
+    }
+
     onUpdated(stats) {
 
     }
 
+    /**
+     * Called when the decoder needs a new keyframe before decoding again.
+     * VideoView overrides it to go back to "skip until keyframe" mode.
+     */
+    onKeyFrameRequired() {}
+
     destroy() {
         super.destroy();
+        document.removeEventListener(this.visibilityChange, this.handleVisibilityChange, false);
     }
 
     /**
