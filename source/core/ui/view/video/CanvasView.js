@@ -59,27 +59,34 @@ class CanvasView extends View {
                 this.height = properties.height;
             }
         }
-
+        
         let domNode = document.getElementById(this.divId);
 
         // if need to draw text
-        if(this.showTime || this.showStats) {
+        if (this.showTime || this.showStats) {
+            if (window.getComputedStyle(domNode).position === 'static') {
+                domNode.style.position = 'relative';
+            }
+            
             this.textDiv = document.createElement("div");
-            this.textDiv.setAttribute("width",""+this.width);
-            this.textDiv.setAttribute("height",15);
-            this.textDiv.setAttribute("class","ffmpeg-info");
-
-            if(this.showTime) {
+            this.textDiv.setAttribute("class", "ffmpeg-info");
+            this.textDiv.style.position = 'absolute';
+            this.textDiv.style.top = '0';
+            this.textDiv.style.left = '0';
+            this.textDiv.style.zIndex = '1';
+            this.textDiv.style.pointerEvents = 'none';
+            
+            if (this.showTime) {
                 this.textFpsDiv = document.createElement("div");
-                this.textFpsDiv.setAttribute("class","ffmpeg-fps");
+                this.textFpsDiv.setAttribute("class", "ffmpeg-fps");
                 this.textDiv.appendChild(this.textFpsDiv);
             }
-            if(this.showStats) {
+            if (this.showStats) {
                 this.textStatsDiv = document.createElement("div");
-                this.textStatsDiv.setAttribute("class","ffmpeg-stats");
+                this.textStatsDiv.setAttribute("class", "ffmpeg-stats");
                 this.textDiv.appendChild(this.textStatsDiv);
             }
-
+            
             domNode.appendChild(this.textDiv);
         }
 
