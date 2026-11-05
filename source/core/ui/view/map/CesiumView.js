@@ -35,7 +35,6 @@ import {
     RectangleGeometry,
     Rectangle,
     Primitive,
-    createDefaultImageryProviderViewModels,
     WebMapServiceImageryProvider,
     EllipsoidTerrainProvider,
     NearFarScalar,
