@@ -14,23 +14,85 @@ class MqttTopicConnector extends DataConnector {
         super(url, properties);
         this.lastReceiveTime = -1;
         this.interval = -1;
-        this.broadcastChannel = new BroadcastChannel(url);
-        this.broadcastChannel.onmessage = (message) => {
-            if(message.data.topic === this.fullTopic) {
-                this.onMessage(message.data.data);
-            }
-        }
+        this.broadcastChannel = null;
+        this.messagePort = properties.mqttOpts && properties.mqttOpts.messagePort;
+        this.pendingSubscriptions = new Map();
+        this.openBroadcastChannel();
         this.topics = [];
     }
 
-    doRequest(topic = '',queryString= undefined) {
-        this.fullTopic = topic + '?'+queryString;
+    openBroadcastChannel() {
+        if (this.messagePort) {
+            this.messagePort.onmessage = (message) => {
+                if(message.data.message === 'subscribe-ack') {
+                    this.clearSubscriptionRetry(message.data.topic);
+                } else if(message.data.message === 'subscribe-error') {
+                    this.clearSubscriptionRetry(message.data.topic);
+                    console.error(`MQTT subscription failed for ${message.data.topic}: ${message.data.error}`);
+                    this.onChangeStatus(Status.CLOSED_ERROR);
+                } else if(message.data.topic === this.fullTopic &&
+                    !message.data.message) {
+                    this.onMessage(message.data.data);
+                }
+            };
+            this.messagePort.start();
+            return;
+        }
+        if (this.broadcastChannel !== null) {
+            return;
+        }
+        this.broadcastChannel = new BroadcastChannel(this.url);
+        this.broadcastChannel.onmessage = (message) => {
+            if(message.data.message === 'subscribe-ack' &&
+                message.data.connectorId === this.id) {
+                this.clearSubscriptionRetry(message.data.topic);
+            } else if(message.data.topic === this.fullTopic &&
+                !message.data.message) {
+                this.onMessage(message.data.data);
+            }
+        }
+    }
+
+    clearSubscriptionRetry(topic) {
+        const retry = this.pendingSubscriptions.get(topic);
+        if (retry) {
+            clearInterval(retry);
+            this.pendingSubscriptions.delete(topic);
+        }
+    }
+
+    requestSubscription(topic) {
+        if (this.messagePort) {
+            this.messagePort.postMessage({
+                message: 'subscribe',
+                connectorId: this.id,
+                topic: topic
+            });
+            return;
+        }
+        if (this.broadcastChannel === null) {
+            return;
+        }
         this.broadcastChannel.postMessage({
             message: 'subscribe',
             connectorId: this.id,
-            topic: this.fullTopic
+            topic: topic
         });
+    }
+
+    doRequest(topic = '',queryString= undefined) {
+        this.openBroadcastChannel();
+        this.fullTopic = topic + '?'+queryString;
+        if (this.topics.includes(this.fullTopic)) {
+            this.onChangeStatus(Status.CONNECTED);
+            return;
+        }
+        this.requestSubscription(this.fullTopic);
+        this.pendingSubscriptions.set(this.fullTopic, setInterval(() => {
+            this.requestSubscription(this.fullTopic);
+        }, 500));
         this.topics.push(this.fullTopic);
+        this.opened = true;
         this.onChangeStatus(Status.CONNECTED);
     }
     /**
@@ -45,8 +107,20 @@ class MqttTopicConnector extends DataConnector {
      * @param {Boolean} removeInterval  - force removing the interval
      */
     fullDisconnect(removeInterval) {
+        if (this.messagePort) {
+            for(let topic of this.topics) {
+                this.clearSubscriptionRetry(topic);
+                this.messagePort.postMessage({
+                    message: 'unsubscribe',
+                    connectorId: this.id,
+                    topic: topic,
+                });
+            }
+            this.topics = [];
+        }
         if (this.broadcastChannel != null) {
             for(let topic of this.topics) {
+                this.clearSubscriptionRetry(topic);
                 this.broadcastChannel.postMessage({
                     message: 'unsubscribe',
                     connectorId: this.id,
@@ -61,6 +135,7 @@ class MqttTopicConnector extends DataConnector {
             clearInterval(this.interval);
         }
         this.opened = false;
+        this.onChangeStatus(Status.DISCONNECTED);
     }
 
     /**
@@ -91,7 +166,7 @@ class MqttTopicConnector extends DataConnector {
     }
 
     isConnected() {
-        return this.broadcastChannel !== null && this.opened;
+        return (this.messagePort || this.broadcastChannel !== null) && this.opened;
     }
 
     checkStatus(status) {

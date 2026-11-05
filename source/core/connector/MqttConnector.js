@@ -56,22 +56,98 @@ class MqttConnector extends DataConnector {
         this.interval = -1;
         this.id = `mqtt-connector-${randomUUID()}`;
         this.mqttProvider = undefined;
+        this.topicSubscribers = new Map();
+        this.topicSubscriptionRequests = new Map();
+        this.messagePorts = new Map();
     }
 
     initBc() {
         this.onMessage = (data, topic) => {
-            this.broadcastChannel.postMessage({
-                data: data,
-                topic: topic
-            }, [data]);
-        }
-        this.broadcastChannel = new BroadcastChannel(this.id);
-        this.broadcastChannel.onmessage = (message) => {
-            if(message.data.message === 'subscribe') {
-                this.doRequest(message.data.topic);
-            } else if(message.data.message === 'unsubscribe') {
-                this.disconnect(message.data.topic);
+            const subscribers = this.topicSubscribers.get(topic);
+            if (!subscribers) {
+                return;
             }
+            for (const connectorId of subscribers) {
+                const port = this.messagePorts.get(connectorId);
+                if (port) {
+                    port.postMessage({data: data, topic: topic});
+                }
+            }
+        }
+    }
+
+    registerMessagePort(connectorId, port) {
+        const previousPort = this.messagePorts.get(connectorId);
+        if (previousPort) {
+            previousPort.close();
+            for (const [topic, subscribers] of this.topicSubscribers) {
+                subscribers.delete(connectorId);
+                if (subscribers.size === 0) {
+                    this.topicSubscribers.delete(topic);
+                    this.disconnect(topic);
+                }
+            }
+        }
+
+        this.messagePorts.set(connectorId, port);
+        port.onmessage = async (event) => {
+            if (event.data.message === 'subscribe') {
+                try {
+                    await this.subscribeTopic(event.data.topic, connectorId);
+                    port.postMessage({message: 'subscribe-ack', topic: event.data.topic});
+                } catch (error) {
+                    const message = error instanceof Error ? error.message : String(error);
+                    port.postMessage({
+                        message: 'subscribe-error',
+                        topic: event.data.topic,
+                        error: message
+                    });
+                }
+            } else if (event.data.message === 'unsubscribe') {
+                this.unsubscribeTopic(event.data.topic, connectorId);
+            }
+        };
+        port.start();
+    }
+
+    ensureConnected() {
+        this.getMqttProvider();
+    }
+
+    subscribeTopic(topic, connectorId) {
+        let subscribers = this.topicSubscribers.get(topic);
+        if (!subscribers) {
+            subscribers = new Set();
+            this.topicSubscribers.set(topic, subscribers);
+        }
+        if (subscribers.has(connectorId)) {
+            return this.topicSubscriptionRequests.get(topic) || Promise.resolve();
+        }
+        subscribers.add(connectorId);
+        if (subscribers.size === 1) {
+            const request = this.doRequest(topic)
+                .catch(error => {
+                    this.topicSubscribers.delete(topic);
+                    throw error;
+                })
+                .finally(() => {
+                    this.topicSubscriptionRequests.delete(topic);
+                });
+            this.topicSubscriptionRequests.set(topic, request);
+            return request;
+        }
+        return this.topicSubscriptionRequests.get(topic) || Promise.resolve();
+    }
+
+    unsubscribeTopic(topic, connectorId) {
+        const subscribers = this.topicSubscribers.get(topic);
+        if (!subscribers) {
+            return;
+        }
+        subscribers.delete(connectorId);
+        if (subscribers.size === 0) {
+            this.topicSubscribers.delete(topic);
+            return this.disconnect(topic);
         }
     }
 
@@ -98,12 +174,9 @@ class MqttConnector extends DataConnector {
                 options: options,
                 mqttPrefix: this.properties.mqttPrefix
             });
-            console.warn(`Stored MQTT provider into cache: ${fullUrl}`);
             this.mqttProvider.connect();
             this.mqttProvider.checkStatus = this.checkStatus;
             this.checkStatus(Status.CONNECTED);
-        } else {
-            console.warn(`Getting MQTT provider from cache: ${fullUrl}`);
         }
         return this.mqttProvider;
     }
@@ -119,7 +192,7 @@ class MqttConnector extends DataConnector {
     doRequest(topic = '',queryString= undefined) {
         const mqttProvider = this.getMqttProvider();
 
-        mqttProvider.subscribe(topic, this.onMessage).then(() => {
+        return mqttProvider.subscribe(topic, this.onMessage).then(() => {
             this.onChangeStatus(Status.CONNECTED);
         });
     }

@@ -30,7 +30,7 @@ class ConSysApiReplayContext extends ConSysApiContext {
             ...properties
         };
         let filter;
-        let regex = new RegExp('\\/systems\\/(.*)\\/controlstreams\\/(.*)\\/status');
+        let regex = new RegExp('\\/controlstreams\\/(.*)\\/status'); // controlstreams/abc123/status
 
         // check controlstream status
         if(regex.test(properties.resource)) {
@@ -39,8 +39,7 @@ class ConSysApiReplayContext extends ConSysApiContext {
             const match = regex.exec(properties.resource);
 
             let control = new ControlStream({
-                id: match[2],
-                'system@id': match[1]
+                id: match[1],
             }, networkProperties);
             this.replayFunction = function(props, startTimestamp, endTimestamp) {
                 const controlFilter = this.createControlStreamFilter({

@@ -14,6 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
+import '../../worker/WorkerGlobalCompat.js';
 import DataSourceWorker from "./DataSourceWorker";
 
 const dataSourceWorker = new DataSourceWorker();

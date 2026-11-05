@@ -82,7 +82,8 @@ class HttpConnector extends DataConnector {
         // default
         const promiseResponse = fetch(fullUrl, {
             method: this.method,
-            headers: this.headers
+            headers: this.headers,
+            credentials: 'include'
         })
             .then(function process(response) {
                 if (!response.ok) {
@@ -120,6 +121,7 @@ class HttpConnector extends DataConnector {
                 'Content-Type': 'application/json',
                 ...this.headers
             },
+            credentials: 'include',
             body: payload
         });
     }

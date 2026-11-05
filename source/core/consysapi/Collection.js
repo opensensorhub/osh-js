@@ -15,6 +15,7 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import SweCollectionDataParser from "../parsers/consysapi/collection/SweCollectionDataParser";
+import {getOAuthClient} from "osh-js/source/core/oauth/OAuthClient";
 
 class Collection {
     /**
@@ -45,7 +46,15 @@ class Collection {
     async fetchData() {
         const queryString = `${this.filter.toQueryString()}&offset=${this.pageOffset}&limit=${this.pageSize}`;
         const fullUrl = this.url + '?' + queryString;
-        const headers = this.headers ?? {};
+
+        const headers = {};
+        const oAuthClient = getOAuthClient();
+        if (oAuthClient !== null) {
+            const token = await oAuthClient.getValidToken();
+            if (token) {
+                headers['Authorization'] = 'Bearer ' + token;
+            }
+        }
 
         const jsonResponse = await fetch(fullUrl, {
             method: 'GET',

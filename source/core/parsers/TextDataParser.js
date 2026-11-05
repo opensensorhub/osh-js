@@ -43,7 +43,10 @@ class TextDataParser extends GenericParser {
         while(this.textDataTypeDecoder.hasNextBlock()) {
             const res = {};
             this.parser.parse(this.textDataTypeDecoder, {}, res);
-            res['timestamp'] = new Date(res[this.parser.getTimePropertyName()]).getTime() + this.props.timeShift;
+            const timeValue = res[this.parser.getTimePropertyName()];
+            if(timeValue != null) {
+                res['timestamp'] = new Date(timeValue).getTime() + this.props.timeShift;
+            }
             results.push(res);
         }
         return results;
