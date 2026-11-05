@@ -17,7 +17,7 @@
 import {Mode} from "../datasource/Mode";
 import DataSynchronizerReplay from "./replay/DataSynchronizer.replay";
 import DataSynchronizerRealtime from "./rt/DataSynchronizer.realtime";
-import {randomUUID} from "../utils/Utils";
+import {isDefined, randomUUID} from "../utils/Utils";
 import {EventType} from "../event/EventType";
 
 class DataSynchronizer {
@@ -66,11 +66,7 @@ class DataSynchronizer {
             this.dataSynchronizer = this.dataSynchronizerRt;
         }
         this.id = this.dataSynchronizer.id;
-        for(let bc of this.broadcastChannels) {
-            bc.close();
-        }
         this.initEventSubscription();
-        this.broadcastChannels = [];
         const promises=[];
         for(let ds of this.dataSynchronizer.getDataSources()) {
             promises.push(ds.setMode(mode, disconnect));
@@ -81,33 +77,38 @@ class DataSynchronizer {
 
         return Promise.all(promises).then(() => this.onChangedMode(mode));
     }
-
+    
     initEventSubscription() {
-        this.eventSubscriptionMap = {};
-        // listen for Events to callback to subscriptions
-        this.broadcastChannels.push(new BroadcastChannel(this.getTopicId()).onmessage = (message) => {
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
+        this.closeEventSubscription();
+        if (!this.eventSubscriptionMap) {
+            this.eventSubscriptionMap = {};
+        }
+        const dispatch = (data) => {
+            const subs = this.eventSubscriptionMap[data.type];
+            if (subs) subs.forEach(fn => fn(data));
+        };
+        
+        const dataBc = new BroadcastChannel(this.getTopicId());
+        dataBc.onmessage = (message) => dispatch(message.data);
+        
+        const timeBc = new BroadcastChannel(this.getTimeTopicId());
+        timeBc.onmessage = (message) => {
+            const data = message.data;
+            if (data.type === EventType.MASTER_TIME
+                && (!isDefined(data.version) || data.version === this.version())) {
+                this.dataSynchronizer.setStartTimestamp(data.timestamp);
             }
-        });
-
-        this.broadcastChannels.push(new BroadcastChannel(this.getTimeTopicId()).onmessage = (message) => {
-            if (message.data.type === EventType.MASTER_TIME) {
-                // this.properties.startTimestamp = message.data.timestamp; // save as last timestamp
-                this.dataSynchronizer.setStartTimestamp(message.data.timestamp);
-            }
-            const type = message.data.type;
-            if (type in this.eventSubscriptionMap) {
-                for (let i = 0; i < this.eventSubscriptionMap[type].length; i++) {
-                    this.eventSubscriptionMap[type][i](message.data);
-                }
-            }
-        });
+            dispatch(data);
+        };
+        
+        this.broadcastChannels = [dataBc, timeBc];
     }
-
+    closeEventSubscription() {
+        for (const bc of this.broadcastChannels || []) {
+            bc.close();
+        }
+        this.broadcastChannels = [];
+    }
     subscribe(fn, eventTypes) {
         // associate function to eventType
         for (let i = 0; i < eventTypes.length; i++) {
