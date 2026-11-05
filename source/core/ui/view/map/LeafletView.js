@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import {isDefined, assert, assertDefined} from "../../../utils/Utils.js";
+import {isDefined, assertDefined} from "../../../utils/Utils.js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import MapView from "./MapView";
