@@ -1,21 +1,27 @@
 // create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
-import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView.js';
+
+import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
+import PolylineLayer from 'osh-js/source/core/ui/layer/PolylineLayer.js';
+import DeckGlView from 'osh-js/source/core/ui/view/map/DeckGlView.js';
 import {TileLayer} from '@deck.gl/geo-layers';
 import {BitmapLayer} from '@deck.gl/layers';
-import {Mode} from 'osh-js/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {Mode} from 'osh-js/source/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
+import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource";
 
-let gpsDataSource = new SosGetResult("android-GPS", {
-    endpointUrl: 'sensiasoft.net/sensorhub/sos',
-    offeringID: 'urn:android:device:060693280a28e015-sos',
-    observedProperty: 'http://sensorml.com/ont/swe/property/Location',
-    startTime: '2015-02-16T07:58:15.447Z',
-    endTime: '2015-02-16T08:09:00Z',
-    mode: Mode.REPLAY,
+let gpsDataSource =  new ConSysApi('sat-GPS', {
+    endpointUrl:  'api.georobotix.io/ogc/demo1/api/',
     tls: true,
+    startTime: '2026-02-27T22:51:35.313Z',
+    endTime: '2026-02-27T23:01:34Z',
+    minTime: '2026-02-27T22:51:35.313Z',
+    maxTime: '2026-02-27T23:01:34Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/28ksb4qmubgfs/observations',
+    responseFormat: 'application/swe+json',
     timeShift: -16000
 });
 

@@ -1,17 +1,23 @@
 // create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import RangeSlider from 'osh-js/ext/ui/view/rangeslider/RangeSliderView.js';
-import LeafletView from "osh-js/core/ui/view/map/LeafletView";
-import {Mode} from 'osh-js/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
+import RangeSlider from 'osh-js/source/ext/ui/view/rangeslider/RangeSliderView.js';
+import LeafletView from "osh-js/source/core/ui/view/map/LeafletView";
+import {Mode} from 'osh-js/source/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
 
-let gpsDataSource = new SosGetResult("android-GPS", {
-    endpointUrl: 'sensiasoft.net/sensorhub/sos',
-    offeringID: 'urn:android:device:060693280a28e015-sos',
-    observedProperty: 'http://sensorml.com/ont/swe/property/Location',
-    startTime: '2015-02-16T07:58:15.447Z',
-    endTime: '2015-02-16T08:09:00Z',
+const mqttProps = {
+    shared: true,
+    prefix: '/api',
+    endpointUrl: 'api.georobotix.io:443/ogc/t18',
+};
+
+let gpsDataSource = new ConSysApi("android-GPS", {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    resource: '/datastreams/rbnag2hrc04mm/observations',
+    startTime: '2026-11-10T19:37:59Z.447Z',
+    endTime: '2026-11-10T19:48:33.000Z',
+    protocol: 'mqtt',
+    mqttOpts: mqttProps,
     mode: Mode.REPLAY,
     tls: true,
     timeShift: -16000

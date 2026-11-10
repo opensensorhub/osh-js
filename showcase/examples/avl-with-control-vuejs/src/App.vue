@@ -22,22 +22,22 @@
 <script>
 
 // @ is an alias to /src
-import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import Polyline from 'osh-js/core/ui/layer/PolylineLayer.js';
-import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
-import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView';
-import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView';
-import {EventType} from 'osh-js/core/event/EventType';
-import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import {Mode} from 'osh-js/core/datasource/Mode';
+import TimeController from 'osh-js/source/vue/components/TimeController.vue';
+import SosGetResult from 'osh-js/source/core/datasource/sos/SosGetResult.datasource.js';
+import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
+import Polyline from 'osh-js/source/core/ui/layer/PolylineLayer.js';
+import LeafletView from 'osh-js/source/core/ui/view/map/LeafletView.js';
+import OpenLayerView from 'osh-js/source/core/ui/view/map/OpenLayerView';
+import CesiumView from 'osh-js/source/core/ui/view/map/CesiumView.js';
+import DeckGlView from 'osh-js/source/core/ui/view/map/DeckGlView';
+import {EventType} from 'osh-js/source/core/event/EventType';
+import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
+import {Mode} from 'osh-js/source/core/datasource/Mode';
 
 import {
   Cartographic, Math as MathCesium, Ion
 } from "@cesium/engine";
-import PolygonLayer from 'osh-js/core/ui/layer/PolygonLayer';
+import PolygonLayer from 'osh-js/source/core/ui/layer/PolygonLayer';
 
 
 

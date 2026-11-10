@@ -1,10 +1,11 @@
-import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import FrustumLayer from "osh-js/core/ui/layer/FrustumLayer";
-import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
+import CesiumView from 'osh-js/source/core/ui/view/map/CesiumView.js';
+import FrustumLayer from "osh-js/source/core/ui/layer/FrustumLayer";
+import PointMarkerLayer from "osh-js/source/core/ui/layer/PointMarkerLayer";
 import {Cartesian3, Ion} from "cesium";
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import {Mode} from 'osh-js/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+
+import {Mode} from 'osh-js/source/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
+import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource";
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
@@ -14,61 +15,67 @@ const START_TIME = '2012-06-29T14:32:34.099333251Z';
 const END_TIME = '2012-06-29T14:37:44.033333251Z';
 
 const tls = true;
-const sosEndpoint = 'api.georobotix.io/ogc/t18/sos';
+const apiEndpoint = 'api.georobotix.io/ogc/demo1/api';
 const dsReplaySpeed = 1.0;
 
-const droneLocationDataSource = new SosGetResult('MISB UAS - Platform Location', {
-    tls: tls,
-    endpointUrl: sosEndpoint,
-    offeringID: 'urn:osh:sensor:uas:predator001',
-    observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorLocation',
-    startTime: START_TIME,
-    endTime: END_TIME,
-    minTime: START_TIME,
-    maxTime: END_TIME,
-    replaySpeed: dsReplaySpeed,
-    mode: Mode.REPLAY
+const droneLocationDataSource = new ConSysApi('MISB UAS - Platform Location', {
+    endpointUrl:  'api.georobotix.io/ogc/demo1/api',
+    tls: true,
+    startTime: '2023-05-14T15:22:00Z ',
+    endTime: '2025-03-24T20:28:56.820333496Z',
+    minTime: '2023-05-14T15:22:00Z',
+    maxTime: '2025-03-24T20:28:56.820333496Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/o7pce3e60s0ie/observations',
+    responseFormat: 'application/swe+json',
 });
 
-const droneOrientationDataSource = new SosGetResult('MISB UAS - Platform Orientation', {
-    tls: tls,
-    service: 'SOS',
-    endpointUrl: sosEndpoint,
-    offeringID: 'urn:osh:sensor:uas:predator001',
-    observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
-    startTime: START_TIME,
-    endTime: END_TIME,
-    minTime: START_TIME,
-    maxTime: END_TIME,
-    replaySpeed: dsReplaySpeed,
-    mode: Mode.REPLAY
+const droneOrientationDataSource = new ConSysApi('MISB UAS - Platform Orientation', {
+    endpointUrl: apiEndpoint,
+    tls: true,
+    startTime: '2023-05-14T15:22:00Z ',
+    endTime: '2025-03-24T20:28:56.820333496Z',
+    minTime: '2023-05-14T15:22:00Z',
+    maxTime: '2025-03-24T20:28:56.820333496Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/mlme3gtdfepvc/observations',
+    responseFormat: 'application/swe+json',
 });
 
-const droneCameraOrientationDataSource = new SosGetResult('MISB UAS - Sensor Orientation', {
-    tls: tls,
-    service: 'SOS',
-    endpointUrl: sosEndpoint,
-    offeringID: 'urn:osh:sensor:uas:predator001',
-    observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorOrientation',
-    startTime: START_TIME,
-    endTime: END_TIME,
-    minTime: START_TIME,
-    maxTime: END_TIME,
-    replaySpeed: dsReplaySpeed,
-    mode: Mode.REPLAY
+const droneCameraOrientationDataSource = new ConSysApi('MISB UAS - Sensor Orientation', {
+    endpointUrl: apiEndpoint,
+    tls: true,
+    startTime: '2023-05-14T15:22:00Z ',
+    endTime: '2025-03-24T20:28:56.820333496Z',
+    minTime: '2023-05-14T15:22:00Z',
+    maxTime: '2025-03-24T20:28:56.820333496Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/h75dmug8e3sae/observations',
+    responseFormat: 'application/swe+json',
 });
 
-const droneHFovDataSource = new SosGetResult('MISB UAS - Horizontal FoV', {
-    tls: tls,
-    service: 'SOS',
-    endpointUrl: sosEndpoint,
-    offeringID: 'urn:osh:sensor:uas:predator001',
-    observedProperty: 'http://sensorml.com/ont/misb0601/property/HorizontalFov',
-    startTime: START_TIME,
-    endTime: END_TIME,
-    minTime: START_TIME,
-    maxTime: END_TIME,
-    mode: Mode.REPLAY
+const droneHFovDataSource = new ConSysApi('MISB UAS - Horizontal FoV', {
+    endpointUrl: apiEndpoint,
+    tls: true,
+    startTime: '2023-05-14T15:22:00Z ',
+    endTime: '2025-03-24T20:28:56.820333496Z',
+    minTime: '2023-05-14T15:22:00Z',
+    maxTime: '2025-03-24T20:28:56.820333496Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/nhcs9rp6713ka/observations',
+    responseFormat: 'application/swe+json',
 });
 
 const dataSynchronizer = new DataSynchronizer({

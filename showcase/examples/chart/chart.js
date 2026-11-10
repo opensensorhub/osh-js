@@ -1,13 +1,11 @@
 // create data source for Android phone camera
-import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
-import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import SweApi from "../../../source/core/datasource/sweapi/SweApi.datasource";
-import {Mode} from 'osh-js/core/datasource/Mode';
-import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
-import {EventType} from "osh-js/core/event/EventType";
+import ChartJsView from 'osh-js/source/core/ui/view/chart/ChartJsView.js';
+import CurveLayer from 'osh-js/source/core/ui/layer/CurveLayer.js';
+import {Mode} from 'osh-js/source/core/datasource/Mode';
+import ConSysApi from 'osh-js/source/core/datasource/consysapi/ConSysApi.datasource.js';
+import {EventType} from "osh-js/source/core/event/EventType";
 
-import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+import DataSynchronizer from "osh-js/source/core/timesync/DataSynchronizer";
 
 const REPLAY_SPEED = 1.0;
 

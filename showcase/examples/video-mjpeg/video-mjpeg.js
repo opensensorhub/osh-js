@@ -1,24 +1,27 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import VideoView from 'osh-js/core/ui/view/video/VideoView';
-import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
-import {Mode} from 'osh-js/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import SosGetResultParser from "../../../source/core/parsers/sos/SosGetResult.parser";
+import SosGetResult from 'osh-js/source/core/datasource/sos/SosGetResult.datasource.js';
+import VideoView from 'osh-js/source/core/ui/view/video/VideoView';
+import VideoDataLayer from 'osh-js/source/core/ui/layer/VideoDataLayer';
+import {Mode} from 'osh-js/source/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
+import ConSysApi from "../../../../source/core/datasource/consysapi/ConSysApi.datasource";
 
 let startTime = "2015-02-16T07:57:59.447Z";
 let endTime = "2015-02-16T08:09:00Z";
 
 // create data source for Android phone camera
-let videoDataSource = new SosGetResult("android-Video", {
-    endpointUrl: "sensiasoft.net/sensorhub/sos",
-    offeringID: "urn:android:device:060693280a28e015-sos",
-    observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-    startTime: startTime,
-    endTime: endTime,
-    mode: Mode.REPLAY,
+let videoDataSource =  new ConSysApi('axis-Video', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    prefetchBatchDuration: 5000,
-    timeShift: -16000
+    startTime: '2023-05-31T21:57:33.099333251Z',
+    endTime: '2026-11-10T19:05:01.033333251Z',
+    minTime: '2023-05-31T21:57:33.099333251Z',
+    maxTime: '2055-12-31T19:05:01.033333251Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/lm83m9jt1fd7a/observations',
+    responseFormat: 'application/swe+binary',
 });
 
 // show it in video view
@@ -47,5 +50,5 @@ const dataSynchronizer = new DataSynchronizer({
         videoDataSource
     ]
 });
-dataSynchronizer.connect()
+dataSynchronizer.connect();
 

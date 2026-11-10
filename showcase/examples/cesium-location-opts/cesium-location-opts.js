@@ -1,31 +1,37 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
+
+import CesiumView from 'osh-js/source/core/ui/view/map/CesiumView.js';
 import {EllipsoidTerrainProvider, Ion} from '@cesium/engine';
 import {Viewer} from '@cesium/widgets';
-import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import {Mode} from 'osh-js/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
+import {Mode} from 'osh-js/source/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
+import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource";
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
 // create data source for Android phone GPS
-let gpsDataSource = new SosGetResult('android-GPS', {
-    endpointUrl: 'sensiasoft.net/sensorhub/sos',
-    offeringID: 'urn:android:device:060693280a28e015-sos',
-    observedProperty: 'http://sensorml.com/ont/swe/property/Location',
-    startTime: '2015-02-16T07:58:15.447Z',
-    endTime: '2015-02-16T08:09:00Z',
-    mode: Mode.REPLAY,
+let gpsDataSource =  new ConSysApi('sat-GPS', {
+    endpointUrl:  'api.georobotix.io/ogc/demo1/api/',
     tls: true,
+    startTime: '2026-02-27T22:51:35.313Z',
+    endTime: '2026-02-27T23:01:34Z',
+    minTime: '2026-02-27T22:51:35.313Z',
+    maxTime: '2026-02-27T23:01:34Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/28ksb4qmubgfs/observations',
+    responseFormat: 'application/swe+json',
     timeShift: -16000
 });
 
 const dataSynchronizer = new DataSynchronizer({
     replaySpeed: 2,
-    startTime: '2015-02-16T07:58:22.00Z',
-    endTime: '2015-02-16T08:09:00Z',
+    startTime: '2026-02-27T22:51:35.313Z',
+    endTime: '2026-02-27T23:01:34Z',
     dataSources: [gpsDataSource]
 });
 

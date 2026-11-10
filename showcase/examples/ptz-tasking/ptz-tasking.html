@@ -1,0 +1,144 @@
+
+<style>
+    #ptz-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        font-family: Arial, sans-serif;
+    }
+
+    #video-panel {
+        width: 70%;
+        height: 100%;
+        background: #111;
+        position: relative;
+    }
+
+    #video-container {
+        width: 100%;
+        height: 100%;
+    }
+
+    #control-panel {
+        width: 30%;
+        height: 100%;
+        padding: 15px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        background: #f5f5f5;
+    }
+
+    .section {
+        margin-bottom: 22px;
+    }
+
+    .section h3 {
+        margin-bottom: 12px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 6px;
+    }
+
+    .ptz-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 55px);
+        gap: 6px;
+        justify-content: center;
+    }
+
+    button {
+        padding: 10px;
+        cursor: pointer;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        background: white;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background: #ddd;
+    }
+
+    .zoom-controls {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .presets {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .presets button {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    @media (max-width: 700px) {
+        #ptz-container {
+            flex-direction: column;
+        }
+
+        #video-panel,
+        #control-panel {
+            width: 100%;
+        }
+
+        #video-panel {
+            height: 55%;
+        }
+
+        #control-panel {
+            height: 45%;
+        }
+    }
+</style>
+
+<div id="ptz-container">
+    <div id="video-panel">
+        <div id="video-container"></div>
+    </div>
+    <div id="control-panel">
+
+        <div class="section">
+            <h3>Camera Movement</h3>
+
+            <div class="ptz-grid">
+                <div></div>
+                <button id="tilt-up">▲</button>
+                <div></div>
+
+                <button id="pan-left">◀</button>
+                <button id="ptz-center">●</button>
+                <button id="pan-right">▶</button>
+
+                <div></div>
+                <button id="tilt-down">▼</button>
+                <div></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Zoom</h3>
+
+            <div class="zoom-controls">
+                <button id="zoom-in">+</button>
+                <button id="zoom-out">−</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Camera Presets</h3>
+
+            <div class="presets">
+                <button id="preset-reset">Reset</button>
+                <button id="preset-top">Top Most</button>
+                <button id="preset-bottom">Bottom Most</button>
+                <button id="preset-left">Left Most</button>
+                <button id="preset-right">Right Most</button>
+            </div>
+        </div>
+    </div>
+</div>

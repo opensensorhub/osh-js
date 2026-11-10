@@ -1,40 +1,48 @@
 //@ sourceURL=leaflet-location.html.js
-
-// create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
+import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh-js/source/core/ui/view/map/LeafletView.js';
 import {Mode} from "../../../source/core/datasource/Mode";
 import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
+import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource";
 
 // create data source for Android phone GPS
-let gpsDataSource = new SosGetResult("android-GPS", {
-  endpointUrl: "sensiasoft.net/sensorhub/sos",
-  offeringID: "urn:android:device:060693280a28e015-sos",
-  observedProperty: "http://sensorml.com/ont/swe/property/Location",
-  startTime: '2015-02-16T07:58:15.447Z',
-  endTime: "2015-02-16T08:09:00Z",
-  mode: Mode.REPLAY,
-  tls: true,
-  timeShift: -16000
+let gpsDataSource =  new ConSysApi('android-GPS', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api/',
+    tls: true,
+    startTime: '2023-06-06T14:26:12Z',
+    endTime: '2023-06-06T22:23:47Z',
+    minTime: '2023-06-06T14:26:12Z',
+    maxTime: '2023-06-06T22:23:47Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/frmhs11ofiilm/observations',
+    responseFormat: 'application/swe+json',
+    timeShift: -16000
 });
 
 // create data source for Android phone orientation
-let attitudeDataSource = new SosGetResult("android-Att", {
-  endpointUrl: "sensiasoft.net/sensorhub/sos",
-  offeringID: "urn:android:device:060693280a28e015-sos",
-  observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-  startTime: '2015-02-16T07:58:15.447Z',
-  endTime: "2015-02-16T08:09:00Z",
-  mode: Mode.REPLAY,
-  tls: true,
-  timeShift: -16000
+let attitudeDataSource =  new ConSysApi('android-Heading', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api/',
+    tls: true,
+    startTime: '2023-06-06T14:26:12Z',
+    endTime: '2023-06-06T22:23:47Z',
+    minTime: '2023-06-06T14:26:12Z',
+    maxTime: '2023-06-06T22:23:47Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/t2fedgd9i3m16/observations',
+    responseFormat: 'application/swe+json',
+    timeShift: -16000
 });
 
 const dataSynchronizer = new DataSynchronizer({
   replaySpeed: 2,
-  startTime: '2015-02-16T07:58:22.00Z',
-  endTime: "2015-02-16T08:09:00Z",
+    startTime: '2023-06-06T14:26:12Z',
+    endTime: '2023-06-06T22:23:47Z',
   dataSources: [gpsDataSource, attitudeDataSource]
 });
 

@@ -1,47 +1,79 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
+
+import CesiumView from 'osh-js/source/core/ui/view/map/CesiumView.js';
 import {EllipsoidTerrainProvider, Ion} from 'cesium';
-import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import {Mode} from 'osh-js/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
+import {Mode} from 'osh-js/source/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
+import ConSysApi from 'osh-js/source/core/datasource/consysapi/ConSysApi.datasource.js';
+import {
+    Cartesian3
+} from '@cesium/engine';
+import {EventType} from 'osh-js/source/core/event/EventType';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 
 window.CESIUM_BASE_URL = './';
 
-// create data source for Android phone GPS
-let gpsDataSource = new SosGetResult('android-GPS', {
-    endpointUrl: 'sensiasoft.net/sensorhub/sos',
-    offeringID: 'urn:android:device:060693280a28e015-sos',
-    observedProperty: 'http://sensorml.com/ont/swe/property/Location',
-    startTime: '2015-02-16T07:58:15.447Z',
-    endTime: '2015-02-16T08:09:00Z',
-    mode: Mode.REPLAY,
+const REPLAY_SPEED = 1.0;
+
+const begin = '2025-06-12T14:11:06.410999755Z';
+const fin = '2025-06-13T14:11:06.410999755Z';
+
+
+let uavDataSource =  new ConSysApi('Predator UAV (MISB Simulated RT) - Sensor Location', {
+    endpointUrl: 'api.georobotix.io/ogc/demo1/api',
+    resource: '/datastreams/6ft4mrvfugkr2/observations',
+    responseFormat: 'application/om+json',
     tls: true,
-    timeShift: -16000
+    protocol: 'ws',
+    mqttOpts: {
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/demo1'
+    },
+    mode : Mode.REAL_TIME
 });
 
-const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: 2,
-    startTime: '2015-02-16T07:58:22.00Z',
-    endTime: '2015-02-16T08:09:00Z',
-    dataSources: [gpsDataSource]
+let attDataSource =  new ConSysApi('Predator UAV (MISB Simulated RT) - Platform Attitude', {
+    endpointUrl: 'api.georobotix.io/ogc/demo1/api',
+    resource: '/datastreams/98nto59268lok/observations',
+    responseFormat: 'application/om+json',
+    tls: true,
+    protocol: 'ws',
+    mqttOpts: {
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/demo1'
+    },
+    mode : Mode.REAL_TIME
 });
 
-// style it with a moving point marker
+uavDataSource.subscribe(msg => {
+    //TODO: do something
+}, [EventType.DATA]);
+
+attDataSource.subscribe(msg => {
+    //TODO: do something
+}, [EventType.DATA]);
+
+// style it with a point marker
 let pointMarker = new PointMarkerLayer({
-    dataSourceId: gpsDataSource.id,
-    getLocation: (rec) => ({
-        x: rec.location.lon,
-        y: rec.location.lat
-    }),
-    // icon: 'images/car-location.png',
-    icon: 'https://storage.googleapis.com/grx-morpheusx-icons/mdi-svg/ab-testing.svg',
+    getLocation: {dataSourceIds: [uavDataSource.getId()],
+    handler: (rec) => ({
+        x: rec.result.location.lon,
+        y: rec.result.location.lat,
+        z: rec.result.location.alt
+    })},
+    defaultToTerrainElevation: true,
+    getOrientation: {dataSourceIds: [attDataSource.getId()],
+    handler: (rec) => ({
+        heading: rec.attitude.heading - 90.0
+    })},
+    icon: 'images/marker-icon.png',
     iconAnchor: [16, 40],
     iconSize: [32, 65],
     allowBillboardRotation: false
 });
+
 
 // #region snippet_cesium_location_view
 // create Cesium view
@@ -54,4 +86,5 @@ let cesiumView = new CesiumView({
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 
 // start streaming
-dataSynchronizer.connect();
+uavDataSource.connect();
+attDataSource.connect();

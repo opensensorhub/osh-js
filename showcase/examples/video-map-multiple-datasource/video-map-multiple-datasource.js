@@ -1,41 +1,53 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
-import VideoView from 'osh-js/core/ui/view/video/VideoView';
-import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
-import {Mode} from "osh-js/core/datasource/Mode";
-import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh-js/source/core/ui/view/map/LeafletView.js';
+import VideoView from 'osh-js/source/core/ui/view/video/VideoView';
+import VideoDataLayer from 'osh-js/source/core/ui/layer/VideoDataLayer';
+import {Mode} from "osh-js/source/core/datasource/Mode";
+import DataSynchronizer from "osh-js/source/core/timesync/DataSynchronizer";
+import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource";
 
 const REPLAY_SPEED = 1.0;
 
 function createView(videoDivId, mapDivId, startTime,endTime ) {
-    const videoDataSource = new SosGetResult("drone-Video", {
-        endpointUrl: 'sensiasoft.net/sensorhub/sos',
-        offeringID: 'urn:mysos:solo:video2',
-        observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
+    let videoDataSource =  new ConSysApi('drone-Video', {
+        endpointUrl:  'api.georobotix.io/ogc/t18/api',
+        tls: true,
         startTime: startTime,
         endTime: endTime,
         mode: Mode.REPLAY,
-        tls: true
+        replaySpeed: REPLAY_SPEED,
+        prefetchBatchDuration: 10000,
+        prefetchBatchSize: 250,
+        resource: '/datastreams/h225hesual08g/observations',
+        responseFormat: 'application/swe+binary',
     });
-    const platformLocationDataSource = new SosGetResult('android-GPS', {
-        endpointUrl: 'sensiasoft.net/sensorhub/sos',
-        offeringID: 'urn:mysos:solo:nav2',
-        observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
+
+    let platformLocationDataSource = new ConSysApi('drone-GPS', {
+        endpointUrl:  'api.georobotix.io/ogc/t18/api',
+        tls: true,
         startTime: startTime,
         endTime: endTime,
         mode: Mode.REPLAY,
-        tls: true
+        replaySpeed: REPLAY_SPEED,
+        prefetchBatchDuration: 10000,
+        prefetchBatchSize: 250,
+        resource: '/datastreams/o7pce3e60s0ie/observations',
+        responseFormat: 'application/swe+json',
     });
-    const platformOrientationDataSource = new SosGetResult('android-Heading', {
-        endpointUrl: 'sensiasoft.net/sensorhub/sos',
-        offeringID: 'urn:mysos:solo:nav2',
-        observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
+
+    let platformOrientationDataSource = new ConSysApi('drone-Heading', {
+        endpointUrl:  'api.georobotix.io/ogc/t18/api',
+        tls: true,
         startTime: startTime,
         endTime: endTime,
         mode: Mode.REPLAY,
-        tls: true
+        replaySpeed: REPLAY_SPEED,
+        prefetchBatchDuration: 10000,
+        prefetchBatchSize: 250,
+        resource: '/datastreams/h75dmug8e3sae/observations',
+        responseFormat: 'application/swe+json',
     });
+
 
     // show it in video view using FFMPEG JS decoder
     let videoView = new VideoView({
@@ -58,8 +70,8 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
     // add 3D model marker to Cesium view
     let pointMarker = new PointMarkerLayer({
         dataSourceIds: [platformLocationDataSource.id, platformOrientationDataSource.id],
-        name: "3DR Drone",
-        label: "3DR Solo",
+        name: "MISB UAV",
+        label: "MISB UAV",
         getLocation: {
             dataSourceIds: [platformLocationDataSource.getId()],
             handler: function (rec) {
@@ -102,9 +114,9 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
             videoDataSource, platformLocationDataSource, platformOrientationDataSource
         ]
     });
-    dataSynchronizer.connect()
+    dataSynchronizer.connect();
 }
 
-createView("VideoLeft","leafletMapLeft", '2015-12-19T21:04:29.231Z', '2015-12-19T21:09:19.675Z');
-createView("VideoRight","leafletMapRight", '2015-12-19T21:06:00.231Z', '2015-12-19T21:09:19.675Z');
+createView("VideoLeft","leafletMapLeft", '2026-11-10T18:32:58.000Z', '2026-11-10T18:43:22.675Z');
+createView("VideoRight","leafletMapRight", '2026-11-10T18:32:58.000Z', '2026-11-10T18:43:22.675Z');
 

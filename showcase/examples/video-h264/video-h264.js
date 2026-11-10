@@ -1,35 +1,41 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
-import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
-import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
-import {Mode} from "osh-js/core/datasource/Mode";
 
-const REPLAY_SPEED = 2.5;
+import VideoView from 'osh-js/source/core/ui/view/video/VideoView.js';
+import VideoDataLayer from "osh-js/source/core/ui/layer/VideoDataLayer";
+import DataSynchronizer from "osh-js/source/core/timesync/DataSynchronizer";
+import {Mode} from "osh-js/source/core/datasource/Mode";
+import ConSysApi from 'osh-js/source/core/datasource/consysapi/ConSysApi.datasource.js';
+
+const REPLAY_SPEED = 1.0;
 
 // create data source for UAV camera
-let videoDataSource = new SosGetResult("drone-Video", {
-  endpointUrl: "sensiasoft.net/sensorhub/sos",
-  offeringID: "urn:mysos:solo:video2",
-  observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-  startTime: "2015-12-19T21:04:30Z",
-  endTime: "2015-12-19T21:09:19Z",
+let videoDataSource =  new ConSysApi('MISB Drone - Video', {
+  endpointUrl:  'api.georobotix.io/ogc/t18/api',
+  tls: true,
+  startTime: '2012-06-29T14:32:34.099333251Z',
+  endTime: '2012-06-29T14:36:54.033333251Z',
+  minTime: '2012-06-29T14:32:34.099333251Z',
+  maxTime: '2055-06-29T14:36:54.033333251Z',
   mode: Mode.REPLAY,
-  tls: true
+  replaySpeed: REPLAY_SPEED,
+  prefetchBatchDuration: 10000,
+  prefetchBatchSize: 250,
+  resource: '/datastreams/8ni90dbu4uf0g/observations',
+  responseFormat: 'application/swe+binary',
 });
 
 // show it in video view using FFMPEG JS decoder
 let videoView = new VideoView({
   container: 'video-h264-container',
-  css: 'video-h264',
+    css: 'video-h264',
   name: 'UAV Video',
-  framerate:25,
+  framerate: 25,
   showTime: true,
   showStats: true,
-  useWebCodecApi: false,
+  useWebCodecApi: true,
   layers: [
     new VideoDataLayer({
       dataSourceId: videoDataSource.id,
-      getFrameData: (rec) => rec.videoFrame,
+      getFrameData: (rec) => rec.img,
       getTimestamp: (rec) => rec.timestamp
     })
   ]
@@ -38,11 +44,10 @@ let videoView = new VideoView({
 // start streaming
 const dataSynchronizer = new DataSynchronizer({
   masterTimeRefreshRate: 250,
-  startTime: "2015-12-19T21:04:30Z",
-  endTime: "2015-12-19T21:09:19Z",
   replaySpeed: REPLAY_SPEED,
+  mode: Mode.REPLAY,
   dataSources: [
     videoDataSource
   ]
 });
-dataSynchronizer.connect()
+dataSynchronizer.connect();
