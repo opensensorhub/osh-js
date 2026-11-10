@@ -2,28 +2,58 @@
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+import SweApi from "../../../source/core/datasource/sweapi/SweApi.datasource";
 import {Mode} from 'osh-js/core/datasource/Mode';
+import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
+import {EventType} from "osh-js/core/event/EventType";
+
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+
+const REPLAY_SPEED = 1.0;
 
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-let chartDataSource = new SosGetResult("weather", {
-    endpointUrl: "sensiasoft.net/sensorhub/sos",
-    offeringID: "urn:mysos:offering03",
-    observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-    startTime: "now",
-    endTime: "2055-01-01Z",
-    mode: Mode.REAL_TIME,
-    tls: true
+let chartDataSource =  new ConSysApi('Predator UAV (MISB Simulated RT) - GeoReferenced Image Frame', {
+  endpointUrl:  'api.georobotix.io/ogc/demo1/api/',
+  tls: true,
+  startTime: '2025-06-03T19:19:04.580Z',
+  endTime: '2025-06-04T19:19:04.580Z',
+  minTime: '2025-06-03T19:19:04.580Z',
+  maxTime: '2025-06-04T19:19:04.580Z',
+  mode: Mode.REPLAY,
+  replaySpeed: REPLAY_SPEED,
+  prefetchBatchDuration: 10000,
+  prefetchBatchSize: 250,
+  resource: '/datastreams/vadu2mqtbnrsa/observations',
+  responseFormat: 'application/om+json',
+  timeShift: -16000
+});
+
+//let chartDataSource = new ConSysApi("weather", {
+//    endpointUrl: 'api.georobotix.io/ogc/t18/api',
+//    resource: '/datastreams/0tsop3f16nvp8/observations',
+//    tls: true,
+//    protocol: 'mqtt',
+//    mqttOpts: {
+//        prefix: '/api',
+//        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+//    },
+//    mode : Mode.REAL_TIME
+//});
+
+const dataSynchronizer = new DataSynchronizer({
+    replaySpeed: 2,
+    dataSources: [chartDataSource]
 });
 
 // #region snippet_curve_layer
 let windSpeedLayerCurve = new CurveLayer({
     dataSourceId: chartDataSource.id,
-    getValues: (rec, timeStamp) => {
+    getValues: (rec, time) => {
         return {
-            x: timeStamp,
+            x: time,
             y: rec.windSpeed
         }
     },
@@ -73,4 +103,4 @@ let chartView = new ChartJsView({
 });
 
 // start streaming
-chartDataSource.connect();
+dataSynchronizer.connect();

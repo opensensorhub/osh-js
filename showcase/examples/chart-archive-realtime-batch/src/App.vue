@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <div id="container">
-    </div>
+    <div id="container"></div>
     <TimeController
         :dataSource="dataSource"
         @event='onControlEvent'
@@ -11,14 +10,14 @@
   </div>
 </template>
 <script>
-// @ is an alias to /src
+// @ is an alias to /src hi
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {isDefined} from 'osh-js/core/utils/Utils';
 import {Mode} from "osh-js/core/datasource/Mode";
 import DataSynchronizer from "../../../../source/core/timesync/DataSynchronizer";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
 
 export default {
   components: {
@@ -32,17 +31,33 @@ export default {
   },
   mounted() {
 
-    let chartDataSource = new SosGetResult("weather", {
-          endpointUrl: "sensiasoft.net/sensorhub/sos",
-          offeringID: "urn:mysos:offering04",
-          observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-          startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-          endTime: (new Date(Date.now()).toISOString()),
-          minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-          maxTime: (new Date(Date.now()).toISOString()),
-          mode: Mode.BATCH,
-          tls: true
-        });
+    const tls = true;
+
+    const dsReplaySpeed = 1.0;
+
+    const commonDatasourceOpts = {
+      endpointUrl:  'api.georobotix.io/ogc/demo1/api',
+      protocol: 'mqtt',
+      mqttOpts: {
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/demo1'
+      },
+      tls: tls,
+      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
+      endTime: (new Date(Date.now()).toISOString()),
+      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
+      maxTime: (new Date(Date.now()).toISOString()),
+      mode: Mode.BATCH,
+      replaySpeed: dsReplaySpeed,
+      prefetchBatchDuration: 10000,
+      prefetchBatchSize: 250
+    };
+
+    const chartDataSource = new ConSysApi('Simulated Weather Sensor - weather', {
+          ...commonDatasourceOpts,
+          resource: '/datastreams/vadu2mqtbnrsa/observations',
+          responseFormat: 'application/swe+json',
+    });
 
 // #region snippet_curve_layer
     let windSpeedLayerCurve = new CurveLayer({
