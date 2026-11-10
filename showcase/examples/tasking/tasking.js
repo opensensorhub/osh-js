@@ -1,9 +1,9 @@
-import Systems from "osh-js/source/core/consysapi/system/Systems";
-import {EventType} from "osh-js/source/core/event/EventType";
-import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource.js";
-import PointMarkerLayer from "osh-js/source/core/ui/layer/PointMarkerLayer";
-import LeafletView from "osh-js/source/core/ui/view/map/LeafletView";
-import PolylineLayer from "osh-js/source/core/ui/layer/PolylineLayer";
+import Systems from "osh-js/core/consysapi/system/Systems";
+import {EventType} from "osh-js/core/event/EventType";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
+import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
+import LeafletView from "osh-js/core/ui/view/map/LeafletView";
+import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer";
 import ControlStreamFilter from "../../../source/core/consysapi/controlstream/ControlStreamFilter";
 
 var prevTime = 0;

@@ -1,17 +1,17 @@
-import AudioView from 'osh-js/source/core/ui/view/audio/AudioView';
+import AudioView from 'osh-js/core/ui/view/audio/AudioView';
 import AudioFrequencyCanvasVisualizer
-    from 'osh-js/source/core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer';
-import AudioTimeCanvasVisualizer from 'osh-js/source/core/ui/view/audio/visualizer/time/AudioTimeCanvasVisualizer';
+    from 'osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyCanvasVisualizer';
+import AudioTimeCanvasVisualizer from 'osh-js/core/ui/view/audio/visualizer/time/AudioTimeCanvasVisualizer';
 import AudioFrequencyChartJsVisualizer
-    from 'osh-js/source/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer';
-import AudioTimeChartJsVisualizer from 'osh-js/source/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer';
-import AudioSpectrogramVisualizer from 'osh-js/source/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer';
-import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
+    from 'osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer';
+import AudioTimeChartJsVisualizer from 'osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer';
+import AudioSpectrogramVisualizer from 'osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 // #region snippet_audio_datasource
-import SosGetResult from 'osh-js/source/core/datasource/sos/SosGetResult.datasource.js';
-import AudioDataLayer from 'osh-js/source/core/ui/layer/AudioDataLayer';
-import {Mode} from 'osh-js/source/core/datasource/Mode';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+import AudioDataLayer from 'osh-js/core/ui/layer/AudioDataLayer';
+import {Mode} from 'osh-js/core/datasource/Mode';
 
 let audioDataSource = new SosGetResult("alex-audio", {
     endpointUrl: "sensiasoft.net/sensorhub/sos",

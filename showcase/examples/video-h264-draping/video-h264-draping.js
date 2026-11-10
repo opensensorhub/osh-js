@@ -1,17 +1,17 @@
-import CesiumView from 'osh-js/source/core/ui/view/map/CesiumView.js';
+import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {
     Matrix3,
     Cartesian3,
     Cartesian2, Ion,
     EllipsoidTerrainProvider
 } from "@cesium/engine";
-import VideoView from 'osh-js/source/core/ui/view/video/VideoView.js';
-import ImageDrapingLayer from 'osh-js/source/core/ui/layer/ImageDrapingLayer.js';
-import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
-import VideoDataLayer from "osh-js/source/core/ui/layer/VideoDataLayer";
-import DataSynchronizer from "osh-js/source/core/timesync/DataSynchronizer";
-import {Mode} from 'osh-js/source/core/datasource/Mode';
-import ConSysApi from 'osh-js/source/core/datasource/consysapi/ConSysApi.datasource';
+import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
+import ImageDrapingLayer from 'osh-js/core/ui/layer/ImageDrapingLayer.js';
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+import {Mode} from 'osh-js/core/datasource/Mode';
+import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource';
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';

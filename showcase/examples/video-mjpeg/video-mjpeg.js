@@ -1,8 +1,8 @@
-import SosGetResult from 'osh-js/source/core/datasource/sos/SosGetResult.datasource.js';
-import VideoView from 'osh-js/source/core/ui/view/video/VideoView';
-import VideoDataLayer from 'osh-js/source/core/ui/layer/VideoDataLayer';
-import {Mode} from 'osh-js/source/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
+import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+import VideoView from 'osh-js/core/ui/view/video/VideoView';
+import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import ConSysApi from "../../../../source/core/datasource/consysapi/ConSysApi.datasource";
 
 let startTime = "2015-02-16T07:57:59.447Z";

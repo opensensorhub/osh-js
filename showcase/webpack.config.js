@@ -3,6 +3,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 var path = require('path');
 var fs = require('fs');
 
@@ -17,7 +18,10 @@ let common = {
     },
     module: {
         rules: [{
-            test: /\.(png|svg|jpg|gif)$/,
+            test: /\.vue$/,
+            loader: 'vue-loader'
+        }, {
+            test: /\.(png|svg|jpg|gif|woff|woff2|eot|ttf)$/,
             use: [
                 'file-loader',
             ],
@@ -40,7 +44,8 @@ let common = {
         fs: 'empty'
     },
     plugins: [
-        new CleanWebpackPlugin()
+        new CleanWebpackPlugin(),
+        new VueLoaderPlugin()
     ]
 };
 
@@ -75,50 +80,39 @@ module.exports = [{
 }];
 
 let directories = [
+    'audio',
+    'audio-with-control-vuejs',
+    'audio-video-synchronized-with-control-vuejs',
+    'avl',
+    'avl-with-control-vuejs',
     'cesium-fois',
+    'cesium-frustum',
     'cesium-location',
     'cesium-location-opts',
     'cesium-location-path',
-    'cesium-frustum',
     'chart',
+    'chart-archive-realtime',
+    'chart-archive-realtime-batch',
+    'chart-archive-realtime-synchronized',
+    'deckgl-location',
     'leaflet-location',
     'leaflet-location-fois',
     'leaflet-location-heading',
     'leaflet-location-path',
+    'leaflet-location-timerange',
+    'mapbox-location-path-heading',
+    'mqtt',
     'openlayers-location',
     'openlayers-location-heading',
-    'mapbox-location-path-heading',
-    'zIndex-location-path',
+    'ptz-tasking',
+    'tasking',
     'video-h264',
     'video-h264-draping',
-    'consys-video-h264-webcodec-api',
-    'predator-uav-misb',
-    'dahua-office-video',
-    'weather-marker',
-    'predator-uav-location',
-    'uav-bounded-draping',
-    'spot-6-marker',
-    'spot-7-marker',
-    'dji-video',
-    'chart-consys',
     'video-h264-webcodec-api',
+    'video-map-multiple-datasource',
     'video-mjpeg',
     'video-with-control-vuejs-synchronized',
-    'video-map-multiple-datasource',
-    'avl',
-    'avl-with-control-vuejs',
-    'mqtt',
-    'deckgl-location',
-    'chart-archive-realtime',
-    'chart-archive-realtime-consysapi',
-    'chart-archive-realtime-batch',
-    'chart-archive-realtime-batch-consysapi',
-    'chart-archive-realtime-synchronized',
-    'chart-archive-realtime-synchronized-consysapi',
-    'audio',
-    'audio-with-control-vuejs',
-    'audio-video-synchronized-with-control-vuejs',
-    'tasking'
+    'zIndex-location-path',
 ];
 
 const plug = {};
@@ -150,6 +144,7 @@ for (let i = 0; i < directories.length; i++) {
     delete config.devServer;
     delete config.resolve;
     delete config.devtool;
+    delete config.module;
     config.plugins = currentPlugin;
 
     //

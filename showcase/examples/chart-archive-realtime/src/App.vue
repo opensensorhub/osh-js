@@ -13,13 +13,13 @@
 </template>
 <script>
 // @ is an alias to /src.
-import ChartJsView from 'osh-js/source/core/ui/view/chart/ChartJsView.js';
-import CurveLayer from 'osh-js/source/core/ui/layer/CurveLayer.js';
-import TimeController from 'osh-js/source/vue/components/TimeController.vue';
-import {Mode} from 'osh-js/source/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
-import {isDefined} from "osh-js/source/core/utils/Utils";
-import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource.js";
+import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
+import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
+import TimeController from 'osh-js/vue/components/TimeController.vue';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {isDefined} from "osh-js/core/utils/Utils";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
 
 
 export default {

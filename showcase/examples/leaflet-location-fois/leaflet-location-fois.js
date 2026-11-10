@@ -1,7 +1,7 @@
 // create data source for Android phone GPS
-import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
-import LeafletView from 'osh-js/source/core/ui/view/map/LeafletView.js';
-import SamplingFeatures from "osh-js/source/core/consysapi/samplingfeature/SamplingFeatures";
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
+import SamplingFeatures from "osh-js/core/consysapi/samplingfeature/SamplingFeatures";
 
 const featureId = "n17r5jqeav6v8";
 

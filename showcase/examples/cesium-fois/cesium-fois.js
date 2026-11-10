@@ -1,11 +1,11 @@
 // #region snippet_cesium_fois
-import CesiumView from 'osh-js/source/core/ui/view/map/CesiumView.js';
+import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {
     Cartesian3, Ion
 } from '@cesium/engine';
-import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer';
-import Systems from "osh-js/source/core/consysapi/system/Systems";
-import SamplingFeatures from "osh-js/source/core/consysapi/samplingfeature/SamplingFeatures";
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer';
+import Systems from "osh-js/core/consysapi/system/Systems";
+import SamplingFeatures from "osh-js/core/consysapi/samplingfeature/SamplingFeatures";
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';

@@ -1,11 +1,11 @@
 // create data source for Android phone GPS
-import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
-import PolylineLayer from 'osh-js/source/core/ui/layer/PolylineLayer.js';
-import MapboxView from "osh-js/source/core/ui/view/map/MapboxView";
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
+import MapboxView from "osh-js/core/ui/view/map/MapboxView";
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
-import {Mode} from "osh-js/source/core/datasource/Mode";
-import DataSynchronizer from "osh-js/source/core/timesync/DataSynchronizer";
-import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource";
+import {Mode} from "osh-js/core/datasource/Mode";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FrZXdhMzk0MCIsImEiOiJja2I4ZDZkdDAwMzc5MzFwazZubmFhNzVvIn0.i4O5Cls0aaVSVREIzK151w';
 

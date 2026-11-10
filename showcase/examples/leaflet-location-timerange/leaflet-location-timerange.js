@@ -1,9 +1,9 @@
 // create data source for Android phone GPS
-import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
-import RangeSlider from 'osh-js/source/ext/ui/view/rangeslider/RangeSliderView.js';
-import LeafletView from "osh-js/source/core/ui/view/map/LeafletView";
-import {Mode} from 'osh-js/source/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import RangeSlider from 'osh-js/ext/ui/view/rangeslider/RangeSliderView.js';
+import LeafletView from "osh-js/core/ui/view/map/LeafletView";
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 const mqttProps = {
     shared: true,

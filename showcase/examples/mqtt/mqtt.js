@@ -1,10 +1,10 @@
 // create data source for Android phone GPS
-import ConSysApi from 'osh-js/source/core/datasource/consysapi/ConSysApi.datasource.js';
-import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
-import LeafletView from 'osh-js/source/core/ui/view/map/LeafletView.js';
-import ChartJsView from 'osh-js/source/core/ui/view/chart/ChartJsView';
-import CurveLayer from "osh-js/source/core/ui/layer/CurveLayer";
-import {Mode} from "osh-js/source/core/datasource/Mode";
+import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
+import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView';
+import CurveLayer from "osh-js/core/ui/layer/CurveLayer";
+import {Mode} from "osh-js/core/datasource/Mode";
 
 // #region snippet_datasource_mqttswejson
 
@@ -69,7 +69,7 @@ const chartView = new ChartJsView({
                 return {
                     x: timeStamp,
                     y: rec.density
-                }
+                };
             },
             lineColor: 'rgba(0,220,204,0.5)',
             getLineColor: (rec) => {

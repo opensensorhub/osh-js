@@ -1,13 +1,13 @@
 // create data source for Android phone GPS
 
-import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
-import PolylineLayer from 'osh-js/source/core/ui/layer/PolylineLayer.js';
-import DeckGlView from 'osh-js/source/core/ui/view/map/DeckGlView.js';
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
+import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView.js';
 import {TileLayer} from '@deck.gl/geo-layers';
 import {BitmapLayer} from '@deck.gl/layers';
-import {Mode} from 'osh-js/source/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
-import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource";
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 let gpsDataSource =  new ConSysApi('sat-GPS', {
     endpointUrl:  'api.georobotix.io/ogc/demo1/api/',

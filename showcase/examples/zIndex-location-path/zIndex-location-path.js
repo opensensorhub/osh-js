@@ -1,13 +1,13 @@
 // create data source for Android phone GPS
-import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
-import LeafletView from 'osh-js/source/core/ui/view/map/LeafletView.js';
-import OpenLayerView from 'osh-js/source/core/ui/view/map/OpenLayerView.js';
-import DeckGlView from 'osh-js/source/core/ui/view/map/DeckGlView.js';
-import CesiumView from 'osh-js/source/core/ui/view/map/CesiumView.js';
-import PolylineLayer from 'osh-js/source/core/ui/layer/PolylineLayer.js';
-import {Mode} from 'osh-js/source/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
-import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource";
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
+import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView.js';
+import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView.js';
+import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
+import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 let gpsDataSource =  new ConSysApi('sat-GPS', {
     endpointUrl:  'api.georobotix.io/ogc/demo1/api/',

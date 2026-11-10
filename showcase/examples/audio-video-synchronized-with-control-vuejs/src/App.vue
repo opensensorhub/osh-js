@@ -18,18 +18,18 @@
 </template>
 <script>
     // @ is an alias to /src
-    import TimeController from 'osh-js/source/vue/components/TimeController.vue';
-    import VideoView from "osh-js/source/core/ui/view/video/VideoView";
-    import DataSynchronizer from "osh-js/source/core/timesync/DataSynchronizer";
-    import AudioView from "osh-js/source/core/ui/view/audio/AudioView";
-    import AudioSpectrogramVisualizer from "osh-js/source/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
+    import TimeController from 'osh-js/vue/components/TimeController.vue';
+    import VideoView from "osh-js/core/ui/view/video/VideoView";
+    import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+    import AudioView from "osh-js/core/ui/view/audio/AudioView";
+    import AudioSpectrogramVisualizer from "osh-js/core/ui/view/audio/visualizer/spectrogram/AudioSpectrogramVisualizer";
     import AudioFrequencyChartJsVisualizer
-      from "osh-js/source/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
-    import AudioTimeChartJsVisualizer from "osh-js/source/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
-    import SosGetResult from 'osh-js/source/core/datasource/sos/SosGetResult.datasource.js';
-    import AudioDataLayer from "osh-js/source/core/ui/layer/AudioDataLayer";
-    import VideoDataLayer from "osh-js/source/core/ui/layer/VideoDataLayer";
-    import {Mode} from "osh-js/source/core/datasource/Mode";
+      from "osh-js/core/ui/view/audio/visualizer/frequency/AudioFrequencyChartJsVisualizer";
+    import AudioTimeChartJsVisualizer from "osh-js/core/ui/view/audio/visualizer/time/AudioTimeChartJsVisualizer";
+    import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+    import AudioDataLayer from "osh-js/core/ui/layer/AudioDataLayer";
+    import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
+    import {Mode} from "osh-js/core/datasource/Mode";
 
     export default {
         components: {

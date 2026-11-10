@@ -1,11 +1,11 @@
 // #region snippet_leaflet_location_import
 // create data source for Android phone GPS
 
-import PointMarkerLayer from 'osh-js/source/core/ui/layer/PointMarkerLayer.js';
-import LeafletView from 'osh-js/source/core/ui/view/map/LeafletView.js';
-import DataSynchronizer from 'osh-js/source/core/timesync/DataSynchronizer';
-import {Mode} from 'osh-js/source/core/datasource/Mode';
-import ConSysApi from "osh-js/source/core/datasource/consysapi/ConSysApi.datasource";
+import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
+import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {Mode} from 'osh-js/core/datasource/Mode';
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 // #endregion snippet_leaflet_location_import
 
