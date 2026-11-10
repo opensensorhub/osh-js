@@ -18,7 +18,7 @@ import WebSocketConnector from "../connector/WebSocketConnector";
 import {assertDefined, isDefined} from "../utils/Utils";
 import MqttTopicConnector from "../connector/MqttTopicConnector";
 import MqttConnector from "../connector/MqttConnector";
-import {getOAuthClient} from "osh-js/source/core/oauth/OAuthClient";
+import {getOAuthClient} from "../../core/oauth/OAuthClient";
 
 class SensorWebApi {
 
