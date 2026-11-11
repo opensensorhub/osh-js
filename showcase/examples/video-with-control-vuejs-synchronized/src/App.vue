@@ -17,7 +17,6 @@
 <script>
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import FFMPEGView from 'osh-js/core/ui/view/video/FFMPEGView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
@@ -40,10 +39,10 @@ export default {
     // create data source for UAV camera
     const opts = {
       endpointUrl: 'api.georobotix.io/ogc/t18/api',
-      resource: '/datastreams/8ni90dbu4uf0g/observations',
+      resource: '/datastreams/h225hesual08g/observations',
       tls: true,
-      startTime: '2012-06-29T14:22:00.099333251Z',
-      endTime: '2012-06-29T14:37:44.033333251Z',
+      startTime: '2026-11-10T21:52:58.099333251Z',
+      endTime: '2026-11-10T22:03:58.033333251Z',
       mode: Mode.REPLAY,
       responseFormat: 'application/swe+binary',
       prefetchBatchSize: 250
@@ -131,8 +130,8 @@ export default {
 
     this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: REPLAY_SPEED,
-      startTime: '2012-06-29T14:22:00.099333251Z',
-      endTime: '2012-06-29T14:37:44.033333251Z',
+      startTime: '2026-11-10T21:52:58.099333251Z',
+      endTime: '2026-11-10T22:03:58.033333251Z',
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();

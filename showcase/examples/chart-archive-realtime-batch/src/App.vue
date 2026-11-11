@@ -36,17 +36,17 @@ export default {
     const dsReplaySpeed = 1.0;
 
     const commonDatasourceOpts = {
-      endpointUrl:  'api.georobotix.io/ogc/demo1/api',
+      endpointUrl:  'api.georobotix.io/ogc/t18/api',
       protocol: 'mqtt',
       mqttOpts: {
         prefix: '/api',
-        endpointUrl: 'api.georobotix.io:443/ogc/demo1'
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      endTime: (new Date(Date.now()).toISOString()),
-      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 1).toISOString()),
-      maxTime: (new Date(Date.now()).toISOString()),
+      startTime: '2026-10-15T08:42:24.932Z',
+      endTime: '2026-10-15T08:42:33.931Z',
+      minTime:  '2026-10-15T08:42:24.932Z',
+      maxTime: '2026-10-15T08:42:33.931Z',
       mode: Mode.BATCH,
       replaySpeed: dsReplaySpeed,
       prefetchBatchDuration: 10000,
@@ -55,7 +55,7 @@ export default {
 
     const chartDataSource = new ConSysApi('Simulated Weather Sensor - weather', {
           ...commonDatasourceOpts,
-          resource: '/datastreams/vadu2mqtbnrsa/observations',
+          resource: '/datastreams/0tsop3f16nvp8/observations',
           responseFormat: 'application/swe+json',
     });
 

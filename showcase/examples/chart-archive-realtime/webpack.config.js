@@ -81,12 +81,12 @@ const config = {
     }
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9000,
-    hot: true,
-    index: 'chart-archive-realtime.html',
-    https:true
+      static: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 9000,
+      hot: true,
+      server: 'https',
+      index: 'chart-archive-realtime.html',
   },
   plugins: [
     new VueLoaderPlugin(),

@@ -3,7 +3,7 @@ import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import ConSysApi from "../../../../source/core/datasource/consysapi/ConSysApi.datasource";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 let startTime = "2015-02-16T07:57:59.447Z";
 let endTime = "2015-02-16T08:09:00Z";

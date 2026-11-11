@@ -69,7 +69,7 @@ export default {
           dataSourceId: chartDataSource1.id,
           getValues: (rec, timestamp) => {
             return {
-              x: rec.timestamp,
+              x: timestamp,
               y: rec.temperature
             }
           },
