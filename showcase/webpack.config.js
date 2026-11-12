@@ -14,6 +14,9 @@ let common = {
         ],
         alias: {
             'osh-js': path.resolve(__dirname, '../source')
+        },
+        fallback: {
+            fs: false
         }
     },
     module: {
@@ -40,8 +43,6 @@ let common = {
         ]
     },
     node: {
-        // Resolve node module use of fs
-        fs: 'empty'
     },
     plugins: [
         new CleanWebpackPlugin(),
@@ -133,14 +134,18 @@ for (let i = 0; i < directories.length; i++) {
             currentPlugin.push(config.plugins[j]);
         }
     }
-    currentPlugin.push(new CopyWebpackPlugin([
-        { from: path.resolve(__dirname, './' + example + '/' + directories[i] + '.js'), to: 'js' }
-    ]));
+    currentPlugin.push(new CopyWebpackPlugin({
+        patterns: [
+            { from: path.resolve(__dirname, './' + example + '/' + directories[i] + '.js'), to: 'js' }
+        ]
+    }));
 
     if (fs.existsSync(path.resolve(__dirname, './' + example + '/src/App.vue'))) {
-        currentPlugin.push(new CopyWebpackPlugin([
-            { from: path.resolve(__dirname, './' + example + '/src/App.vue'), to: 'vue/App_' + example + '.vue' },
-        ]));
+        currentPlugin.push(new CopyWebpackPlugin({
+            patterns: [
+                {from: path.resolve(__dirname, './' + example + '/src/App.vue'), to: 'vue/App_' + example + '.vue'}
+            ]
+        }));
     }
 
     delete config.devServer;

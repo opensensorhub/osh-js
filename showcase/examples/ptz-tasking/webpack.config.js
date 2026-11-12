@@ -24,6 +24,9 @@ module.exports = {
         ],
         alias: {
             'osh-js': path.resolve(__dirname, '../../../source')
+        },
+        fallback: {
+            fs: false
         }
     },
     // These rules tell Webpack how to process different module types.
@@ -43,7 +46,6 @@ module.exports = {
         ]
     },
     node: {
-        fs: 'empty'
     },
     // Enable the Webpack dev server which will build, serve, and reload our
     // project on changes.

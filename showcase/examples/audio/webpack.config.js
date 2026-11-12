@@ -13,7 +13,6 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     node: {
-        fs: 'empty'
     },
     // Tell Webpack which directories to look in to resolve import statements.
     // Normally Webpack will look in node_modules by default but since we’re overriding
@@ -40,14 +39,6 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
-            },
-            {
-                test: /\.worker\.js$/,
-                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
-            },
-            {
-                test: /\.worklet\.js$/,
-                use: { loader: 'worklet-loader' }
             }
         ]
     },

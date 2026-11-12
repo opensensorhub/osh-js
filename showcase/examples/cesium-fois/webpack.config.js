@@ -29,8 +29,6 @@ module.exports = {
         toUrlUndefined: true
     },
     node: {
-        // Resolve node module use of fs
-        fs: 'empty'
     },
     // Tell Webpack which directories to look in to resolve import statements.
     // Normally Webpack will look in node_modules by default but since we’re overriding
@@ -42,6 +40,9 @@ module.exports = {
         ],
         alias: {
             'osh-js': path.resolve(__dirname, '../../../source')
+        },
+        fallback: {
+            fs: false
         }
     },
     // These rules tell Webpack how to process different module types.
