@@ -10,7 +10,8 @@ module.exports = {
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
         filename: 'bundle.audio.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        clean: true
     },
     node: {
     },
@@ -45,12 +46,11 @@ module.exports = {
     // Enable the Webpack dev server which will build, serve, and reload our
     // project on changes.
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
         hot: true,
-        https: true,
-        index: 'audio.html'
+        server: 'https'
     },
     devtool: 'source-map',
     plugins: [

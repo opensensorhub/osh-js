@@ -12,7 +12,8 @@ module.exports = {
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
         filename: 'bundle.video-map-multiple-datasource.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        clean: true,
     },
     // Tell Webpack which directories to look in to resolve import statements.
     // Normally Webpack will look in node_modules by default but since we’re overriding
@@ -51,12 +52,11 @@ module.exports = {
     // Enable the Webpack dev server which will build, serve, and reload our
     // project on changes.
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
         hot: true,
-        index: 'video-map-multiple-datasource.html',
-        https:true
+        server: 'https'
     },
     devtool: 'eval-source-map',
     plugins: [

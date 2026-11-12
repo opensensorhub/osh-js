@@ -22,7 +22,8 @@ module.exports = {
         filename: 'bundle.cesium.location.js',
         path: path.resolve(__dirname, 'dist'),
         // Needed to compile multiline strings in Cesium
-        sourcePrefix: ''
+        sourcePrefix: '',
+        clean: true,
     },
     amd: {
         // Enable webpack-friendly use of require in Cesium
@@ -79,12 +80,11 @@ module.exports = {
     // Enable the Webpack dev server which will build, serve, and reload our
     // project on changes.
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
         hot: true,
-        index: 'cesium-location.html',
-        https:true
+        server: 'https'
     },
     devtool: 'source-map',
     plugins: [

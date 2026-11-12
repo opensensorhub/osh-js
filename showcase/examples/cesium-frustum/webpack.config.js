@@ -21,6 +21,7 @@ module.exports = {
     output: {
         filename: 'bundle.cesium.frustum.js',
         path: path.resolve(__dirname, 'dist'),
+        clean: true,
         // Needed to compile multiline strings in Cesium
         sourcePrefix: ''
     },
@@ -79,12 +80,11 @@ module.exports = {
     // Enable the Webpack dev server which will build, serve, and reload our
     // project on changes.
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
         hot: true,
-        https: true,
-        index: 'cesium-frustum.html'
+        server: 'https'
     },
     devtool: 'source-map',
     plugins: [

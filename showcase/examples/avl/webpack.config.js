@@ -20,6 +20,7 @@ module.exports = {
     output: {
         filename: 'bundle.avl.location.js',
         path: path.resolve(__dirname, 'dist'),
+        clean: true,
         sourcePrefix: ''
     },
     // Tell Webpack which directories to look in to resolve import statements.
@@ -77,12 +78,11 @@ module.exports = {
     // Enable the Webpack dev server which will build, serve, and reload our
     // project on changes.
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
         hot: true,
-        index: 'avl.html',
-        https:true
+        server: 'https'
     },
     devtool: 'source-map',
     plugins: [

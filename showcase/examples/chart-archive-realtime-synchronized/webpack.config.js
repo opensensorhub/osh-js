@@ -10,8 +10,9 @@ const path = require('path');
 const config = {
   entry: path.resolve(__dirname,'chart-archive-realtime-synchronized.js'),
   output: {
-    filename: 'bundle.chart-archive-realtime-synchronized.js',
-    path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.chart-archive-realtime-synchronized.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
   },
 
   resolve: {
@@ -77,12 +78,11 @@ const config = {
     }
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
     hot: true,
-    index: 'chart-archive-realtime-synchronized.html',
-    https:true
+    server: 'https'
   },
   plugins: [
     new VueLoaderPlugin(),

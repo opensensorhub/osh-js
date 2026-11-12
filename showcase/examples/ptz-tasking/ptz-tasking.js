@@ -1,9 +1,9 @@
 import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
-import {Mode} from "../../../../source/core/datasource/Mode";
-import VideoDataLayer from "../../../../source/core/ui/layer/VideoDataLayer";
+import {Mode} from "osh-js/core/datasource/Mode";
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 import Systems from "osh-js/core/consysapi/system/Systems";
-import ControlStreamFilter from "../../../source/core/consysapi/controlstream/ControlStreamFilter";
+import ControlStreamFilter from "osh-js/core/consysapi/controlstream/ControlStreamFilter";
 
 
 const systemId = "mkmk546knttpg";

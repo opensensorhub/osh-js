@@ -10,8 +10,9 @@ const path = require('path');
 const config = {
   entry: path.resolve(__dirname,'video-with-control-vuejs-synchronized.js'),
   output: {
-    filename: 'bundle.video-with-control-vuejs-synchronized.js',
-    path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.video-with-control-vuejs-synchronized.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
   },
 
   resolve: {
@@ -55,12 +56,11 @@ const config = {
     ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
     hot: true,
-    index: 'video-with-control-vuejs-synchronized.html',
-    https:true
+    server: 'https'
   },
   optimization: {
     splitChunks: {

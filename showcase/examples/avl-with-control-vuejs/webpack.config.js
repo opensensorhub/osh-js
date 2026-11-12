@@ -17,10 +17,11 @@ const PROCESS_BASE_PATH = process.cwd();
 const config = {
   entry: path.resolve(__dirname,'avl-with-control-vuejs.js'),
   output: {
-    filename: 'bundle.avl-with-control-vuejs.js',
-    path: path.resolve(__dirname, 'dist'),
-    // Needed to compile multiline strings in Cesium
-    sourcePrefix: ''
+      filename: 'bundle.avl-with-control-vuejs.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
+      // Needed to compile multiline strings in Cesium
+      sourcePrefix: ''
   },
   resolve: {
     modules: [
@@ -75,12 +76,11 @@ const config = {
     ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
     hot: true,
-    index: 'avl-with-control-vuejs.html',
-    https:true
+    server: 'https'
   },
   optimization: {
     splitChunks: {

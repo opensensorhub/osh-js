@@ -10,8 +10,9 @@ const path = require('path');
 const config = {
   entry: path.resolve(__dirname,'audio-video-synchronized-with-control-vuejs.js'),
   output: {
-    filename: 'bundle.audio-video-synchronized-with-control-vuejs.js',
-    path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.audio-video-synchronized-with-control-vuejs.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true
   },
 
   resolve: {
@@ -55,12 +56,11 @@ const config = {
     ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
     hot: true,
-    https:true,
-    index: 'audio-video-synchronized-with-control-vuejs.html'
+    server: 'https'
   },
   optimization: {
     splitChunks: {
