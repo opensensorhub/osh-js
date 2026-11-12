@@ -23,7 +23,6 @@ const config = {
     }
   },
   node: {
-    fs: 'empty'
   },
   amd: {
     // Enable webpack-friendly use of require in Cesium
@@ -52,9 +51,6 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       }
     ],
   },

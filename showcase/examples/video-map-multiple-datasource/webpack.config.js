@@ -31,8 +31,6 @@ module.exports = {
         toUrlUndefined: true
     },
     node: {
-        // Resolve node module use of fs
-        fs: 'empty'
     },
     // These rules tell Webpack how to process different module types.
     // Remember, *everything* is a module in Webpack. That includes
@@ -47,10 +45,7 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
-            }, {
-                test: /\.worker\.js$/,
-                use: { loader: 'worker-loader' }
-            },
+            }
         ]
     },
     // Enable the Webpack dev server which will build, serve, and reload our
@@ -87,8 +82,10 @@ module.exports = {
         // This plugin will copy files over to ‘./dist’ without transforming them.
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
-        new CopyWebpackPlugin([
-        {from: path.resolve(__dirname,'images'), to: 'images'},
-        ])
+        new CopyWebpackPlugin({
+            patterns: [
+                {from: path.resolve(__dirname, 'images'), to: 'images'}
+            ]
+        })
     ]
 };

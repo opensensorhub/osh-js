@@ -21,7 +21,6 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     node: {
-        fs: 'empty'
     },
     // Tell Webpack which directories to look in to resolve import statements.
     // Normally Webpack will look in node_modules by default but since we’re overriding
@@ -50,10 +49,6 @@ module.exports = {
                 use: ['style-loader', 'css-loader'],
             },
             {
-                test: /\.worker\.js$/,
-                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
-            },
-            {
                 test: /\.(?:js|mjs|cjs)$/,
                 exclude: {
                     and: [/node_modules/], // Exclude libraries in node_modules ...
@@ -69,11 +64,6 @@ module.exports = {
                             plugins: ["@babel/plugin-transform-optional-chaining"],
                         },
                     },
-                    // Babel understands the import.meta syntax but doesn't transform it in any way
-                    // However Webpack can't parse this and throws an error for an unexpected token
-                    // we need to use this extra loader so Webpack can actually bundle the code
-                    // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
-                    require.resolve("@open-wc/webpack-import-meta-loader"),
                 ],
             }
         ]
@@ -109,13 +99,15 @@ module.exports = {
             filename: 'video-h264-draping.html',
             template: path.resolve(__dirname, 'video-h264-draping.html')
         }),
-        new CopyWebpackPlugin([
-            { from: path.resolve(__dirname,'images'), to: 'images'},
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true }
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: path.resolve(__dirname,'images'), to: 'images'},
+                { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
+                { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
+                { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
+                { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true }
+            ]
+        }),
         new webpack.DefinePlugin({
             // Define relative base path in cesium for loading assets
             CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),

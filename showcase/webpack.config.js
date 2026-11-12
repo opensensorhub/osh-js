@@ -72,10 +72,12 @@ module.exports = [{
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'index.html')
         }),
-        new CopyWebpackPlugin([
-            { from: path.resolve(__dirname, 'lib'), to: 'lib' },
-            { from: path.resolve(__dirname, 'images'), to: 'images' }
-        ])
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: path.resolve(__dirname, 'lib'), to: 'lib' },
+                { from: path.resolve(__dirname, 'images'), to: 'images' }
+            ]
+        })
     ]
 }];
 

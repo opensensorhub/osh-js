@@ -39,10 +39,6 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
-            },
-            {
-                test: /\.worker\.js$/,
-                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
             }
         ]
     },
@@ -79,8 +75,10 @@ module.exports = {
         // This plugin will copy files over to ‘./dist’ without transforming them.
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
-        new CopyWebpackPlugin([
-        {from: path.resolve(__dirname,'images'), to: 'images', force:true},
-        ])
+        new CopyWebpackPlugin({
+            patterns: [
+                {from: path.resolve(__dirname, 'images'), to: 'images', force: true}
+            ]
+        })
     ]
 };
