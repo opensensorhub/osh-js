@@ -42,10 +42,13 @@ let common = {
         }
         ]
     },
+    output: {
+        publicPath: '/',
+        clean: false,
+    },
     node: {
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new VueLoaderPlugin()
     ]
 };
@@ -55,21 +58,22 @@ module.exports = [{
     entry: './index.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: '/',
+        clean: true,
     },
     optimization: {
         minimize: false
     },
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
         hot: true,
-        https: true
+        server: 'https'
     },
     devtool: 'eval-source-map',
     plugins: [
-        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'index.html')
         }),

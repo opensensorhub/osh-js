@@ -28,7 +28,6 @@
     "showcase-prod": "webpack --config webpack.config.js --mode production"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "9.1.0",
     "css-loader": "^6.8.1",
     "file-loader": "6.2.0",

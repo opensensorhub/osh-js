@@ -2,7 +2,6 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 
@@ -86,7 +85,6 @@ const config = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'chart-archive-realtime-batch.html'),
       filename: './chart-archive-realtime-batch.html',

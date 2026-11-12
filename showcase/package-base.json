@@ -29,7 +29,6 @@
     "merge": "package-json-merge package-base.json cesium-fois/package.json  cesium-location/package.json chart/package.json discovery/package.json entity/package.json leaflet-location/package.json leaflet-location-fois/package.json leaflet-location-heading/package.json leaflet-location-path/package.json openlayers-location/package.json ptz-tasking/package.json rangeslider/package.json video-gps-sync/package.json video-h264/package.json video-h264-drapping/package.json video-mjpeg/package.json > package.json"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "9.1.0",
     "css-loader": "3.5.3",
     "file-loader": "6.2.0",

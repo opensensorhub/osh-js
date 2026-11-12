@@ -2,7 +2,6 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -106,7 +105,6 @@ const config = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'avl-with-control-vuejs.html'),
       filename: './avl-with-control-vuejs.html',

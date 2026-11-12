@@ -27,7 +27,6 @@
     "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "9.1.0",
     "html-webpack-plugin": "5.5.0",
     "webpack": "^5.88.0",

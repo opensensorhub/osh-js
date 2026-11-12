@@ -33,7 +33,6 @@
     "cesium": "1.114.0"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "9.1.0",
     "css-loader": "3.5.3",
     "file-loader": "6.2.0",

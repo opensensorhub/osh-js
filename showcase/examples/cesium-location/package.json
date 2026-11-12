@@ -27,7 +27,6 @@
     "dev": "webpack serve --config webpack.config.js --mode development --watch"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "4.0.0",
     "css-loader": "3.5.3",
     "html-webpack-plugin": "5.5.0",
     "webpack": "^5.88.0",

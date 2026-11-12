@@ -18,7 +18,6 @@
     "@cesium/engine": "8.0.0",
     "@cesium/widgets": "5.0.0",
     "cesium": "1.114.0",
-    "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "9.1.0",
     "css-loader": "3.5.3",
     "file-loader": "6.2.0",
