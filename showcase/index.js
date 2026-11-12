@@ -12,6 +12,12 @@ var samples = [
         datasourceType: 'Connected Systems',
     },
     {
+        name: "Frustum (CesiumJS)",
+        description: "Display the frustum on a CesiumJS globe",
+        url: "cesium-frustum",
+        datasourceType: 'Connected Systems',
+    },
+    {
         name: "Moving Location (CesiumJS)",
         description: "Display a moving marker on a CesiumJS globe, tracking the current location of a vehicle.",
         url: "cesium-location",
@@ -33,12 +39,6 @@ var samples = [
         name: "Moving Location (Deck.gl)",
         description: "Display a moving marker on a Deck.gl canvas, tracking the current location of a vehicle.",
         url: "deckgl-location",
-        datasourceType: 'Connected Systems',
-    },
-    {
-        name: "Simple Chart (Chart.js)",
-        description: "Display a chart with time series of weather measurements.",
-        url: "chart",
         datasourceType: 'Connected Systems',
     },
     {
@@ -64,6 +64,12 @@ var samples = [
         name: "Moving Location + Path (Leaflet)",
         description: "Display a moving marker and a polyline on a Leaflet map, showing both the current location of a vehicle and the historical track.",
         url: "leaflet-location-path",
+        datasourceType: 'Connected Systems',
+    },
+    {
+        name: "Moving Location with Time controller (Leaflet)",
+        description: "Display a moving marker and time controller.",
+        url: "leaflet-location-timerange",
         datasourceType: 'Connected Systems',
     },
     {
@@ -145,6 +151,12 @@ var samples = [
         name: 'ISA Biological & MISB UAS sensor data using MQTT protocol',
         description: 'Display biological and GPS sensors from ISA Biological Sensor & MISB UAS using MQTT protocol',
         url: 'mqtt',
+        datasourceType: 'Connected Systems',
+    },
+    {
+        name: "Simple Chart (Chart.js)",
+        description: "Display a chart with time series of weather measurements.",
+        url: "chart",
         datasourceType: 'Connected Systems',
     },
     {

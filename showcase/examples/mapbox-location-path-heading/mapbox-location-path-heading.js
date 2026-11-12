@@ -9,13 +9,15 @@ import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FrZXdhMzk0MCIsImEiOiJja2I4ZDZkdDAwMzc5MzFwazZubmFhNzVvIn0.i4O5Cls0aaVSVREIzK151w';
 
+const REPLAY_SPEED = 1.0;
+
 // create data source for Android phone GPS
 let gpsDataSource =  new ConSysApi('android-GPS', {
-    endpointUrl:  'api.georobotix.io/ogc/t18/api/',
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    startTime: '2023-06-06T14:26:12Z',
+    startTime: '2023-06-06T14:26:12.031Z',
     endTime: '2023-06-06T22:23:47Z',
-    minTime: '2023-06-06T14:26:12Z',
+    minTime: '2023-06-06T14:26:12.031Z',
     maxTime: '2023-06-06T22:23:47Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
@@ -27,12 +29,12 @@ let gpsDataSource =  new ConSysApi('android-GPS', {
 });
 
 // create data source for Android phone orientation
-let attitudeDataSource =  new ConSysApi('android-Attitude', {
+let attitudeDataSource =  new ConSysApi('android-Heading', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api/',
     tls: true,
-    startTime: '2023-06-06T14:26:12Z',
+    startTime: '2023-06-06T14:26:12.031Z',
     endTime: '2023-06-06T22:23:47Z',
-    minTime: '2023-06-06T14:26:12Z',
+    minTime: '2023-06-06T14:26:12.031Z',
     maxTime: '2023-06-06T22:23:47Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
@@ -44,10 +46,10 @@ let attitudeDataSource =  new ConSysApi('android-Attitude', {
 });
 
 const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: 2,
-    startTime: '2023-06-06T14:26:12Z',
+    replaySpeed: REPLAY_SPEED,
+    startTime: '2023-06-06T14:26:12.031Z',
     endTime: '2023-06-06T22:23:47Z',
-    dataSources: [gpsDataSource, attitudeDataSource]
+    dataSources: [gpsDataSource, attitudeDataSource],
 });
 
 // style it with a moving point marker

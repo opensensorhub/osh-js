@@ -11,41 +11,45 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0N
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
+const REPLAY_SPEED = 1.0;
+
 // create data source for Android phone GPS
-let gpsDataSource =  new ConSysApi('sat-GPS', {
-    endpointUrl:  'api.georobotix.io/ogc/demo1/api/',
+let gpsDataSource =  new ConSysApi('droid-GPS', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    startTime: '2026-02-27T22:51:35.313Z',
-    endTime: '2026-02-27T23:01:34Z',
-    minTime: '2026-02-27T22:51:35.313Z',
-    maxTime: '2026-02-27T23:01:34Z',
+    startTime: '2023-06-06T14:26:12.313Z',
+    endTime: ' 2023-06-06T22:23:47.34Z',
+    minTime: '2023-06-06T14:26:12.313Z',
+    maxTime: ' 2023-06-06T22:23:47.34Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
     prefetchBatchDuration: 10000,
     prefetchBatchSize: 250,
-    resource: '/datastreams/28ksb4qmubgfs/observations',
+    resource: '/datastreams/frmhs11ofiilm/observations',
     responseFormat: 'application/swe+json',
     timeShift: -16000
 });
 
 const dataSynchronizer = new DataSynchronizer({
     replaySpeed: 2,
-    startTime: '2026-02-27T22:51:35.313Z',
-    endTime: '2026-02-27T23:01:34Z',
+    startTime: '2023-06-06T14:26:12.313Z',
+    endTime: '2023-06-06T22:23:47.34Z',
     dataSources: [gpsDataSource]
 });
 
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
-    dataSourceId: gpsDataSource.id,
-    getLocation: (rec) => ({
-        x: rec.location.lon,
-        y: rec.location.lat
-    }),
+    getLocation: {
+        dataSourceIds: [gpsDataSource.getId()],
+        handler: (rec) => ({
+            x: rec.location.lon,
+            y: rec.location.lat
+        })
+    },
     orientation: {
         heading: 0
     },
-    icon: 'images/car-location.png',
+    icon: 'images/marker-icon.png',
     iconAnchor: [16, 40],
     iconSize: [32, 65],
 });
@@ -76,9 +80,9 @@ let cesiumView = new CesiumView({
             scene3DOnly: true, // for draw layer
         }),
         location: {
-            longitude: -5.185511,
-            latitude: 42.092383,
-            altitude: 3000
+            longitude: -86.63313699088032,
+            latitude: 34.71077144512363,
+            altitude: 300
         },
         orientation: {
             heading: 150,
@@ -92,4 +96,4 @@ let cesiumView = new CesiumView({
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 
 // start streaming
-// dataSynchronizer.connect();
+dataSynchronizer.connect();

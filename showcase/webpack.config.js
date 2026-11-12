@@ -15,7 +15,8 @@ let common = {
             'osh-js': path.resolve(__dirname, '../source')
         },
         fallback: {
-            fs: false
+            fs: false,
+            path: false
         }
     },
     module: {

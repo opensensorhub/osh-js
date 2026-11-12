@@ -12,22 +12,29 @@ const mqttProps = {
     endpointUrl: 'api.georobotix.io:443/ogc/t18',
 };
 
-let gpsDataSource = new ConSysApi("android-GPS", {
+const REPLAY_SPEED = 1.0;
+
+// #region snippet_leaflet_location_datasource
+let gpsDataSource =  new ConSysApi('android-GPS', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
-    resource: '/datastreams/rbnag2hrc04mm/observations',
-    startTime: '2026-11-10T19:37:59Z.447Z',
-    endTime: '2026-11-10T19:48:33.000Z',
-    protocol: 'mqtt',
-    mqttOpts: mqttProps,
-    mode: Mode.REPLAY,
     tls: true,
+    startTime: '2023-06-06T14:26:12.031Z',
+    endTime: '2023-06-06T22:23:47Z',
+    minTime: '2023-06-06T14:26:12.031Z',
+    maxTime: '2023-06-06T22:23:47Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/frmhs11ofiilm/observations',
+    responseFormat: 'application/swe+json',
     timeShift: -16000
 });
 
 const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: 2,
-    startTime: '2015-02-16T07:58:22.00Z',
-    endTime: "2015-02-16T08:09:00Z",
+    replaySpeed: REPLAY_SPEED,
+    startTime: '2023-06-06T14:26:12.031Z',
+    endTime: '2023-06-06T22:23:47Z',
     dataSources: [gpsDataSource]
 });
 
@@ -55,8 +62,8 @@ let leafletMapView = new LeafletView({
 
 let rangeSlider = new RangeSlider({
     container: "rangeSlider",
-    startTime: "2015-02-16T07:58:32Z",
-    endTime: "2015-02-16T08:20:00Z",
+    startTime: '2023-06-06T14:26:12.031Z',
+    endTime: '2023-06-06T22:23:47Z',
     dataSource: gpsDataSource
 });
 

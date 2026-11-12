@@ -10,7 +10,7 @@ import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 let gpsDataSource =  new ConSysApi('sat-GPS', {
-    endpointUrl:  'api.georobotix.io/ogc/demo1/api/',
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
     startTime: '2026-02-27T22:51:35.313Z',
     endTime: '2026-02-27T23:01:34Z',

@@ -7,13 +7,15 @@ import {Mode} from "../../../source/core/datasource/Mode";
 import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
+const REPLAY_SPEED = 1.0;
+
 // create data source for Android phone GPS
 let gpsDataSource =  new ConSysApi('android-GPS', {
-    endpointUrl:  'api.georobotix.io/ogc/t18/api/',
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    startTime: '2023-06-06T14:26:12Z',
+    startTime: '2023-06-06T14:26:12.031Z',
     endTime: '2023-06-06T22:23:47Z',
-    minTime: '2023-06-06T14:26:12Z',
+    minTime: '2023-06-06T14:26:12.031Z',
     maxTime: '2023-06-06T22:23:47Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
@@ -28,9 +30,9 @@ let gpsDataSource =  new ConSysApi('android-GPS', {
 let orientationDataSource =  new ConSysApi('android-Attitude', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api/',
     tls: true,
-    startTime: '2023-06-06T14:26:12Z',
+    startTime: '2023-06-06T14:26:12.031Z',
     endTime: '2023-06-06T22:23:47Z',
-    minTime: '2023-06-06T14:26:12Z',
+    minTime: '2023-06-06T14:26:12.031Z',
     maxTime: '2023-06-06T22:23:47Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
@@ -42,50 +44,30 @@ let orientationDataSource =  new ConSysApi('android-Attitude', {
 });
 
 const dataSynchronizer = new DataSynchronizer({
-  replaySpeed: 2,
-    startTime: '2023-06-06T14:26:12Z',
+    replaySpeed: REPLAY_SPEED,
+    startTime: '2023-06-06T14:26:12.031Z',
     endTime: '2023-06-06T22:23:47Z',
-  dataSources: [gpsDataSource, orientationDataSource]
+    dataSources: [gpsDataSource, orientationDataSource]
 });
 
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
   dataSourceId: gpsDataSource.id,
-  getLocation: (rec) => ({
-      x: rec.location.lon,
-      y: rec.location.lat
-  }),
-  orientation: {
-    heading: 0
+  getLocation: {
+      dataSourceIds : [gpsDataSource.getId()],
+      handler: (rec) => {
+          return {
+              x: rec.location.lon,
+              y: rec.location.lat,
+              z: rec.location.alt
+          }
+      }
   },
   getOrientation : {
     dataSourceIds : [orientationDataSource.getId()],
     handler : (rec) => {
-      let qx = rec.orient.qx;
-      let qy = rec.orient.qy;
-      let qz = rec.orient.qz;
-      let qw = rec.orient.q0;
-
-      // look dir vector
-      let x = 0;
-      let y = 0;
-      let z = -1;
-
-      // compute quat * vector
-      let ix =  qw * x + qy * z - qz * y;
-      let iy =  qw * y + qz * x - qx * z;
-      let iz =  qw * z + qx * y - qy * x;
-      let iw = - qx * x - qy * y - qz * z;
-
-      // compute result * inverse quat
-      let xp = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-      let yp = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-      let zp = iz * qw + iw * - qz + ix * - qy - iy * - qx;
-
-      let yaw = 90 - (180/Math.PI*Math.atan2(yp, xp));
-
       return {
-        heading : yaw-130
+          heading :rec.orient.heading
       };
     }
   },
@@ -99,9 +81,9 @@ let pointMarker = new PointMarkerLayer({
 let ellipse = new EllipseLayer({
   dataSourceId: gpsDataSource.id,
   getPosition: (rec) => ({
-    x: rec.location.lon,
-    y: rec.location.lat,
-    z: rec.location.alt
+      x: rec.location.lon,
+      y: rec.location.lat,
+      z: rec.location.alt
   }),
   color: 'rgba(255,74,22, 0.5)',
   semiMinorAxis: 100,

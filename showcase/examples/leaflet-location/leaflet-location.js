@@ -8,14 +8,15 @@ import {Mode} from 'osh-js/core/datasource/Mode';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 // #endregion snippet_leaflet_location_import
+const REPLAY_SPEED = 1.0;
 
 // #region snippet_leaflet_location_datasource
 let gpsDataSource =  new ConSysApi('android-GPS', {
-    endpointUrl:  'api.georobotix.io/ogc/t18/api/',
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    startTime: '2023-06-06T14:26:12Z',
+    startTime: '2023-06-06T14:26:12.031Z',
     endTime: '2023-06-06T22:23:47Z',
-    minTime: '2023-06-06T14:26:12Z',
+    minTime: '2023-06-06T14:26:12.031Z',
     maxTime: '2023-06-06T22:23:47Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
@@ -27,9 +28,9 @@ let gpsDataSource =  new ConSysApi('android-GPS', {
 });
 
 const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: 2,
-    startTime: '2015-02-16T07:58:22.00Z',
-    endTime: "2015-02-16T08:09:00Z",
+    replaySpeed: REPLAY_SPEED,
+    startTime: '2023-06-06T14:26:12.031Z',
+    endTime: '2023-06-06T22:23:47Z',
     dataSources: [gpsDataSource]
 });
 

@@ -15,34 +15,29 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0N
 
 window.CESIUM_BASE_URL = './';
 
-const REPLAY_SPEED = 1.0;
-
-const begin = '2025-06-12T14:11:06.410999755Z';
-const fin = '2025-06-13T14:11:06.410999755Z';
-
 
 let uavDataSource =  new ConSysApi('Predator UAV (MISB Simulated RT) - Sensor Location', {
-    endpointUrl: 'api.georobotix.io/ogc/demo1/api',
-    resource: '/datastreams/6ft4mrvfugkr2/observations',
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
+    resource: '/datastreams/o7pce3e60s0ie/observations',
     responseFormat: 'application/om+json',
     tls: true,
-    protocol: 'ws',
+    protocol: 'mqtt',
     mqttOpts: {
         prefix: '/api',
-        endpointUrl: 'api.georobotix.io:443/ogc/demo1'
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
     },
     mode : Mode.REAL_TIME
 });
 
 let attDataSource =  new ConSysApi('Predator UAV (MISB Simulated RT) - Platform Attitude', {
-    endpointUrl: 'api.georobotix.io/ogc/demo1/api',
-    resource: '/datastreams/98nto59268lok/observations',
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
+    resource: '/datastreams/mlme3gtdfepvc/observations',
     responseFormat: 'application/om+json',
     tls: true,
     protocol: 'ws',
     mqttOpts: {
         prefix: '/api',
-        endpointUrl: 'api.georobotix.io:443/ogc/demo1'
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
     },
     mode : Mode.REAL_TIME
 });
@@ -64,14 +59,17 @@ let pointMarker = new PointMarkerLayer({
         z: rec.result.location.alt
     })},
     defaultToTerrainElevation: true,
-    getOrientation: {dataSourceIds: [attDataSource.getId()],
-    handler: (rec) => ({
-        heading: rec.attitude.heading - 90.0
-    })},
+    getOrientation: {
+        dataSourceIds: [attDataSource.getId()],
+        handler: (rec) => {
+            return rec.result.attitude.heading - 90.0
+        },
+    },
     icon: 'images/marker-icon.png',
     iconAnchor: [16, 40],
     iconSize: [32, 65],
     allowBillboardRotation: false
+
 });
 
 

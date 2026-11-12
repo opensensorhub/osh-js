@@ -76,9 +76,9 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
             dataSourceIds: [platformLocationDataSource.getId()],
             handler: function (rec) {
                 return {
-                    x: rec.loc.lon,
-                    y: rec.loc.lat,
-                    z: rec.loc.alt - 184 // model offset
+                    x: rec.location.lon,
+                    y: rec.location.lat,
+                    z: rec.location.alt - 184 // model offset
                 };
             }
         },
@@ -117,6 +117,6 @@ function createView(videoDivId, mapDivId, startTime,endTime ) {
     dataSynchronizer.connect();
 }
 
-createView("VideoLeft","leafletMapLeft", '2026-11-10T18:32:58.000Z', '2026-11-10T18:43:22.675Z');
-createView("VideoRight","leafletMapRight", '2026-11-10T18:32:58.000Z', '2026-11-10T18:43:22.675Z');
+createView("VideoLeft","leafletMapLeft", '2026-11-12T20:52:59.402000244Z', '2026-11-12T20:59:48.104Z');
+createView("VideoRight","leafletMapRight", '2026-11-12T20:52:59.402000244Z', '2026-11-12T20:59:48.104Z');
 

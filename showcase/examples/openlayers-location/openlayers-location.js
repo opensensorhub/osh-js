@@ -7,13 +7,15 @@ import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 // create data source for Android phone GPS
+const REPLAY_SPEED = 1.0;
 
+// create data source for Android phone GPS
 let gpsDataSource =  new ConSysApi('android-GPS', {
-    endpointUrl:  'api.georobotix.io/ogc/t18/api/',
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    startTime: '2023-06-06T14:26:12Z',
+    startTime: '2023-06-06T14:26:12.031Z',
     endTime: '2023-06-06T22:23:47Z',
-    minTime: '2023-06-06T14:26:12Z',
+    minTime: '2023-06-06T14:26:12.031Z',
     maxTime: '2023-06-06T22:23:47Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
@@ -25,12 +27,12 @@ let gpsDataSource =  new ConSysApi('android-GPS', {
 });
 
 
-let orientationDataSource =  new ConSysApi('android-ORI', {
+let orientationDataSource =  new ConSysApi('android-Heading', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api/',
     tls: true,
-    startTime: '2023-06-06T14:26:12Z',
+    startTime: '2023-06-06T14:26:12.031Z',
     endTime: '2023-06-06T22:23:47Z',
-    minTime: '2023-06-06T14:26:12Z',
+    minTime: '2023-06-06T14:26:12.031Z',
     maxTime: '2023-06-06T22:23:47Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
@@ -43,57 +45,37 @@ let orientationDataSource =  new ConSysApi('android-ORI', {
 
 
 const dataSynchronizer = new DataSynchronizer({
-  replaySpeed: 2,
-  startTime: '2015-02-16T07:58:22.00Z',
-  endTime: "2015-02-16T08:09:00Z",
-  dataSources: [gpsDataSource, orientationDataSource]
+    replaySpeed: REPLAY_SPEED,
+    startTime: '2023-06-06T14:26:12.031Z',
+    endTime: '2023-06-06T22:23:47Z',
+    dataSources: [gpsDataSource, orientationDataSource]
 });
 
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
-  dataSourceId: gpsDataSource.id,
-  getLocation: (rec) => ({
-    x: rec.location.lon,
-    y: rec.location.lat
-  }),
-  getIconColor: (rec) => {
-    const r = Math.floor(Math.random() * 255);
-    const g = Math.floor(Math.random() * 255);
-    const b = Math.floor(Math.random() * 255);
-    return  `rgba(${r}, ${g}, ${b}, .5)`
-  },
-  orientation: {
-    heading: 0
-  },
+    dataSourceId: gpsDataSource.id,
+    getLocation: {
+        dataSourceIds : [gpsDataSource.getId()],
+        handler: (rec) => {
+            return {
+                x: rec.location.lon,
+                y: rec.location.lat,
+                z: rec.location.alt
+            }
+        }
+    },
+    getIconColor: (rec) => {
+        const r = Math.floor(Math.random() * 255);
+        const g = Math.floor(Math.random() * 255);
+        const b = Math.floor(Math.random() * 255);
+        return  `rgba(${r}, ${g}, ${b}, .5)`
+    },
   getOrientation : {
     dataSourceIds : [orientationDataSource.getId()],
     handler : (rec) => {
-      let qx = rec.orient.qx;
-      let qy = rec.orient.qy;
-      let qz = rec.orient.qz;
-      let qw = rec.orient.q0;
-
-      // look dir vector
-      let x = 0;
-      let y = 0;
-      let z = -1;
-
-      // compute quat * vector
-      let ix =  qw * x + qy * z - qz * y;
-      let iy =  qw * y + qz * x - qx * z;
-      let iz =  qw * z + qx * y - qy * x;
-      let iw = - qx * x - qy * y - qz * z;
-
-      // compute result * inverse quat
-      let xp = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-      let yp = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-      let zp = iz * qw + iw * - qz + ix * - qy - iy * - qx;
-
-      let yaw = 90 - (180/Math.PI*Math.atan2(yp, xp));
-
-      return {
-        heading : yaw-130
-      };
+        return {
+           heading: rec.orient.heading
+        }
     }
   },
   icon: 'images/car-location.png',

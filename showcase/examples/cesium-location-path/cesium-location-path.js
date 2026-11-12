@@ -1,6 +1,5 @@
-
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
-import {EllipsoidTerrainProvider, Ion} from '@cesium/engine';
+import {EllipsoidTerrainProvider, Ion, Cartesian3} from '@cesium/engine';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
 import EllipseLayer from "osh-js/core/ui/layer/EllipseLayer";
@@ -8,30 +7,30 @@ import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
+
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
-// create data source for Android phone GPS
+const REPLAY_SPEED = 1.0;
+// create data source for Sat
 let gpsDataSource =  new ConSysApi('sat-GPS', {
-    endpointUrl:  'api.georobotix.io/ogc/demo1/api/',
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    startTime: '2026-02-27T22:51:35.313Z',
-    endTime: '2026-02-27T23:01:34Z',
-    minTime: '2026-02-27T22:51:35.313Z',
-    maxTime: '2026-02-27T23:01:34Z',
+    startTime: '2026-10-15T08:42:16.816Z',
+    endTime: '2026-10-15T08:43:28.826Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
     prefetchBatchDuration: 10000,
     prefetchBatchSize: 250,
-    resource: '/datastreams/28ksb4qmubgfs/observations',
+    resource: '/datastreams/ceuaig4rlf746/observations',
     responseFormat: 'application/swe+json',
     timeShift: -16000
 });
 
 const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: 5,
-    startTime: '2026-02-27T22:51:35.313Z',
+    replaySpeed: REPLAY_SPEED,
+    startTime: '2026-10-15T08:42:16.816Z',
     endTime: '2026-02-27T23:01:34Z',
     dataSources: [gpsDataSource]
 });
@@ -39,11 +38,14 @@ const dataSynchronizer = new DataSynchronizer({
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
     dataSourceId: gpsDataSource.id,
-    getLocation: (rec) => ({
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: 0
-    }),
+    getLocation: {
+        dataSourceIds : [gpsDataSource.getId()],
+        handler: (rec) => ({
+            x: rec.pos.x,
+            y: rec.pos.y,
+            z: -(rec.pos.z) //this ex ds is neg
+        })
+    },
     orientation: {
         heading: 0
     },
@@ -51,13 +53,13 @@ let pointMarker = new PointMarkerLayer({
     labelColor: '#ffffff',
     labelSize: 12,
     label: 'GPS car',
-    icon: 'images/test0.svg',
+    icon: 'images/marker-icon.png',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     getIconColor: (rec) => (Math.random() < 0.5) ?  'rgba(255,0,0,0.5)' : 'rgba(0,82,255,0.5)',
     iconColor: 'rgba(117,250,40,0.5)',
     description: 'Car',
-    getDescription: (d) => `Alt: ${d.location.alt}`,
+    getDescription: (d) => `Alt: ${d.pos.alt}`,
     zIndex: 2
 });
 
@@ -65,9 +67,9 @@ let pointMarker = new PointMarkerLayer({
 let polyline = new PolylineLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => ({
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: rec.location.alt
+        x: rec.pos.x,
+        y: rec.pos.y,
+        z: rec.pos.z
     }),
     clampToGround: true,
     color: 'rgba(0,0,255,0.5)',
@@ -75,21 +77,21 @@ let polyline = new PolylineLayer({
     opacity: .5,
     smoothFactor: 1,
     maxPoints: 200,
-    name: "Android Phone GPS Path",
+    name: "GPS Path",
     zIndex: 0
 });
 
 let ellipse = new EllipseLayer({
     dataSourceId: gpsDataSource.id,
     getPosition: (rec) => ({
-        x: rec.location.lon,
-        y: rec.location.lat,
-        z: rec.location.alt
+        x: rec.pos.x,
+        y: rec.pos.y,
+        z: rec.pos.z
     }),
     color: 'rgba(255,74,22, 0.5)',
     semiMinorAxis: 100,
     semiMajorAxis: 200,
-    name: "Android Phone GPS Path",
+    name: "GPS Path",
     zIndex: 1
 });
 
@@ -105,6 +107,7 @@ let cesiumView = new CesiumView({
         }
     }
 });
+
 
 // #endregion snippet_cesium_location_view
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
