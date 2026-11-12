@@ -148,8 +148,8 @@ var samples = [
         datasourceType: 'SOS',
     },
     {
-        name: 'ISA Biological & MISB UAS sensor data using MQTT protocol',
-        description: 'Display biological and GPS sensors from ISA Biological Sensor & MISB UAS using MQTT protocol',
+        name: 'Weather & MISB UAS sensor data using MQTT protocol',
+        description: 'Display weather and GPS sensors from Simulated Weather & MISB UAS using MQTT protocol',
         url: 'mqtt',
         datasourceType: 'Connected Systems',
     },
@@ -180,13 +180,6 @@ var samples = [
         code: 'vue/App_examples/chart-archive-realtime-synchronized.vue',
         datasourceType: 'Connected Systems',
     },
-    // {
-    //     name: "Chart with Time controller and Synchronizer using 'trackRealtime' option(Chart.js)",
-    //     description: "Display a chart with time series of weather measurements and time controller and tracking realtime.",
-    //     url: "chart-archive-realtime-synchronized",
-    //     code: 'vue/App_examples/chart-archive-realtime-synchronized.vue',
-    //     datasourceType: 'Connected Systems',
-    // },
     {
         name: "Audio WebCodec/FFmpeg.js decoding",
         description: "Listen audio stream using WebCodec/FFmpeg.js",

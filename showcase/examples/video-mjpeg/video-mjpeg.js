@@ -1,26 +1,24 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
-let startTime = "2015-02-16T07:57:59.447Z";
-let endTime = "2015-02-16T08:09:00Z";
+const REPLAY_SPEED = 1.0;
 
 // create data source for Android phone camera
 let videoDataSource =  new ConSysApi('axis-Video', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    startTime: '2023-05-31T21:57:33.099333251Z',
-    endTime: '2026-11-10T19:05:01.033333251Z',
-    minTime: '2023-05-31T21:57:33.099333251Z',
-    maxTime: '2055-12-31T19:05:01.033333251Z',
+    startTime: '2023-06-06T13:58:35Z',
+    endTime: '2023-06-06T22:24:41Z',
+    minTime: '2023-06-06T13:58:35Z',
+    maxTime: '2023-06-06T22:24:41Z',
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
     prefetchBatchDuration: 10000,
     prefetchBatchSize: 250,
-    resource: '/datastreams/lm83m9jt1fd7a/observations',
+    resource: '/datastreams/g92fogmdhonki/observations',
     responseFormat: 'application/swe+binary',
 });
 
@@ -34,7 +32,7 @@ let videoView = new VideoView({
     layers: [
         new VideoDataLayer({
             dataSourceId: videoDataSource.id,
-            getFrameData: (rec) => rec.videoFrame,
+            getFrameData: (rec) => rec.img,
             getTimestamp: (rec) => rec.timestamp
         })
     ]
@@ -44,8 +42,8 @@ let videoView = new VideoView({
 const dataSynchronizer = new DataSynchronizer({
     masterTimeRefreshRate: 250,
     replaySpeed: 1.0,
-    startTime: startTime,
-    endTime: endTime,
+    startTime: '2023-06-06T13:58:35Z',
+    endTime: '2023-06-06T22:24:41Z',
     dataSources: [
         videoDataSource
     ]

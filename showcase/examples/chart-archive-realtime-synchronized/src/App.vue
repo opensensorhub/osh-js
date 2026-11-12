@@ -35,8 +35,8 @@ export default {
 
     const dsReplaySpeed = 1.0;
 
-    const startTime = "2026-10-15T08:42:24.000Z";
-    const endTime = "2026-10-15T08:42:33.000Z";
+    const startTime = "2026-11-12T22:03:00.728Z";
+    const endTime = "2055-10-15T08:42:33.000Z";
 
     const commonDatasourceOpts = {
       endpointUrl:  'api.georobotix.io/ogc/t18/api',

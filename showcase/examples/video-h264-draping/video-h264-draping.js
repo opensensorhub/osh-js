@@ -18,22 +18,22 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0N
 
 window.CESIUM_BASE_URL = './';
 
-const startTime = '2026-11-10T18:32:58.000Z';
-const endTime = '2026-11-10T18:43:22.675Z';
+const startTime = '2023-06-06T14:33:34Z';
+const endTime = '2023-06-06T22:22:50Z';
 const REPLAY_SPEED = 1.0;
 
 let videoDataSource = new ConSysApi("drone-Video", {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    startTime: '2012-06-29T14:32:34.099333251Z',
-    endTime: '2012-06-29T14:36:54.033333251Z',
-    minTime: '2012-06-29T14:32:34.099333251Z',
-    maxTime: '2055-06-29T14:36:54.033333251Z',
+    startTime: startTime,
+    endTime: endTime,
+    minTime: startTime,
+    maxTime: endTime,
     mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
     prefetchBatchDuration: 10000,
     prefetchBatchSize: 250,
-    resource: '/datastreams/8ni90dbu4uf0g/observations',
+    resource: '/datastreams/19katg6mleqtc/observations',
     responseFormat: 'application/swe+binary',
 });
 
@@ -45,11 +45,11 @@ let videoView = new VideoView({
     framerate:25,
     showTime: true,
     showStats: true,
-    useWebCodecApi: false,
+    useWebCodecApi: true,
     layers: [
         new VideoDataLayer({
             dataSourceId: videoDataSource.id,
-            getFrameData: (rec) => rec.videoFrame,
+            getFrameData: (rec) => rec.img,
             getTimestamp: (rec) => rec.timestamp
         })
     ]
@@ -65,12 +65,25 @@ let platformLocationDataSource = new ConSysApi('drone-GPS', {
     replaySpeed: REPLAY_SPEED,
     prefetchBatchDuration: 10000,
     prefetchBatchSize: 250,
-    resource: '/datastreams/o7pce3e60s0ie/observations',
+    resource: '/datastreams/kq89s7j4afths/observations',
     responseFormat: 'application/swe+json',
 });
 
-let platformOrientationDataSource = new ConSysApi('drone-Heading', {
+let platformOrientationDataSource = new ConSysApi('platform-orientation', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    tls: true,
+    startTime: startTime,
+    endTime: endTime,
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/gr2v8duogtt8i/observations',
+    responseFormat: 'application/swe+json',
+});
+
+let sensorOrientationDatasource = new ConSysApi('sensor-orientation', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api/',
     tls: true,
     startTime: startTime,
     endTime: endTime,
@@ -80,26 +93,13 @@ let platformOrientationDataSource = new ConSysApi('drone-Heading', {
     prefetchBatchSize: 250,
     resource: '/datastreams/h75dmug8e3sae/observations',
     responseFormat: 'application/swe+json',
-});
-
-let gimbalOrientationDataSource = new ConSysApi('android-Heading', {
-    endpointUrl:  'api.georobotix.io/ogc/t18/api/',
-    tls: true,
-    startTime: startTime,
-    endTime: endTime,
-    mode: Mode.REPLAY,
-    replaySpeed: REPLAY_SPEED,
-    prefetchBatchDuration: 10000,
-    prefetchBatchSize: 250,
-    resource: '/datastreams/t2fedgd9i3m16/observations',
-    responseFormat: 'application/swe+json',
     timeShift: -16000
 });
 
 // add 3D model marker to Cesium view
 let pointMarkerLayer = new PointMarkerLayer({
     dataSourceIds: [platformLocationDataSource.id, platformOrientationDataSource.id],
-    label: "3DR Solo",
+    label: "dji drone",
     getLocation : {
         dataSourceIds : [platformLocationDataSource.getId()],
         handler : function(rec) {
@@ -114,11 +114,11 @@ let pointMarkerLayer = new PointMarkerLayer({
         dataSourceIds : [platformOrientationDataSource.getId()],
         handler : function(rec) {
             return {
-                heading : rec.attitude.yaw
+                heading : rec.attitude.heading
             };
         }
     },
-    icon: "./models/Drone+06B.glb",
+    icon: "./models/predator2.glb",
     name: 'Solo draping marker'
 });
 
@@ -141,14 +141,14 @@ let imageDrapingLayer = new ImageDrapingLayer({
         dataSourceIds: [platformOrientationDataSource.getId()],
         handler: function (rec) {
             return {
-                heading : rec.attitude.yaw,
+                heading : rec.attitude.heading,
                 pitch: rec.attitude.pitch,
                 roll: rec.attitude.roll
             };
         }
     },
     getGimbalOrientation: {
-        dataSourceIds: [gimbalOrientationDataSource.getId()],
+        dataSourceIds: [sensorOrientationDatasource.getId()],
         handler: function (rec) {
             return {
                 heading : rec.attitude.yaw,
@@ -195,13 +195,13 @@ cesiumView.viewer.camera.setView({
 const dataSynchronizer = new DataSynchronizer({
     masterTimeRefreshRate: 250,
     replaySpeed: 1.0,
-    startTime: '2015-12-19T21:04:29.231Z',
-    endTime: '2015-12-19T21:09:19.675Z',
+    startTime: startTime,
+    endTime: endTime,
     dataSources: [
         videoDataSource,
         platformLocationDataSource,
         platformOrientationDataSource,
-        gimbalOrientationDataSource
+        sensorOrientationDatasource
     ]
 });
 dataSynchronizer.connect();

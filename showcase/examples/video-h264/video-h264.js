@@ -8,18 +8,18 @@ import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js'
 const REPLAY_SPEED = 1.0;
 
 // create data source for UAV camera
-let videoDataSource =  new ConSysApi('MISB Drone - Video', {
-  endpointUrl:  'api.georobotix.io/ogc/t18/api',
-  tls: true,
-  startTime: '2012-06-29T14:32:34.099333251Z',
-  endTime: '2012-06-29T14:36:54.033333251Z',
-  minTime: '2012-06-29T14:32:34.099333251Z',
-  maxTime: '2055-06-29T14:36:54.033333251Z',
-  mode: Mode.REPLAY,
-  replaySpeed: REPLAY_SPEED,
-  prefetchBatchDuration: 10000,
-  prefetchBatchSize: 250,
-  resource: '/datastreams/8ni90dbu4uf0g/observations',
+let videoDataSource =  new ConSysApi('droid-Video', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    tls: true,
+    startTime: '2023-06-06T14:26:12.031Z',
+    endTime: '2023-06-06T22:23:47Z',
+    minTime: '2023-06-06T14:26:12.031Z',
+    maxTime: '2023-06-06T22:23:47Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+  resource: '/datastreams/s6336mmbboa7e/observations',
   responseFormat: 'application/swe+binary',
 });
 
@@ -27,7 +27,7 @@ let videoDataSource =  new ConSysApi('MISB Drone - Video', {
 let videoView = new VideoView({
   container: 'video-h264-container',
     css: 'video-h264',
-  name: 'UAV Video',
+  name: 'Android Video',
   framerate: 25,
   showTime: true,
   showStats: true,
