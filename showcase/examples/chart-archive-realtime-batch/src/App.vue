@@ -16,7 +16,6 @@ import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {isDefined} from 'osh-js/core/utils/Utils';
 import {Mode} from "osh-js/core/datasource/Mode";
-import DataSynchronizer from "../../../../source/core/timesync/DataSynchronizer";
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
 
 export default {

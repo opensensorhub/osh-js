@@ -3,8 +3,8 @@
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView.js';
 import EllipseLayer from 'osh-js/core/ui/layer/EllipseLayer';
-import {Mode} from "../../../source/core/datasource/Mode";
-import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
+import {Mode} from "osh-js/core/datasource/Mode";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 const REPLAY_SPEED = 1.0;

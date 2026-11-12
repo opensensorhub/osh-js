@@ -4,7 +4,7 @@ import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
 import {Mode} from "osh-js/core/datasource/Mode";
-import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 // #endregion snippet_leaflet_location_import
