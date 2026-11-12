@@ -1,7 +1,6 @@
 // webpack.config.common.js
 const CopywebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 const webpack = require("webpack");
@@ -68,9 +67,6 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { filename: 'Worker.[chunkhash].js' } }
       },
       {
         test: /\.(?:js|mjs|cjs|jsx)$/,
@@ -88,11 +84,6 @@ const config = {
               plugins: ["@babel/plugin-transform-optional-chaining"],
             },
           },
-          // Babel understands the import.meta syntax but doesn't transform it in any way
-          // However Webpack can't parse this and throws an error for an unexpected token
-          // we need to use this extra loader so Webpack can actually bundle the code
-          // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
-          require.resolve("@open-wc/webpack-import-meta-loader"),
         ],
       }
     ],
@@ -112,7 +103,6 @@ const config = {
   },
   plugins: [
   ...cesiumConfig.plugins,
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
       filename: './index.html',

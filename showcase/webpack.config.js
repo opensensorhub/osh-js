@@ -2,7 +2,6 @@
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 var path = require('path');
 var fs = require('fs');
@@ -37,14 +36,10 @@ let common = {
             loader: 'esbuild-loader',
             options: {
                 loader: 'js',  // Remove this if you're not using JSX
-                target: 'es2015'  // Syntax to compile to (see options below for possible values)
+                target: 'es2020'  // Syntax to compile to (see options below for possible values)
             }
         }
         ]
-    },
-    output: {
-        publicPath: '/',
-        clean: false,
     },
     node: {
     },
@@ -60,7 +55,6 @@ module.exports = [{
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
         publicPath: '/',
-        clean: true,
     },
     optimization: {
         minimize: false
