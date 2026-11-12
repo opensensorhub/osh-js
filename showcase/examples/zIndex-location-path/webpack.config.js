@@ -61,12 +61,7 @@ module.exports = {
                             ],
                             plugins: ["@babel/plugin-transform-optional-chaining"],
                         },
-                    },
-                    // Babel understands the import.meta syntax but doesn't transform it in any way
-                    // However Webpack can't parse this and throws an error for an unexpected token
-                    // we need to use this extra loader so Webpack can actually bundle the code
-                    // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
-                    require.resolve("@open-wc/webpack-import-meta-loader"),
+                    }
                 ],
             }
         ]

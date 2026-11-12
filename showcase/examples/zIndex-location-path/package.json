@@ -35,7 +35,6 @@
     "css-loader": "^6.8.1",
     "file-loader": "6.2.0",
     "style-loader": "^3.3.3",
-    "@open-wc/webpack-import-meta-loader": "0.4.7",
     "@babel/core": "7.23.7",
     "@babel/plugin-transform-optional-chaining": "7.23.4",
     "@babel/preset-env": "7.23.7",

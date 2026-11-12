@@ -14,7 +14,6 @@
     "babel-core": "6.26.3",
     "babel-loader": "8.1.0",
     "babel-preset-env": "1.7.0",
-    "@open-wc/webpack-import-meta-loader": "0.4.7",
     "@cesium/engine": "8.0.0",
     "@cesium/widgets": "5.0.0",
     "cesium": "1.114.0",

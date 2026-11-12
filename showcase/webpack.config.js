@@ -124,6 +124,7 @@ for (let i = 0; i < directories.length; i++) {
 
     //
     config.output.path = path.resolve(__dirname, 'dist');
+    delete config.output.clean;
 
     // removes clean webpack plugin because it is causing issues while copying files/dir
     let currentPlugin = [];
