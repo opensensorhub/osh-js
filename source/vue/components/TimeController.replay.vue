@@ -35,8 +35,8 @@
                 class="fa fa-fast-backward"></i></a>
             <a :id="'pause-btn-'+id" class="control-btn control-btn-pause" v-if="connected" @click="doPause"><i
                 class="fa fa-pause"></i></a>
-            <a :id="'play-btn-'+id" class="control-btn control-btn-play" v-else><i
-                class="fa fa-play" @click="doPlay"></i></a>
+            <a :id="'play-btn-'+id" class="control-btn control-btn-play" v-else @click="doPlay"><i
+                class="fa fa-play"></i></a>
             <a :id="'fast-forward-btn-'+id" class="control-btn" @mouseup="stopForward" @mouseleave="stopForward"
                @mousedown="doFastForward"> <i
                 class="fa fa-fast-forward"></i></a>
@@ -161,7 +161,7 @@ export default {
       return this.endTimestamp;
     },
     htmlCurrentTime() {
-       return this.parseTime(this.startTimestamp);
+      return this.parseTime(this.startTimestamp);
     },
     htmlEndTime() {
       return this.parseTime(this.endTimestamp);
@@ -176,6 +176,20 @@ export default {
   },
   mounted() {
     this.initComp();
+  },
+  // vuejs 3.x
+  beforeUnmount() {
+    const ref = this.$refs.rangeSliderRef;
+    if(ref && typeof ref.destroy === 'function') {
+      ref.destroy();
+    }
+  },
+  // vuejs 2.x
+  beforeDestroy() {
+    const ref = this.$refs.rangeSliderRef;
+    if(ref && typeof ref.destroy === 'function') {
+      ref.destroy();
+    }
   },
   methods: {
     initComp() {
@@ -289,12 +303,13 @@ export default {
         if (isDefined(this.dataSynchronizer)) {
           dataSourceObj.dataSynchronizer = this.dataSynchronizer;
           this.dataSynchronizer.onTimeChanged = (minTimestamp, maxTimestamp,startTimestamp, endTimestamp) => {
+            this.minTimestamp = minTimestamp;
+            this.maxTimestamp = maxTimestamp;
+            console.log(minTimestamp,maxTimestamp,startTimestamp,endTimestamp)
+            this.computeSkipTime();
             if(!this.update) {
-              this.minTimestamp = minTimestamp;
-              this.maxTimestamp = maxTimestamp;
-              this.startTimestamp = startTimestamp ? startTimestamp : minTimestamp;
-              this.endTimestamp = endTimestamp ? endTimestamp : maxTimestamp;
-              this.computeSkipTime();
+              this.startTimestamp = isDefined(startTimestamp) ? startTimestamp : minTimestamp;
+              this.endTimestamp = isDefined(endTimestamp) ? endTimestamp : maxTimestamp;
             }
           }
         } else {
@@ -355,17 +370,20 @@ export default {
       this.waitForTimeChangedEvent = this.lastSynchronizedTimestamp !== -1;
       this.lastSynchronizedTimestamp = -1;
       this.on('time-changed');
-      this.update = false;
     },
 
     async updateTime(event) {
       this.resetMasterTime();
-      await this.dataSourceObject.setTimeRange(
-          new Date(this.startTimestamp).toISOString(),
-          new Date(this.endTimestamp).toISOString(),
-          this.speed,
-          true
-      );
+      try {
+        await this.dataSourceObject.setTimeRange(
+            new Date(this.startTimestamp).toISOString(),
+            new Date(this.endTimestamp).toISOString(),
+            this.speed,
+            true
+        );
+      } finally {
+        this.update = false;
+      }
       this.on(event);
     }
     ,
@@ -475,7 +493,8 @@ export default {
         if (this.interval) {
           clearInterval(this.interval)
           this.interval = false;
-        } else {
+        }
+        if (isDefined(this.incSpeedTimeout)) {
           clearTimeout(this.incSpeedTimeout);
           this.incSpeedTimeout = null;
         }
@@ -490,20 +509,6 @@ export default {
     },
     withLeadingZeros(dt) {
       return (dt < 10 ? '0' : '') + dt;
-    },
-    // vuejs 3.x
-    beforeUnmount() {
-      const ref = this.$refs.rangeSliderRef;
-      if(ref) {
-        ref.destroy();
-      }
-    },
-    // vuejs 2.x
-    beforeDestroy() {
-      const ref = this.$refs.rangeSliderRef;
-      if(ref) {
-        ref.destroy();
-      }
     }
   }
 }

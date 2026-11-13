@@ -133,7 +133,16 @@ class DataRecordParser extends AbstractParser {
     }
 
     parse(dataTypeParser, props, resultParent) {
-        super.parse(dataTypeParser, props, resultParent);
+        if(!this.name) {
+            super.parse(dataTypeParser, props, resultParent);
+        } else {
+            // parse size of the array
+            const result = {}
+            for (let parser of this.stack) {
+                parser.parse(dataTypeParser, props, result);
+            }
+            resultParent[this.name] = result;
+        }
     }
 }
 

@@ -11,7 +11,7 @@ class FfmpegAudioDecoder extends FfmpegDecoder {
             }
         );
     }
-
+    
     handleAvFrame(avFrame, pktSize, timestamp) {
         const nb_samples = this.Module.getValue(avFrame + 76, 'i32');
         const audioFramePtr = this.Module.getValue(avFrame, '*');

@@ -34,6 +34,7 @@ export default {
         framerate:30,
         showTime: true,
         showStats: true,
+        useWebCodecApi:false,
           layers: [
             new VideoDataLayer({
               dataSourceId: this.droneVideoDataSource.id,
