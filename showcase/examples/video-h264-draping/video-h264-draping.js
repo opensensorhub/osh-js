@@ -124,7 +124,7 @@ let pointMarkerLayer = new PointMarkerLayer({
 
 // #region snippet_image_draping_layer
 // style it with an image draping
-let canvas;
+
 
 let imageDrapingLayer = new ImageDrapingLayer({
     getPlatformLocation: {
