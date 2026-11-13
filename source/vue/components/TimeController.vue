@@ -8,24 +8,24 @@
         @event='onControlEvent'
         v-if="realTime"
     ></TimeControllerRealtime>
-      <TimeControllerReplay
-          :dataSource="dataSource"
-          :dataSynchronizer="dataSynchronizer"
-          :debounce="debounce"
-          :parseTime="parseTime"
-          :skipTimeStep="skipTimeStep"
-          :replaySpeedStep="replaySpeedStep"
-          @event='onControlEvent'
-          :support-realtime="supportRealTime"
-          v-if="replay"
-      ></TimeControllerReplay>
-      <TimeControllerBatch
-          :dataSource="dataSource"
-          :debounce="debounce"
-          :parseTime="parseTime"
-          @event='onControlEvent'
-          v-if="batch"
-      ></TimeControllerBatch>
+    <TimeControllerReplay
+        :dataSource="dataSource"
+        :dataSynchronizer="dataSynchronizer"
+        :debounce="debounce"
+        :parseTime="parseTime"
+        :skipTimeStep="skipTimeStep"
+        :replaySpeedStep="replaySpeedStep"
+        @event='onControlEvent'
+        :support-realtime="supportRealTime"
+        v-if="replay"
+    ></TimeControllerReplay>
+    <TimeControllerBatch
+        :dataSource="dataSource"
+        :debounce="debounce"
+        :parseTime="parseTime"
+        @event='onControlEvent'
+        v-if="batch"
+    ></TimeControllerBatch>
   </div>
 </template>
 <script>
