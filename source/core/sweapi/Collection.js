@@ -17,6 +17,7 @@
 import SweCollectionDataParser from "../parsers/sweapi/collection/SweCollectionDataParser";
 import {getOAuthClient} from "../oauth/OAuthClient";
 
+
 class Collection {
     /**
      *
