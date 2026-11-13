@@ -20,7 +20,8 @@ export function displayVideo0(values) {
     let dataEvent;
     for(let i=0;i < values.length;i++) {
         dataEvent =  values[i];
-        dataEvent.data.videoFrame.data = values[i].data.videoFrame.data.slice(0,5);
+
+        dataEvent.data.img.data = values[i].data.img.data.slice(0,5);
         if(++video0Count%MAX_TEXTAERA_NUMBER === 0) {
             video0DivElement.value = JSON.stringify([dataEvent]) + '\n';
         } else {
@@ -37,7 +38,8 @@ export function displayVideo1(values) {
     let dataEvent;
     for(let i=0;i < values.length;i++) {
         dataEvent =  values[i];
-        dataEvent.data.videoFrame.data = values[i].data.videoFrame.data.slice(0,5);
+
+        dataEvent.data.img.data = values[i].data.img.data.slice(0,5);
         if(++video1Count%MAX_TEXTAERA_NUMBER === 0) {
             video1DivElement.value = JSON.stringify([dataEvent]) + '\n';
         } else {
@@ -54,7 +56,8 @@ export function displayVideo2(values) {
     let dataEvent;
     for(let i=0;i < values.length;i++) {
         dataEvent =  values[i];
-        dataEvent.data.videoFrame.data = values[i].data.videoFrame.data.slice(0,5);
+        console.log('dataevent.data', dataEvent)
+        dataEvent.data.img.data = values[i].data.img.data.slice(0,5);
         if(++video2Count%MAX_TEXTAERA_NUMBER === 0) {
             video2DivElement.value = JSON.stringify([dataEvent]) + '\n';
         } else {
