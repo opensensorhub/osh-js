@@ -1,6 +1,6 @@
-import YUVCanvas from "../YUVCanvas";
-import {isDefined} from "../../../../utils/Utils";
-import {FFMPEG_VIEW_DECODE_TOPIC} from "../../../../Constants";
+import YUVCanvas from "../YUVCanvas.js";
+import {isDefined} from "../../../../utils/Utils.js";
+import {FFMPEG_VIEW_DECODE_TOPIC} from "../../../../Constants.js";
 
 let bc;
 
@@ -14,9 +14,9 @@ self.onmessage = (e) => {
         contextOptions: {preserveDrawingBuffer: true},
         canvas: e.data.canvas
     });
-
-   bc = new BroadcastChannel(FFMPEG_VIEW_DECODE_TOPIC+e.data.dataSourceId);
-
+    
+    bc = new BroadcastChannel(FFMPEG_VIEW_DECODE_TOPIC+e.data.dataSourceId);
+    
     bc.onmessage = (e) => {
         self.buffer.push(e.data);
     };
@@ -29,8 +29,8 @@ function display(e) {
             //re-create the canvas
             self.yuvCanvas.resize(e.width, e.height);
         }
-
-        self.yuvCanvas.drawNextOutputPictureGL({
+        
+        self.yuvCanvas.drawNextOuptutPictureGL({
             yData: e.yData,
             yDataPerRow: e.yDataPerRow,
             yRowCnt: e.yRowCnt,
@@ -54,7 +54,7 @@ setInterval(() => {
 function reset() {
 // clear canvas
     let nodata = new Uint8Array(1);
-    self.yuvCanvas.drawNextOutputPictureGL({
+    self.yuvCanvas.drawNextOuptutPictureGL({
         yData: nodata,
         yDataPerRow: 1,
         yRowCnt: 1,

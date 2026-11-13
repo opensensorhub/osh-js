@@ -14,10 +14,14 @@ class MqttTopicConnector extends DataConnector {
         super(url, properties);
         this.lastReceiveTime = -1;
         this.interval = -1;
-        this.broadcastChannel = null;
-        this.messagePort = properties.mqttOpts && properties.mqttOpts.messagePort;
-        this.pendingSubscriptions = new Map();
-        this.openBroadcastChannel();
+
+        this.broadcastChannel = new BroadcastChannel(url);
+        this.broadcastChannel.onmessage = ({ data: msg }) => {
+            if (msg?.topic !== this.fullTopic) return;
+            if (msg.message === 'subscribe' || msg.message === 'unsubscribe') return;
+            if (msg.data === undefined) return;
+            this.onMessage(msg.data);
+        };
         this.topics = [];
     }
 
