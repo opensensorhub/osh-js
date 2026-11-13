@@ -2,7 +2,6 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 
@@ -10,8 +9,9 @@ const path = require('path');
 const config = {
   entry: path.resolve(__dirname,'videodata-with-control-vuejs-synchronized.js'),
   output: {
-    filename: 'bundle.videodata-with-control-vuejs-synchronized.js',
-    path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.videodata-with-control-vuejs-synchronized.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true
   },
 
   resolve: {
@@ -23,7 +23,6 @@ const config = {
     }
   },
   node: {
-    fs: 'empty'
   },
   amd: {
     // Enable webpack-friendly use of require in Cesium
@@ -52,19 +51,16 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       }
     ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9000,
-    hot: true,
-    index: 'videodata-with-control-vuejs-synchronized.html',
-    https:true
+      static: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 9000,
+      hot: true,
+      server: 'https',
+      open: 'videodata-with-control-vuejs-synchronized.html'
   },
   optimization: {
     splitChunks: {
@@ -90,7 +86,6 @@ const config = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'videodata-with-control-vuejs-synchronized.html'),
       filename: './videodata-with-control-vuejs-synchronized.html',
