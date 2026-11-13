@@ -1,13 +1,13 @@
 {
-  "name": "video-display",
+  "name": "video-with-control-vuejs-synchronized",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "postinstall": "patch-package",
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
+    "dev": "webpack-dev-server --config webpack.config.js --mode development"
   },
   "dependencies": {
-    "vue": "2.6.11",
+    "vue": "2.6.14",
     "vue-router": "3.1.6",
     "vuex": "3.3.0",
     "vue-dialog-drag": "0.1.29",
@@ -18,25 +18,23 @@
     "babel-core": "6.26.3",
     "babel-loader": "8.1.0",
     "babel-preset-env": "1.7.0",
-    "clean-webpack-plugin": "3.0.0",
-    "copy-webpack-plugin": "5.1.1",
+    "copy-webpack-plugin": "9.1.0",
     "css-loader": "3.5.3",
-    "file-loader": "6.0.0",
-    "html-webpack-plugin": "4.2.0",
+    "file-loader": "6.2.0",
+    "html-webpack-plugin": "5.5.0",
     "less": "3.11.1",
     "less-loader": "6.0.0",
-    "node-sass": "4.14.0",
     "nouislider": "14.4.0",
     "patch-package": "6.2.2",
-    "sass-loader": "8.0.2",
+    "sass": "1.44.0",
+    "sass-loader": "12.4.0",
     "style-loader": "1.2.0",
-    "vue-loader": "15.9.1",
-    "vue-template-compiler": "2.6.11",
+    "vue-loader": "15.9.8",
+    "vue-template-compiler": "2.6.14",
     "vuetify": "2.3.1",
-    "webpack": "4.43.0",
-    "webpack-cli": "3.3.12",
-    "webpack-dev-server": "3.10.3",
-    "wnumb": "1.2.0",
-    "worker-loader": "2.0.0"
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.0",
+    "webpack-dev-server": "^5.2.2",
+    "wnumb": "1.2.0"
   }
 }

@@ -1,7 +1,6 @@
 /* webpack.config.js */
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 var path = require('path');
 
 module.exports = {
@@ -10,10 +9,10 @@ module.exports = {
     // Tell Weback to output our bundle to ./dist/bundle.js
     output: {
         filename: 'bundle.audio.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        clean: true
     },
     node: {
-        fs: 'empty'
     },
     // Tell Webpack which directories to look in to resolve import statements.
     // Normally Webpack will look in node_modules by default but since we’re overriding
@@ -40,41 +39,20 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
-            },
-            {
-                test: /\.worker\.js$/,
-                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
-            },
-            {
-                test: /\.worklet\.js$/,
-                use: { loader: 'worklet-loader' }
             }
         ]
     },
     // Enable the Webpack dev server which will build, serve, and reload our
     // project on changes.
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
         hot: true,
-        https: true,
-        index: 'audio.html'
+        server: 'https'
     },
     devtool: 'source-map',
     plugins: [
-        /**
-         * All files inside webpack's output.path directory will be removed once, but the
-         * directory itself will not be. If using webpack 4+'s default configuration,
-         * everything under <PROJECT_DIR>/dist/ will be removed.
-         * Use cleanOnceBeforeBuildPatterns to override this behavior.
-         *
-         * During rebuilds, all webpack assets that are not used anymore
-         * will be removed automatically.
-         *
-         * See `Options and Defaults` for information
-         */
-        new CleanWebpackPlugin(),
         // This plugin will generate an index.html file for us that can be used
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.

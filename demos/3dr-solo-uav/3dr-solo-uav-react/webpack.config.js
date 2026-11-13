@@ -1,7 +1,6 @@
 // webpack.config.common.js
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 const webpack = require("webpack");
@@ -16,8 +15,9 @@ module.exports = {
     app: './src/index.js'
   },
   output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
+      filename: '[name].js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true
   },
   resolve: {
     alias: {
@@ -54,11 +54,6 @@ module.exports = {
               plugins: ["@babel/plugin-transform-optional-chaining"],
             },
           },
-          // Babel understands the import.meta syntax but doesn't transform it in any way
-          // However Webpack can't parse this and throws an error for an unexpected token
-          // we need to use this extra loader so Webpack can actually bundle the code
-          // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
-          require.resolve("@open-wc/webpack-import-meta-loader"),
         ],
       },
       {
@@ -69,10 +64,7 @@ module.exports = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
-      }
+      },
     ],
   },
   optimization: {
@@ -80,19 +72,20 @@ module.exports = {
     minimize: false
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
       filename: './index.html',
       favicon: './public/favicon.ico'
     }),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname,'models'), to: 'models'},
-      { from: path.join(cesiumSource, "Workers"), to: `${cesiumBaseUrl}/Workers`, },
-      { from: path.join(cesiumSource, "ThirdParty"), to: `${cesiumBaseUrl}/ThirdParty`, },
-      { from: path.join(cesiumSource, "Assets"), to: `${cesiumBaseUrl}/Assets`, },
-      { from: path.join(cesiumSource, "Widgets"), to: `${cesiumBaseUrl}/Widgets`, },
-    ]),
+    new CopyWebpackPlugin({
+        patterns: [
+            { from: path.resolve(__dirname,'models'), to: 'models'},
+            { from: path.join(cesiumSource, "Workers"), to: `${cesiumBaseUrl}/Workers`, },
+            { from: path.join(cesiumSource, "ThirdParty"), to: `${cesiumBaseUrl}/ThirdParty`, },
+            { from: path.join(cesiumSource, "Assets"), to: `${cesiumBaseUrl}/Assets`, },
+            { from: path.join(cesiumSource, "Widgets"), to: `${cesiumBaseUrl}/Widgets`, },
+        ]
+    }),
     new webpack.DefinePlugin({
       // Define relative base path in cesium for loading assets
       CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),

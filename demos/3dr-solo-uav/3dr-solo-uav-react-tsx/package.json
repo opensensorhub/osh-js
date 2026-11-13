@@ -48,11 +48,10 @@
     "cesium": "1.114.0",
     "@open-wc/webpack-import-meta-loader": "0.4.7",
     "@babel/plugin-transform-optional-chaining": "7.23.4",
-    "clean-webpack-plugin": "4.0.0-alpha.0",
-    "copy-webpack-plugin": "9.0.1",
+    "copy-webpack-plugin": "9.1.0",
     "css-loader": "5.2.6",
     "file-loader": "6.2.0",
-    "html-webpack-plugin": "5.3.2",
+    "html-webpack-plugin": "5.5.0",
     "loader-utils": "2.0.0",
     "patch-package": "6.2.2",
     "react-draggable": "4.4.3",
@@ -60,9 +59,8 @@
     "style-loader": "3.0.0",
     "ts-loader": "9.2.3",
     "webpack": "5.65.0",
-    "webpack-cli": "4.9.1",
-    "webpack-dev-server": "4.6.0",
-    "worker-loader": "3.0.8"
+    "webpack-cli": "4.10.0",
+    "webpack-dev-server": "4.6.0"
   },
   "browser": {
     "fs": false,

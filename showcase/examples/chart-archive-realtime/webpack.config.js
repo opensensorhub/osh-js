@@ -2,7 +2,6 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 
@@ -10,8 +9,9 @@ const path = require('path');
 const config = {
   entry: path.resolve(__dirname,'chart-archive-realtime.js'),
   output: {
-    filename: 'bundle.chart-archive-realtime.js',
-    path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.chart-archive-realtime.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
   },
 
   resolve: {
@@ -23,7 +23,6 @@ const config = {
     }
   },
   node: {
-    fs: 'empty'
   },
   amd: {
     // Enable webpack-friendly use of require in Cesium
@@ -52,9 +51,6 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       }
     ],
   },
@@ -81,16 +77,15 @@ const config = {
     }
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9000,
-    hot: true,
-    index: 'chart-archive-realtime.html',
-    https:true
+      static: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 9000,
+      hot: true,
+      server: 'https',
+      index: 'chart-archive-realtime.html',
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'chart-archive-realtime.html'),
       filename: './chart-archive-realtime.html',

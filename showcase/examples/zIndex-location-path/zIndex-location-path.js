@@ -1,5 +1,4 @@
 // create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
 import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView.js';
@@ -8,23 +7,31 @@ import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
-let gpsDataSource = new SosGetResult("android-GPS", {
-    endpointUrl: "sensiasoft.net/sensorhub/sos",
-    offeringID: "urn:android:device:060693280a28e015-sos",
-    observedProperty: "http://sensorml.com/ont/swe/property/Location",
-    startTime: '2015-02-16T07:58:15.447Z',
-    endTime: "2015-02-16T08:09:00Z",
-    mode: Mode.REPLAY,
+const REPLAY_SPEED = 1.0;
+
+let gpsDataSource =  new ConSysApi('sat-GPS', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
+    startTime: '2023-06-06T14:26:12.031Z',
+    endTime: '2023-06-06T22:23:47Z',
+    minTime: '2023-06-06T14:26:12.031Z',
+    maxTime: '2023-06-06T22:23:47Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/frmhs11ofiilm/observations',
+    responseFormat: 'application/swe+json',
     timeShift: -16000
 });
 
 const dataSynchronizer = new DataSynchronizer({
     masterTimeRefreshRate: 250,
     replaySpeed: 5.0,
-    startTime: '2015-02-16T07:58:22.00Z',
-    endTime: "2015-02-16T08:09:00Z",
+    startTime: '2023-06-06T14:26:12.031Z',
+    endTime: '2023-06-06T22:23:47Z',
     dataSources: [
         gpsDataSource
     ]
@@ -100,7 +107,7 @@ function createPolyline() {
         }),
         color: 'rgba(0,0,255,0.5)',
         weight: 5,
-        opacity: .5,
+        opacity: 0.5,
         smoothFactor: 1,
         maxPoints: 200,
         name: "Android Phone GPS Path"

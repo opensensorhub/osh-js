@@ -2,7 +2,6 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -17,10 +16,11 @@ const PROCESS_BASE_PATH = process.cwd();
 const config = {
   entry: path.resolve(__dirname,'avl-with-control-vuejs.js'),
   output: {
-    filename: 'bundle.avl-with-control-vuejs.js',
-    path: path.resolve(__dirname, 'dist'),
-    // Needed to compile multiline strings in Cesium
-    sourcePrefix: ''
+      filename: 'bundle.avl-with-control-vuejs.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
+      // Needed to compile multiline strings in Cesium
+      sourcePrefix: ''
   },
   resolve: {
     modules: [
@@ -32,7 +32,6 @@ const config = {
     }
   },
   node: {
-    fs: 'empty'
   },
   amd: {
     // Enable webpack-friendly use of require in Cesium
@@ -61,11 +60,6 @@ const config = {
               plugins: ["@babel/plugin-transform-optional-chaining"],
             },
           },
-          // Babel understands the import.meta syntax but doesn't transform it in any way
-          // However Webpack can't parse this and throws an error for an unexpected token
-          // we need to use this extra loader so Webpack can actually bundle the code
-          // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
-          require.resolve("@open-wc/webpack-import-meta-loader"),
         ],
       },
       {
@@ -77,19 +71,15 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       }
     ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
     hot: true,
-    index: 'avl-with-control-vuejs.html',
-    https:true
+    server: 'https'
   },
   optimization: {
     splitChunks: {
@@ -115,19 +105,36 @@ const config = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'avl-with-control-vuejs.html'),
       filename: './avl-with-control-vuejs.html',
       favicon: path.resolve(__dirname,'favicon.ico')
     }),
-    new CopyWebpackPlugin([
-      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
-      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
-      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
-      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true },
-      { from: path.resolve(__dirname, 'images'), to: 'images' }
-    ]),
+    new CopyWebpackPlugin({
+        patterns: [
+            {
+                from: path.join(PROCESS_BASE_PATH + '/' + cesiumSource, 'ThirdParty'),
+                to: `${cesiumBaseUrl}/ThirdParty`,
+                force: true
+            },
+            {
+                from: path.join(PROCESS_BASE_PATH + '/' + cesiumSource, 'Workers'),
+                to: `${cesiumBaseUrl}/Workers`,
+                force: true
+            },
+            {
+                from: path.join(PROCESS_BASE_PATH + '/' + cesiumSource, 'Assets'),
+                to: `${cesiumBaseUrl}/Assets`,
+                force: true
+            },
+            {
+                from: path.join(PROCESS_BASE_PATH + '/' + cesiumSource, 'Widgets'),
+                to: `${cesiumBaseUrl}/Widgets`,
+                force: true
+            },
+            {from: path.resolve(__dirname, 'images'), to: 'images'}
+        ]
+    }),
     new DefinePlugin({
       // Define relative base path in cesium for loading assets
       CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),

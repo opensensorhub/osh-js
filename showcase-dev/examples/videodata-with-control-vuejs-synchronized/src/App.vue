@@ -38,7 +38,7 @@
 <script>
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {EventType} from "osh-js/core/event/EventType";
 import {Mode} from "../../../../source/core/datasource/Mode";
@@ -58,38 +58,38 @@ export default {
   mounted() {
     // setup video
     // create data source for UAV camera
-    const START_TIME = '2015-12-19T21:04:29.231Z';
-    const END_TIME = '2015-12-19T21:09:19.675Z';
+    const START_TIME = '2026-11-13T18:33:59.099333251Z';
+    const END_TIME = '026-11-13T18:44:40.033333251Z';
     const REPLAY_SPEED = 6.2;
 
-    const videoDataSource0 = new SosGetResult("Video 0", {
-      endpointUrl: 'sensiasoft.net/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:video2',
-      observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
+    const commonDatasourceOpts = {
+      endpointUrl:  'api.georobotix.io/ogc/t18/api',
+      protocol: 'mqtt',
+      mqttOpts: {
+        shared: true,
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+      },
+      tls: true,
       startTime: START_TIME,
       endTime: END_TIME,
-      mode: Mode.REPLAY,
-      tls: true
+      mode: Mode.REAL_TIME,
+      replaySpeed: REPLAY_SPEED,
+      prefetchBatchDuration: 10000,
+      prefetchBatchSize: 250,
+      resource: '/datastreams/h225hesual08g/observations',
+      responseFormat: 'application/swe+binary',
+    };
+    const videoDataSource0 = new ConSysApi("Video 0", {
+      ...commonDatasourceOpts
     });
 
-    const videoDataSource1 = new SosGetResult("Video 1", {
-      endpointUrl: 'sensiasoft.net/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:video2',
-      observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-      startTime: START_TIME,
-      endTime: END_TIME,
-      mode: Mode.REPLAY,
-      tls: true
+    const videoDataSource1 = new ConSysApi("Video 1", {
+      ...commonDatasourceOpts
     });
 
-    const videoDataSource2 = new SosGetResult("Video 2", {
-      endpointUrl: 'sensiasoft.net/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:video2',
-      observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-      startTime: START_TIME,
-      endTime: END_TIME,
-      mode: Mode.REPLAY,
-      tls: true
+    const videoDataSource2 = new ConSysApi("Video 2", {
+      ...commonDatasourceOpts
     });
 
     this.dataSynchronizer = new DataSynchronizer({

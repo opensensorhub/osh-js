@@ -49,7 +49,7 @@ import {EventType} from "osh-js/core/event/EventType";
 import {Status} from "osh-js/core/connector/Status";
 
 import VideoPanel from "./components/VideoPanel.vue";
-import SweApiDatasource from "osh-js/core/datasource/sweapi/SweApi.datasource";
+import ConSysApi from "../../../source/core/datasource/consysapi/ConSysApi.datasource";
 import {Mode} from "osh-js/core/datasource/Mode";
 
 
@@ -103,7 +103,7 @@ export default {
       prefetchBatchSize: 250
     };
 
-    const droneVideoDataSource = new SweApiDatasource('MISB Drone - Video', {
+    const droneVideoDataSource = new ConSysApi('MISB Drone - Video', {
       ...commonDatasourceOpts,
       resource: '/datastreams/h225hesual08g/observations',
       responseFormat: 'application/swe+binary',
@@ -112,43 +112,43 @@ export default {
     /*Not working, waiting for the correct sign to pass instead of swe+binary into MQTT protocol
     */
 
-    const droneLocationDataSource = new SweApiDatasource('MISB UAS - Platform Location', {
+    const droneLocationDataSource = new ConSysApi('MISB UAS - Platform Location', {
       ...commonDatasourceOpts,
       resource: '/datastreams/o7pce3e60s0ie/observations',
       responseFormat: 'application/swe+json',
     });
 
-    const droneOrientationDataSource = new SweApiDatasource('MISB UAS - Platform Attitude', {
+    const droneOrientationDataSource = new ConSysApi('MISB UAS - Platform Attitude', {
       ...commonDatasourceOpts,
       resource: '/datastreams/mlme3gtdfepvc/observations',
       responseFormat: 'application/swe+json',
     });
 
-    const droneCameraOrientationDataSource = new SweApiDatasource('MISB UAS - Gimbal Attitude', {
+    const droneCameraOrientationDataSource = new ConSysApi('MISB UAS - Gimbal Attitude', {
       ...commonDatasourceOpts,
       resource: '/datastreams/h75dmug8e3sae/observations',
       responseFormat: 'application/swe+binary',
     });
 
-    const droneHFovDataSource = new SweApiDatasource('MISB UAS - Horizontal FoV', {
+    const droneHFovDataSource = new ConSysApi('MISB UAS - Horizontal FoV', {
       ...commonDatasourceOpts,
       resource: '/datastreams/nhcs9rp6713ka/observations',
       responseFormat: 'application/swe+binary',
     });
 
-    const droneVFovDataSource = new SweApiDatasource('MISB UAS - Vertical FoV', {
+    const droneVFovDataSource = new ConSysApi('MISB UAS - Vertical FoV', {
       ...commonDatasourceOpts,
       resource: '/datastreams/nhcs9rp6713ka/observations',
       responseFormat: 'application/swe+binary',
     });
 
-    const geoRefImageFrameDataSource = new SweApiDatasource('MISB UAS - GeoReferenced Image Frame', {
+    const geoRefImageFrameDataSource = new ConSysApi('MISB UAS - GeoReferenced Image Frame', {
       ...commonDatasourceOpts,
       resource: '/datastreams/iabpf1ivua1qm/observations',
       responseFormat: 'application/swe+csv',
     });
 
-    const targetLocationDataSource = new SweApiDatasource('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
+    const targetLocationDataSource = new ConSysApi('MISB UAS - Video Moving Target Geo-Referencing - Target Location', {
       ...commonDatasourceOpts,
       resource: '/datastreams/p3mp2peibksl4/observations',
       responseFormat: 'application/swe+binary',

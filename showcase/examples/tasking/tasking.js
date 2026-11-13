@@ -1,38 +1,32 @@
-import Systems from "osh-js/core/consysapi/system/Systems";
-import {EventType} from "osh-js/core/event/EventType";
+import Systems from "osh-js/core/consysapi/system/Systems.js";
+import {EventType} from "osh-js/core/event/EventType.js";
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
-import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
-import LeafletView from "osh-js/core/ui/view/map/LeafletView";
-import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer";
-import ControlStreamFilter from "../../../source/core/consysapi/controlstream/ControlStreamFilter";
+import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer.js";
+import LeafletView from "osh-js/core/ui/view/map/LeafletView.js";
+import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer.js";
+import ControlStreamFilter from "osh-js/core/consysapi/controlstream/ControlStreamFilter.js";
+import {Mode} from "osh-js/core/datasource/Mode";
 
 var prevTime = 0;
 
 const systemId = "jrc2e0kaj1m5a";
 const posDsId = "rbnag2hrc04mm";
-const cmdStreamId = "rtbajuvqi9b54";
+const cmdStreamId = "n1smurgjeqcjg";
 
-const username = 'uxs-team';
-const password = 'WR6zlso9h#';
 
 const mqttProps = {
     prefix: '/api',
     endpointUrl: 'api.georobotix.io:443/ogc/t18',
-    username: username,
-    password: password
 };
 
 let gpsDataSource = new ConSysApi("supersonic drone GPS", {
     resource: `/api/datastreams/${posDsId}/observations`,
     endpointUrl: 'api.georobotix.io/ogc/t18/api',
-    protocol: 'ws',
+    protocol: 'mqtt',
     mqttOpts: mqttProps,
     tls: true,
     responseFormat: 'application/swe+json',
-    connectorOpts: {
-        username: username,
-        password: password
-    }
+    mode: Mode.REAL_TIME
 });
 
 const systems = new Systems({
@@ -40,10 +34,6 @@ const systems = new Systems({
     streamProtocol: 'mqtt',
     mqttOpts: mqttProps,
     tls: true,
-    connectorOpts: {
-        username: username,
-        password: password
-    }
 });
 
 
@@ -53,11 +43,13 @@ const textStatusElt =  document.getElementById("text_status");
 // style it with a moving point marker
 const pointMarkerLayer = new PointMarkerLayer({
     dataSourceId: gpsDataSource.id,
-    getLocation: (rec) => ({
-            x: rec.pos.lon, //swe+json
-            y: rec.pos.lat,
-            z: rec.pos.alt
-    }),
+    getLocation: (rec) => {
+        return {
+            x: rec.result.pos.lon,
+            y: rec.result.pos.lat,
+            z: rec.result.pos.alt
+        };
+    },
     name: 'drone',
     description: 'Drone',
     icon: 'images/uav.png',
@@ -67,11 +59,13 @@ const pointMarkerLayer = new PointMarkerLayer({
 
 let polylineLayer = new PolylineLayer({
     dataSourceId: gpsDataSource.id,
-    getLocation: (rec) => ({
-        x: rec.pos.lon,
-        y: rec.pos.lat,
-        z: rec.pos.alt
-    }),
+    getLocation: (rec) => {
+        return {
+            x: rec.result.pos.lon,
+            y: rec.result.pos.lat,
+            z: rec.result.pos.alt
+        };
+    },
     color: 'rgba(0,0,255,0.5)',
     weight: 5,
     opacity: .5,
@@ -131,7 +125,6 @@ async function startListening() {
         }
 
         let corrId = Math.floor(Math.random() * 1e9);
-        console.log("Correlation ID = " + corrId);
         corrData.setInt32(0, corrId, false);
 
         control.publishCommand(JSON.stringify(goToCmd));

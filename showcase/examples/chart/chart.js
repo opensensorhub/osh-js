@@ -1,31 +1,48 @@
-// create data source for Android phone camera
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
+import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
+import {EventType} from "osh-js/core/event/EventType";
+
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+
+const REPLAY_SPEED = 0.5;
 
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-let chartDataSource = new SosGetResult("weather", {
-    endpointUrl: "sensiasoft.net/sensorhub/sos",
-    offeringID: "urn:mysos:offering03",
-    observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-    startTime: "now",
-    endTime: "2055-01-01Z",
-    mode: Mode.REAL_TIME,
-    tls: true
+let chartDataSource = new ConSysApi("weather", {
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
+    resource: '/datastreams/0tsop3f16nvp8/observations',
+    tls: true,
+    protocol: 'mqtt',
+    mqttOpts: {
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+    },
+    mode : Mode.REPLAY,
+    startTime: '2026-10-15T08:42:24.932Z',
+    endTime: '2026-10-15T08:42:33.931Z',
+    replaySpeed: REPLAY_SPEED,
 });
+
+const dataSynchronizer = new DataSynchronizer({
+    replaySpeed: REPLAY_SPEED,
+    dataSources: [chartDataSource],
+    startTime: '2026-10-15T08:42:24.932Z',
+    endTime: '2026-10-15T08:42:33.931Z',
+});
+
 
 // #region snippet_curve_layer
 let windSpeedLayerCurve = new CurveLayer({
     dataSourceId: chartDataSource.id,
-    getValues: (rec, timeStamp) => {
+    getValues: (rec, time) => {
         return {
-            x: timeStamp,
+            x: time,
             y: rec.windSpeed
-        }
+        };
     },
     lineColor: 'rgba(38,152,255,0.5)',
     getLineColor: (rec) => {
@@ -54,7 +71,7 @@ let windSpeedLayerCurve = new CurveLayer({
 // show it in video view
 let chartView = new ChartJsView({
     container: 'char-container',
-    layers: [ windSpeedLayerCurve],
+    layers: [windSpeedLayerCurve],
     css: "chart-view",
     options: {
         scales: {
@@ -72,5 +89,4 @@ let chartView = new ChartJsView({
     }
 });
 
-// start streaming
-chartDataSource.connect();
+dataSynchronizer.connect();

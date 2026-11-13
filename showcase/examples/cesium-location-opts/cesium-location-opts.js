@@ -1,45 +1,55 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import {EllipsoidTerrainProvider, Ion} from '@cesium/engine';
 import {Viewer} from '@cesium/widgets';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
+const REPLAY_SPEED = 1.0;
+
 // create data source for Android phone GPS
-let gpsDataSource = new SosGetResult('android-GPS', {
-    endpointUrl: 'sensiasoft.net/sensorhub/sos',
-    offeringID: 'urn:android:device:060693280a28e015-sos',
-    observedProperty: 'http://sensorml.com/ont/swe/property/Location',
-    startTime: '2015-02-16T07:58:15.447Z',
-    endTime: '2015-02-16T08:09:00Z',
-    mode: Mode.REPLAY,
+let gpsDataSource =  new ConSysApi('droid-GPS', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
+    startTime: '2023-06-06T14:26:12.313Z',
+    endTime: ' 2023-06-06T22:23:47.34Z',
+    minTime: '2023-06-06T14:26:12.313Z',
+    maxTime: ' 2023-06-06T22:23:47.34Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/frmhs11ofiilm/observations',
+    responseFormat: 'application/swe+json',
     timeShift: -16000
 });
 
 const dataSynchronizer = new DataSynchronizer({
     replaySpeed: 2,
-    startTime: '2015-02-16T07:58:22.00Z',
-    endTime: '2015-02-16T08:09:00Z',
+    startTime: '2023-06-06T14:26:12.313Z',
+    endTime: '2023-06-06T22:23:47.34Z',
     dataSources: [gpsDataSource]
 });
 
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
-    dataSourceId: gpsDataSource.id,
-    getLocation: (rec) => ({
-        x: rec.location.lon,
-        y: rec.location.lat
-    }),
+    getLocation: {
+        dataSourceIds: [gpsDataSource.getId()],
+        handler: (rec) => ({
+            x: rec.location.lon,
+            y: rec.location.lat
+        })
+    },
     orientation: {
         heading: 0
     },
-    icon: 'images/car-location.png',
+    icon: 'images/marker-icon.png',
     iconAnchor: [16, 40],
     iconSize: [32, 65],
 });
@@ -70,9 +80,9 @@ let cesiumView = new CesiumView({
             scene3DOnly: true, // for draw layer
         }),
         location: {
-            longitude: -5.185511,
-            latitude: 42.092383,
-            altitude: 3000
+            longitude: -86.63313699088032,
+            latitude: 34.71077144512363,
+            altitude: 300
         },
         orientation: {
             heading: 150,
@@ -86,4 +96,4 @@ let cesiumView = new CesiumView({
 cesiumView.viewer.terrainProvider = new EllipsoidTerrainProvider();
 
 // start streaming
-// dataSynchronizer.connect();
+dataSynchronizer.connect();

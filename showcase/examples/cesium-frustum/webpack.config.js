@@ -2,7 +2,6 @@
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 var path = require('path');
 const webpack = require("webpack");
@@ -21,6 +20,7 @@ module.exports = {
     output: {
         filename: 'bundle.cesium.frustum.js',
         path: path.resolve(__dirname, 'dist'),
+        clean: true,
         // Needed to compile multiline strings in Cesium
         sourcePrefix: ''
     },
@@ -29,8 +29,6 @@ module.exports = {
         toUrlUndefined: true
     },
     node: {
-        // Resolve node module use of fs
-        fs: 'empty'
     },
     // Tell Webpack which directories to look in to resolve import statements.
     // Normally Webpack will look in node_modules by default but since we’re overriding
@@ -57,9 +55,6 @@ module.exports = {
             },{
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
-            }, {
-                test: /\.worker\.js$/,
-                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
             },
             {
                 test: /\.(?:js|mjs|cjs)$/,
@@ -77,11 +72,6 @@ module.exports = {
                             plugins: ["@babel/plugin-transform-optional-chaining"],
                         },
                     },
-                    // Babel understands the import.meta syntax but doesn't transform it in any way
-                    // However Webpack can't parse this and throws an error for an unexpected token
-                    // we need to use this extra loader so Webpack can actually bundle the code
-                    // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
-                    require.resolve("@open-wc/webpack-import-meta-loader"),
                 ],
             }
         ]
@@ -89,27 +79,14 @@ module.exports = {
     // Enable the Webpack dev server which will build, serve, and reload our
     // project on changes.
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
         hot: true,
-        https: true,
-        index: 'cesium-frustum.html'
+        server: 'https'
     },
     devtool: 'source-map',
     plugins: [
-        /**
-         * All files inside webpack's output.path directory will be removed once, but the
-         * directory itself will not be. If using webpack 4+'s default configuration,
-         * everything under <PROJECT_DIR>/dist/ will be removed.
-         * Use cleanOnceBeforeBuildPatterns to override this behavior.
-         *
-         * During rebuilds, all webpack assets that are not used anymore
-         * will be removed automatically.
-         *
-         * See `Options and Defaults` for information
-         */
-        new CleanWebpackPlugin(),
         // This plugin will generate an index.html file for us that can be used
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.
@@ -120,14 +97,16 @@ module.exports = {
         // This plugin will copy files over to ‘./dist’ without transforming them.
         // That's important because the custom-elements-es5-adapter.js MUST
         // remain in ES2015. We’ll talk about this a bit later :)
-        new CopyWebpackPlugin([
-            { from: path.resolve(__dirname,'images'), to: 'images'},
-            { from: path.resolve(__dirname,'models'), to: 'models'},
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
-            { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true }
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: path.resolve(__dirname,'images'), to: 'images'},
+                { from: path.resolve(__dirname,'models'), to: 'models'},
+                { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
+                { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
+                { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
+                { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true }
+            ]
+        }),
         new webpack.DefinePlugin({
             // Define relative base path in cesium for loading assets
             CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),

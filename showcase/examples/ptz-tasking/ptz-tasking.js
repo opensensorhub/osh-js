@@ -1,49 +1,131 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import VideoView from 'osh-js/core/ui/view/video/VideoView.js';
-import FoscamPtzTasking from 'osh-js/core/datapush/FoscamPtzTasking.js';
-import PtzTaskingView from 'osh-js/ext/ui/view/tasking/PtzTaskingView.js';
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
+import {Mode} from "osh-js/core/datasource/Mode";
+import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
+import Systems from "osh-js/core/consysapi/system/Systems";
+import ControlStreamFilter from "osh-js/core/consysapi/controlstream/ControlStreamFilter";
 
-// create data source for UAV camera
-let videoDataSource = new SosGetResult("drone-Video", {
-    protocol: "ws",
-    ,
-    endpointUrl: "localhost:8282/sensorhub/sos",
-    offeringID: "foscam",
-    observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-    startTime: "now",
-    endTime: "2055-12-19T21:09:19Z",
-    replaySpeed: 1
+
+const systemId = "mkmk546knttpg";
+const cmdStreamId = "3ft1spese38pg";
+const dsId = "khv081o7hpma2";
+
+const mqttProps = {
+    prefix: '/api',
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
+};
+
+// create data source for dahua camera
+let videoDataSource =  new ConSysApi('Dahua Office - Video', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    tls: true,
+    startTime: '2023-06-06T14:01:15.637Z',
+    endTime: '2023-06-06T22:53:15Z',
+    minTime: '2023-06-06T14:01:15.637Z',
+    maxTime: '2055-06-06T22:53:15Z ',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: `/datastreams/${dsId}/observations`,
+    responseFormat: 'application/swe+binary',
 });
+
+
+const systems = new Systems({
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
+    streamProtocol: 'mqtt',
+    mqttOpts: mqttProps,
+    tls: true,
+});
+
+let control;
+
+function sendPtzCommand(params) {
+    if (!control) return;
+
+    control.postCommand(JSON.stringify({
+        params: params
+    }));
+}
+
+async function startListening() {
+    const system = await systems.getSystemById(systemId);
+    const control = await system.getControlStreamById(ptzControlStreamId);
+    control.streamStatus(new ControlStreamFilter(), message => {
+        console.log('PTZ command status:', message);
+        const statusElement = document.getElementById('text_status');
+        if (statusElement) {
+            statusElement.textContent = JSON.stringify(message, null, 2);
+        }
+    });
+
+
+    document.getElementById('pan-left').onclick = () => {
+        sendPtzCommand({ rpan: -10 });
+    };
+    document.getElementById('pan-right').onclick = () => {
+        sendPtzCommand({ rpan: 10 });
+    };
+    document.getElementById('tilt-up').onclick = () => {
+        sendPtzCommand({ rtilt: 5 });
+    };
+    document.getElementById('tilt-down').onclick = () => {
+        sendPtzCommand({ rtilt: -5 });
+    };
+    document.getElementById('zoom-in').onclick = () => {
+        sendPtzCommand({ rzoom: 0.1 });
+    };
+    document.getElementById('zoom-out').onclick = () => {
+        sendPtzCommand({ rzoom: -0.1 });
+    };
+    document.getElementById('ptz-home').onclick = () => {
+        sendPtzCommand({ preset: 'Home' });
+    };
+    document.getElementById('preset-home').onclick = () => {
+        sendPtzCommand({ preset: 'Home' });
+    };
+    document.getElementById('set-position').onclick = () => {
+        sendPtzCommand({
+            ptzPos: {
+                pan: Number(document.getElementById('pan-slider').value),
+                tilt: Number(document.getElementById('tilt-slider').value),
+                zoom: Number(document.getElementById('zoom-slider').value)
+            }
+        });
+    };
+}
 
 // show it in video view using FFMPEG JS decoder
-let videoView = new VideoView("video-container", {
-    dataSourceId: videoDataSource.id,
-    css: "video-h264",
-    name: "Foscam Video",
-    framerate:25,
+let videoView = new VideoView({
+    container: 'video-container',
+    css: 'video-dahua',
+    name: 'Dahua Office - Video',
+    framerate: 25,
     showTime: true,
-    directPlay: true
+    showStats: true,
+    useWebCodecApi: true,
+    layers: [
+        new VideoDataLayer({
+            dataSourceId: videoDataSource.id,
+            getFrameData: (rec) => rec.img,
+            getTimestamp: (rec) => rec.timestamp
+        })
+    ]
 });
 
-let ptzTasking = new FoscamPtzTasking("Ptz", {
-    protocol: "http",
-    service: "SPS",
-    version: "2.0",
-    endpointUrl: "localhost:8282/sensorhub/sps",
-    procedure: "urn:uuid:3f430d39-de1d-411a-b3b5-309816469d6b"
-});
+['pan', 'tilt', 'zoom'].forEach(name => {
+    const slider = document.getElementById(`${name}-slider`);
+    const label = document.getElementById(`${name}-value`);
 
-let ptzView  = new PtzTaskingView("tasking-container",{
-    dataSenderId:ptzTasking.id,
-    presets:["Reset","TopMost","BottomMost","LeftMost","RightMost"]
+    if (slider && label) {
+        slider.oninput = () => {
+            label.textContent = slider.value +
+                (name === 'zoom' ? '' : '°');
+        };
+    }
 });
 
 // start streaming
 videoDataSource.connect();
-
-ptzView.onChange = function(rpan, rtilt, rzoom, preset) {
-    let cmdData = ptzTasking.getCommandData({
-        rpan: rpan, rtilt:rtilt, rzoom:rzoom, preset:preset
-    });
-    ptzTasking.sendRequest(cmdData);
-};
+startListening();

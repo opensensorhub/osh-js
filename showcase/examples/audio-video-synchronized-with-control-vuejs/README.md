@@ -95,10 +95,6 @@ module: {
           'vue-style-loader',
           'css-loader'
         ]
-      },
-      {
-        test: /\.worker\.lib$/,
-        use: { loader: 'worker-loader' }
       }
     ]
   },
@@ -114,7 +110,6 @@ Finally, setup the plugins to:
 plugins: [
     // make sure to include the plugin for the magic
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
       filename: './index.html',

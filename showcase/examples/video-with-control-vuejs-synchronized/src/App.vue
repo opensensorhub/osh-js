@@ -17,11 +17,11 @@
 <script>
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
+import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
+import VideoView from 'osh-js/core/ui/view/video/VideoView';
+import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 
 export default {
   components: {
@@ -34,46 +34,52 @@ export default {
     }
   },
   mounted() {
+    const REPLAY_SPEED = 2.6;
     // setup video
     // create data source for UAV camera
     const opts = {
-      endpointUrl: 'sensiasoft.net/sensorhub/sos',
-      offeringID: 'urn:mysos:solo:video2',
-      observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
-      prefetchBatchDuration: 10000,
+      endpointUrl: 'api.georobotix.io/ogc/t18/api',
+      resource: '/datastreams/54cgrdilfiknu/observations',
+      tls: true,
+      startTime: '2023-06-06T13:21:43Z',
+      endTime: '2023-06-06T22:23:23Z',
+      minTime: '2023-06-06T13:21:43Z',
+      maxTime: '2023-06-06T22:23:23Z',
       mode: Mode.REPLAY,
-      tls: true
+      responseFormat: 'application/swe+binary',
+      replaySpeed: REPLAY_SPEED,
+      prefetchBatchDuration: 10000,
+      prefetchBatchSize: 250,
     };
 
-    const dataSource0 = new SosGetResult("drone-Video", {
+    const dataSource0 = new ConSysApi("droid-Video", {
       ...opts
     });
 
-    const dataSource1 = new SosGetResult("drone-Video1", {
+    const dataSource1 = new ConSysApi("droid-Video1", {
       ...opts
     });
 
-    const dataSource2 = new SosGetResult("drone-Video2", {
+    const dataSource2 = new ConSysApi("droid-Video2", {
       ...opts
     });
 
-    const dataSource3 = new SosGetResult("drone-Video3", {
+    const dataSource3 = new ConSysApi("droid-Video3", {
       ...opts
     });
 
     this.views.push(new VideoView({
       container: 'container0',
       css: 'video-h264',
-      name: 'UAV Video',
+      name: 'Droid Video',
       framerate: 25,
       showTime: true,
       showStats: true,
+      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource0.id,
-          getFrameData: (rec) => rec.videoFrame,
+          getFrameData: (rec) => rec.img,
           getTimestamp: (rec) => rec.timestamp
         })
       ]
@@ -86,10 +92,11 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
+      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource1.id,
-          getFrameData: (rec) => rec.videoFrame,
+          getFrameData: (rec) => rec.img,
           getTimestamp: (rec) => rec.timestamp
         })
       ]
@@ -102,10 +109,11 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
+      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource2.id,
-          getFrameData: (rec) => rec.videoFrame,
+          getFrameData: (rec) => rec.img,
           getTimestamp: (rec) => rec.timestamp
         })
       ]
@@ -118,20 +126,20 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
+      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource3.id,
-          getFrameData: (rec) => rec.videoFrame,
+          getFrameData: (rec) => rec.img,
           getTimestamp: (rec) => rec.timestamp
         })
       ]
     }));
 
     this.dataSynchronizer = new DataSynchronizer({
-      replaySpeed: 1.0,
-      masterTimeRefreshRate: 250, // millis
-      startTime: '2015-12-19T21:04:29.231Z',
-      endTime: '2015-12-19T21:09:19.675Z',
+      replaySpeed: REPLAY_SPEED,
+      startTime: '2023-06-06T13:21:43Z',
+      endTime: '2023-06-06T22:23:23Z',
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();

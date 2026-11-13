@@ -1,24 +1,25 @@
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import SosGetResultParser from "../../../source/core/parsers/sos/SosGetResult.parser";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
-let startTime = "2015-02-16T07:57:59.447Z";
-let endTime = "2015-02-16T08:09:00Z";
+const REPLAY_SPEED = 1.0;
 
 // create data source for Android phone camera
-let videoDataSource = new SosGetResult("android-Video", {
-    endpointUrl: "sensiasoft.net/sensorhub/sos",
-    offeringID: "urn:android:device:060693280a28e015-sos",
-    observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-    startTime: startTime,
-    endTime: endTime,
-    mode: Mode.REPLAY,
+let videoDataSource =  new ConSysApi('axis-Video', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    prefetchBatchDuration: 5000,
-    timeShift: -16000
+    startTime: '2023-06-06T13:58:35Z',
+    endTime: '2023-06-06T22:24:41Z',
+    minTime: '2023-06-06T13:58:35Z',
+    maxTime: '2023-06-06T22:24:41Z',
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/g92fogmdhonki/observations',
+    responseFormat: 'application/swe+binary',
 });
 
 // show it in video view
@@ -31,7 +32,7 @@ let videoView = new VideoView({
     layers: [
         new VideoDataLayer({
             dataSourceId: videoDataSource.id,
-            getFrameData: (rec) => rec.videoFrame,
+            getFrameData: (rec) => rec.img,
             getTimestamp: (rec) => rec.timestamp
         })
     ]
@@ -41,11 +42,11 @@ let videoView = new VideoView({
 const dataSynchronizer = new DataSynchronizer({
     masterTimeRefreshRate: 250,
     replaySpeed: 1.0,
-    startTime: startTime,
-    endTime: endTime,
+    startTime: '2023-06-06T13:58:35Z',
+    endTime: '2023-06-06T22:24:41Z',
     dataSources: [
         videoDataSource
     ]
 });
-dataSynchronizer.connect()
+dataSynchronizer.connect();
 

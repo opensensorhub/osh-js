@@ -12,11 +12,9 @@ const mqttProps = {
     shared: true,
     prefix: '/api',
     endpointUrl: 'api.georobotix.io:443/ogc/t18',
-    username: 'uxs-team',
-    password: 'WR6zlso9h#'
 };
 
-let gpsDataSource = new ConSysApi("android-GPS", {
+let gpsDataSource = new ConSysApi("simUav-GPS", {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     resource: '/datastreams/rbnag2hrc04mm/observations',
     tls: true,
@@ -25,9 +23,9 @@ let gpsDataSource = new ConSysApi("android-GPS", {
     mode: Mode.REAL_TIME
 });
 
-const isaDataSource = new ConSysApi("ISA-bio-sensor", {
+let weatherDataSource = new ConSysApi("weather", {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
-    resource: '/datastreams/b4runsn23q66o/observations',
+    resource: '/datastreams/0tsop3f16nvp8/observations',
     tls: true,
     protocol: 'mqtt',
     mqttOpts: mqttProps,
@@ -64,43 +62,51 @@ const chartView = new ChartJsView({
     container: 'chart-container',
     layers: [
         new CurveLayer({
-            dataSourceId: isaDataSource.id,
+            dataSourceId: weatherDataSource.id,
             getValues: (rec, timeStamp) => {
                 return {
                     x: timeStamp,
-                    y: rec.density
-                }
+                    y: rec.temperature
+                };
             },
             lineColor: 'rgba(0,220,204,0.5)',
-            getLineColor: (rec) => {
-                if(rec.material_class === 'NEUROTOXIN') {
-                    return 'rgba(0,220,204,0.5)';
-                } else if(rec.material_class === 'UNKNOWN') {
-                    return 'rgba(101,118,41,0.5)';
-                } else if(rec.material_class === 'CYTOTOXIN') {
-                    return 'rgba(197,24,64,0.5)';
-                } else if(rec.material_class === 'RIC') {
-                    return 'rgba(85,255,0,0.78)';
-                } else if(rec.material_class === 'PATHOGEN') {
-                    return 'rgba(0,54,189,0.78)';
-                } else if(rec.material_class === 'BIOREGULATOR') {
-                    return 'rgb(189,35,0, 0.8)';
-                } else if(rec.material_class === 'VIRAL') {
-                    return 'rgba(0,255,246,0.78)';
-                } else {
-                    return 'rgba(255,206,0,0.94)';
-                }
+            backgroundColor: 'rgba(0,220,204,0.5)',
+            getCurveId:(rec, timeStamp) => 'temperature',
+            name: "Temperature"
+        }),
+        new CurveLayer({
+            dataSourceId: weatherDataSource.id,
+            getValues: (rec, timeStamp) => {
+                return {
+                    x: timeStamp,
+                    y: rec.pressure
+                };
             },
-            getCurveId:(rec, timeStamp) => rec.material_class,
-            getName: (rec) =>  rec.material_class
-        })
+            lineColor: 'rgba(220,66,0,0.5)',
+            backgroundColor: 'rgba(220,66,0,0.5)',
+            getCurveId:(rec, timeStamp) => 'pressure',
+            name: "Pressure"
+        }),
+        new CurveLayer({
+            dataSourceId: weatherDataSource.id,
+            getValues: (rec, timeStamp) => {
+                return {
+                    x: timeStamp,
+                    y: rec.windSpeed
+                };
+            },
+            lineColor: 'rgba(172,0,220,0.5)',
+            backgroundColor: 'rgba(172,0,220,0.5)',
+            getCurveId:(rec, timeStamp) => 'windSpeed',
+            name: "Wind Speed"
+        }),
     ],
     css: "chart-view",
     options: {
         plugins: {
             title: {
                 display: true,
-                text: 'ISA Biological Sensor density',
+                text: 'Weather',
             }
         },
         responsive: true,
@@ -109,7 +115,7 @@ const chartView = new ChartJsView({
                 display: true,
                 title: {
                     display: true,
-                    text: 'Density',
+                    text: 'Value',
                     padding: 10
                 }
             },
@@ -130,5 +136,5 @@ const chartView = new ChartJsView({
 
 // start streaming
 gpsDataSource.connect();
-isaDataSource.connect();
+weatherDataSource.connect();
 
