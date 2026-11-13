@@ -15,11 +15,12 @@ class MqttTopicConnector extends DataConnector {
         this.lastReceiveTime = -1;
         this.interval = -1;
         this.broadcastChannel = new BroadcastChannel(url);
-        this.broadcastChannel.onmessage = (message) => {
-            if(message.data.topic === this.fullTopic) {
-                this.onMessage(message.data.data);
-            }
-        }
+        this.broadcastChannel.onmessage = ({ data: msg }) => {
+            if (msg?.topic !== this.fullTopic) return;
+            if (msg.message === 'subscribe' || msg.message === 'unsubscribe') return;
+            if (msg.data === undefined) return;
+            this.onMessage(msg.data);
+        };
         this.topics = [];
     }
 
