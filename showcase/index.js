@@ -270,6 +270,12 @@ var samples = [
 //        code: 'vue/App_examples/audio-video-synchronized-with-control-vuejs.vue',
 //        datasourceType: 'SOS',
 //    }
+    {
+        name: "SDR RF Spectrum & Waterfall",
+        description: "Display the RF spectrum of a Software Defined Radio as a spectrum analyzer and a waterfall spectrogram, with click-to-tune receiver control. Requires a local SensorHub node running the RTL-SDR driver.",
+        url: "sdr",
+        datasourceType: 'Connected Systems',
+    }
 ];
 
 // load sample cards

@@ -118,7 +118,8 @@ let directories = [
     'audio',
     'audio-with-control-vuejs',
     'audio-video-synchronized-with-control-vuejs',
-    'tasking'
+    'tasking',
+    'sdr'
 ];
 
 const plug = {};

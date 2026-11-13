@@ -202,6 +202,7 @@ module.exports = (env) => {
                                 ]
                             },
                             '/guide/views/chart.md',
+                            '/guide/views/sdr.md',
                             {
                                 title: 'Video',
                                 collapsable: true,
@@ -235,6 +236,7 @@ module.exports = (env) => {
                             '/guide/layers/marker.md',
                             '/guide/layers/polyline.md',
                             '/guide/layers/curve.md',
+                            '/guide/layers/sdr.md',
                             '/guide/layers/draping.md',
                             '/guide/layers/video.md',
                             '/guide/layers/audio.md',
