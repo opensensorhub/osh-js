@@ -12,75 +12,70 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0N
 window.CESIUM_BASE_URL = './';
 
 const REPLAY_SPEED = 1.0;
-const START_TIME = '2026-11-12T19:53:59.395Z';
-const END_TIME = '2026-11-12T19:57:54.030Z';
+const altitudeOffset = -193;
+const DTR = Math.PI / 180;
+const START_TIME = '2012-06-29T14:32:34.099333251Z';
+const END_TIME = '2012-06-29T14:36:54.033333251Z';
 
-const apiEndpoint = 'api.georobotix.io/ogc/t18/api';
+const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
+const MAX_TIME = '2055-06-29T14:36:54.033333251Z';
 
-const droneLocationDataSource = new ConSysApi('MISB UAS - Sensor Location', {
-    endpointUrl:  apiEndpoint,
+const commonDatasourceOpts = {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    protocol: 'mqtt',
+    mqttOpts: {
+        shared: true,
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+    },
     tls: true,
     startTime: START_TIME,
     endTime: END_TIME,
-    mode: Mode.REPLAY,
+    minTime: MIN_TIME,
+    maxTime: MAX_TIME,
+    mode: Mode.REAL_TIME,
     replaySpeed: REPLAY_SPEED,
     prefetchBatchDuration: 10000,
     prefetchBatchSize: 250,
+}
+
+let droneLocationDataSource = new ConSysApi('MISB UAS - Platform Location', {
+    ...commonDatasourceOpts,
     resource: '/datastreams/o7pce3e60s0ie/observations',
     responseFormat: 'application/swe+json',
-    timeShift: -16000
 });
 
-const droneOrientationDataSource = new ConSysApi('MISB UAS - Platform Orientation', {
-    endpointUrl: apiEndpoint,
-    tls: true,
-    startTime: START_TIME,
-    endTime: END_TIME,
-    mode: Mode.REPLAY,
-    replaySpeed: REPLAY_SPEED,
-    prefetchBatchDuration: 10000,
-    prefetchBatchSize: 250,
+let droneOrientationDataSource = new ConSysApi('MISB UAS - Platform Attitude', {
+    ...commonDatasourceOpts,
     resource: '/datastreams/mlme3gtdfepvc/observations',
     responseFormat: 'application/swe+json',
-    timeShift: -16000
 });
 
-const droneCameraOrientationDataSource = new ConSysApi('MISB UAS - Sensor Orientation', {
-    endpointUrl: apiEndpoint,
-    tls: true,
-    startTime: START_TIME,
-    endTime: END_TIME,
-    mode: Mode.REPLAY,
-    replaySpeed: REPLAY_SPEED,
-    prefetchBatchDuration: 10000,
-    prefetchBatchSize: 250,
+let droneCameraOrientationDataSource = new ConSysApi('MISB UAS - Gimbal Attitude', {
+    ...commonDatasourceOpts,
     resource: '/datastreams/h75dmug8e3sae/observations',
-    responseFormat: 'application/swe+json',
-    timeShift: -16000
+    responseFormat: 'application/swe+binary',
 });
 
 const droneHFovDataSource = new ConSysApi('MISB UAS - Horizontal FoV', {
-    endpointUrl: apiEndpoint,
-    tls: true,
-    startTime: START_TIME,
-    endTime: END_TIME,
-    mode: Mode.REPLAY,
-    replaySpeed: REPLAY_SPEED,
-    prefetchBatchDuration: 10000,
-    prefetchBatchSize: 250,
+    ...commonDatasourceOpts,
     resource: '/datastreams/nhcs9rp6713ka/observations',
-    responseFormat: 'application/swe+json',
-    timeShift: -16000
+    responseFormat: 'application/swe+binary',
 });
 
 const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: REPLAY_SPEED,
+    masterTimeRefreshRate: 250,
+    replaySpeed: 1.0,
     startTime: START_TIME,
     endTime: END_TIME,
-    dataSources: [droneLocationDataSource, droneOrientationDataSource, droneCameraOrientationDataSource, droneHFovDataSource]
+    mode: Mode.REAL_TIME,
+    dataSources: [
+        droneLocationDataSource,
+        droneOrientationDataSource,
+        droneCameraOrientationDataSource,
+        droneHFovDataSource
+    ]
 });
-
-const altitudeOffset = -193;
 
 
 const droneFrustumLayer = new FrustumLayer({
@@ -88,7 +83,6 @@ const droneFrustumLayer = new FrustumLayer({
     getOrigin: {
         dataSourceIds: [droneLocationDataSource.getId()],
         handler: function(rec) {
-            console.log('location rec:', JSON.stringify(rec));
             return {
                 x: rec.location.lon,
                 y: rec.location.lat,
@@ -120,44 +114,42 @@ const droneFrustumLayer = new FrustumLayer({
             return rec.attitude;
         }
     },
-    color: 'rgba(234,252,255,0.35)',
-    opacity: 0.5,
+    getVisible: {
+        dataSourceIds: [droneHFovDataSource.getId()],
+        handler: function(rec) {
+            return true;
+        }
+    },
+    color: 'rgba(255,246,246,0.24)',
+    opacity: 0.25,
 });
 
 const droneMarkerLayer = new PointMarkerLayer({
-    dataSourceId: droneLocationDataSource.id,
+    label: "MISB UAS",
+    labelColor: "#FFFFFF",
+    labelOffset: [0, -20],
     getLocation : {
-        dataSourceIds: [droneLocationDataSource.getId()],
-        handler: function(rec) {
-            console.log('rec:', rec);
-            return {
-                x: rec.location.lon,
-                y: rec.location.lat,
-                z: rec.location.alt
+        dataSourceIds : [droneLocationDataSource.id],
+        handler : function(rec) {
+            const pos = {
+                x : rec.location.lon,
+                y : rec.location.lat,
+                z : rec.location.alt + altitudeOffset
             };
+
+            return pos;
         }
     },
     getOrientation : {
         dataSourceIds : [droneOrientationDataSource.getId()],
         handler : function(rec) {
             return {
-                heading : rec.attitude.heading + 180
+                heading : rec.attitude.heading + 180 // model is reversed
             };
         }
     },
-    color: 'rgba(129,137,145,0.8)',
-    labelOffset: [0, 30],
-    labelColor: '#ffffff',
-    labelSize: 12,
-    label: 'MISB UAV',
-    icon: "./images/car-location.png",
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    getIconColor: (rec) => (Math.random() < 0.5) ?  'rgba(255,0,0,0.5)' : 'rgba(0,82,255,0.5)',
-    iconColor: 'rgba(117,250,40,0.5)',
-    description: 'MISB UAV',
-    getDescription: (d) => `Alt: ${d.pos.alt}`,
-    zIndex: 2
+    icon: "./models/predator2.glb",
+    iconScale: 0.1
 });
 
 // create Cesium view
