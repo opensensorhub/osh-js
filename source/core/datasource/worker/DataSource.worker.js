@@ -14,7 +14,7 @@
 
  ******************************* END LICENSE BLOCK ***************************/
 
-import DataSourceWorker from "./DataSourceWorker";
+import DataSourceWorker from "./DataSourceWorker.js";
 
 const dataSourceWorker = new DataSourceWorker();
 dataSourceWorker.postMessage = (message) => {

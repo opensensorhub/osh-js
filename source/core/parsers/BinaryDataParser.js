@@ -15,7 +15,6 @@ import RootParser from "./common/RootParser";
 class BinaryDataParser extends GenericParser {
 
     constructor(rootElement, encoding, properties = {timeShift : 0}) {
-        console.log(encoding)
         super(rootElement, {
             nodesId: {},
             nodesIdValue: {},

@@ -1,4 +1,4 @@
-import {randomUUID} from "../utils/Utils";
+import {randomUUID} from "../utils/Utils.js";
 
 class WorkerExt {
     constructor(worker) {

@@ -15,7 +15,8 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import SweCollectionDataParser from "../parsers/sweapi/collection/SweCollectionDataParser";
-import {getOAuthClient} from "../../core/oauth/OAuthClient";
+import {getOAuthClient} from "../oauth/OAuthClient";
+
 
 class Collection {
     /**
