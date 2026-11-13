@@ -136,7 +136,7 @@ class DataSource {
         return workersPool[dataSourceWorkers[this.id]];
     }
 
-    async initDataSource(properties = this.properties) {
+    async initDataSource(properties = this.properties, transfer = []) {
         return this.getWorker().postMessageWithAck({
             message: 'init',
             id: this.id,
@@ -145,7 +145,7 @@ class DataSource {
                 data: this.getTopicId()
             },
             dsId: this.id
-        }).then(() => {
+        }, transfer).then(() => {
             // listen for Events to callback to subscriptions
             const datasourceBroadcastChannel = new BroadcastChannel(this.getTopicId());
             datasourceBroadcastChannel.onmessage = (message) => {

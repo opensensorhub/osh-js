@@ -38,11 +38,18 @@ class JsonDataParser extends GenericParser {
             }
         }
 
+        if (jsonData == null) {
+            return [];
+        }
+
         if(Array.isArray(jsonData)) {
+            const results = [];
             for(let d of jsonData) {
+                if (d == null) continue;
                 d['timestamp'] = new Date(d[this.getTimeField()]).getTime() + this.props.timeShift;
+                results.push(d);
             }
-            return jsonData;
+            return results;
         } else {
             jsonData['timestamp'] = new Date(jsonData[this.getTimeField()]).getTime() + this.props.timeShift;
             return [jsonData];

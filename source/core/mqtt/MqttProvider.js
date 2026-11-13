@@ -15,11 +15,9 @@
  ******************************* END LICENSE BLOCK ***************************/
 
 import * as mqttModule from './mqtt.min.js';
-const mqtt = mqttModule.default || mqttModule;
 import {isDefined} from "../utils/Utils.js";
 
-let mqttCallbacks = {};
-
+const mqtt = mqttModule.default ?? globalThis.mqtt;
 class MqttProvider {
     /**
      * Build the MqttProvider.
@@ -51,6 +49,7 @@ class MqttProvider {
         }
 
         this.topics = [];
+        this.mqttCallbacks = {};
 
         let options = {
             reconnectPeriod: 30,
@@ -94,22 +93,27 @@ class MqttProvider {
                     try {
                         // subscribe
                         // store callback for this topic
-                        if (!(topicQuery in mqttCallbacks)) {
-                            mqttCallbacks[topicQuery] = [];
+                        if (!(topicQuery in this.mqttCallbacks)) {
+                            this.mqttCallbacks[topicQuery] = [];
                         }
 
-                        mqttCallbacks[topicQuery].push({
+                        this.mqttCallbacks[topicQuery].push({
                             callbackFn: callback,
                             topic: topic
                         });
 
-                        this.client.subscribe(`${topicQuery}`, function (err) {
+                        this.client.subscribe(`${topicQuery}`, function (err, granted) {
                             if (err) {
-                                callback(err);
                                 error(err);
                             } else {
-                                console.warn(`Subscribed to ${topicQuery}`);
-                                resolve();
+                                const rejected = Array.isArray(granted) && granted.some(subscription =>
+                                    typeof subscription.qos === 'number' && subscription.qos >= 128);
+                                if (rejected) {
+                                    const subscriptionError = new Error(`Broker rejected MQTT subscription to ${topicQuery}`);
+                                    error(subscriptionError);
+                                } else {
+                                    resolve(granted);
+                                }
                             }
                         });
                     } catch (exception) {
@@ -136,15 +140,18 @@ class MqttProvider {
      */
     async unsubscribe(topic) {
         const topicQuery = `${this.mqttPrefix}${topic}`;
-        return this.client.unsubscribe(topicQuery, {}, err => {
-            delete mqttCallbacks[topicQuery];
-            if (err) {
-                const messageErr = `Cannot Unsubscribed topic: ${topicQuery} : ${err}`;
-                console.error(messageErr);
-                throw Error(messageErr);
-            } else {
-                console.warn(`Unsubscribed topic: ${topicQuery}`);
-            }
+        delete this.mqttCallbacks[topicQuery];
+        this.topics = this.topics.filter(subscribedTopic => subscribedTopic !== topic);
+        return new Promise((resolve, reject) => {
+            this.client.unsubscribe(topicQuery, {}, err => {
+                if (err) {
+                    const messageErr = `Cannot unsubscribe topic: ${topicQuery}: ${err}`;
+                    console.error(messageErr);
+                    reject(new Error(messageErr));
+                } else {
+                    resolve();
+                }
+            });
         });
     }
 
@@ -166,19 +173,28 @@ class MqttProvider {
             });
             this.client.on('message', this.onMessage.bind(this));
 
-            this.client.on('offline', e => {
-                throw new Error(`The server ${that.endpoint} seems offline`);
+            this.client.on('reconnect', () => {
+                console.warn(`Mqtt client is attempting to reconnect to ${that.endpoint}`);
             });
+
+            this.client.on('close', () => {
+                console.warn(`Mqtt client connection closed for ${that.endpoint}`);
+            });
+
+            this.client.on('offline', e => {
+                console.error(`Mqtt client offline: the server ${that.endpoint} seems offline. Will attempt to reconnect.`);
+            });
+
             this.client.on('error', e => {
-                throw new Error(error);
+                console.error(`Mqtt client error for ${that.endpoint}:`, e);
             });
         }
     }
 
     async onMessage(topic, message) {
-        if (topic in mqttCallbacks) {
+        if (topic in this.mqttCallbacks) {
             // callback for the corresponding topic
-            for (let callback of mqttCallbacks[topic]) {
+            for (let callback of this.mqttCallbacks[topic]) {
                 // callback to all subscription registered
                 callback.callbackFn(new Uint8Array(message).subarray(message.byteOffset).buffer, callback.topic);
             }
@@ -191,7 +207,7 @@ class MqttProvider {
         }
         // close the client
         this.client.end();
-        mqttCallbacks = {};
+        this.mqttCallbacks = {};
         this.client = null;
     }
 

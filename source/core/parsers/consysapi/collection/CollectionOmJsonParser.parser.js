@@ -13,7 +13,11 @@ class OmJsonCollectionParser extends OmJsonParser {
         const jsonData = JSON.parse(dataBlock);
         const result = [];
 
+        if (jsonData == null || jsonData.items == null) {
+            return result;
+        }
         for(let d of jsonData.items) {
+            if (d == null) continue;
             d['timestamp'] = new Date(d[this.getTimeField()]).getTime();
             result.push(d);
         }

@@ -38,10 +38,9 @@ function createSharedMqttConnector(properties, topic) {
     if(!(url in mqttConnectors)) {
         mqttConnectors[url] = new MqttConnector(url, properties);
         mqttConnectors[url].initBc();
-    } else {
-        console.log(`Reuse shared MqttConnector instance for ${url}`);
+        mqttConnectors[url].ensureConnected();
     }
-    return mqttConnectors[url].id;
+    return mqttConnectors[url];
 }
 
 class TimeSeriesRealtimeDatasource extends DataSource {
@@ -51,8 +50,9 @@ class TimeSeriesRealtimeDatasource extends DataSource {
         this.dataSynchronizer = undefined;
         this.properties.version = 0;
 
-        if(properties.protocol === 'mqtt') {
-            this.properties.mqttOpts.bcId = createSharedMqttConnector(properties);
+        if(properties.protocol === 'mqtt' && properties.mqttOpts.shared) {
+            this.sharedMqttConnector = createSharedMqttConnector(properties);
+            this.properties.mqttOpts.bcId = this.sharedMqttConnector.id;
         }
     }
 
@@ -265,8 +265,22 @@ class TimeSeriesRealtimeDatasource extends DataSource {
      * @protected
      * @param properties
      */
-    async initDataSource(properties) {
-        await super.initDataSource(properties);
+    async initDataSource(properties = this.properties) {
+        let workerProperties = properties;
+        let transfer = [];
+        if (properties.protocol === 'mqtt' && properties.mqttOpts.shared) {
+            const channel = new MessageChannel();
+            this.sharedMqttConnector.registerMessagePort(this.id, channel.port1);
+            workerProperties = {
+                ...properties,
+                mqttOpts: {
+                    ...properties.mqttOpts,
+                    messagePort: channel.port2
+                }
+            };
+            transfer = [channel.port2];
+        }
+        await super.initDataSource(workerProperties, transfer);
         const topics = {
             data: this.getTopicId(),
             time: this.getTimeTopicId()
