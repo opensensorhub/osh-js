@@ -1,7 +1,7 @@
-import SosGetResultHandler from "../sos/handler/SosGetResult.handler";
-import SosGetFoisHandler from "../sos/handler/SosGetFois.handler";
-import SweApiHandler from "../sweapi/handler/SweApi.handler";
-import ConSysApiHandler from "../consysapi/handler/ConSysApi.handler";
+import SosGetResultHandler from "../sos/handler/SosGetResult.handler.js";
+import SosGetFoisHandler from "../sos/handler/SosGetFois.handler.js";
+import SweApiHandler from "../sweapi/handler/SweApi.handler.js";
+import ConSysApiHandler from "../consysapi/handler/ConSysApi.handler.js";
 
 class DataSourceWorker {
     constructor() {
