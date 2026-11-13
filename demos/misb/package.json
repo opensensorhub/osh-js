@@ -47,12 +47,9 @@
     "wnumb": "1.2.0"
   },
   "overrides": {
-    "@zip.js/zip.js": "2.7.34",
-    "**/vue": "3.4.27"
-
+    "@zip.js/zip.js": "2.7.34"
   },
   "resolutions": {
-    "@zip.js/zip.js": "2.7.34",
-    "**/vue": "3.4.27"
+    "@zip.js/zip.js": "2.7.34"
   }
 }
