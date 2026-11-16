@@ -5,12 +5,12 @@ const beautify = require('js-beautify').js;
 var Normalizer = require('prismjs/plugins/normalize-whitespace/prism-normalize-whitespace');
 
 var samples = [
-    // {
-    //     name: "FOI Locations (CesiumJS)",
-    //     description: "Display the location of several features of interest on a CesiumJS globe.",
-    //     url: "cesium-fois",
-    //     datasourceType: 'Connected Systems',
-    // },
+    {
+        name: "FOI Locations (CesiumJS)",
+        description: "Display the location of several features of interest on a CesiumJS globe.",
+        url: "cesium-fois",
+        datasourceType: 'SOS',
+    },
     {
         name: "Frustum (CesiumJS)",
         description: "Display the frustum on a CesiumJS globe",
@@ -47,13 +47,13 @@ var samples = [
         url: "leaflet-location",
         datasourceType: 'Connected Systems',
     },
-    // {
-    //     name: "FOI Locations (Leaflet)",
-    //     description: "Display the location of several features of interest on a Leaflet map.",
-    //     url: "leaflet-location-fois",
-    //     screenshot: "images/screenshots/leaflet-fois.png",
-    //     datasourceType: 'Connected Systems',
-    // },
+    {
+        name: "FOI Locations (Leaflet)",
+        description: "Display the location of several features of interest on a Leaflet map.",
+        url: "leaflet-location-fois",
+        screenshot: "images/screenshots/leaflet-fois.png",
+        datasourceType: 'SOS',
+    },
     {
         name: "Moving Location + Heading (Leaflet)",
         description: "Display a moving marker on a Leaflet map, tracking the current location and heading of a vehicle.",

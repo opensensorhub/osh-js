@@ -49,7 +49,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            index: '/leaflet-location-timerange.html'
+        },
+        devMiddleware: {
+            index: 'leaflet-location-timerange.html'
+        },
     },
     devtool: 'source-map',
     plugins: [
