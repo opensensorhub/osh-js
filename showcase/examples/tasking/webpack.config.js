@@ -48,7 +48,14 @@ module.exports = {
         static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
-        hot: true
+        hot: true,
+        server: 'https',
+        historyApiFallback: {
+            index: '/tasking.html'
+        },
+        devMiddleware: {
+            index: 'tasking.html'
+        },
     },
     devtool: 'source-map',
     plugins: [
