@@ -7,7 +7,7 @@
         @event='onControlEvent'
         :skipTimeStep="'60s'" 
         :replaySpeedStep=0.1
-        v-if="dataSynchronizer"
+        v-if="dataSource"
     ></TimeController>
   </div>
 </template>
@@ -17,7 +17,6 @@ import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {Mode} from 'osh-js/core/datasource/Mode';
-import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
 
 
@@ -27,7 +26,7 @@ export default {
   },
   data: function () {
     return {
-      dataSynchronizer: null,
+      dataSource: null,
       view: null
     }
   },
@@ -49,10 +48,8 @@ export default {
       endTime: (new Date(Date.now()).toISOString()),
       minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
       maxTime: (new Date(Date.now()).toISOString()),
-      mode: Mode.REPLAY,
+      mode: Mode.REAL_TIME,
       replaySpeed: dsReplaySpeed,
-      prefetchBatchDuration: 10000,
-      prefetchBatchSize: 250
     };
 
     const chartDataSource = new ConSysApi('Simulated Weather Sensor - weather', {
@@ -69,8 +66,8 @@ export default {
              dataSourceId: chartDataSource.id,
              getValues: (rec, timestamp) => {
                return {
-                 x: rec.timestamp,
-                 y: rec.windSpeed
+                 x: rec.timestamp || new Date(rec.phenomenonTime).getTime(),
+                 y: rec.windSpeed ?? rec.result.windSpeed
                }
              },
              lineColor: 'rgba(0,220,204,0.5)',
@@ -87,27 +84,13 @@ export default {
          refreshRate: 1000
        });
 
-   // start streaming
-       const dataSynchronizer = new DataSynchronizer({
-         replaySpeed: dsReplaySpeed,
-         dataSources: [chartDataSource]
-       })
+    chartDataSource.connect();
 
-       dataSynchronizer.connect();
-       // connects each DataSource
-       this.dataSynchronizer = dataSynchronizer;
+    this.dataSource = chartDataSource;
 
-       setInterval(() => {
-         dataSynchronizer.setMaxTime(new Date().toISOString());
-       }, 2000);
      },
      methods: {
        onControlEvent(eventName) {
-         if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
-             || eventName === 'replaySpeed'
-             || (eventName === 'play')) {
-           this.view.reset();
-         }
        },
      }
    };

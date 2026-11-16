@@ -25,7 +25,6 @@ let windSpeedLayerCurve = new CurveLayer({
     maxValues: 1000,
     dataSourceId: chartDataSource.id,
     getValues: (rec) => {
-        console.log('rec', rec);
         return {
             x: rec.timestamp || new Date(rec.phenomenonTime).getTime(),
             y: rec.windSpeed ?? rec?.result?.windSpeed
