@@ -76,11 +76,11 @@ var samples = [
         description: 'Add/Remove DataSource(s) to/from DataSynchronizer even if DataSynchronizer is running',
         url: 'datasynchronizer-dynamic-add-remove-replay'
     },
-    {
-        name: 'Read and display GeoJSON using generic Layer',
-        description: 'Read and display GeoJSON using generic Layer',
-        url: 'datasource-geojson'
-    },
+    // {
+    //     name: 'Read and display GeoJSON using generic Layer',
+    //     description: 'Read and display GeoJSON using generic Layer',
+    //     url: 'datasource-geojson'
+    // },
 ];
 
 // load sample cards
