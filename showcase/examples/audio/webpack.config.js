@@ -51,10 +51,10 @@ module.exports = {
         hot: true,
         server: 'https',
         devMiddleware: {
-            index: 'audio.html'
+            index: 'audio-video-synchronized-with-control-vuejs.html'
         },
         historyApiFallback: {
-            index: '/audio.html'
+            index: '/audio-video-synchronized-with-control-vuejs.html'
         }
     },
     devtool: 'source-map',
