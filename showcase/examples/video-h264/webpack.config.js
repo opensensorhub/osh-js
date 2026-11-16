@@ -49,7 +49,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            index: '/video-h264.html'
+        },
+        devMiddleware: {
+            index: 'video-h264.html'
+        },
     },
     devtool: 'source-map',
     plugins: [

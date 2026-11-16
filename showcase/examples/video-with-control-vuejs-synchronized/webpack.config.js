@@ -59,7 +59,13 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
-    server: 'https'
+    server: 'https',
+      historyApiFallback: {
+          index: '/video-with-control-vuejs-synchronized.html'
+      },
+      devMiddleware: {
+          index: 'video-with-control-vuejs-synchronized.html'
+      },
   },
   optimization: {
     splitChunks: {

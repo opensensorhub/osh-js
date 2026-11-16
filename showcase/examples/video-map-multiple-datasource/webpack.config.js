@@ -55,7 +55,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            index: '/video-map-multiple-datasource.html'
+        },
+        devMiddleware: {
+            index: 'video-map-multiple-datasource.html'
+        },
     },
     devtool: 'eval-source-map',
     plugins: [

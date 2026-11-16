@@ -75,7 +75,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            index: '/video-h264-draping.html'
+        },
+        devMiddleware: {
+            index: 'video-h264-draping.html'
+        },
     },
     devtool: 'source-map',
     plugins: [

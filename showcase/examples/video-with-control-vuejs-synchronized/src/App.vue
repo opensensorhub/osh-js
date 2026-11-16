@@ -18,7 +18,7 @@
 // @ is an alias to /src
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
-import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
 import {Mode} from 'osh-js/core/datasource/Mode';
 import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
@@ -39,43 +39,38 @@ export default {
     // create data source for UAV camera
     const opts = {
       endpointUrl: 'api.georobotix.io/ogc/t18/api',
-      resource: '/datastreams/54cgrdilfiknu/observations',
+      resource: '/datastreams/khv081o7hpma2/observations',
       tls: true,
-      startTime: '2023-06-06T13:21:43Z',
-      endTime: '2023-06-06T22:23:23Z',
-      minTime: '2023-06-06T13:21:43Z',
-      maxTime: '2023-06-06T22:23:23Z',
+      startTime: '2023-06-06T14:01:12.099333251Z',
+      endTime: '22023-06-06T22:53.033333251Z',
       mode: Mode.REPLAY,
       responseFormat: 'application/swe+binary',
-      replaySpeed: REPLAY_SPEED,
-      prefetchBatchDuration: 10000,
-      prefetchBatchSize: 250,
+      prefetchBatchSize: 250
     };
 
-    const dataSource0 = new ConSysApi("droid-Video", {
+    const dataSource0 = new ConSysApi("dahua-Video", {
       ...opts
     });
 
-    const dataSource1 = new ConSysApi("droid-Video1", {
+    const dataSource1 = new ConSysApi("dahua-Video1", {
       ...opts
     });
 
-    const dataSource2 = new ConSysApi("droid-Video2", {
+    const dataSource2 = new ConSysApi("dahua-Video2", {
       ...opts
     });
 
-    const dataSource3 = new ConSysApi("droid-Video3", {
+    const dataSource3 = new ConSysApi("dahua-Video3", {
       ...opts
     });
 
     this.views.push(new VideoView({
       container: 'container0',
       css: 'video-h264',
-      name: 'Droid Video',
+      name: 'UAV Video',
       framerate: 25,
       showTime: true,
       showStats: true,
-      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource0.id,
@@ -92,7 +87,6 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
-      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource1.id,
@@ -109,7 +103,6 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
-      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource2.id,
@@ -126,7 +119,6 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
-      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource3.id,
@@ -138,8 +130,8 @@ export default {
 
     this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: REPLAY_SPEED,
-      startTime: '2023-06-06T13:21:43Z',
-      endTime: '2023-06-06T22:23:23Z',
+      startTime: '2012-06-29T14:22:00.099333251Z',
+      endTime: '2012-06-29T14:37:44.033333251Z',
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();
