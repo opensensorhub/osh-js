@@ -49,7 +49,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            index: '/deckgl-location.html'
+        },
+        devMiddleware: {
+            index: 'deckgl-location.html'
+        },
     },
     devtool: 'source-map',
     plugins: [
