@@ -49,7 +49,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            index: '/mapbox-location-path-heading.html'
+        },
+        devMiddleware: {
+            index: 'mapbox-location-path-heading.html'
+        },
     },
     devtool: 'source-map',
     plugins: [
