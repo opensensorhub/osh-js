@@ -85,11 +85,11 @@ module.exports = {
         hot: true,
         server: 'https',
         historyApiFallback: {
-            rewrites: [
-                { from: /^\/$/, to: '/cesium-location.html' }
-            ]
+            index: '/cesium-location.html'
         },
-        open: 'cesium-location.html'
+        devMiddleware: {
+            index: 'cesium-location.html'
+        },
     },
     devtool: 'source-map',
     plugins: [

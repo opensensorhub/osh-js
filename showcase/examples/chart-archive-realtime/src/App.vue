@@ -36,10 +36,7 @@ export default {
     const tls = true;
 
     const dsReplaySpeed = 1.0;
-
-    const startTime = '2026-10-15T08:42:24.932Z';
-    let endTime = '2026-10-15T08:42:33.931Z';
-
+    
     const commonDatasourceOpts = {
       endpointUrl:  'api.georobotix.io/ogc/t18/api',
       protocol: 'mqtt',
@@ -48,8 +45,10 @@ export default {
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
-      startTime: startTime,
-      endTime: endTime,
+      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      endTime: (new Date(Date.now()).toISOString()),
+      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      maxTime: (new Date(Date.now()).toISOString()),
       mode: Mode.REPLAY,
       replaySpeed: dsReplaySpeed,
       prefetchBatchDuration: 10000,

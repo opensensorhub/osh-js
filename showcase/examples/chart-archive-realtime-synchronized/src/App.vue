@@ -6,7 +6,7 @@
         :dataSynchronizer="dataSynchronizer"
         @event='onControlEvent'
         :skipTimeStep="'60s'"
-        :trackRealtime="'00:01:00'"
+        :trackRealtime=true
         v-if="dataSynchronizer"
     ></TimeController>
   </div>
@@ -35,9 +35,6 @@ export default {
 
     const dsReplaySpeed = 1.0;
 
-    const startTime = "2026-11-12T22:03:00.728Z";
-    const endTime = "2055-10-15T08:42:33.000Z";
-
     const commonDatasourceOpts = {
       endpointUrl:  'api.georobotix.io/ogc/t18/api',
       protocol: 'mqtt',
@@ -46,8 +43,10 @@ export default {
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
-      startTime: startTime,
-      endTime: endTime,
+      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      endTime: (new Date(Date.now()).toISOString()),
+      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      maxTime: (new Date(Date.now()).toISOString()),
       mode: Mode.REPLAY,
       replaySpeed: dsReplaySpeed,
       prefetchBatchDuration: 10000,
@@ -68,6 +67,7 @@ export default {
           maxValues: 1000,
           dataSourceId: chartDataSource1.id,
           getValues: (rec, timestamp) => {
+            console.log('rec',rec)
             return {
               x: timestamp,
               y: rec.temperature

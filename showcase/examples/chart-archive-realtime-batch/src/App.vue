@@ -42,10 +42,10 @@ export default {
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
-      startTime: '2026-10-15T08:42:24.932Z',
-      endTime: '2026-10-15T08:42:33.931Z',
-      minTime:  '2026-10-15T08:42:24.932Z',
-      maxTime: '2026-10-15T08:42:33.931Z',
+      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      endTime: (new Date(Date.now()).toISOString()),
+      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      maxTime: (new Date(Date.now()).toISOString()),
       mode: Mode.BATCH,
       replaySpeed: dsReplaySpeed,
       prefetchBatchDuration: 10000,
@@ -94,10 +94,10 @@ export default {
     onControlEvent(eventName) {
       if(eventName === 'forward' || eventName === 'backward' || eventName === 'end'
           || eventName === 'replaySpeed'
-          || (eventName === 'play' && (!isDefined(this.dataSource.properties.replaySpeed)))) {
+          || (eventName === 'play')) {
         this.view.reset();
       }
-    }
+    },
   }
 };
 </script>

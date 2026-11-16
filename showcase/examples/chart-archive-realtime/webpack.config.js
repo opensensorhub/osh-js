@@ -82,7 +82,12 @@ const config = {
       port: 9000,
       hot: true,
       server: 'https',
-      index: 'chart-archive-realtime.html',
+      historyApiFallback: {
+          index: '/chart-archive-realtime.html'
+      },
+      devMiddleware: {
+          index: 'chart-archive-realtime.html'
+      },
   },
   plugins: [
     new VueLoaderPlugin(),
