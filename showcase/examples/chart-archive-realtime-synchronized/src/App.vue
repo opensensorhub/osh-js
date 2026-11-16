@@ -6,7 +6,7 @@
         :dataSynchronizer="dataSynchronizer"
         @event='onControlEvent'
         :skipTimeStep="'60s'"
-        :trackRealtime=true
+        :trackRealtime="'00:01:00'"
         v-if="dataSynchronizer"
     ></TimeController>
   </div>
@@ -15,6 +15,7 @@
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
+
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
@@ -35,6 +36,9 @@ export default {
 
     const dsReplaySpeed = 1.0;
 
+    const startTime = (new Date(Date.now() - 60 * 1000 * 2).toISOString());
+    const endTime = (new Date().toISOString());
+
     const commonDatasourceOpts = {
       endpointUrl:  'api.georobotix.io/ogc/t18/api',
       protocol: 'mqtt',
@@ -43,10 +47,8 @@ export default {
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
-      endTime: (new Date(Date.now()).toISOString()),
-      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
-      maxTime: (new Date(Date.now()).toISOString()),
+      startTime: startTime,
+      endTime: endTime,
       mode: Mode.REPLAY,
       replaySpeed: dsReplaySpeed,
       prefetchBatchDuration: 10000,
@@ -63,13 +65,12 @@ export default {
     this.view = new ChartJsView({
       container: 'container',
       layers: [
-          new CurveLayer({
+        new CurveLayer({
           maxValues: 1000,
           dataSourceId: chartDataSource1.id,
           getValues: (rec, timestamp) => {
-            console.log('rec',rec)
             return {
-              x: timestamp,
+              x: rec.timestamp,
               y: rec.temperature
             }
           },
@@ -82,7 +83,7 @@ export default {
       ],
       css: "chart-view",
       datasetOptions: {
-       tension: 0.2 // for 'line'
+        tension: 0.2 // for 'line'
       },
       refreshRate: 1000
     });
