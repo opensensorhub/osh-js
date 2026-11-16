@@ -83,7 +83,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            rewrites: [
+                { from: /^\/$/, to: '/cesium-location-opts.html' }
+            ]
+        },
+        open: 'cesium-location-opts.html'
     },
     devtool: 'source-map',
     plugins: [
