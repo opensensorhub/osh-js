@@ -29,9 +29,9 @@
   "devDependencies": {
     "copy-webpack-plugin": "9.1.0",
     "html-webpack-plugin": "5.5.0",
-    "webpack": "^5.88.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.2.2",
+    "webpack": "5.88.0",
+    "webpack-cli": "5.1.4",
+    "webpack-dev-server": "5.2.2",
     "css-loader": "3.5.3",
     "file-loader": "6.2.0",
     "style-loader": "1.2.0",
