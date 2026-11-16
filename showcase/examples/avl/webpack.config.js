@@ -82,10 +82,11 @@ module.exports = {
         port: 9000,
         hot: true,
         server: 'https',
+        devMiddleware: {
+            index: 'avl.html'
+        },
         historyApiFallback: {
-            rewrites: [
-                { from: /^\/$/, to: '/avl.html' }
-            ]
+            index: '/avl.html'
         }
     },
     devtool: 'source-map',
