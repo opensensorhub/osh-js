@@ -50,7 +50,12 @@ module.exports = {
         port: 9000,
         hot: true,
         server: 'https',
-        open: 'switch-realtime-batch.html'
+        historyApiFallback: {
+            index: '/switch-realtime-batch.html'
+        },
+        devMiddleware: {
+            index: 'switch-realtime-batch.html'
+        },
     },
     devtool: 'source-map',
     plugins: [

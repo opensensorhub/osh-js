@@ -49,7 +49,12 @@ module.exports = {
         port: 9000,
         hot: true,
         server: 'https',
-        open: 'multi-datasources-synchronized.html'
+        historyApiFallback: {
+            index: '/multi-datasources-synchronized.html'
+        },
+        devMiddleware: {
+            index: 'multi-datasources-synchronized.html'
+        },
     },
     devtool: 'source-map',
     plugins: [

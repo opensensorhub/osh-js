@@ -10,10 +10,11 @@ const dataContentElt = document.getElementById("data-content");
 const masterTimeElt = document.getElementById("master-time");
 
 const MODE = Mode.REPLAY;
-const START_TIME = '2026-11-13T18:13:59.673Z';
-const END_TIME = '2026-11-13T18:24:42Z';
-const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
-const MAX_TIME = '2055-06-29T14:36:54.033333251Z';
+const START_TIME =(new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString());
+const END_TIME = (new Date(Date.now()).toISOString());
+const MIN_TIME = (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString());
+const MAX_TIME = (new Date(Date.now()).toISOString());
+
 const tls = true;
 
 const mqttProps = {

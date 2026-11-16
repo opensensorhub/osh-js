@@ -58,8 +58,8 @@ export default {
   mounted() {
     // setup video
     // create data source for UAV camera
-    const START_TIME = '2026-11-13T18:33:59.099333251Z';
-    const END_TIME = '026-11-13T18:44:40.033333251Z';
+    const START_TIME = (new Date(Date.now() - 60 * 1000 * 2).toISOString());
+    const END_TIME = (new Date().toISOString());
     const REPLAY_SPEED = 6.2;
 
     const commonDatasourceOpts = {

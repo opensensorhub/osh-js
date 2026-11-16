@@ -60,7 +60,12 @@ const config = {
       port: 9000,
       hot: true,
       server: 'https',
-      open: 'videodata-with-control-vuejs-synchronized.html'
+      historyApiFallback: {
+          index: '/videodata-with-control-vuejs-synchronized.html'
+      },
+      devMiddleware: {
+          index: 'videodata-with-control-vuejs-synchronized.html'
+      },
   },
   optimization: {
     splitChunks: {
