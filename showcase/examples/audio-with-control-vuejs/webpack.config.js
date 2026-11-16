@@ -60,10 +60,11 @@ const config = {
     port: 9000,
     hot: true,
     server: 'https',
+    devMiddleware: {
+      index: 'audio-with-control-vuejs.html'
+    },
     historyApiFallback: {
-      rewrites: [
-        { from: /^\/$/, to: '/audio-with-control-vuejs.html' }
-      ]
+      index: '/audio-with-control-vuejs.html'
     }
   },
   plugins: [
