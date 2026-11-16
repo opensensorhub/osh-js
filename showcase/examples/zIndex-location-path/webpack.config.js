@@ -73,7 +73,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            index: '/zIndex-location-path.html'
+        },
+        devMiddleware: {
+            index: 'zIndex-location-path.html'
+        },
     },
     devtool: 'source-map',
     plugins: [
