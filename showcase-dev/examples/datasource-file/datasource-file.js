@@ -1,5 +1,5 @@
-import File from 'osh-js/ext/datasource/file/File.datasource';
-import {EventType} from 'osh-js/core/event/EventType';
+import File from 'osh-js/ext/datasource/file/File.datasource.js';
+import {EventType} from 'osh-js/core/event/EventType.js';
 
 
 const NB_FILES = 8;
