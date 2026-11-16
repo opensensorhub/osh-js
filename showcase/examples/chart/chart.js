@@ -2,13 +2,7 @@ import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
-import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
-const REPLAY_SPEED = 0.5;
-
-function getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
-}
 
 let chartDataSource = new ConSysApi("weather", {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
@@ -18,21 +12,11 @@ let chartDataSource = new ConSysApi("weather", {
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
     },
     tls: true,
-    startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
-    endTime: (new Date(Date.now()).toISOString()),
-    minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
-    maxTime: (new Date(Date.now()).toISOString()),
-    mode: Mode.REPLAY,
-    replaySpeed: REPLAY_SPEED,
-    prefetchBatchDuration: 10000,
-    prefetchBatchSize: 250,
+    mode: Mode.REAL_TIME,
     resource: '/datastreams/0tsop3f16nvp8/observations',
     responseFormat: 'application/swe+json',
-});
-
-const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: REPLAY_SPEED,
-    dataSources: [chartDataSource],
+    startTime: "now",
+    endTime: "2055-01-01Z"
 });
 
 
@@ -40,10 +24,11 @@ const dataSynchronizer = new DataSynchronizer({
 let windSpeedLayerCurve = new CurveLayer({
     maxValues: 1000,
     dataSourceId: chartDataSource.id,
-    getValues: (rec, timestamp) => {
+    getValues: (rec) => {
+        console.log('rec', rec);
         return {
-            x: rec.timestamp,
-            y: rec.windSpeed
+            x: rec.timestamp || new Date(rec.phenomenonTime).getTime(),
+            y: rec.windSpeed ?? rec?.result?.windSpeed
         };
     },
     lineColor: 'rgba(0,220,204,0.5)',
@@ -68,6 +53,13 @@ let chartView = new ChartJsView({
                     padding: 20
                 }
             },
+            x: {
+                title: {
+                    display : true,
+                    text: "Time",
+                    padding: 20
+                }
+            },
         }
     },
     datasetOptions: {
@@ -75,4 +67,4 @@ let chartView = new ChartJsView({
     }
 });
 
-dataSynchronizer.connect();
+chartDataSource.connect();
