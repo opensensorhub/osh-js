@@ -67,12 +67,12 @@
     "@deck.gl/mesh-layers": "8.9.36",
     "@math.gl/web-mercator": "3.6.3",
     "deck.gl": "8.9.36",
-    "@loaders.gl/core": "2.3.7",
-    "@loaders.gl/csv": "2.3.7",
-    "@loaders.gl/json": "2.3.7",
-    "@loaders.gl/kml": "2.3.7",
-    "@loaders.gl/shapefile": "2.3.7",
-    "@loaders.gl/wkt": "2.3.7",
+    "@loaders.gl/core": "3.4.14",
+    "@loaders.gl/csv": "3.4.14",
+    "@loaders.gl/json": "3.4.14",
+    "@loaders.gl/kml": "3.4.14",
+    "@loaders.gl/shapefile": "3.4.14",
+    "@loaders.gl/wkt": "3.4.14",
     "@cesium/engine": "8.0.0",
     "@cesium/widgets": "5.0.0",
     "cesium": "1.114.0",
@@ -88,5 +88,11 @@
     "ol-layerswitcher": "3.8.1",
     "strip-ansi": "6.0.0",
     "wnumb": "1.2.0"
+  },
+  "overrides": {
+    "@zip.js/zip.js": "2.7.34"
+  },
+  "resolutions": {
+    "@zip.js/zip.js": "2.7.34"
   }
 }
