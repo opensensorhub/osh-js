@@ -87,10 +87,11 @@ module.exports = {
         port: 9000,
         hot: true,
         server: 'https',
+        devMiddleware: {
+            index: 'cesium-fois.html'
+        },
         historyApiFallback: {
-            rewrites: [
-                { from: /^\/$/, to: '/cesium-fois.html' }
-            ]
+            index: '/cesium-fois.html'
         }
     },
     devtool: 'source-map',
