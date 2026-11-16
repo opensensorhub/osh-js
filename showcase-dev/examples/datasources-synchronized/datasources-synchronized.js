@@ -1,44 +1,47 @@
 import {displayLocation, displayVideo, displayOrientation, displayError} from './display-values';
 import {EventType} from 'osh-js/core/event/EventType';
-
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
 // #region snippet_datasource_synchronized
 // create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {Mode} from 'osh-js/core/datasource/Mode';
 
-const START_TIME = '2015-12-19T21:04:29.231Z';
-const END_TIME = '2015-12-19T21:09:19.675Z';
+const START_TIME = '2012-06-29T14:32:34.099333251Z';
+const END_TIME = '2012-06-29T14:36:54.033333251Z';
+
 const REPLAY_SPEED = 5.0;
 
-const videoDataSource = new SosGetResult("drone-Video", {
-  endpointUrl: 'sensiasoft.net/sensorhub/sos',
-  offeringID: 'urn:mysos:solo:video2',
-  observedProperty: 'http://sensorml.com/ont/swe/property/VideoFrame',
-  startTime: START_TIME,
-  endTime: END_TIME,
-  mode: Mode.REPLAY,
-  tls: true
+const commonDatasourceOpts = {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    protocol: 'mqtt',
+    mqttOpts: {
+        shared: true,
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+    },
+    tls: true,
+    startTime: START_TIME,
+    endTime: END_TIME,
+    mode: Mode.REPLAY,
+    replaySpeed: REPLAY_SPEED,
+}
+
+const videoDataSource = new ConSysApi("drone-Video", {
+    ...commonDatasourceOpts,
+    resource: '/datastreams/h225hesual08g/observations',
+    responseFormat: 'application/swe+binary',
 });
 
-const platformLocationDataSource = new SosGetResult('android-GPS', {
-  endpointUrl: 'sensiasoft.net/sensorhub/sos',
-  offeringID: 'urn:mysos:solo:nav2',
-  observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformLocation',
-  startTime: START_TIME,
-  endTime: END_TIME,
-  responseFormat: 'application/json',
-  mode: Mode.REPLAY,
-  tls: true
+const platformLocationDataSource = new ConSysApi('misb-GPS', {
+    ...commonDatasourceOpts,
+    resource: '/datastreams/o7pce3e60s0ie/observations',
+    responseFormat: 'application/swe+json',
 });
-const platformOrientationDataSource = new SosGetResult('android-Heading', {
-  endpointUrl: 'sensiasoft.net/sensorhub/sos',
-  offeringID: 'urn:mysos:solo:nav2',
-  observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
-  startTime: START_TIME,
-  endTime: END_TIME,
-  mode: Mode.REPLAY,
-  tls: true
+
+const platformOrientationDataSource = new ConSysApi('misb-Attitude', {
+    ...commonDatasourceOpts,
+    resource: '/datastreams/mlme3gtdfepvc/observations',
+    responseFormat: 'application/swe+json',
 });
 
 const dataSynchronizer = new DataSynchronizer({

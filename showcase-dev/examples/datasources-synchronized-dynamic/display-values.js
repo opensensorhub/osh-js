@@ -34,7 +34,7 @@ export function displayVideo(values) {
     let dataEvent;
     for(let i=0;i < values.length;i++) {
         dataEvent =  values[i];
-        dataEvent.data.videoFrame.data = values[i].data.videoFrame.data.slice(0,10);
+        dataEvent.data.img.data = values[i].data.img.data.slice(0,10);
         videoDivElement.value = JSON.stringify([dataEvent]) + '\n';
     }
     lastVideoDivElement.innerText = new Date(values[values.length-1].data.timestamp).toISOString()+ ' - Video';
