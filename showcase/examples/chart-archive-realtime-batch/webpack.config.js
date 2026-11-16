@@ -1,5 +1,5 @@
 // webpack.config.common.js
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // Common configs
@@ -77,11 +77,17 @@ const config = {
     }
   },
   devServer: {
-    static: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9000,
-    hot: true,
-    server: 'https'
+      static: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 9000,
+      hot: true,
+      server: 'https',
+      historyApiFallback: {
+          index: '/chart-archive-realtime-batch.html'
+      },
+      devMiddleware: {
+          index: 'chart-archive-realtime-batch.html'
+      },
   },
   plugins: [
     new VueLoaderPlugin(),

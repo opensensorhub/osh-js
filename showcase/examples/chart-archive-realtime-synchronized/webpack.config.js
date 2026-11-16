@@ -77,11 +77,17 @@ const config = {
     }
   },
   devServer: {
-    static: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9000,
-    hot: true,
-    server: 'https'
+      static: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 9000,
+      hot: true,
+      server: 'https',
+      historyApiFallback: {
+          index: '/chart-archive-realtime-synchronized.html'
+      },
+      devMiddleware: {
+          index: 'chart-archive-realtime-synchronized.html'
+      },
   },
   plugins: [
     new VueLoaderPlugin(),

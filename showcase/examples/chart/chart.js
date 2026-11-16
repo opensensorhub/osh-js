@@ -2,8 +2,6 @@ import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
-import {EventType} from "osh-js/core/event/EventType";
-
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
 const REPLAY_SPEED = 0.5;
@@ -13,58 +11,46 @@ function getRandomArbitrary(min, max) {
 }
 
 let chartDataSource = new ConSysApi("weather", {
-    endpointUrl: 'api.georobotix.io/ogc/t18/api',
-    resource: '/datastreams/0tsop3f16nvp8/observations',
-    tls: true,
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
     protocol: 'mqtt',
     mqttOpts: {
         prefix: '/api',
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
     },
-    mode : Mode.REPLAY,
-    startTime: '2026-10-15T08:42:24.932Z',
-    endTime: '2026-10-15T08:42:33.931Z',
+    tls: true,
+    startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+    endTime: (new Date(Date.now()).toISOString()),
+    minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+    maxTime: (new Date(Date.now()).toISOString()),
+    mode: Mode.REPLAY,
     replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/0tsop3f16nvp8/observations',
+    responseFormat: 'application/swe+json',
 });
 
 const dataSynchronizer = new DataSynchronizer({
     replaySpeed: REPLAY_SPEED,
     dataSources: [chartDataSource],
-    startTime: '2026-10-15T08:42:24.932Z',
-    endTime: '2026-10-15T08:42:33.931Z',
 });
 
 
 // #region snippet_curve_layer
 let windSpeedLayerCurve = new CurveLayer({
+    maxValues: 1000,
     dataSourceId: chartDataSource.id,
-    getValues: (rec, time) => {
+    getValues: (rec, timestamp) => {
         return {
-            x: time,
+            x: rec.timestamp,
             y: rec.windSpeed
         };
     },
-    lineColor: 'rgba(38,152,255,0.5)',
-    getLineColor: (rec) => {
-        const randomNumber = getRandomArbitrary(0,1);
-        if(randomNumber > 0.5) {
-            return 'rgba(255,0,0,0.5)';
-        } else {
-            return 'rgba(38,152,255,0.5)';
-        }
-    },
-    fill: true,
-    backgroundColor: 'rgba(169,212,255,0.5)',
-    maxValues: 25,
-    getBackgroundColor: (rec) => {
-        const randomNumber = getRandomArbitrary(0,1);
-        if(randomNumber > 0.5) {
-            return 'rgba(255,0,0,0.5)';
-        } else {
-            return 'rgba(38,152,255,0.5)';
-        }
-    },
-    name: 'Wind Speed (m/s)'
+    lineColor: 'rgba(0,220,204,0.5)',
+    backgroundColor: 'rgba(0,220,204,0.5)',
+    fill:true,
+    getCurveId:(rec, timestamp) => 2,
+    name: 'Wind Speed (m/s)s'
 });
 // #endregion snippet_curve_layer
 

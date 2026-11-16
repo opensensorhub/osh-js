@@ -49,7 +49,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            index: '/chart.html'
+        },
+        devMiddleware: {
+            index: 'chart.html'
+        },
     },
     devtool: 'source-map',
     plugins: [
