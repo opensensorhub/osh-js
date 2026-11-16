@@ -84,10 +84,11 @@ module.exports = {
         port: 9000,
         hot: true,
         server: 'https',
+        devMiddleware: {
+            index: 'cesium-frustum.html'
+        },
         historyApiFallback: {
-            rewrites: [
-                { from: /^\/$/, to: '/cesium-frustum.html' }
-            ]
+            index: '/cesium-frustum.html'
         }
     },
     devtool: 'source-map',
