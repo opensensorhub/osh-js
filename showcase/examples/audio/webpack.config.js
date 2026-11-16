@@ -50,10 +50,11 @@ module.exports = {
         port: 9000,
         hot: true,
         server: 'https',
+        devMiddleware: {
+            index: 'audio.html'
+        },
         historyApiFallback: {
-            rewrites: [
-                { from: /^\/$/, to: '/audio.html' }
-            ]
+            index: '/audio.html'
         }
     },
     devtool: 'source-map',
