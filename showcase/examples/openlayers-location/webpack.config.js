@@ -49,7 +49,13 @@ module.exports = {
         compress: true,
         port: 9000,
         hot: true,
-        server: 'https'
+        server: 'https',
+        historyApiFallback: {
+            index: '/openlayers-location.html'
+        },
+        devMiddleware: {
+            index: 'openlayers-location.html'
+        },
     },
     devtool: 'source-map',
     plugins: [
