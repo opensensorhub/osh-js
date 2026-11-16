@@ -44,5 +44,11 @@
     "@cesium/engine": "8.0.0",
     "@cesium/widgets": "5.0.0",
     "cesium": "1.114.0"
+  },
+  "overrides": {
+    "@zip.js/zip.js": "2.7.34"
+  },
+  "resolutions": {
+    "@zip.js/zip.js": "2.7.34"
   }
 }
