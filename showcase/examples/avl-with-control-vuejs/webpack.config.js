@@ -80,11 +80,12 @@ const config = {
     port: 9000,
     hot: true,
     server: 'https',
-      historyApiFallback: {
-          rewrites: [
-              { from: /^\/$/, to: '/avl-with-control-vuejs.html' }
-          ]
-      }
+    devMiddleware: {
+      index: 'avl-with-control-vuejs.html'
+    },
+    historyApiFallback: {
+      index: '/avl-with-control-vuejs.html'
+    }
   },
   plugins: [
     new VueLoaderPlugin(),
