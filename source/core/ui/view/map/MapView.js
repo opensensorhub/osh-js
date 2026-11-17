@@ -478,6 +478,9 @@ class MapView extends View {
      * @param {Object} event - the original Map View event
      */
     onMarkerLeftClick(markerId, markerObject, layer, event) {
+    console.log(layer)
+    console.log(isDefined(layer.onLeftClick))
+    console.log(layer.onLeftClick)
         if (isDefined(layer.onLeftClick)) {
             layer.onLeftClick.call(layer,markerId, markerObject, event);
         }
