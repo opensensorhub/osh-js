@@ -7,14 +7,6 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 function createView(videoDivId, mapDivId) {
-    const START_TIME = '2012-06-29T14:32:34.099333251Z';
-    const END_TIME = '2012-06-29T14:36:54.033333251Z';
-
-    const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
-    const MAX_TIME = '2055-06-29T14:36:54.033333251Z';
-
-    const REPLAY_SPEED = 1.0;
-
     const commonDatasourceOpts = {
         endpointUrl:  'api.georobotix.io/ogc/t18/api',
         protocol: 'mqtt',
@@ -24,15 +16,8 @@ function createView(videoDivId, mapDivId) {
             endpointUrl: 'api.georobotix.io:443/ogc/t18'
         },
         tls: true,
-        startTime: START_TIME,
-        endTime: END_TIME,
-        minTime: MIN_TIME,
-        maxTime: MAX_TIME,
         mode: Mode.REAL_TIME,
-        replaySpeed: REPLAY_SPEED,
-        prefetchBatchDuration: 10000,
-        prefetchBatchSize: 250,
-    }
+    };
 
     let droneVideoSource = new ConSysApi("MISB Drone - Video", {
         ...commonDatasourceOpts,
@@ -76,16 +61,14 @@ function createView(videoDivId, mapDivId) {
         label: "MISB UAS",
         labelColor: "#FFFFFF",
         labelOffset: [0, -20],
-        getLocation : {
-            dataSourceIds : [droneLocationDataSource.id],
-            handler : function(rec) {
-                const pos = {
-                    x : rec.location.lon,
-                    y : rec.location.lat,
-                    z : 0
+        getLocation: {
+            dataSourceIds: [droneLocationDataSource.getId()],
+            handler: function (rec) {
+                return {
+                    x: rec.location.lon,
+                    y: rec.location.lat,
+                    z: rec.location.alt ?? 0.0
                 };
-
-                return pos;
             }
         },
         getOrientation : {
@@ -111,9 +94,6 @@ function createView(videoDivId, mapDivId) {
 
     const dataSynchronizer = new DataSynchronizer({
         masterTimeRefreshRate: 250,
-        replaySpeed: REPLAY_SPEED,
-        startTime: START_TIME,
-        endTime: END_TIME,
         dataSources: [
             droneVideoSource,
             droneLocationDataSource,

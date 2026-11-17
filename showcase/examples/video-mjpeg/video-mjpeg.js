@@ -7,7 +7,7 @@ import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 const REPLAY_SPEED = 1.0;
 
 // create data source for Android phone camera
-let videoDataSource =  new ConSysApi('axis-Video', {
+let videoDataSource =  new ConSysApi('astracam-Video', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
     startTime: '2023-06-06T13:58:35Z',

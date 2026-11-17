@@ -491,6 +491,10 @@ class LeafletView extends MapView {
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
     async updateMarker(props) {
+        if (!isDefined(props.location)) {
+            return;
+        }
+
         let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
