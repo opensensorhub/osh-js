@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/opensensorhub/osh-js#readme",
   "scripts": {
-    "dev": "webpack serve --config webpack.config.js --mode development --watch"
+    "dev": "webpack serve --config webpack.config.js --mode development"
   },
   "devDependencies": {
     "css-loader": "3.5.3",

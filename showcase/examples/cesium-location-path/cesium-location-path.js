@@ -12,7 +12,7 @@ Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0N
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 0.2;
 // create data source for Sat
 let gpsDataSource =  new ConSysApi('sat-GPS', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
@@ -25,7 +25,7 @@ let gpsDataSource =  new ConSysApi('sat-GPS', {
     prefetchBatchSize: 250,
     resource: '/datastreams/ceuaig4rlf746/observations',
     responseFormat: 'application/swe+json',
-    timeShift: -16000
+    timeShift: 0
 });
 
 const dataSynchronizer = new DataSynchronizer({
@@ -52,7 +52,7 @@ let pointMarker = new PointMarkerLayer({
     labelOffset: [0, 30],
     labelColor: '#ffffff',
     labelSize: 12,
-    label: 'GPS car',
+    label: 'GPS Sat',
     icon: 'images/marker-icon.png',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
@@ -69,9 +69,9 @@ let polyline = new PolylineLayer({
     getLocation: (rec) => ({
         x: rec.pos.x,
         y: rec.pos.y,
-        z: rec.pos.z
+        z: -(rec.pos.z) //this ex ds is neg
     }),
-    clampToGround: true,
+    clampToGround: false,
     color: 'rgba(0,0,255,0.5)',
     weight: 10,
     opacity: .5,
@@ -99,7 +99,7 @@ let ellipse = new EllipseLayer({
 // create Cesium view
 let cesiumView = new CesiumView({
     container: 'cesium-container',
-    layers: [pointMarker, polyline/*, ellipse*/],
+    layers: [pointMarker/*, polyline, ellipse*/],
     autoZoomOnFirstMarker: true,
     cesiumProps: {
         viewerProps: {

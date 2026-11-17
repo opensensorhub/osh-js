@@ -298,7 +298,6 @@ class CesiumView extends MapView {
                 console.log ('featureId , layerId: ' + featureId + " , " + layerId  );
                 const layer = that.getLayer(layerId);
                 const layerObject = that.getLayerObject(layerId);
-
                 if(isDefined(entity)) {
                     that.viewer.selectedEntity = layerObject;
                     pickedFeature.pixel = movement.position;
