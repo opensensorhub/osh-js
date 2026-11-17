@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
+    "dev": "webpack serve --config webpack.config.js --mode development"
   },
   "dependencies": {
     "vue": "2.6.11",
@@ -39,7 +39,7 @@
     "@math.gl/web-mercator": "3.3.2",
     "deck.gl": "8.3.0",
     "nouislider": "14.4.0",
-    "vuetify": "2.3.1",
+    "vuetify": "2.7.2",
     "wnumb": "1.2.0"
   }
 }
