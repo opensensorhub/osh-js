@@ -34,11 +34,7 @@
     "webpack-dev-server": "5.2.2",
     "css-loader": "3.5.3",
     "file-loader": "6.2.0",
-    "style-loader": "1.2.0",
-    "@babel/core": "7.23.7",
-    "@babel/plugin-transform-optional-chaining": "7.23.4",
-    "@babel/preset-env": "7.23.7",
-    "babel-loader": "8.3.0"
+    "style-loader": "1.2.0"
   },
   "dependencies": {
     "@cesium/engine": "8.0.0",

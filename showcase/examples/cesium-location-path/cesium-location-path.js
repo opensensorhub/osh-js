@@ -59,7 +59,7 @@ let pointMarker = new PointMarkerLayer({
     getIconColor: (rec) => (Math.random() < 0.5) ?  'rgba(255,0,0,0.5)' : 'rgba(0,82,255,0.5)',
     iconColor: 'rgba(117,250,40,0.5)',
     description: 'Car',
-    getDescription: (d) => `Alt: ${d.pos.alt}`,
+    getDescription: (d) => `Alt: ${-d.pos.z}`,
     zIndex: 2
 });
 
@@ -86,11 +86,11 @@ let ellipse = new EllipseLayer({
     getPosition: (rec) => ({
         x: rec.pos.x,
         y: rec.pos.y,
-        z: rec.pos.z
+        z: -(rec.pos.z)
     }),
     color: 'rgba(255,74,22, 0.5)',
     semiMinorAxis: 100,
-    semiMajorAxis: 200,
+    semiMajorAxis: 500,
     name: "GPS Path",
     zIndex: 1
 });
@@ -99,7 +99,7 @@ let ellipse = new EllipseLayer({
 // create Cesium view
 let cesiumView = new CesiumView({
     container: 'cesium-container',
-    layers: [pointMarker/*, polyline, ellipse*/],
+    layers: [pointMarker, polyline, ellipse],
     autoZoomOnFirstMarker: true,
     cesiumProps: {
         viewerProps: {
