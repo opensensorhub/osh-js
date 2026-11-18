@@ -60,19 +60,7 @@ module.exports = {
                 test: /\.(?:js|mjs|cjs)$/,
                 exclude: {
                     and: [/node_modules/], // Exclude libraries in node_modules ...
-                    not: [/cesium/], // Except Cesium because it uses modern syntax
-                },
-                use: [
-                    {
-                        loader: "babel-loader",
-                        options: {
-                            presets: [
-                                ["@babel/preset-env", { targets: "defaults, not ie 11" }],
-                            ],
-                            plugins: ["@babel/plugin-transform-optional-chaining"],
-                        },
-                    },
-                ],
+                }
             }
         ]
     },
