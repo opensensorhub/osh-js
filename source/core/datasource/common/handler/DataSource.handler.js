@@ -108,8 +108,8 @@ class DataSourceHandler {
             this.flush();
         }
     }
-
-    connect(startTime = this.properties.startTime) {
+    
+    async connect(startTime = this.properties.startTime) {
         this.context.connect();
     }
 
