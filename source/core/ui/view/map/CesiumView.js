@@ -587,8 +587,7 @@ class CesiumView extends MapView {
         };
 
         if(!isDefined(entity)) {
-            const entity = this.viewer.entities.add(entityOpts)
-            console.log("[CesiumView] addMarker new Entity: ", entity);
+            const entity = this.viewer.entities.add(entityOpts);
 
             if (properties.selected) {
                 this.viewer.selectedEntity = entity;
