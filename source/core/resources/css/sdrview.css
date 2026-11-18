@@ -1,0 +1,474 @@
+.sdr-card {
+    background: #0a0f16;
+    color: #e2e8f0;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 12px;
+    box-sizing: border-box;
+    user-select: none;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+}
+
+.sdr-header,
+.sdr-controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.sdr-status-group,
+.sdr-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.sdr-status-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.sdr-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.sdr-pulse.live {
+    background: #22c55e;
+    box-shadow: 0 0 6px #22c55e;
+}
+
+.sdr-pulse.paused {
+    background: #f59e0b;
+    box-shadow: 0 0 6px #f59e0b;
+}
+
+.sdr-pulse.waiting {
+    background: #ef4444;
+    box-shadow: 0 0 6px #ef4444;
+}
+
+.sdr-freq-badge {
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #38bdf8;
+    background: #0f172a;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #1e293b;
+}
+
+.sdr-span-badge {
+    font-size: 11px;
+    color: #94a3b8;
+    font-family: Consolas, monospace;
+}
+
+.sdr-fps-badge {
+    font-size: 11px;
+    color: #64748b;
+    font-family: monospace;
+}
+
+.sdr-chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    letter-spacing: 0.3px;
+}
+
+.sdr-chip-primary {
+    background: #1d4ed8;
+    color: #eff6ff;
+}
+
+.sdr-chip-warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    font-family: Consolas, monospace;
+}
+
+.sdr-chip-success {
+    background: #15803d;
+    color: #f0fdf4;
+}
+
+.sdr-chip-danger {
+    background: #b91c1c;
+    color: #fef2f2;
+}
+
+.sdr-chip-purple {
+    background: #7e22ce;
+    color: #faf5ff;
+}
+
+.sdr-chip-cyan {
+    background: #0e7490;
+    color: #ecfeff;
+}
+
+.sdr-chip-muted {
+    background: #334155;
+    color: #cbd5e1;
+}
+
+/* ---- controls */
+
+.sdr-btn {
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.sdr-btn:hover {
+    background: #27364d;
+}
+
+.sdr-btn-xs {
+    font-size: 10px;
+    padding: 3px 6px;
+}
+
+.sdr-btn-primary,
+.sdr-btn-active {
+    background: #0284c7;
+    border-color: #0ea5e9;
+    color: #f0f9ff;
+}
+
+.sdr-btn-primary:hover,
+.sdr-btn-active:hover {
+    background: #0ea5e9;
+}
+
+.sdr-btn-warning {
+    background: #b45309;
+    border-color: #f59e0b;
+    color: #fffbeb;
+}
+
+.sdr-btn-warning:hover {
+    background: #d97706;
+}
+
+.sdr-btn-success {
+    background: #15803d;
+    border-color: #22c55e;
+    color: #f0fdf4;
+}
+
+.sdr-btn-success:hover {
+    background: #16a34a;
+}
+
+.sdr-btn-danger {
+    background: #b91c1c;
+    border-color: #ef4444;
+    color: #fef2f2;
+}
+
+.sdr-btn-danger:hover {
+    background: #dc2626;
+}
+
+.sdr-btn-group {
+    display: inline-flex;
+}
+
+.sdr-btn-group .sdr-btn {
+    border-radius: 0;
+    border-right-width: 0;
+}
+
+.sdr-btn-group .sdr-btn:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.sdr-btn-group .sdr-btn:last-child {
+    border-radius: 0 4px 4px 0;
+    border-right-width: 1px;
+}
+
+.sdr-field {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sdr-field-inline {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+}
+
+.sdr-field-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.sdr-tune-input,
+.sdr-select {
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 13px;
+}
+
+.sdr-tune-input {
+    width: 120px;
+    font-family: Consolas, 'Courier New', monospace;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-align: right;
+}
+
+.sdr-select {
+    min-width: 110px;
+}
+
+.sdr-slider {
+    width: 110px;
+    accent-color: #0ea5e9;
+}
+
+.sdr-volume-slider {
+    width: 90px;
+}
+
+.sdr-rx-controls {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: #111a24;
+    border: 1px solid #1e293b;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.sdr-sublabel {
+    font-size: 10px;
+    font-weight: 700;
+    color: #38bdf8;
+    letter-spacing: 0.5px;
+    align-self: center;
+}
+
+.sdr-number-input {
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 13px;
+    font-family: Consolas, monospace;
+    width: 100px;
+}
+
+.sdr-slider-value {
+    font-size: 11px;
+    font-family: Consolas, monospace;
+    color: #cbd5e1;
+    min-width: 46px;
+    text-align: right;
+}
+
+.sdr-checkbox-field {
+    gap: 4px;
+}
+
+/* ---- HTL radio controls */
+
+.sdr-htl-panel {
+    background: #0d1520;
+    border: 1px solid #1e2d42;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+.sdr-htl-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.sdr-htl-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #38bdf8;
+    letter-spacing: 0.5px;
+}
+
+.sdr-htl-section {
+    background: #111a26;
+    border: 1px solid #1b2636;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sdr-htl-section-disabled {
+    opacity: 0.55;
+    background: #0d131c;
+    pointer-events: none;
+}
+
+.sdr-htl-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.sdr-htl-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
+}
+
+.sdr-htl-notice {
+    font-size: 10px;
+    font-style: italic;
+    color: #f87171;
+}
+
+.sdr-htl-footer {
+    border-top: 1px solid #1b2636;
+    padding-top: 8px;
+}
+
+.sdr-audio-meter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0b121b;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+.sdr-audio-meter-track {
+    flex-grow: 1;
+    max-width: 250px;
+    height: 10px;
+    border-radius: 3px;
+    background: #1e293b;
+    overflow: hidden;
+}
+
+.sdr-audio-meter-bar {
+    height: 100%;
+    width: 0;
+    background: #f59e0b;
+    transition: width 0.1s linear;
+}
+
+.sdr-audio-meter-bar.sdr-audio-meter-open {
+    background: #22c55e;
+}
+
+/* ---- canvases */
+
+.sdr-canvas-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.sdr-canvas-wrapper-waterfall {
+    margin-top: 8px;
+}
+
+.sdr-canvas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sdr-canvas-title {
+    color: #38bdf8;
+}
+
+.sdr-hover-readout {
+    font-family: Consolas, monospace;
+    color: #facc15;
+    font-size: 11px;
+}
+
+.sdr-canvas {
+    width: 100%;
+    display: block;
+    background: #06090e;
+    border: 1px solid #1e293b;
+    border-radius: 4px;
+    cursor: crosshair;
+}
+
+.sdr-legend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sdr-legend-label {
+    font-size: 11px;
+    color: #94a3b8;
+    font-family: Consolas, monospace;
+}
+
+.sdr-legend-gradient {
+    width: 80px;
+    height: 8px;
+    border-radius: 2px;
+    background: linear-gradient(
+        to right,
+        #0a0f28,
+        #0022cc,
+        #00cccc,
+        #66dd00,
+        #ffcc00,
+        #ff2200,
+        #ffffff
+    );
+    border: 1px solid #334155;
+}
