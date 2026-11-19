@@ -160,8 +160,8 @@ class ChartJsView extends View {
             currentDataset.borderColor = lineColor;
         }
         
-        this.buffer[curveId] = this.buffer[curveId].concat(values);
-        
+        // this.buffer[curveId] = this.buffer[curveId].concat(values);
+        this.appendValues(curveId, values);
         if (this.lastTimestamp === -1 || Date.now() - this.lastTimestamp >= this.refreshRate) {
             for (const bufferKey in this.buffer) {
                 const nbToShift = this.buffer[bufferKey].length - props[0].maxValues;
@@ -176,7 +176,21 @@ class ChartJsView extends View {
             this.chart.update('none');
         }
     }
-
+    toMs(x) {
+        return typeof x === 'number' ? x : new Date(x).getTime();
+    }
+    
+    appendValues(curveId, values) {
+        const buffer = this.buffer[curveId];
+        let lastX = buffer.length > 0 ? this.toMs(buffer[buffer.length - 1].x) : -Infinity;
+        for (const v of values) {
+            const x = this.toMs(v.x);
+            if (x > lastX) {
+                buffer.push(v);
+                lastX = x;
+            }
+        }
+    }
     getColor(value) {
         let v = value;
         if(v.length > 0 && v.charAt(0) === '#') {
