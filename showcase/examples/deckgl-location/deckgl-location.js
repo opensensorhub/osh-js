@@ -9,7 +9,7 @@ import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 5.0;
 let gpsDataSource =  new ConSysApi('android-GPS', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
