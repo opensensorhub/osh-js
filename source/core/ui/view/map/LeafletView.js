@@ -528,14 +528,13 @@ class LeafletView extends MapView {
         if (isDefined(props.orientation)) {
             marker.setRotationAngle(props.orientation.heading);
         }
-
-        if (props.icon !== null && marker._icon.iconUrl !== props.icon) {
-            // updates icon
-            let markerIcon = L.icon({
-                iconAnchor: props.iconAnchor,
+        
+        if (props.icon !== null && marker.options.icon.options.iconUrl !== props.icon) {
+            marker.setIcon(L.icon({
                 iconUrl: props.icon,
-            });
-            marker.setIcon(markerIcon);
+                iconSize: props.iconSize,
+                iconAnchor: props.iconAnchor,
+            }));
         }
         marker.setZIndexOffset(props.zIndex);
     }
