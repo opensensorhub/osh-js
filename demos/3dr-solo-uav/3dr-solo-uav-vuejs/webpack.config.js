@@ -3,7 +3,6 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const CopywebpackPlugin = require('copy-webpack-plugin');
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 const webpack = require("webpack");
@@ -18,27 +17,45 @@ const cesiumConfig = {
   entry: path.resolve(__dirname,'src/index.js'),
   // Tell Weback to output our bundle to ./dist/bundle.js
   output: {
-    filename: 'bundle.3dr.js',
-    path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.3dr.js',
+      path: path.resolve(__dirname, 'dist'),
     // Needed to compile multiline strings in Cesium
-    sourcePrefix: ''
+      sourcePrefix: '',
+      clean: true
   },
   amd: {
     // Enable webpack-friendly use of require in Cesium
     toUrlUndefined: true
   },
-  output: {
-    // Needed to compile multiline strings in Cesium
-    sourcePrefix: '',
-  },
   plugins: [
     // Copy Cesium Assets, Widgets, and Workers to a static directory
-    new CopywebpackPlugin([
-      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'ThirdParty'), to: `${cesiumBaseUrl}/ThirdParty`, force:true },
-      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Workers'), to: `${cesiumBaseUrl}/Workers`, force:true },
-      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Assets'), to: `${cesiumBaseUrl}/Assets`, force:true },
-      { from: path.join(PROCESS_BASE_PATH+'/'+cesiumSource, 'Widgets'), to: `${cesiumBaseUrl}/Widgets`, force:true } ]),
-    new CopywebpackPlugin([ { from: 'images', to: 'images'} ])
+    new CopywebpackPlugin({
+        patterns: [
+            {
+                from: path.join(PROCESS_BASE_PATH + '/' + cesiumSource, 'ThirdParty'),
+                to: `${cesiumBaseUrl}/ThirdParty`,
+                force: true
+            },
+            {
+                from: path.join(PROCESS_BASE_PATH + '/' + cesiumSource, 'Workers'),
+                to: `${cesiumBaseUrl}/Workers`,
+                force: true
+            },
+            {
+                from: path.join(PROCESS_BASE_PATH + '/' + cesiumSource, 'Assets'),
+                to: `${cesiumBaseUrl}/Assets`,
+                force: true
+            },
+            {
+                from: path.join(PROCESS_BASE_PATH + '/' + cesiumSource, 'Widgets'),
+                to: `${cesiumBaseUrl}/Widgets`,
+                force: true
+            }
+        ]
+    }),
+    new CopywebpackPlugin({
+        patterns: [ { from: 'images', to: 'images'} ]
+    })
   ],
 };
 // Now, using the cesiumConfig in your real configuration
@@ -59,7 +76,6 @@ const config = {
     }
   },
   node: {
-    fs: 'empty'
   },
   amd: {
     // Enable webpack-friendly use of require in Cesium
@@ -88,9 +104,6 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       },
       {
         test: /\.(?:js|mjs|cjs)$/,
@@ -108,11 +121,6 @@ const config = {
               plugins: ["@babel/plugin-transform-optional-chaining"],
             },
           },
-          // Babel understands the import.meta syntax but doesn't transform it in any way
-          // However Webpack can't parse this and throws an error for an unexpected token
-          // we need to use this extra loader so Webpack can actually bundle the code
-          // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
-          require.resolve("@open-wc/webpack-import-meta-loader"),
         ],
       }
     ],
@@ -125,30 +133,27 @@ const config = {
   },
   optimization: {
     splitChunks: {
-      chunks: 'async',
+      chunks: 'all',
       minSize: 30000,
-      maxSize: 0,
-      minChunks: 1,
       maxAsyncRequests: 6,
       maxInitialRequests: 4,
-      automaticNameDelimiter: '~',
       cacheGroups: {
         defaultVendors: {
           test: /[\\/]node_modules[\\/]/,
-          priority: -10
+          priority: -10,
+          reuseExistingChunk: true,
         },
         default: {
           minChunks: 2,
           priority: -20,
-          reuseExistingChunk: true
-        }
-      }
-    }
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
   plugins: [
     new VueLoaderPlugin(),
     ...cesiumConfig.plugins,
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
       filename: './index.html',
@@ -156,11 +161,10 @@ const config = {
     }),
     new DefinePlugin({
       // Define relative base path in cesium for loading assets
-      BASE_URL: JSON.stringify('/')
-    }),
-    new webpack.DefinePlugin({
+      BASE_URL: JSON.stringify('/'),
       // Define relative base path in cesium for loading assets
       CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
+
     }),
   ],
 };

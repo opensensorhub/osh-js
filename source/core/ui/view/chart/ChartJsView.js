@@ -131,52 +131,66 @@ class ChartJsView extends View {
      * @param {Curve.props[]} props - The layer properties allowing the update of the curve
      */
     async updateCurve(props) {
-        if(this.resetting) {
+        if (this.resetting || !this.chart || !props || props.length === 0) {
             return;
         }
         const curveId = props[0].curveId;
         this.chart.options.scales.y.title.text = props[0].yLabel;
         let currentDataset = this.datasets[curveId];
-        const values = props.map(item => ({'x': item.x, 'y': item.y}));
-
-        let lineColor = this.getColor(props[0].lineColor);
-        let bgColor = this.getColor(props[0].backgroundColor);
-
-        if(!isDefined(currentDataset)) {
+        const values = props.map(item => ({ x: item.x, y: item.y }));
+        
+        const lineColor = this.getColor(props[0].lineColor);
+        const bgColor = this.getColor(props[0].backgroundColor);
+        
+        if (!isDefined(currentDataset)) {
             currentDataset = {
                 ...this.datasetOptions,
                 label: props[0].name,
-                fill:  props[0].fill,
+                fill: props[0].fill,
                 backgroundColor: bgColor,
                 borderColor: lineColor,
                 borderWidth: props[0].stroke,
-                data: values
+                data: []
             };
-            currentDataset = {...this.datasetsProps, ...currentDataset};
             this.datasets[curveId] = currentDataset;
             this.chart.data.datasets.push(currentDataset);
             this.buffer[curveId] = [];
         } else {
-            this.datasets[curveId].backgroundColor = bgColor;
-            this.datasets[curveId].borderColor = lineColor;
+            currentDataset.backgroundColor = bgColor;
+            currentDataset.borderColor = lineColor;
         }
-        this.buffer[curveId] = this.buffer[curveId].concat(values);
-        if(this.lastTimestamp === -1 || Date.now() - this.lastTimestamp >= this.refreshRate) {
-            for(let bufferKey in this.buffer) {
-                const currentBuffer = this.buffer[bufferKey];
-                const nbToShift = currentBuffer.length - props[0].maxValues;
-                if(nbToShift > 0) {
-                    // double buffering
-                    this.buffer[bufferKey] = currentBuffer.slice(nbToShift);
+        
+        // this.buffer[curveId] = this.buffer[curveId].concat(values);
+        this.appendValues(curveId, values);
+        if (this.lastTimestamp === -1 || Date.now() - this.lastTimestamp >= this.refreshRate) {
+            for (const bufferKey in this.buffer) {
+                const nbToShift = this.buffer[bufferKey].length - props[0].maxValues;
+                if (nbToShift > 0) {
+                    this.buffer[bufferKey] = this.buffer[bufferKey].slice(nbToShift);
                 }
-                this.datasets[bufferKey].data = this.buffer[bufferKey];
+                if (this.datasets[bufferKey]) {
+                    this.datasets[bufferKey].data = this.buffer[bufferKey];
+                }
             }
-
             this.lastTimestamp = Date.now();
             this.chart.update('none');
         }
     }
-
+    toMs(x) {
+        return typeof x === 'number' ? x : new Date(x).getTime();
+    }
+    
+    appendValues(curveId, values) {
+        const buffer = this.buffer[curveId];
+        let lastX = buffer.length > 0 ? this.toMs(buffer[buffer.length - 1].x) : -Infinity;
+        for (const v of values) {
+            const x = this.toMs(v.x);
+            if (x > lastX) {
+                buffer.push(v);
+                lastX = x;
+            }
+        }
+    }
     getColor(value) {
         let v = value;
         if(v.length > 0 && v.charAt(0) === '#') {
@@ -194,12 +208,25 @@ class ChartJsView extends View {
     reset() {
         this.resetting = true;
         super.reset();
+        
+        if (this.chart) {
+            this.chart.tooltip?.setActiveElements([], { x: 0, y: 0 });
+            this.chart.setActiveElements([]);
+            this.chart.data.datasets.length = 0;
+            this.chart.update('none');
+        }
+        
         this.datasets = {};
-        this.chart.data.datasets = [];
         this.buffer = {};
-        //
         this.lastTimestamp = -1;
         this.resetting = false;
+    }
+    destroy() {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+        super.destroy?.();
     }
 }
 

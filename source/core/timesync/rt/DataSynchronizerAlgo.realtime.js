@@ -3,6 +3,11 @@ import {Status} from "../../connector/Status.js";
 import DataSynchronizerAlgo from "./../DataSynchronizerAlgo";
 
 class DataSynchronizerAlgoRealtime extends DataSynchronizerAlgo {
+    constructor(...args) {
+        super(...args);
+        this.version = undefined;
+    }
+    
     push(dataSourceId, dataBlocks) {
         if(dataBlocks.length === 0) {
             return;
@@ -77,7 +82,7 @@ class DataSynchronizerAlgoRealtime extends DataSynchronizerAlgo {
             // add latency flag to data record before we dispatch it
             // this is relative latency in millis compared to the DS with the lowest latency
             // so it is accurate even if local device time is not set properly
-            rec['@latency'] = currentDs.latency - minLatency;
+            rec['@latency'] = currentDsToShift.latency - minLatency;
             this.onData(currentDsToShift.id, rec);
             return true;
         }
@@ -101,13 +106,13 @@ class DataSynchronizerAlgoRealtime extends DataSynchronizerAlgo {
         };
         this.datasources.push(dataSource);
     }
-
+    
+    setVersion(version) {
+        this.version = version;
+    }
+    
     checkVersion(datasource, dataBlock) {
-        if(datasource.status !== Status.DISCONNECTED) {
-            return true;
-        } else if(datasource.status === Status.DISCONNECTED && datasource.version !== dataBlock.version) {
-            return false;
-        }
+        return isDefined(this.version) && dataBlock.version === this.version;
     }
 
     /**

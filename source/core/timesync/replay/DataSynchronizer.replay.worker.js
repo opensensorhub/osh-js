@@ -1,9 +1,10 @@
-import {DATASOURCE_DATA_TOPIC} from "../../Constants.js";
+import {DATASOURCE_DATA_TOPIC, DATASOURCE_TIME_TOPIC} from "../../Constants.js";
 import {EventType} from "../../event/EventType.js";
 import {isDefined} from "../../utils/Utils";
 import DataSynchronizerAlgoReplay from "./DataSynchronizerAlgo.replay";
 
 const bcChannels = {};
+const bcTimeChannels = {};
 const dataSources = {};
 
 let dataSynchronizerAlgo = null;
@@ -94,7 +95,15 @@ async function handleMessage(event) {
             }
         } else if (event.data.message === 'close') {
             self.onclose();
+        } else if (event.data.message === 'set-max-time') {
+        endTimestamp = event.data.maxTimestamp;
+        if (dataSynchronizerAlgo) {
+            dataSynchronizerAlgo.setEndTimestamp(endTimestamp);
+            if (event.data.dataSources) {
+                dataSynchronizerAlgo.setEndTimestamp(event.data.dataSources);
+            }
         }
+    }
     } catch (ex) {
         console.error(ex);
         resp.error = ex;
@@ -172,6 +181,12 @@ function reset() {
         timeBroadcastChannel.postMessage({type: EventType.TIME_CHANGED});
         timeBroadcastChannel.postMessage({type: EventType.CLOSED});
     }
+    for (const dataSourceId in bcTimeChannels) {
+        bcTimeChannels[dataSourceId].postMessage({
+            type: EventType.TIME_CHANGED,
+            dataSourceId: dataSourceId
+        });
+    }
     if (dataSynchronizerBroadCastChannel) {
         dataSynchronizerBroadCastChannel.postMessage({
             type: EventType.STATUS,
@@ -209,6 +224,9 @@ function openChannel(dataSource) {
     if (!(dataSource.id in bcChannels)) {
         bcChannels[dataSource.id] = new BroadcastChannel(DATASOURCE_DATA_TOPIC + dataSource.id);
     }
+    if (!(dataSource.id in bcTimeChannels)) {
+        bcTimeChannels[dataSource.id] = new BroadcastChannel(DATASOURCE_TIME_TOPIC + dataSource.id);
+    }
     dataSources[dataSource.id] = dataSource;
 }
 
@@ -216,7 +234,11 @@ function closeChannel(dataSourceId) {
     if (dataSourceId in bcChannels) {
         bcChannels[dataSourceId].close();
     }
+    if (dataSourceId in bcTimeChannels) {
+        bcTimeChannels[dataSourceId].close();
+    }
     delete bcChannels[dataSourceId];
+    delete bcTimeChannels[dataSourceId];
     delete dataSources[dataSourceId];
 }
 

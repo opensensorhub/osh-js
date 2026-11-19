@@ -294,15 +294,15 @@ class CesiumView extends MapView {
 
                 let featureId = entity && entity._id || primitive && primitive.id;
 
+
                 const layerId = that.getLayerId(featureId);
                 console.log ('featureId , layerId: ' + featureId + " , " + layerId  );
                 const layer = that.getLayer(layerId);
                 const layerObject = that.getLayerObject(layerId);
-
                 if(isDefined(entity)) {
                     that.viewer.selectedEntity = layerObject;
                     pickedFeature.pixel = movement.position;
-                    that.onMarkerLeftClick(layerId, pickedFeature, layer, movement);
+                    that.onMarkerLeftClick(layerId, pickedFeature, layer.props, movement);
                 } else {
                     // is primitive
                     //TODO: support primitive selection using tracking tool
@@ -346,7 +346,7 @@ class CesiumView extends MapView {
 
             that.viewer.selectedEntity = pickedFeature.id;
             pickedFeature.pixel = movement.position;
-            that.onMarkerRightClick(mId, pickedFeature, layer, movement);
+            that.onMarkerRightClick(mId, pickedFeature, layer.props, movement);
         };
 
         const onHover = (movement) => {
@@ -369,7 +369,7 @@ class CesiumView extends MapView {
                 return;
             }
             pickedFeature.pixel = movement.endPosition;
-            that.onMarkerHover(mId, pickedFeature, layer, movement);
+            that.onMarkerHover(mId, pickedFeature, layer.props, movement);
         };
 
         this.viewer.screenSpaceEventHandler.setInputAction(onClick, ScreenSpaceEventType.LEFT_CLICK);
@@ -587,8 +587,7 @@ class CesiumView extends MapView {
         };
 
         if(!isDefined(entity)) {
-            const entity = this.viewer.entities.add(entityOpts)
-            console.log("[CesiumView] addMarker new Entity: ", entity);
+            const entity = this.viewer.entities.add(entityOpts);
 
             if (properties.selected) {
                 this.viewer.selectedEntity = entity;

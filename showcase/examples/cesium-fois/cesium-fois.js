@@ -34,8 +34,8 @@ let cesiumView = new CesiumView({
             getDescription:(f) => {
                 let pos = f.shape.pos.split(" ");
                 return  f.description + "<br/>" +
-                "Latitude: " + pos[0] + "°<br/>" +
-                "Longitude: " + pos[1] + "°"
+                    "Latitude: " + pos[0] + "°<br/>" +
+                    "Longitude: " + pos[1] + "°"
             },
             getMarkerId:(f) => f.id,
             icon: 'images/marker-icon.png',

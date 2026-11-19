@@ -1,86 +1,85 @@
 import CesiumView from 'osh-js/core/ui/view/map/CesiumView.js';
 import FrustumLayer from "osh-js/core/ui/layer/FrustumLayer";
 import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer";
-import {Cartesian3, Ion} from "cesium";
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
+import {Cartesian3, Ion} from '@cesium/engine';
+
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
     'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 window.CESIUM_BASE_URL = './';
 
+const REPLAY_SPEED = 1.0;
+const altitudeOffset = -193;
+const DTR = Math.PI / 180;
 const START_TIME = '2012-06-29T14:32:34.099333251Z';
-const END_TIME = '2012-06-29T14:37:44.033333251Z';
+const END_TIME = '2012-06-29T14:36:54.033333251Z';
 
-const tls = true;
-const sosEndpoint = 'api.georobotix.io/ogc/t18/sos';
-const dsReplaySpeed = 1.0;
+const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
+const MAX_TIME = '2055-06-29T14:36:54.033333251Z';
 
-const droneLocationDataSource = new SosGetResult('MISB UAS - Platform Location', {
-    tls: tls,
-    endpointUrl: sosEndpoint,
-    offeringID: 'urn:osh:sensor:uas:predator001',
-    observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorLocation',
+const commonDatasourceOpts = {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    protocol: 'mqtt',
+    mqttOpts: {
+        shared: true,
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+    },
+    tls: true,
     startTime: START_TIME,
     endTime: END_TIME,
-    minTime: START_TIME,
-    maxTime: END_TIME,
-    replaySpeed: dsReplaySpeed,
-    mode: Mode.REPLAY
+    minTime: MIN_TIME,
+    maxTime: MAX_TIME,
+    mode: Mode.REAL_TIME,
+    replaySpeed: REPLAY_SPEED,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+}
+
+let droneLocationDataSource = new ConSysApi('MISB UAS - Platform Location', {
+    ...commonDatasourceOpts,
+    resource: '/datastreams/o7pce3e60s0ie/observations',
+    responseFormat: 'application/swe+json',
 });
 
-const droneOrientationDataSource = new SosGetResult('MISB UAS - Platform Orientation', {
-    tls: tls,
-    service: 'SOS',
-    endpointUrl: sosEndpoint,
-    offeringID: 'urn:osh:sensor:uas:predator001',
-    observedProperty: 'http://www.opengis.net/def/property/OGC/0/PlatformOrientation',
-    startTime: START_TIME,
-    endTime: END_TIME,
-    minTime: START_TIME,
-    maxTime: END_TIME,
-    replaySpeed: dsReplaySpeed,
-    mode: Mode.REPLAY
+let droneOrientationDataSource = new ConSysApi('MISB UAS - Platform Attitude', {
+    ...commonDatasourceOpts,
+    resource: '/datastreams/mlme3gtdfepvc/observations',
+    responseFormat: 'application/swe+json',
 });
 
-const droneCameraOrientationDataSource = new SosGetResult('MISB UAS - Sensor Orientation', {
-    tls: tls,
-    service: 'SOS',
-    endpointUrl: sosEndpoint,
-    offeringID: 'urn:osh:sensor:uas:predator001',
-    observedProperty: 'http://www.opengis.net/def/property/OGC/0/SensorOrientation',
-    startTime: START_TIME,
-    endTime: END_TIME,
-    minTime: START_TIME,
-    maxTime: END_TIME,
-    replaySpeed: dsReplaySpeed,
-    mode: Mode.REPLAY
+let droneCameraOrientationDataSource = new ConSysApi('MISB UAS - Gimbal Attitude', {
+    ...commonDatasourceOpts,
+    resource: '/datastreams/h75dmug8e3sae/observations',
+    responseFormat: 'application/swe+binary',
 });
 
-const droneHFovDataSource = new SosGetResult('MISB UAS - Horizontal FoV', {
-    tls: tls,
-    service: 'SOS',
-    endpointUrl: sosEndpoint,
-    offeringID: 'urn:osh:sensor:uas:predator001',
-    observedProperty: 'http://sensorml.com/ont/misb0601/property/HorizontalFov',
-    startTime: START_TIME,
-    endTime: END_TIME,
-    minTime: START_TIME,
-    maxTime: END_TIME,
-    mode: Mode.REPLAY
+const droneHFovDataSource = new ConSysApi('MISB UAS - Horizontal FoV', {
+    ...commonDatasourceOpts,
+    resource: '/datastreams/nhcs9rp6713ka/observations',
+    responseFormat: 'application/swe+binary',
 });
 
 const dataSynchronizer = new DataSynchronizer({
-    replaySpeed: dsReplaySpeed,
+    masterTimeRefreshRate: 250,
+    replaySpeed: 1.0,
     startTime: START_TIME,
     endTime: END_TIME,
-    dataSources: [droneLocationDataSource, droneOrientationDataSource, droneCameraOrientationDataSource, droneHFovDataSource]
+    mode: Mode.REAL_TIME,
+    dataSources: [
+        droneLocationDataSource,
+        droneOrientationDataSource,
+        droneCameraOrientationDataSource,
+        droneHFovDataSource
+    ]
 });
 
-const altitudeOffset = -193;
 
 const droneFrustumLayer = new FrustumLayer({
+    dataSourceId: droneLocationDataSource.id,
     getOrigin: {
         dataSourceIds: [droneLocationDataSource.getId()],
         handler: function(rec) {
@@ -115,8 +114,14 @@ const droneFrustumLayer = new FrustumLayer({
             return rec.attitude;
         }
     },
-    color: 'rgba(234,252,255,0.35)',
-    opacity: 0.5,
+    getVisible: {
+        dataSourceIds: [droneHFovDataSource.getId()],
+        handler: function(rec) {
+            return true;
+        }
+    },
+    color: 'rgba(255,246,246,0.24)',
+    opacity: 0.25,
 });
 
 const droneMarkerLayer = new PointMarkerLayer({
@@ -143,31 +148,25 @@ const droneMarkerLayer = new PointMarkerLayer({
             };
         }
     },
-    color: 'rgba(129,137,145,0.8)',
     icon: "./models/predator2.glb",
-    iconScale: 0.1,
-    opacity: 0.2
+    iconScale: 0.1
 });
 
 // create Cesium view
 let cesiumView = new CesiumView({
     container: "cesium-container",
+    autoZoomOnFirstMarker: true,
     layers: [
         droneMarkerLayer,
         droneFrustumLayer,
-    ]
-});
-
-cesiumView.viewer.scene.globe.depthTestAgainstTerrain = true;
-cesiumView.viewer.camera.setView({
-    destination: new Cartesian3(305721.4585559864, -5239510.338378854, 3619622.5459225853),
-    orientation: {
-        heading: 3.3910351920692143,
-        pitch: -0.35343571662519757,
-        roll: 0.000021768997500615228
+    ],
+    cesiumProps: {
+        viewerProps: {
+            targetFrameRate:10
+        }
     }
 });
-cesiumView.first = false;
+
 
 // select bing maps as default imagery
 const baseLayerPickerViewModel = cesiumView.viewer.baseLayerPicker.viewModel;

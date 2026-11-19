@@ -19,29 +19,29 @@ const textDecoder = new TextDecoder();
 const queryString = new ObservationFilter().toQueryString(['format']);
 
 function subscribe0() {
-   mqttProvider.subscribe(`/datastreams/fled6eics1cl4/observations?${queryString}`, async function (message) {
+   mqttProvider.subscribe(`/datastreams/rbnag2hrc04mm/observations?${queryString}`, async function (message) {
       const data = textDecoder.decode(message);
       const jsonData = JSON.parse(data);
-      textAreaElement0.value = '[fled6eics1cl4] ' + JSON.stringify(jsonData, null, 2);
+      textAreaElement0.value = '[rbnag2hrc04mm] ' + JSON.stringify(jsonData, null, 2);
    });
 }
 subscribe0();
 
-mqttProvider.subscribe(`/datastreams/fled6eics1cl4/observations?${queryString}`,async function (message) {
+mqttProvider.subscribe(`/datastreams/rbnag2hrc04mm/observations?${queryString}`,async function (message) {
    const data = textDecoder.decode(message);
    const jsonData = JSON.parse(data);
-   textAreaElement1.value = '[fled6eics1cl4] ' + JSON.stringify(jsonData, null, 2);
+   textAreaElement1.value = '[rbnag2hrc04mm] ' + JSON.stringify(jsonData, null, 2);
 });
 
-mqttProvider.subscribe(`/datastreams/adheadf9nghts/observations?${queryString}`,async function (message) {
+mqttProvider.subscribe(`/datastreams/huldv9uv2t5sa/observations?${queryString}`,async function (message) {
    const data = textDecoder.decode(message);
    const jsonData = JSON.parse(data);
-   textAreaElement2.value = '[adheadf9nghts] ' + JSON.stringify(jsonData, null, 2);
+   textAreaElement2.value = '[huldv9uv2t5sa] ' + JSON.stringify(jsonData, null, 2);
 });
 
 setInterval(() => {
-   mqttProvider.unsubscribe(`/datastreams/fled6eics1cl4/observations?${queryString}`);
-   textAreaElement0.value = '[fled6eics1cl4] Unsubscribed';
+   mqttProvider.unsubscribe(`/datastreams/rbnag2hrc04mm/observations?${queryString}`);
+   textAreaElement0.value = '[rbnag2hrc04mm] Unsubscribed';
    setTimeout(() => subscribe0(),1000 * 2);
 },1000 * 5); //5s
 

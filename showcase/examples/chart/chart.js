@@ -1,60 +1,47 @@
-// create data source for Android phone camera
 import ChartJsView from 'osh-js/core/ui/view/chart/ChartJsView.js';
 import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
+import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
 
-function getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
-}
 
-let chartDataSource = new SosGetResult("weather", {
-    endpointUrl: "sensiasoft.net/sensorhub/sos",
-    offeringID: "urn:mysos:offering03",
-    observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-    startTime: "now",
-    endTime: "2055-01-01Z",
+let chartDataSource = new ConSysApi("weather", {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    protocol: 'mqtt',
+    mqttOpts: {
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+    },
+    tls: true,
     mode: Mode.REAL_TIME,
-    tls: true
+    resource: '/datastreams/0tsop3f16nvp8/observations',
+    responseFormat: 'application/swe+json',
+    startTime: "now",
+    endTime: "2055-01-01Z"
 });
+
 
 // #region snippet_curve_layer
 let windSpeedLayerCurve = new CurveLayer({
+    maxValues: 1000,
     dataSourceId: chartDataSource.id,
-    getValues: (rec, timeStamp) => {
+    getValues: (rec) => {
         return {
-            x: timeStamp,
-            y: rec.windSpeed
-        }
+            x: rec.timestamp || new Date(rec.phenomenonTime).getTime(),
+            y: rec.windSpeed ?? rec?.result?.windSpeed
+        };
     },
-    lineColor: 'rgba(38,152,255,0.5)',
-    getLineColor: (rec) => {
-        const randomNumber = getRandomArbitrary(0,1);
-        if(randomNumber > 0.5) {
-            return 'rgba(255,0,0,0.5)';
-        } else {
-            return 'rgba(38,152,255,0.5)';
-        }
-    },
-    fill: true,
-    backgroundColor: 'rgba(169,212,255,0.5)',
-    maxValues: 25,
-    getBackgroundColor: (rec) => {
-        const randomNumber = getRandomArbitrary(0,1);
-        if(randomNumber > 0.5) {
-            return 'rgba(255,0,0,0.5)';
-        } else {
-            return 'rgba(38,152,255,0.5)';
-        }
-    },
-    name: 'Wind Speed (m/s)'
+    lineColor: 'rgba(0,220,204,0.5)',
+    backgroundColor: 'rgba(0,220,204,0.5)',
+    fill:true,
+    getCurveId:(rec, timestamp) => 2,
+    name: 'Wind Speed (m/s)s'
 });
 // #endregion snippet_curve_layer
 
 // show it in video view
 let chartView = new ChartJsView({
     container: 'char-container',
-    layers: [ windSpeedLayerCurve],
+    layers: [windSpeedLayerCurve],
     css: "chart-view",
     options: {
         scales: {
@@ -65,6 +52,13 @@ let chartView = new ChartJsView({
                     padding: 20
                 }
             },
+            x: {
+                title: {
+                    display : true,
+                    text: "Time",
+                    padding: 20
+                }
+            },
         }
     },
     datasetOptions: {
@@ -72,5 +66,4 @@ let chartView = new ChartJsView({
     }
 });
 
-// start streaming
 chartDataSource.connect();

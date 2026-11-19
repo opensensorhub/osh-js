@@ -2,7 +2,6 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 
@@ -10,8 +9,9 @@ const path = require('path');
 const config = {
   entry: path.resolve(__dirname,'audio-with-control-vuejs.js'),
   output: {
-    filename: 'bundle.audio-with-control-vuejs.js',
-    path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.audio-with-control-vuejs.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true
   },
 
   resolve: {
@@ -23,7 +23,6 @@ const config = {
     }
   },
   node: {
-    fs: 'empty'
   },
   amd: {
     // Enable webpack-friendly use of require in Cesium
@@ -52,45 +51,24 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       }
     ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
     hot: true,
-    index: 'audio-with-control-vuejs.html',
-    https:true
-  },
-  optimization: {
-    splitChunks: {
-      chunks: 'async',
-      minSize: 30000,
-      maxSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 6,
-      maxInitialRequests: 4,
-      automaticNameDelimiter: '~',
-      cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true
-        }
-      }
+    server: 'https',
+    devMiddleware: {
+      index: 'audio-with-control-vuejs.html'
+    },
+    historyApiFallback: {
+      index: '/audio-with-control-vuejs.html'
     }
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'audio-with-control-vuejs.html'),
       filename: './audio-with-control-vuejs.html',

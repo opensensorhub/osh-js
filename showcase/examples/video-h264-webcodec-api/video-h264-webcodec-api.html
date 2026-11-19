@@ -1,12 +1,22 @@
 <style>
     div.video-h264 canvas {
-        width: 50%;
+        width: 100%;
+    }
+    div.video-h264 {
+        width: calc(100% - 20px);
+        border: 1px solid #dee2e6;
+        resize: horizontal;
+        overflow: hidden;
+        margin: auto;
     }
     .osh-view {
         height: auto !important;
     }
     #description {
         margin-left:10px;
+    }
+    #video-h264-container {
+        height: calc(100% - 10px);
     }
 </style>
 <div id="description">

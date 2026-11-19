@@ -17,11 +17,9 @@
 import Map from './components/Map.vue';
 import './assets/app.css';
 import VideoContainer from "./components/VideoContainer";
-import Worker from './workers/check.offering.worker.js';
-import SosGetResultJson from "core/datasource/SosGetResultJson.js";
-import SosGetResultVideo from "core/datasource/SosGetResultVideo.js";
-import SosGetResultVideoWithRoll from "core/datasource/SosGetResultVideoWithRoll.js";
-import DataSynchronizer from 'core/timesync/DataSynchronizer.js';
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
+import {Mode} from "osh-js/core/datasource/Mode";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 export default {
   name: 'App',
@@ -29,155 +27,89 @@ export default {
     VideoContainer,
     Map
   },
-  props: {
-    source: String,
-  },
   data: function () {
     return {
-      videos: [],
-      map: [],
-      dataSynchronizers: {}
+      videos: []
     }
   },
-  mounted() {
-    // start observing the server to check offering check
-    let worker = new Worker();
-    worker.postMessage({
-      url: "http://" + process.env.HOST,
-      sos: "sos",
-      baseUrl: "sensorhub"
+  beforeMount() {
+    const START_TIME = '2023-06-06T14:29:17Z';
+    const END_TIME = '2023-06-06T22:29:13Z';
+    const MODE = Mode.REPLAY;
+    const MIN_TIME = '2023-06-06T14:29:17Z';
+    const MAX_TIME = '2023-06-06T22:29:13Z';
+    const tls = true;
+    const dsReplaySpeed = 1;
+
+    const commonDatasourceOpts = {
+      endpointUrl:  'api.georobotix.io/ogc/t18/api',
+      protocol: 'mqtt',
+      mqttOpts: {
+        shared: true,
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+      },
+      tls: tls,
+      startTime: START_TIME,
+      endTime: END_TIME,
+      minTime: MIN_TIME,
+      maxTime: MAX_TIME,
+      mode: MODE,
+      replaySpeed: dsReplaySpeed,
+      prefetchBatchDuration: 10000,
+      prefetchBatchSize: 250
+    };
+
+    const locationDataSource = new ConSysApi("android-GPS", {
+      ...commonDatasourceOpts,
+      resource: '/datastreams/ltr9mqaqrorj6/observations',
+      responseFormat: 'application/swe+json',
     });
 
-    worker.onmessage = (event) => {
-      for (let item of event.data) {
-        if (item.online) {
-          this.addItem(item);
-        } else {
-          this.removeItem(item);
-        }
-      }
-    }
+    const headingDataSource = new ConSysApi("android-Att", {
+      ...commonDatasourceOpts,
+      resource: '/datastreams/kegun78tu174a/observations',
+      responseFormat: 'application/swe+json',
+    });
+
+    const videoDataSource = new ConSysApi("android-Video", {
+      ...commonDatasourceOpts,
+      resource: '/datastreams/a3if48eqn8dha/observations',
+      responseFormat: 'application/swe+binary',
+    });
+
+    const dataSynchronizer = new DataSynchronizer({
+      replaySpeed: dsReplaySpeed,
+      masterTimeRefreshRate: 250,
+      startTime: START_TIME,
+      endTime: END_TIME,
+      mode: MODE,
+      dataSources: [
+        locationDataSource,
+        headingDataSource,
+        videoDataSource
+      ]
+    });
+
+    // kept off the reactive data (like demos/misb) so Vue doesn't observe the datasources
+    this.dataSynchronizer = dataSynchronizer;
+    this.locationDataSource = locationDataSource;
+    this.headingDataSource = headingDataSource;
+    // frozen so Vue renders the list without deep-observing the datasource
+    this.videos = Object.freeze([videoDataSource]);
+
+    dataSynchronizer.connect();
   },
-  methods: {
-    addItem(item) {
-      const dataSources = [];
-      const mapItem = {};
-
-      // if(item.startTime !== 'now') {
-      //   item.startTime = '2020-08-13T19:28:50.052Z';
-      // }
-      if(item.location) {
-        mapItem['location'] = new SosGetResultJson("android-GPS", {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: process.env.HOST + "/sensorhub/sos",
-          offeringID: item.id,
-          observedProperty: "http://sensorml.com/ont/swe/property/Location",
-          startTime: item.startTime,
-          endTime: item.endTime,
-          bufferingTime: 0,
-          timeOut: 1000,
-          replaySpeed: 1
-        });
-        dataSources.push(mapItem['location']);
-        if (item.heading) {
-          mapItem['heading'] = new SosGetResultJson("android-Att", {
-            protocol: "ws",
-            service: "SOS",
-            endpointUrl: process.env.HOST + "/sensorhub/sos",
-            offeringID: item.id,
-            observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-            startTime: item.startTime,
-            endTime: item.endTime,
-            bufferingTime: 0,
-            timeShift: 0,
-            timeOut: 1000,
-            replaySpeed: 1
-          });
-          dataSources.push(mapItem['heading']);
-        }
-      }
-      if(item.video) {
-        let videoProperties = {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: process.env.HOST + "/sensorhub/sos",
-          offeringID: item.id,
-          observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-          startTime: item.startTime,
-          endTime: item.endTime,
-          bufferingTime: 0,
-          timeOut: 1000,
-          replaySpeed: 1,
-          reconnectTimeout: 6000,
-          codec: item.compression,
-          // encoding: {
-          //   scale: 0.5,
-          //   bitrate: 60 * 8
-          // },
-          // responseFormat: 'video/H265'
-        };
-        let videoDataSource;
-        if (item.roll) {
-          videoDataSource = new SosGetResultVideoWithRoll(item.name, videoProperties);
-        } else {
-          videoDataSource = new SosGetResultVideo(item.name, videoProperties);
-        }
-        dataSources.push(videoDataSource);
-        // add to videos
-        this.videos.push(videoDataSource);
-      }
-
-      this.dataSynchronizers[item.id] = new DataSynchronizer({
-        dataSources: dataSources
-      });
-
-      if('location' in mapItem) {
-        this.map.push(mapItem);
-        this.$refs['map'].add(mapItem);
-      }
-
-      this.dataSynchronizers[item.id].connect();
-    },
-    removeItem(item) {
-      if (item.id in this.dataSynchronizers) {
-        console.log('Remove datasync', item.id)
-        // stop all others DS
-        this.dataSynchronizers[item.id].terminate();
-        // remove from map
-        delete this.dataSynchronizers[item.id];
-      }
-      // update videos to remove the offline ones
-      let index = 0;
-      for(let videoDataSource of this.videos) {
-        if(videoDataSource.properties.offeringID === item.id) {
-          videoDataSource.terminate()
-          this.videos.splice(index,1);
-        }
-        index++;
-      }
-
-      // update location/header to remove the offline ones
-      index = 0;
-      for(let mapItem of this.map) {
-        let remove = false;
-
-        if('location' in mapItem && mapItem['location'].properties.offeringID === item.id) {
-          mapItem['location'].terminate();
-          remove = true;
-        }
-        if('heading' in mapItem && mapItem['heading'].properties.offeringID === item.id) {
-          mapItem['heading'].terminate();
-          remove = true;
-        }
-        if(remove) {
-            this.$refs['map'].remove(mapItem);
-            this.map.splice(index, 1);
-            break;
-        }
-        index++;
-      }
-    }
+  mounted() {
+    // the map ref only exists once mounted
+    this.$refs['map'].add({
+      name: 'Android',
+      location: this.locationDataSource,
+      heading: this.headingDataSource
+    });
+  },
+  beforeDestroy() {
+    this.dataSynchronizer.terminate();
   }
 }
 </script>
