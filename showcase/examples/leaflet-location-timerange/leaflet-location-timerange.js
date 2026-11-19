@@ -12,7 +12,7 @@ const mqttProps = {
     endpointUrl: 'api.georobotix.io:443/ogc/t18',
 };
 
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 5.0;
 
 // #region snippet_leaflet_location_datasource
 let gpsDataSource =  new ConSysApi('android-GPS', {
@@ -27,8 +27,7 @@ let gpsDataSource =  new ConSysApi('android-GPS', {
     prefetchBatchDuration: 10000,
     prefetchBatchSize: 250,
     resource: '/datastreams/frmhs11ofiilm/observations',
-    responseFormat: 'application/swe+json',
-    timeShift: -16000
+    responseFormat: 'application/swe+json'
 });
 
 const dataSynchronizer = new DataSynchronizer({
