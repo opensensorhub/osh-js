@@ -112,7 +112,7 @@ class DataSynchronizerReplay {
         
         if (!Number.isFinite(maxTimestamp)) {
             maxTimestamp = isDefined(this.maxTimestamp) ? this.maxTimestamp : new Date('2055-01-01T00:00:00Z').getTime();
-        } else if (isDefined(this.maxTimestamp) && this.maxTimestamp < maxTimestamp) {
+        } else if (isDefined(this.maxTimestamp) && (this.forceMaxTimestamp || this.maxTimestamp < maxTimestamp)) {
             // intersect and takes the min of dataSynchronizer
             maxTimestamp = this.maxTimestamp;
         }
@@ -228,13 +228,24 @@ class DataSynchronizerReplay {
     }
     
     async setMaxTime(maxTime, resetStartTime = false) {
+        const followMax = !isDefined(this.properties.endTimestamp)
+            || this.properties.endTimestamp === this.properties.maxTimestamp;
+        
         this.maxTimestamp = new Date(maxTime).getTime();
-        if (resetStartTime) {
+        this.forceMaxTimestamp = true;
+        if (resetStartTime || followMax) {
             this.properties.endTimestamp = undefined;
         }
         this.computeMinMax();
+        if (!isDefined(this.properties.endTimestamp)) {
+            this.properties.endTimestamp = this.properties.maxTimestamp;
+        }
+        
         if (this.initialized) {
-            await this.updateAlgo();
+            await this.synchronizerWorker.postMessageWithAck({
+                message: 'set-max-time',
+                maxTimestamp: this.getEndTimeAsTimestamp()
+            });
         }
         this.timeChanged();
     }

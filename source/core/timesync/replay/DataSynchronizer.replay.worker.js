@@ -95,7 +95,15 @@ async function handleMessage(event) {
             }
         } else if (event.data.message === 'close') {
             self.onclose();
+        } else if (event.data.message === 'set-max-time') {
+        endTimestamp = event.data.maxTimestamp;
+        if (dataSynchronizerAlgo) {
+            dataSynchronizerAlgo.setEndTimestamp(endTimestamp);
+            if (event.data.dataSources) {
+                dataSynchronizerAlgo.setEndTimestamp(event.data.dataSources);
+            }
         }
+    }
     } catch (ex) {
         console.error(ex);
         resp.error = ex;
