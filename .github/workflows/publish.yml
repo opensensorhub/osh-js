@@ -1,0 +1,56 @@
+name: Publish npm package
+on:
+  push:
+    branches: [dev]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: https://registry.npmjs.org
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Generate snapshot version
+        if: github.event_name == 'push'
+        run: |
+          BASE_VERSION=$(node -p "require('./package.json').version")
+          COMMIT_SHA=$(git rev-parse --short HEAD)
+          TIMESTAMP=$(date +%s)
+          SNAPSHOT_VERSION="${BASE_VERSION}-dev.${TIMESTAMP}.${COMMIT_SHA}"
+          
+          echo "Setting version to $SNAPSHOT_VERSION"
+          npm version "$SNAPSHOT_VERSION" --no-git-tag-version
+
+      - name: Publish snapshot to npm
+        if: github.event_name == 'push'
+        working-directory: build/osh-js
+        run: npm publish --tag snapshot --provenance --access public
+
+      - name: Publish to npm
+        if: github.event_name == 'release'
+        working-directory: build/osh-js
+        run: npm publish --provenance
