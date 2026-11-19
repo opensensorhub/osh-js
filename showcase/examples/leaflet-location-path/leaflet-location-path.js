@@ -42,8 +42,8 @@ let pointMarker = new PointMarkerLayer({
         y: rec.location.lat,
         z: rec.location.alt
     }),
-    icon: './images/car-location.png',
-    iconSize: [32,64],
+    icon: './images/drone.png',
+    iconSize: [128,128],
     iconAnchor: [16, 56],
     name: "Android Phone GPS"
 });
