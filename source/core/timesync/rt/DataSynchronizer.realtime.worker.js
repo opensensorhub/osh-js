@@ -41,6 +41,7 @@ async function handleMessage(event) {
                 event.data.replaySpeed,
                 event.data.timerResolution
             );
+            dataSynchronizerAlgo.setVersion(version);
             dataSynchronizerAlgo.onData = onData;
             init = true;
             addDataSources(event.data.dataSources);
@@ -52,6 +53,8 @@ async function handleMessage(event) {
             console.log('Add datasource to synchronizer..')
             addDataSources(event.data.dataSources);
         } else if (event.data.message === 'connect') {
+            version = event.data.version;
+            dataSynchronizerAlgo.setVersion(version);
             startMasterTimeInterval(masterTimeRefreshRate);
             dataSynchronizerAlgo.checkStart();
             version = event.data.version;
@@ -93,7 +96,10 @@ async function handleMessage(event) {
 function reset() {
     clearInterval(masterTimeInterval);
     masterTimeInterval = undefined;
-    if (dataSynchronizerAlgo !== null) {
+    lastData = undefined;
+    lastTime = -1;
+    masterTime = undefined;
+    if (isDefined(dataSynchronizerAlgo)) {
         dataSynchronizerAlgo.reset();
     }
     timeBroadcastChannel.postMessage({
@@ -113,9 +119,12 @@ function initBroadcastChannel(dataTopic, timeTopic) {
 
     dataSynchronizerBroadCastChannel = new BroadcastChannel(dataTopic);
     dataSynchronizerBroadCastChannel.onmessage = (event) => {
-        checkMasterTime();
         if (event.data.type === EventType.DATA) {
-            dataSynchronizerAlgo.push(event.data.dataSourceId, event.data.values);
+            const blocks = event.data.values;
+            if (blocks.length && blocks[blocks.length - 1].version === version) {
+                checkMasterTime();
+                dataSynchronizerAlgo.push(event.data.dataSourceId, blocks);
+            }
         } else if (event.data.type === EventType.STATUS) {
             const dataSourceId = event.data.dataSourceId;
             dataSynchronizerAlgo.setStatus(dataSourceId, event.data.status);
