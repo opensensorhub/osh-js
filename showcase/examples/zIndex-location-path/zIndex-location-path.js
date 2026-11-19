@@ -8,10 +8,14 @@ import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
+import {Ion} from '@cesium/engine';
+
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ODY0NTkzNS02NzI0LTQwNDktODk4Zi0zZDJjOWI2NTdmYTMiLCJpZCI6MTA1N' +
+    'zQsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTY4NzI1ODJ9.IbAajOLYnsoyKy1BOd7fY1p6GH-wwNVMdMduA2IzGjA';
 
 const REPLAY_SPEED = 1.0;
 
-let gpsDataSource =  new ConSysApi('sat-GPS', {
+let gpsDataSource =  new ConSysApi('android-GPS', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
     startTime: '2023-06-06T14:26:12.031Z',
@@ -144,4 +148,4 @@ new CesiumView({
 });
 
 // start streaming
-dataSynchronizer.connect()
+dataSynchronizer.connect();

@@ -42,8 +42,9 @@ export default {
       resource: '/datastreams/khv081o7hpma2/observations',
       tls: true,
       startTime: '2023-06-06T14:01:12.099333251Z',
-      endTime: '22023-06-06T22:53.033333251Z',
+      endTime: '2023-06-06T15:53:00.033333251Z',
       mode: Mode.REPLAY,
+      replaySpeed: REPLAY_SPEED,
       responseFormat: 'application/swe+binary',
       prefetchBatchSize: 250
     };
@@ -131,7 +132,7 @@ export default {
     this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: REPLAY_SPEED,
       startTime: '2012-06-29T14:22:00.099333251Z',
-      endTime: '2012-06-29T14:37:44.033333251Z',
+      endTime: '2023-06-06T15:53:00.033333251Z',
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
     this.dataSynchronizer.connect();

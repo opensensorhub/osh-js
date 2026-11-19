@@ -6,27 +6,38 @@ import LeafletView from "osh-js/core/ui/view/map/LeafletView.js";
 import PolylineLayer from "osh-js/core/ui/layer/PolylineLayer.js";
 import ControlStreamFilter from "osh-js/core/consysapi/controlstream/ControlStreamFilter.js";
 import {Mode} from "osh-js/core/datasource/Mode";
+import L from 'leaflet';
 
 var prevTime = 0;
 
 const systemId = "jrc2e0kaj1m5a";
 const posDsId = "rbnag2hrc04mm";
-const cmdStreamId = "n1smurgjeqcjg";
-
+const stateDsId = "huldv9uv2t5sa";
+const cmdStreamId = "hf62t0dotfd5k";
 
 const mqttProps = {
     prefix: '/api',
     endpointUrl: 'api.georobotix.io:443/ogc/t18',
 };
 
-let gpsDataSource = new ConSysApi("supersonic drone GPS", {
+let gpsDataSource = new ConSysApi("gps", {
     resource: `/api/datastreams/${posDsId}/observations`,
     endpointUrl: 'api.georobotix.io/ogc/t18/api',
     protocol: 'mqtt',
     mqttOpts: mqttProps,
     tls: true,
     responseFormat: 'application/swe+json',
-    mode: Mode.REAL_TIME
+    mode: Mode.REAL_TIME,
+});
+
+let stateDataSource = new ConSysApi("state", {
+    resource: `/api/datastreams/${stateDsId}/observations`,
+    endpointUrl: 'api.georobotix.io/ogc/t18/api',
+    protocol: 'mqtt',
+    mqttOpts: mqttProps,
+    tls: true,
+    responseFormat: 'application/swe+json',
+    mode: Mode.REAL_TIME,
 });
 
 const systems = new Systems({
@@ -44,10 +55,11 @@ const textStatusElt =  document.getElementById("text_status");
 const pointMarkerLayer = new PointMarkerLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => {
+        const pos = rec.result?.pos ?? rec.pos;
         return {
-            x: rec.result.pos.lon,
-            y: rec.result.pos.lat,
-            z: rec.result.pos.alt
+            x: pos?.lon,
+            y: pos?.lat,
+            z: pos?.alt
         };
     },
     name: 'drone',
@@ -60,15 +72,16 @@ const pointMarkerLayer = new PointMarkerLayer({
 let polylineLayer = new PolylineLayer({
     dataSourceId: gpsDataSource.id,
     getLocation: (rec) => {
+        const pos = rec.result?.pos ?? rec.pos;
         return {
-            x: rec.result.pos.lon,
-            y: rec.result.pos.lat,
-            z: rec.result.pos.alt
+            x: pos.lon,
+            y: pos.lat,
+            z: pos.alt
         };
     },
     color: 'rgba(0,0,255,0.5)',
     weight: 5,
-    opacity: .5,
+    opacity: 0.5,
     smoothFactor: 1,
     maxPoints: 200,
     name: "Hypersonic drone Path"
@@ -91,26 +104,46 @@ async function startListening() {
             prevTime = Date.parse(obs.resultTime);
         }
     }, [EventType.DATA]);
-
     gpsDataSource.connect();
 
-    const system = await systems.getSystemById(systemId);
-    const control = await system.getControlStreamById(cmdStreamId);
+    stateDataSource.subscribe(message => {
+        const values = message.values;
+        for(let obs of values) {
+            document.getElementById("text_state").innerHTML = JSON.stringify(obs, null, 2);
+            prevTime = Date.parse(obs.resultTime);
+        }
+    }, [EventType.DATA]);
+    stateDataSource.connect();
 
-    control.streamStatus(new ControlStreamFilter({}), async (message) =>{
-        textCommandElt.innerHTML = "";
-        const status = message;
-        textStatusElt.innerHTML = JSON.stringify(status, null, 2);
-        const command = await control.getCommandById(status['command@id']);
-        commands.set(command.properties.id, command.properties);
-        textCommandElt.innerHTML = "";
-        commands.forEach(cmd => {
-            document.getElementById("text_commands").innerHTML +=
-                Object.keys(cmd.params)[0] + ': ' + cmd.status + '<br/>';
-        });
-    });
+    // TODO: Update to use osh-js when server endpoints are fixed /controls --> /controlstreams
+    // const system = await systems.getSystemById(systemId);
+    // const control = await system.getControlStreamById(cmdStreamId);
+    //
+    // control.streamStatus(new ControlStreamFilter({}), async (message) =>{
+    //     textCommandElt.innerHTML = "";
+    //     const status = message;
+    //     textStatusElt.innerHTML = JSON.stringify(status, null, 2);
+    //     const command = await control.getCommandById(status['command@id']);
+    //     commands.set(command.properties.id, command.properties);
+    //     textCommandElt.innerHTML = "";
+    //     commands.forEach(cmd => {
+    //         document.getElementById("text_commands").innerHTML +=
+    //             Object.keys(cmd.params)[0] + ': ' + cmd.status + '<br/>';
+    //     });
+    // });
     const corrData = new DataView(new ArrayBuffer(4));
+    let waypointMarker = null;
     leafletMapView.map.on('click', e => {
+        if (waypointMarker) {
+            leafletMapView.map.removeLayer(waypointMarker);
+        }
+        const waypointIcon = L.icon({
+            iconUrl: './images/marker-icon.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+        });
+        waypointMarker = L.marker([e.latlng.lat, e.latlng.lng], { icon: waypointIcon }).addTo(leafletMapView.map);
+
         let goToCmd = {
             params: {
                 WAYPOINT: {
@@ -122,23 +155,48 @@ async function startListening() {
                     velocity: 100000
                 }
             }
-        }
+        };
 
         let corrId = Math.floor(Math.random() * 1e9);
         corrData.setInt32(0, corrId, false);
-
-        control.publishCommand(JSON.stringify(goToCmd));
+        sendCommand(goToCmd);
+        // control.publishCommand(JSON.stringify(goToCmd));
     });
 
     // send takeoff command
     let takeOffCmd = {
         params: {
             AUTO_TAKEOFF: {
-                height: 10.0
+                height: 15.0
             }
         }
-    }
-    control.postCommand(JSON.stringify(takeOffCmd));
+    };
+
+    await sendCommand(takeOffCmd);
+    // control.postCommand(JSON.stringify(takeOffCmd));
 }
 
+let authHeader = null;
+
+document.getElementById('login-btn').addEventListener('click', () => {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    authHeader = 'Basic ' + btoa(user + ':' + pass);
+    document.getElementById('login-status').textContent = ' Logged in as ' + user;
+});
+
+async function sendCommand(command) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (authHeader) {
+        headers['Authorization'] = authHeader;
+    }
+
+    await fetch(`https://api.georobotix.io/ogc/t18/api/controls/${cmdStreamId}/commands`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(command),
+    }).then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+}
 startListening();

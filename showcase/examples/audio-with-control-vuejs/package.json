@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
+    "dev": "webpack serve --config webpack.config.js --mode development"
   },
   "dependencies": {
     "chart.js": "3.5.1",
@@ -26,14 +26,14 @@
     "html-webpack-plugin": "5.5.0",
     "less": "3.11.1",
     "less-loader": "6.0.0",
-    "sass": "1.75.0",
-    "sass-loader": "14.2.1",
+    "node-sass": "4.14.0",
     "nouislider": "14.4.0",
     "patch-package": "6.2.2",
+    "sass-loader": "8.0.2",
     "style-loader": "1.2.0",
     "vue-loader": "15.9.1",
     "vue-template-compiler": "2.6.11",
-    "vuetify": "2.3.1",
+    "vuetify": "2.7.2",
     "webpack": "5.88.0",
     "webpack-cli": "5.1.4",
     "webpack-dev-server": "5.2.2",

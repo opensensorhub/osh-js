@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "patch-package",
     "prod": "webpack --config webpack.config.js --mode production",
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch",
+    "dev": "webpack-dev-server --config webpack.config.js --mode development",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

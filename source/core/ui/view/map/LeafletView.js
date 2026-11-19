@@ -491,9 +491,10 @@ class LeafletView extends MapView {
      * @param {PointMarkerLayer.props} props - The layer properties allowing the update of the marker
      */
     async updateMarker(props) {
-        if(!isDefined(props.location)) {
+        if (!isDefined(props.location)) {
             return;
         }
+
         let marker = this.getMarker(props);
         if (!isDefined(marker)) {
             // adds a new marker to the leaflet renderer
@@ -528,13 +529,14 @@ class LeafletView extends MapView {
         if (isDefined(props.orientation)) {
             marker.setRotationAngle(props.orientation.heading);
         }
-        
-        if (props.icon !== null && marker.options.icon.options.iconUrl !== props.icon) {
-            marker.setIcon(L.icon({
-                iconUrl: props.icon,
-                iconSize: props.iconSize,
+
+        if (props.icon !== null && marker._icon.iconUrl !== props.icon) {
+            // updates icon
+            let markerIcon = L.icon({
                 iconAnchor: props.iconAnchor,
-            }));
+                iconUrl: props.icon,
+            });
+            marker.setIcon(markerIcon);
         }
         marker.setZIndexOffset(props.zIndex);
     }
