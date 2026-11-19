@@ -6,7 +6,7 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 // create data source for Android phone GPS
-const REPLAY_SPEED = 5.0;
+const REPLAY_SPEED = 0.0;
 
 // #region snippet_leaflet_location_datasource
 let gpsDataSource =  new ConSysApi('Android Sensors [Michael Phone', {
@@ -43,6 +43,7 @@ const dataSynchronizer = new DataSynchronizer({
     dataSources: [gpsDataSource, attitudeDataSource],
 });
 
+let testAngle = 0;
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
   name: "Android Sensors [Michael Phone]",
@@ -88,9 +89,9 @@ let pointMarker = new PointMarkerLayer({
       };
     }
   },
-  icon: 'images/car-topview.png',
-  iconSize: [16,32],
-  iconAnchor: [16, 30]
+  icon: 'images/drone.png',
+  iconSize: [128,128],
+  iconAnchor: [64, 64]
 });
 
 // create Leaflet view
