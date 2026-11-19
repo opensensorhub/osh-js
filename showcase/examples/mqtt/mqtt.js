@@ -79,19 +79,6 @@ const chartView = new ChartJsView({
             getValues: (rec, timeStamp) => {
                 return {
                     x: timeStamp,
-                    y: rec.pressure
-                };
-            },
-            lineColor: 'rgba(220,66,0,0.5)',
-            backgroundColor: 'rgba(220,66,0,0.5)',
-            getCurveId:(rec, timeStamp) => 'pressure',
-            name: "Pressure"
-        }),
-        new CurveLayer({
-            dataSourceId: weatherDataSource.id,
-            getValues: (rec, timeStamp) => {
-                return {
-                    x: timeStamp,
                     y: rec.windSpeed
                 };
             },

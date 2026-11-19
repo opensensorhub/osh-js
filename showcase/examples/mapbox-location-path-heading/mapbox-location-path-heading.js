@@ -9,7 +9,7 @@ import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FrZXdhMzk0MCIsImEiOiJja2I4ZDZkdDAwMzc5MzFwazZubmFhNzVvIn0.i4O5Cls0aaVSVREIzK151w';
 
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 5.0;
 
 // create data source for Android phone GPS
 let gpsDataSource =  new ConSysApi('android-GPS', {

@@ -7,10 +7,10 @@ import {Mode} from "osh-js/core/datasource/Mode";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 5.0;
 
 // create data source for Android phone GPS
-let gpsDataSource =  new ConSysApi('android-GPS', {
+let gpsDataSource =  new ConSysApi('Android Sensors [office6a]', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
     startTime: '2023-06-06T14:26:12.031Z',
@@ -23,11 +23,10 @@ let gpsDataSource =  new ConSysApi('android-GPS', {
     prefetchBatchSize: 250,
     resource: '/datastreams/frmhs11ofiilm/observations',
     responseFormat: 'application/swe+json',
-    timeShift: -16000
 });
 
 // create data source for Android phone orientation
-let orientationDataSource =  new ConSysApi('android-Attitude', {
+let orientationDataSource =  new ConSysApi('Android Sensors [office6a]', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api/',
     tls: true,
     startTime: '2023-06-06T14:26:12.031Z',
@@ -40,7 +39,6 @@ let orientationDataSource =  new ConSysApi('android-Attitude', {
     prefetchBatchSize: 250,
     resource: '/datastreams/t2fedgd9i3m16/observations',
     responseFormat: 'application/swe+json',
-    timeShift: -16000
 });
 
 const dataSynchronizer = new DataSynchronizer({
