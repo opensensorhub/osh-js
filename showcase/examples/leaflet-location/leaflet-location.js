@@ -8,7 +8,7 @@ import {Mode} from 'osh-js/core/datasource/Mode';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 // #endregion snippet_leaflet_location_import
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 5.0;
 
 // #region snippet_leaflet_location_datasource
 let gpsDataSource =  new ConSysApi('android-GPS', {
