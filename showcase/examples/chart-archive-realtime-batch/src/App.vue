@@ -34,6 +34,9 @@ export default {
 
     const dsReplaySpeed = 1.0;
 
+    const TEN_MINUTE_MS = 2 * 60 * 1000;
+    const minTime = new Date(Date.now() - TEN_MINUTE_MS).toISOString();
+
     const commonDatasourceOpts = {
       endpointUrl:  'api.georobotix.io/ogc/t18/api',
       protocol: 'mqtt',
@@ -42,9 +45,9 @@ export default {
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      startTime: minTime,
       endTime: (new Date(Date.now()).toISOString()),
-      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      minTime: minTime,
       maxTime: (new Date(Date.now()).toISOString()),
       mode: Mode.BATCH,
       replaySpeed: dsReplaySpeed,
@@ -55,7 +58,7 @@ export default {
     const chartDataSource = new ConSysApi('Simulated Weather Sensor - weather', {
           ...commonDatasourceOpts,
           resource: '/datastreams/0tsop3f16nvp8/observations',
-          responseFormat: 'application/swe+json',
+          responseFormat: 'application/om+json',
     });
 
 // #region snippet_curve_layer
@@ -64,7 +67,7 @@ export default {
       getValues: (rec, timestamp) => {
         return {
           x: timestamp,
-          y: rec.windSpeed
+          y: rec.result.windSpeed
         }
       },
       backgroundColor: 'rgba(141,242,246, 0.5)',
