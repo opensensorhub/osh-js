@@ -6,52 +6,46 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 // create data source for Android phone GPS
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 5.0;
 
 // #region snippet_leaflet_location_datasource
-let gpsDataSource =  new ConSysApi('android-GPS', {
+let gpsDataSource =  new ConSysApi('Android Sensors [Michael Phone', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
-    startTime: '2023-06-06T14:26:12.031Z',
-    endTime: '2023-06-06T22:23:47Z',
-    minTime: '2023-06-06T14:26:12.031Z',
-    maxTime: '2023-06-06T22:23:47Z',
-    mode: Mode.REPLAY,
-    replaySpeed: REPLAY_SPEED,
+    startTime: '2023-06-06T14:29:17Z',
+    endTime: '2023-06-06T22:29:12Z',
+    minTime: '2023-06-06T14:29:17Z',
+    maxTime: '2023-06-06T22:29:12Z',
     prefetchBatchDuration: 10000,
     prefetchBatchSize: 250,
-    resource: '/datastreams/frmhs11ofiilm/observations',
+    resource: '/datastreams/ltr9mqaqrorj6/observations',
     responseFormat: 'application/swe+json',
-    timeShift: -16000
 });
 
 // create data source for Android phone orientation
 let attitudeDataSource =  new ConSysApi('android-Heading', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api/',
     tls: true,
-    startTime: '2023-06-06T14:26:12.031Z',
-    endTime: '2023-06-06T22:23:47Z',
-    minTime: '2023-06-06T14:26:12.031Z',
-    maxTime: '2023-06-06T22:23:47Z',
-    mode: Mode.REPLAY,
-    replaySpeed: REPLAY_SPEED,
+    startTime: '2023-06-06T14:29:17Z',
+    endTime: '2023-06-06T22:29:12Z',
+    minTime: '2023-06-06T14:29:17Z',
+    maxTime: '2023-06-06T22:29:12Z',
     prefetchBatchDuration: 10000,
     prefetchBatchSize: 250,
-    resource: '/datastreams/t2fedgd9i3m16/observations',
-    responseFormat: 'application/swe+json',
-    timeShift: -16000
+    resource: '/datastreams/kegun78tu174a/observations',
+    responseFormat: 'application/swe+json'
 });
 
 const dataSynchronizer = new DataSynchronizer({
     replaySpeed: REPLAY_SPEED,
-    startTime: '2023-06-06T14:26:12.031Z',
-    endTime: '2023-06-06T22:23:47Z',
+    startTime: '2023-06-06T14:29:17Z',
+    endTime: '2023-06-06T22:29:12Z',
     dataSources: [gpsDataSource, attitudeDataSource],
 });
 
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
-  name: "Android Phone GPS",
+  name: "Android Sensors [Michael Phone]",
   dataSourceIds: [gpsDataSource.id, attitudeDataSource.id],
   getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
