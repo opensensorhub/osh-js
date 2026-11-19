@@ -6,7 +6,7 @@
         :dataSynchronizer="dataSynchronizer"
         @event='onControlEvent'
         :skipTimeStep="'60s'"
-        :trackRealtime="'00:01:00'"
+        :trackRealtime="false"
         v-if="dataSynchronizer"
     ></TimeController>
   </div>
@@ -36,8 +36,8 @@ export default {
 
     const dsReplaySpeed = 1.0;
 
-    const startTime = (new Date(Date.now() - 60 * 1000 * 2).toISOString());
-    const endTime = (new Date().toISOString());
+    const TEN_MINUTE_MS = 2 * 60 * 1000;
+    const minTime = new Date(Date.now() - TEN_MINUTE_MS).toISOString();
 
     const commonDatasourceOpts = {
       endpointUrl:  'api.georobotix.io/ogc/t18/api',
@@ -47,8 +47,8 @@ export default {
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
-      startTime: startTime,
-      endTime: endTime,
+      startTime: minTime,
+      endTime: (new Date(Date.now()).toISOString()),
       mode: Mode.REPLAY,
       replaySpeed: dsReplaySpeed,
       prefetchBatchDuration: 10000,
@@ -58,7 +58,7 @@ export default {
     const chartDataSource1 = new ConSysApi('Simulated Weather Sensor - weather', {
       ...commonDatasourceOpts,
       resource: '/datastreams/0tsop3f16nvp8/observations',
-      responseFormat: 'application/swe+json',
+      responseFormat: 'application/om+json',
     });
 
 
@@ -66,12 +66,12 @@ export default {
       container: 'container',
       layers: [
         new CurveLayer({
-          maxValues: 1000,
+          maxValues: 10,
           dataSourceId: chartDataSource1.id,
           getValues: (rec, timestamp) => {
             return {
               x: rec.timestamp,
-              y: rec.temperature
+              y: rec.result.temperature
             }
           },
           lineColor: 'rgba(0,220,204,0.5)',
@@ -98,8 +98,10 @@ export default {
     // connects each DataSource
     this.dataSynchronizer = dataSynchronizer;
 
+    let lastTime = Date.now();
     setInterval(() => {
-      dataSynchronizer.setMaxTime(new Date().toISOString());
+      lastTime += 1000;
+      dataSynchronizer.setMaxTime(new Date(lastTime).toISOString());
     }, 2000);
   },
   methods: {
