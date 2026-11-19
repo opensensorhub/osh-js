@@ -40,8 +40,13 @@ module.exports = env => {
     },
     resolve: {
       modules: [
+        'node_modules',
         path.resolve(__dirname, 'node_modules'),
       ],
+      fallback: {
+        fs: false,
+        util: false,
+      },
       alias: {
         'vue$': 'vue/dist/vue.esm.js',
         'osh-js': path.resolve(__dirname, '../../source')
@@ -49,12 +54,14 @@ module.exports = env => {
       extensions: ['*', '.js', '.vue', '.json']
     },
     devServer: {
-      contentBase: path.join(__dirname, 'dist'),
+      static: {
+        directory: path.join(__dirname, 'dist'),
+      },
       compress: true,
       port: 9000,
       hot: true,
     },
-    devtool: (env.NODE_ENV === 'production') ? 'false' :
+    devtool: (env.NODE_ENV === 'production') ? false :
       'source-map',
     module: {
       rules: [
@@ -109,7 +116,11 @@ module.exports = env => {
           patterns:[
               {from: path.resolve(__dirname, 'public/images'), to: 'images'},
               {from: path.resolve(__dirname, 'public/data'), to: 'data'},
-              {from: path.resolve(__dirname, 'lib/osh-js/source'), to: 'lib/osh-js/source'}
+              {
+                from: path.resolve(__dirname, 'lib/osh-js/source'),
+                to: 'lib/osh-js/source',
+                noErrorOnMissing: true,
+              }
           ]
       }),
       new Dotenv({

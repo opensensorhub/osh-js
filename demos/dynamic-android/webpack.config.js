@@ -47,6 +47,7 @@ module.exports = env => {
       },
       alias: {
         'vue$': 'vue/dist/vue.esm.js',
+        'osh-js': path.resolve(__dirname, '../../source'),
       },
       extensions: ['*', '.js', '.vue', '.json']
     },
@@ -58,7 +59,7 @@ module.exports = env => {
       port: 9000,
       hot: true,
     },
-    devtool: (env.NODE_ENV === 'production') ? 'false' :
+    devtool: (env.NODE_ENV === 'production') ? false :
       'source-map',
     module: {
       rules: [
@@ -105,7 +106,11 @@ module.exports = env => {
       new CopyWebpackPlugin({
           patterns: [
               {from: path.resolve(__dirname, 'public/images'), to: 'images'},
-              {from: path.resolve(__dirname, 'lib/core-js/source'), to: 'lib/core-js/source'}
+              {
+                from: path.resolve(__dirname, 'lib/core-js/source'),
+                to: 'lib/core-js/source',
+                noErrorOnMissing: true,
+              }
           ]
       }),
       new Dotenv({

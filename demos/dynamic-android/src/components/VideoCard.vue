@@ -1,34 +1,42 @@
 <template>
     <v-card>
-      <Video
-          :modal="true"
-          :dataSource="dataSource"
-          :options="{top: '50', left: '50'}"
-          :showStats="true"
-          :showTime="true"
-          :frameRate=30
-          class="video"
-          :codec="dataSource.properties.codec"
-      >
-      </Video>
+      <div :id="containerId" class="video"></div>
     </v-card>
 </template>
 
 <script>
-import Video from 'vue/components/video/VideoWithControl.vue';
+import VideoView from 'osh-js/core/ui/view/video/VideoView';
+import VideoDataLayer from 'osh-js/core/ui/layer/VideoDataLayer';
 
 export default {
   name: "VideoCard",
-  components: {
-    Video
-  },
   props: ['dataSource'],
   data () {
     return {
       view: null,
     }
   },
+  computed: {
+    containerId() {
+      return 'video-' + this.dataSource.id;
+    }
+  },
   mounted() {
+    this.view = new VideoView({
+      container: this.containerId,
+      css: 'video-h264',
+      name: this.dataSource.name,
+      framerate: 30,
+      showTime: true,
+      showStats: true,
+      layers: [
+        new VideoDataLayer({
+          dataSourceId: this.dataSource.id,
+          getFrameData: (rec) => rec.img,
+          getTimestamp: (rec) => rec.timestamp
+        })
+      ]
+    });
   },
   destroyed() {
     this.dataSource.terminate();
