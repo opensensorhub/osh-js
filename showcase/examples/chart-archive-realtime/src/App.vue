@@ -5,9 +5,9 @@
     <TimeController
         :dataSynchronizer="dataSynchronizer"
         @event='onControlEvent'
-        :skipTimeStep="'60s'" 
+        :skipTimeStep="'60s'"
         :replaySpeedStep=0.1
-        v-if="dataSource"
+        v-if="dataSynchronizer"
     ></TimeController>
   </div>
 </template>
@@ -18,6 +18,7 @@ import CurveLayer from 'osh-js/core/ui/layer/CurveLayer.js';
 import TimeController from 'osh-js/vue/components/TimeController.vue';
 import {Mode} from 'osh-js/core/datasource/Mode';
 import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js";
+import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 
 
 export default {
@@ -26,16 +27,16 @@ export default {
   },
   data: function () {
     return {
-      dataSource: null,
-      view: null
+      dataSynchronizer: null
     }
   },
   mounted() {
 
     const tls = true;
+    const dsReplaySpeed = 5.0;
 
-    const dsReplaySpeed = 1.0;
-    
+    const TEN_MINUTE_MS = 2 * 60 * 1000;
+    const minTime = new Date(Date.now() - TEN_MINUTE_MS).toISOString();
     const commonDatasourceOpts = {
       endpointUrl:  'api.georobotix.io/ogc/t18/api',
       protocol: 'mqtt',
@@ -44,25 +45,25 @@ export default {
         endpointUrl: 'api.georobotix.io:443/ogc/t18'
       },
       tls: tls,
-      startTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      startTime: minTime,
       endTime: (new Date(Date.now()).toISOString()),
-      minTime: (new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString()),
+      minTime: minTime,
       maxTime: (new Date(Date.now()).toISOString()),
-      mode: Mode.REAL_TIME,
+      mode: Mode.REPLAY,
       replaySpeed: dsReplaySpeed,
     };
 
     const chartDataSource = new ConSysApi('Simulated Weather Sensor - weather', {
           ...commonDatasourceOpts,
           resource: '/datastreams/0tsop3f16nvp8/observations',
-          responseFormat: 'application/swe+json',
+          responseFormat: 'application/om+json',
     });
 
    this.view = new ChartJsView({
          container: 'container',
          layers: [
              new CurveLayer({
-             maxValues: 1000,
+             maxValues: 10,
              dataSourceId: chartDataSource.id,
              getValues: (rec, timestamp) => {
                return {
@@ -84,9 +85,13 @@ export default {
          refreshRate: 1000
        });
 
-    chartDataSource.connect();
+    const dataSynchronizer = new DataSynchronizer({
+      replaySpeed: dsReplaySpeed,
+      dataSources: [chartDataSource],
+      masterTimeRefreshRate: 250
+    });
 
-    this.dataSource = chartDataSource;
+    this.dataSynchronizer = dataSynchronizer;
 
      },
      methods: {
