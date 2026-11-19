@@ -42,22 +42,24 @@ module.exports = env => {
         path.resolve(__dirname, 'node_modules'),
         path.resolve(__dirname, '../../source')
       ],
+      fallback: {
+        fs: false
+      },
       alias: {
         'vue$': 'vue/dist/vue.esm.js',
       },
       extensions: ['*', '.js', '.vue', '.json']
     },
     devServer: {
-      contentBase: path.join(__dirname, 'dist'),
+      static: {
+        directory: path.join(__dirname, 'dist')
+      },
       compress: true,
       port: 9000,
       hot: true,
     },
     devtool: (env.NODE_ENV === 'production') ? 'false' :
       'source-map',
-    node: {
-      fs: 'empty'
-    },
     module: {
       rules: [
         {

@@ -5,20 +5,21 @@
   "scripts": {
     "postinstall": "patch-package",
     "prod": "webpack --config webpack.config.js --mode production",
-    "dev": "webpack-dev-server --config webpack.config.js --mode development --watch"
+    "dev": "webpack-dev-server --config webpack.config.js --mode development"
   },
   "dependencies": {
-    "vue": "2.6.11",
-    "vue-plugin-load-script": "1.2.0",
     "@cesium/engine": "8.0.0",
     "@cesium/widgets": "5.0.0",
-    "cesium": "1.114.0"
+    "@zip.js/zip.js": "2.7.73",
+    "cesium": "1.114.0",
+    "vue": "2.6.11",
+    "vue-plugin-load-script": "1.2.0"
   },
   "devDependencies": {
-    "@open-wc/webpack-import-meta-loader": "0.4.7",
+    "@babel/core": "7.9.0",
     "@babel/plugin-transform-optional-chaining": "7.23.4",
     "@babel/preset-env": "7.23.7",
-    "@babel/core": "7.9.0",
+    "@open-wc/webpack-import-meta-loader": "0.4.7",
     "babel-core": "6.26.3",
     "babel-loader": "8.1.0",
     "babel-preset-env": "1.7.0",

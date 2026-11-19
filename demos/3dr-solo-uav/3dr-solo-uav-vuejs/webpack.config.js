@@ -27,10 +27,6 @@ const cesiumConfig = {
     // Enable webpack-friendly use of require in Cesium
     toUrlUndefined: true
   },
-  output: {
-    // Needed to compile multiline strings in Cesium
-    sourcePrefix: '',
-  },
   plugins: [
     // Copy Cesium Assets, Widgets, and Workers to a static directory
     new CopywebpackPlugin({
@@ -80,7 +76,6 @@ const config = {
     }
   },
   node: {
-    fs: 'empty'
   },
   amd: {
     // Enable webpack-friendly use of require in Cesium
@@ -109,9 +104,6 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       },
       {
         test: /\.(?:js|mjs|cjs)$/,
@@ -141,25 +133,23 @@ const config = {
   },
   optimization: {
     splitChunks: {
-      chunks: 'async',
+      chunks: 'all',
       minSize: 30000,
-      maxSize: 0,
-      minChunks: 1,
       maxAsyncRequests: 6,
       maxInitialRequests: 4,
-      automaticNameDelimiter: '~',
       cacheGroups: {
         defaultVendors: {
           test: /[\\/]node_modules[\\/]/,
-          priority: -10
+          priority: -10,
+          reuseExistingChunk: true,
         },
         default: {
           minChunks: 2,
           priority: -20,
-          reuseExistingChunk: true
-        }
-      }
-    }
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
   plugins: [
     new VueLoaderPlugin(),
@@ -171,11 +161,10 @@ const config = {
     }),
     new DefinePlugin({
       // Define relative base path in cesium for loading assets
-      BASE_URL: JSON.stringify('/')
-    }),
-    new webpack.DefinePlugin({
+      BASE_URL: JSON.stringify('/'),
       // Define relative base path in cesium for loading assets
       CESIUM_BASE_URL: JSON.stringify(cesiumBaseUrl),
+
     }),
   ],
 };

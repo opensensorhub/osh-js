@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prod": "webpack --config webpack.config.js --mode production --env.NODE_ENV=production",
-    "prod_public": "webpack --config webpack.config.js --mode production --env.NODE_ENV=public",
-    "dev": "webpack-dev-server --host 127.0.0.1 --config webpack.config.js --mode development --watch --env.NODE_ENV=development"
+    "prod": "webpack --config webpack.config.js --mode production --env NODE_ENV=production",
+    "prod_public": "webpack --config webpack.config.js --mode production --env NODE_ENV=public",
+    "dev": "webpack-dev-server --host 127.0.0.1 --config webpack.config.js --mode development --env NODE_ENV=development"
   },
   "dependencies": {
     "vue": "^2.6.11",
@@ -19,16 +19,16 @@
     "babel-preset-env": "^1.7.0",
     "copy-webpack-plugin": "9.1.0",
     "css-loader": "3.5.3",
-    "dotenv-webpack": "^1.7.0",
+    "dotenv-webpack": "^9.0.0",
     "file-loader": "6.2.0",
     "html-webpack-plugin": "5.5.0",
     "leaflet": "^1.6.0",
     "less": "^3.11.1",
     "less-loader": "^6.0.0",
-    "node-sass": "^4.14.0",
     "nouislider": "^14.6.0",
     "ol": "^6.4.3",
     "ol-layerswitcher": "^3.6.0",
+    "sass": "^1.108.2",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.0",
     "vue-loader": "^15.9.1",

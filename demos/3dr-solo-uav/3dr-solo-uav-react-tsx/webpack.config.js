@@ -36,7 +36,7 @@ const cesiumConfig = {
 const config = {
   ...cesiumConfig,
   entry: "./src/index.tsx",
-  output: { path: path.join(__dirname, "build"), filename: "index.bundle.js" },
+  output: { path: path.join(__dirname, "build"), filename: "index.bundle.js", clean: true },
   mode: process.env.NODE_ENV || "development",
   resolve: {
     alias: {
@@ -60,10 +60,8 @@ const config = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif|ico)$/,
-        use: [
-          'file-loader',
-        ],
+        test: /\.(png|svg|jpg|jpeg|gif|ico)$/i,
+        type: 'asset/resource',
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
@@ -92,7 +90,7 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
-    https:true
+    server: 'https',
   },
   stats: {
     children: true,

@@ -47,7 +47,9 @@ module.exports = env => {
       extensions: ['*', '.js', '.vue', '.json']
     },
     devServer: {
-      contentBase: path.join(__dirname, 'dist'),
+      static: {
+        directory: path.join(__dirname, 'dist'),
+      },
       compress: true,
       port: 9000,
       hot: true,
@@ -55,7 +57,6 @@ module.exports = env => {
     },
     devtool:  'eval-source-map',
     node: {
-      fs: 'empty'
     },
     module: {
       rules: [
@@ -102,7 +103,11 @@ module.exports = env => {
       new CopyWebpackPlugin({
           patterns: [
               {from: path.resolve(__dirname, 'public/images'), to: 'images'},
-            {from: path.resolve(__dirname, 'lib'), to: 'lib'}
+            {
+              from: path.resolve(__dirname, 'lib'),
+              to: 'lib',
+              noErrorOnMissing: true,
+            },
         ]
       })
     ]
