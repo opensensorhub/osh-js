@@ -17,7 +17,8 @@ const config = {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
     sourcePrefix: '',
-      clean: true
+    clean: true,
+    publicPath: 'auto',
   },
   resolve: {
     modules: [
@@ -61,7 +62,7 @@ const config = {
           loader: 'esbuild-loader',
           options: {
             loader: 'js',  // Remove this if you're not using JSX
-            target: 'es2015'  // Syntax to compile to (see options below for possible values)
+            target: 'es2020'  // Syntax to compile to (see options below for possible values)
           }
         }
       },
