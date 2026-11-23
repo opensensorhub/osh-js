@@ -14,7 +14,7 @@ const mqttProps = {
     endpointUrl: 'api.georobotix.io:443/ogc/t18',
 };
 
-let gpsDataSource = new ConSysApi("simUav-GPS", {
+let gpsDataSource = new ConSysApi("Simulated UAV - Platform Location", {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     resource: '/datastreams/rbnag2hrc04mm/observations',
     tls: true,
@@ -23,7 +23,7 @@ let gpsDataSource = new ConSysApi("simUav-GPS", {
     mode: Mode.REAL_TIME
 });
 
-let weatherDataSource = new ConSysApi("weather", {
+let weatherDataSource = new ConSysApi("Simulated Weather Sensor", {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     resource: '/datastreams/0tsop3f16nvp8/observations',
     tls: true,
@@ -46,8 +46,8 @@ const pointMarkerLayer = new PointMarkerLayer({
     icon: './images/drone-mqtt.png',
     iconSize: [32, 32],
     iconAnchor: [16, 32],
-    name: 'drone',
-    description: 'Drone'
+    name: 'Simulated UAV',
+    description: 'Simulated UAV - Platform Location'
 });
 
 

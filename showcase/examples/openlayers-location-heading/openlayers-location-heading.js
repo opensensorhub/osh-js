@@ -50,7 +50,7 @@ const dataSynchronizer = new DataSynchronizer({
 
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
-  dataSourceId: gpsDataSource.id,
+  dataSourceIds: [gpsDataSource.id, orientationDataSource.id],
   getLocation: {
       dataSourceIds : [gpsDataSource.getId()],
       handler: (rec) => {
@@ -69,10 +69,14 @@ let pointMarker = new PointMarkerLayer({
       };
     }
   },
-  icon: 'images/car-location.png',
-  iconAnchor: [16, 64],
-  iconSize: [32, 64],
-  name: "Android Phone GPS",
+  iconColor: '#325cc8',
+  icon: './images/arrow-up-bold.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  iconScale: 0.15,
+  name: "Android Sensors [Office6a]",
+  label: "Android Sensors [Office6a] GPS",
+  labelOffset: [0, -40],
   zIndex: 10
 });
 

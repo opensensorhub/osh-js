@@ -1,5 +1,4 @@
 // create data source for Android phone GPS
-
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import OpenLayerView from 'osh-js/core/ui/view/map/OpenLayerView.js';
 import {Mode} from 'osh-js/core/datasource/Mode';
@@ -10,7 +9,7 @@ import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 const REPLAY_SPEED = 5.0;
 
 // create data source for Android phone GPS
-let gpsDataSource =  new ConSysApi('android-GPS', {
+let gpsDataSource =  new ConSysApi("Android Sensors [Office6a]", {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     tls: true,
     startTime: '2023-06-06T14:26:12.031Z',
@@ -50,12 +49,15 @@ let pointMarker = new PointMarkerLayer({
         const r = Math.floor(Math.random() * 255);
         const g = Math.floor(Math.random() * 255);
         const b = Math.floor(Math.random() * 255);
-        return  `rgba(${r}, ${g}, ${b}, .5)`
+        return  `rgba(${r}, ${g}, ${b}, 0.5)`;
     },
-    icon: 'images/car-location.png',
-    iconAnchor: [16, 64],
-    iconSize: [32, 64],
-    name: "Android Phone GPS"
+    icon: './images/cellphone-marker.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    iconScale: 0.15,
+    name: "Android Sensors [Office6a]",
+    label: "Android Sensors [Office6a]",
+    labelOffset: [0, -20]
 });
 
 // #region snippet_ol_location_view
