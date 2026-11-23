@@ -93,14 +93,39 @@
   import TimeLine from './components/TimeLine';
   import ChartVCard from "./components/vcards/ChartVCard";
   import MjpegVideoVCard from "./components/vcards/MjpegVideoVCard";
-  import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.datasource.js";
+  import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
   import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer.js";
   import {isDefined} from "osh-js/core/utils/Utils";
   import {Mode} from "osh-js/core/datasource/Mode";
   import {EventType} from "../../../../source/core/event/EventType";
 
-  const startTime= "2015-02-16T07:59:00Z";
-  const endTime = "2015-02-16T08:09:00Z";
+  const START_TIME = '2023-06-06T14:29:17Z';
+  const END_TIME = '2023-06-06T22:29:13Z';
+  const MODE = Mode.REPLAY;
+  const MIN_TIME = '2023-06-06T14:29:17Z';
+  const MAX_TIME = '2023-06-06T22:29:13Z';
+  const tls = true;
+  const dsReplaySpeed = 1;
+
+  const commonDatasourceOpts = {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    protocol: 'mqtt',
+    mqttOpts: {
+      shared: true,
+      prefix: '/api',
+      endpointUrl: 'api.georobotix.io:443/ogc/t18'
+    },
+    tls: tls,
+    startTime: START_TIME,
+    endTime: END_TIME,
+    minTime: MIN_TIME,
+    maxTime: MAX_TIME,
+    mode: MODE,
+    replaySpeed: dsReplaySpeed,
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250
+  };
+
   export default {
     components: {
       Map,
@@ -118,46 +143,30 @@
         selectionIds: [],
         dataSources: {},
         items: [],
-        locationDataSource: new SosGetResult("android-GPS", {
-          service: "SOS",
-          endpointUrl: "sensiasoft.net/sensorhub/sos",
-          offeringID: "urn:android:device:060693280a28e015-sos",
-          observedProperty: "http://sensorml.com/ont/swe/property/Location",
-          startTime: startTime,
-          endTime: endTime,
-          mode: Mode.REPLAY,
-          timeShift: -16000,
-          tls: true
+        locationDataSource: new ConSysApi("android-GPS", {
+          ...commonDatasourceOpts,
+          resource: '/datastreams/ltr9mqaqrorj6/observations',
+          responseFormat: 'application/swe+json',
         }),
-        headingDataSource: new SosGetResult("android-Att", {
-          endpointUrl: "sensiasoft.net/sensorhub/sos",
-          offeringID: "urn:android:device:060693280a28e015-sos",
-          observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-          startTime: startTime,
-          endTime: endTime,
-          mode: Mode.REPLAY,
-          timeShift: -6000,
-          tls: true
+        headingDataSource: new ConSysApi("android-Att", {
+          ...commonDatasourceOpts,
+          resource: '/datastreams/kegun78tu174a/observations',
+          responseFormat: 'application/swe+json',
         }),
-        videoDataSource: new SosGetResult("android-Video", {
-          protocol: "ws",
-          service: "SOS",
-          endpointUrl: "sensiasoft.net/sensorhub/sos",
-          offeringID: "urn:android:device:060693280a28e015-sos",
-          observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-          startTime: startTime,
-          endTime: endTime,
-          mode: Mode.REPLAY,
-          tls: true
+        videoDataSource: new ConSysApi("android-Video", {
+          ...commonDatasourceOpts,
+          resource: '/datastreams/a3if48eqn8dha/observations',
+          responseFormat: 'application/swe+binary',
         }),
-        weatherDataSource: new SosGetResult("weather", {
-          endpointUrl: "sensiasoft.net/sensorhub/sos",
-          offeringID: "urn:mysos:offering03",
-          observedProperty: "http://sensorml.com/ont/swe/property/Weather",
-          startTime: "now",
-          endTime: "2055-01-01Z",
-          timeOut: 100,
-          tls: true,
+        weatherDataSource: new ConSysApi("weather", {
+          ...commonDatasourceOpts,
+          resource: '/datastreams/0tsop3f16nvp8/observations',
+          responseFormat: 'application/swe+json',
+          mode: Mode.REAL_TIME,
+          startTime: undefined,
+          endTime: undefined,
+          minTime: undefined,
+          maxTime: undefined,
         }),
         dataSynchronizer:null
       }
@@ -180,12 +189,12 @@
       this.dataSources['4'] = this.headingDataSource;
       this.dataSources['5'] = this.weatherDataSource;
 
-      this.dataSources = [this.locationDataSource, this.videoDataSource, this.headingDataSource, this.weatherDataSource];
+      // this.dataSources = [this.locationDataSource, this.videoDataSource, this.headingDataSource, this.weatherDataSource];
 
       this.dataSynchronizer = new DataSynchronizer({
-        replaySpeed: 2,
-        startTime: startTime,
-        endTime: endTime,
+        replaySpeed: dsReplaySpeed,
+        startTime: START_TIME,
+        endTime: END_TIME,
         dataSources: [this.locationDataSource, this.videoDataSource, this.headingDataSource]
       });
     },
@@ -204,14 +213,15 @@
 
         const dsToConnect = bIds.filter(x => !this.selectionIds.includes(x));
         const dsToDisconnect = this.selectionIds.filter(x => !bIds.includes(x));
+        const synchronizedDataSources = this.dataSynchronizer.getDataSources();
 
         for(let dsId in this.dataSources) {
           const currentDs = this.dataSources[dsId];
           if(dsToConnect.includes(currentDs.id)) {
-            if(!isConnected) {
-              this.dataSynchronizer.connect();
+            if(!isConnected && synchronizedDataSources.includes(currentDs)) {
+              await this.dataSynchronizer.connect();
             } else {
-              currentDs.connect();
+              await currentDs.connect();
             }
           } else if(dsToDisconnect.includes(currentDs.id)){
             currentDs.disconnect();

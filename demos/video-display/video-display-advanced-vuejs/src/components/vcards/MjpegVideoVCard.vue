@@ -13,32 +13,33 @@
 </template>
 
 <script>
-  import MjpegView from "osh-js/core/ui/view/video/MjpegView";
+  import VideoView from "osh-js/core/ui/view/video/VideoView";
   import {randomUUID} from "osh-js/core/utils/Utils";
   import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 
   export default {
-    name: "MjpegVideoVCard",
+    name: "H264VideoVCard",
     props: ['dataSource'],
     data: function () {
       return {
-        title: 'Android Mjpeg Video',
+        title: 'Android H264 Video',
         id: randomUUID()
       }
     },
     mounted() {
       // build video
       // show it in video view
-      new MjpegView({
+      new VideoView({
         container: this.id,
-        css: "video-mjpeg",
+        css: "video-h264",
         name: "Android Video",
         keepRatio: true,
         showTime: true,
+        showCaption: true,
         layers: [
           new VideoDataLayer({
             dataSourceId: this.dataSource.id,
-            getFrameData: (rec) => rec.videoFrame,
+            getFrameData: (rec) => rec.img,
             getTimestamp: (rec) => rec.timestamp
           })
         ]
@@ -54,12 +55,12 @@
 
 </style>
 <style>
-  .container > div.video-mjpeg {
+  .container > div.video-h264 {
     width: 100%;
     padding: 8px;
     overflow: hidden;
   }
-  .container > div.video-mjpeg img {
+  .container > div.video-h264 img {
     width: 100%;
   }
   .tiny {
