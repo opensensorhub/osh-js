@@ -30,10 +30,12 @@ export default {
             };
           }
         },
-        icon: './images/car-location.png',
-        iconSize: [32, 64],
-        iconAnchor: [16, 65],
-        name: "Android Phone GPS"
+        icon: './images/cellphone-marker.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        name: "Android Phone GPS",
+        label: "Android Phone GPS",
+        labelOffset: [0, -40],
       });
 
       // create Leaflet view
