@@ -27,7 +27,7 @@
     "html-webpack-plugin": "5.5.0",
     "less": "3.11.1",
     "less-loader": "6.0.0",
-    "node-sass": "4.14.0",
+    "sass": "1.69.5",
     "nouislider": "14.4.0",
     "patch-package": "6.2.2",
     "sass-loader": "8.0.2",

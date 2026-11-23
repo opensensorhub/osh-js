@@ -6,12 +6,14 @@
       <div id="container2"></div>
       <div id="container3"></div>
     </div>
-    <TimeController
-        :dataSynchronizer="dataSynchronizer"
-        @event='onControlEvent'
-        :skipTimeStep="'1%'"
-        v-if="dataSynchronizer"
-    ></TimeController>
+    <div class="footer">
+      <TimeController
+          :dataSynchronizer="dataSynchronizer"
+          @event='onControlEvent'
+          :skipTimeStep="'10s'"
+          v-if="dataSynchronizer"
+      ></TimeController>
+    </div>
   </div>
 </template>
 <script>
@@ -72,6 +74,7 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
+      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource0.id,
@@ -88,6 +91,7 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
+      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource1.id,
@@ -104,6 +108,7 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
+      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource2.id,
@@ -120,6 +125,7 @@ export default {
       framerate: 25,
       showTime: true,
       showStats: true,
+      useWebCodecApi: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: dataSource3.id,
@@ -131,7 +137,7 @@ export default {
 
     this.dataSynchronizer = new DataSynchronizer({
       replaySpeed: REPLAY_SPEED,
-      startTime: '2012-06-29T14:22:00.099333251Z',
+      startTime: '2023-06-06T14:01:12.099333251Z',
       endTime: '2023-06-06T15:53:00.033333251Z',
       dataSources: [dataSource0, dataSource1, dataSource2, dataSource3]
     });
@@ -179,5 +185,11 @@ body, html {
 
 div.video-h264 canvas {
   width: 100%;
+  height: 100%;
+}
+.footer {
+  position: absolute;
+  width: 95%;
+  bottom: 20px;
 }
 </style>

@@ -218,7 +218,7 @@ class WebCodecView extends CanvasView {
     async handleDocodedFrame(videoFrame, width, height, timestamp = 0, queueElt = null) {
         try {
             // draw image
-            let roll = Math.round(queueElt.roll/90) * 90;
+            let roll = queueElt ? Math.round(queueElt.roll/90) * 90 : 0;
             if (roll > 180) roll -= 360;
             let scale = 1.0;
             if (Math.abs(roll) === 90) {
@@ -235,7 +235,7 @@ class WebCodecView extends CanvasView {
             
             // update stats
             this.onAfterDecoded(videoFrame, FrameType.ARRAY);
-            this.updateStatistics(queueElt.pktSize);
+            this.updateStatistics(queueElt?.pktSize);
             if(this.showTime) {
                 this.textFpsDiv.textContent = new Date(timestamp).toISOString()+' ';
             }
