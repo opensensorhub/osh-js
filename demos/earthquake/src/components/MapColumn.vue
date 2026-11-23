@@ -87,7 +87,7 @@ export default {
               },
               layers: [
                 new TileLayer({
-                  data: 'https://a.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png',
+                  data: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   minZoom: 0,
                   maxZoom: 19,
                   tileSize: 256,
