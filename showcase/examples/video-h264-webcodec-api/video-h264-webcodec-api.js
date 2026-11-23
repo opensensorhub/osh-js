@@ -4,9 +4,9 @@ import {Mode} from "osh-js/core/datasource/Mode";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
 
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 5.0;
 const startTime = '2023-06-06T14:33:34Z';
-const endTime = '2023-06-06T22:22:50Z';
+const endTime = '2023-06-06T15:00:50Z';
 
 let videoDataSource = new ConSysApi("drone-Video", {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',

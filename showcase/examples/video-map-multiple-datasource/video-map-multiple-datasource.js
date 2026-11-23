@@ -80,7 +80,6 @@ function createView(videoDivId, mapDivId) {
             }
         },
         icon: "./images/drone.png",
-        iconScale: 0.1
     });
 
     // #endregion snippet_multiple_layer_datasources

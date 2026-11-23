@@ -23,7 +23,7 @@ const END_TIME = '2012-06-29T14:36:54.033333251Z';
 const MIN_TIME = '2012-06-29T14:32:34.099333251Z';
 const MAX_TIME = '2055-06-29T14:36:54.033333251Z';
 
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 5.0;
 const altitudeOffset = -193;
 const DTR = Math.PI / 180;
 
@@ -205,7 +205,7 @@ cesiumView.first = false;
 // start streaming
 const dataSynchronizer = new DataSynchronizer({
     masterTimeRefreshRate: 250,
-    replaySpeed: 1.0,
+    replaySpeed: REPLAY_SPEED,
     startTime: START_TIME,
     endTime: END_TIME,
     mode: Mode.REAL_TIME,

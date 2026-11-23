@@ -5,10 +5,10 @@ import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 import {Mode} from "osh-js/core/datasource/Mode";
 import ConSysApi from 'osh-js/core/datasource/consysapi/ConSysApi.datasource.js';
 
-const REPLAY_SPEED = 1.0;
+const REPLAY_SPEED = 5.0;
 
 // create data source for UAV camera
-let videoDataSource =  new ConSysApi('drone-Video', {
+let videoDataSource =  new ConSysApi('DJI Video', {
     endpointUrl:  'api.georobotix.io/ogc/t18/api',
     protocol: 'mqtt',
     mqttOpts: {
@@ -29,7 +29,7 @@ let videoDataSource =  new ConSysApi('drone-Video', {
 let videoView = new VideoView({
     container: "video-container",
     css: "video-h264",
-    name: "UAV Video",
+    name: "DJI Drone Video",
     framerate:25,
     showTime: true,
     showStats: true,
