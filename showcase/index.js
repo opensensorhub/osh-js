@@ -82,7 +82,8 @@ var samples = [
     {
         name: "Moving Location + Heading (OpenLayers)",
         description: "Display a moving marker on an OpenLayers map, tracking the current location and heading of a vehicle.",
-        url: "openlayers-location-heading"
+        url: "openlayers-location-heading",
+        datasourceType: 'Connected Systems',
     },
     {
         name: "Moving Location + Path + Heading (Mapbox)",
@@ -215,7 +216,7 @@ samples.forEach(s => {
     var $newElt = $($("#card-template").html());
     $("p.card-text", $newElt).html(s.description);
     $("span.badge", $newElt).text(s.datasourceType);
-    $("span.badge", $newElt).css("background-color", s.datasourceType === "SOS" ? "gray" : "red");
+    $("span.badge", $newElt).css("background-color", s.datasourceType === "SOS" ? "gray" : "orange");
     $("img", $newElt)
         .on("error", e => e.target.src = "https://opensensorhub.files.wordpress.com/2017/08/opensensorhub-logo2.png")
         .attr("title", s.name)
