@@ -54,7 +54,7 @@ const dataSynchronizer = new DataSynchronizer({
 
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
-    dataSourceId: gpsDataSource.id,
+    dataSourceIds: [gpsDataSource.id, attitudeDataSource.id],
     getLocation: {
         dataSourceIds: [gpsDataSource.getId()],
         handler: function (rec) {
@@ -68,37 +68,14 @@ let pointMarker = new PointMarkerLayer({
     getOrientation : {
         dataSourceIds : [attitudeDataSource.getId()],
         handler : function(rec) {
-            let qx = rec.orient.qx;
-            let qy = rec.orient.qy;
-            let qz = rec.orient.qz;
-            let qw = rec.orient.q0;
-
-            // look dir vector
-            let x = 0;
-            let y = 0;
-            let z = -1;
-
-            // compute quat * vector
-            let ix =  qw * x + qy * z - qz * y;
-            let iy =  qw * y + qz * x - qx * z;
-            let iz =  qw * z + qx * y - qy * x;
-            let iw = - qx * x - qy * y - qz * z;
-
-            // compute result * inverse quat
-            let xp = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-            let yp = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-            let zp = iz * qw + iw * - qz + ix * - qy - iy * - qx;
-
-            let yaw = 90 - (180/Math.PI*Math.atan2(yp, xp));
-
             return {
-                heading : yaw+70
+                heading : rec.orient.heading
             };
         }
     },
-    icon: './images/car-topview.png',
-    iconSize: [32, 60],
-    iconAnchor: [16, 56],
+    icon: './images/arrow-up-bold.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
     iconColor: '#C86432',
     name: "Android Phone GPS",
     zoomLevel: 17
