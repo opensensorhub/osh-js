@@ -1,0 +1,109 @@
+name: Deploy Showcase and Showcase-dev to GitHub Pages
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'showcase/**'
+      - 'showcase-dev/**'
+      - 'demos/**'
+      - 'source/**'
+      - '.github/workflows/gh-pages-dev.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-latest
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16.20.2'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      # --- Showcase ----
+      - name: Install showcase dependencies
+        run: yarn --cwd showcase install --frozen-lockfile && yarn --cwd showcase prod
+
+      # --- Showcase-dev ---
+      - name: Install and build showcase-dev dependencies
+        run: yarn --cwd showcase-dev install --frozen-lockfile && yarn --cwd showcase-dev prod
+
+      # ---- Demos ----
+      - name: Build demo - 3dr-solo-uav-react-tsx
+        run:  yarn --cwd demos/3dr-solo-uav/3dr-solo-uav-react-tsx install --frozen-lockfile && yarn --cwd demos/3dr-solo-uav/3dr-solo-uav-react-tsx prod
+      - name: Build demo - 3dr-solo-uav-react
+        run: yarn --cwd demos/3dr-solo-uav/3dr-solo-uav-react install --frozen-lockfile && yarn --cwd demos/3dr-solo-uav/3dr-solo-uav-react prod
+      - name: Build demo - 3dr-solo-uav-vuejs
+        run: yarn --cwd demos/3dr-solo-uav/3dr-solo-uav-vuejs install --frozen-lockfile && yarn --cwd demos/3dr-solo-uav/3dr-solo-uav-vuejs prod
+      - name: Build demo - dynamic-android
+        run: yarn --cwd demos/dynamic-android install --frozen-lockfile && yarn --cwd demos/dynamic-android prod
+      - name: Build demo - earthquake
+        run: yarn --cwd demos/earthquake install --frozen-lockfile && yarn --cwd demos/earthquake prod
+      - name: Build demo - misb
+        run: yarn --cwd demos/misb install --frozen-lockfile && yarn --cwd demos/misb prod
+      - name: Build demo - consysapi
+        run: yarn --cwd demos/consysapi install --frozen-lockfile && yarn --cwd demos/consysapi prod
+      - name: Build demo - tasking
+        run: yarn --cwd demos/tasking install --frozen-lockfile && yarn --cwd demos/tasking prod
+      - name: Build demo - video-display/video-display-advanced-vuejs
+        run: yarn --cwd demos/video-display/video-display-advanced-vuejs install --frozen-lockfile && yarn --cwd demos/video-display/video-display-advanced-vuejs prod
+      - name: Build demo - video-display/video-display-vuejs
+        run: yarn --cwd demos/video-display/video-display-vuejs install --frozen-lockfile && yarn --cwd demos/video-display/video-display-vuejs prod
+
+      # Update GitHub Pages
+      - name: Update Directory
+        run: |
+          mkdir -p deploy/site/showcase
+          mkdir -p deploy/site/showcase-dev
+          
+          mkdir -p deploy/showcase
+          mkdir -p deploy/showcase-dev
+          
+          mkdir -p deploy/demos/3dr-solo-uav-react
+          mkdir -p deploy/demos/3dr-solo-uav-react-tsx
+          mkdir -p deploy/demos/3dr-solo-uav-vuejs
+          mkdir -p deploy/demos/dynamic-android
+          mkdir -p deploy/demos/earthquake
+          mkdir -p deploy/demos/misb
+          mkdir -p deploy/demos/consysapi
+          mkdir -p deploy/demos/tasking
+          mkdir -p deploy/demos/video-display-advanced-vuejs
+          mkdir -p deploy/demos/video-display-vuejs
+          
+          cp -r showcase/dist/* deploy/showcase/
+          cp -r showcase-dev/dist/* deploy/showcase-dev/
+          
+          cp -r showcase/dist/* deploy/site/showcase/
+          cp -r showcase-dev/dist/* deploy/site/showcase-dev/
+          
+          cp -r demos/3dr-solo-uav/3dr-solo-uav-react-tsx/dist/* deploy/demos/3dr-solo-uav-react-tsx
+          cp -r demos/3dr-solo-uav/3dr-solo-uav-react/dist/* deploy/demos/3dr-solo-uav-react
+          cp -r demos/3dr-solo-uav/3dr-solo-uav-vuejs/dist/* deploy/demos/3dr-solo-uav-vuejs
+          cp -r demos/dynamic-android/dist/* deploy/demos/dynamic-android
+          cp -r demos/earthquake/dist/* deploy/demos/earthquake
+          cp -r demos/misb/dist/* deploy/demos/misb
+          cp -r demos/consysapi/dist/* deploy/demos/consysapi
+          cp -r demos/tasking/dist/* deploy/demos/tasking
+          cp -r demos/video-display/video-display-advanced-vuejs/dist/* deploy/demos/video-display-advanced-vuejs
+          cp -r demos/video-display/video-display-vuejs/dist/* deploy/demos/video-display-vuejs
+
+      # Deploy
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: deploy
+          target-folder: dev
+          clean: false
