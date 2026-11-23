@@ -15,6 +15,7 @@ var samples = [
         name: "Frustum (CesiumJS)",
         description: "Display the frustum on a CesiumJS globe",
         url: "cesium-frustum",
+        screenshot: "images/screenshots/cesium-frustum.png",
         datasourceType: 'Connected Systems',
     },
     {
@@ -51,7 +52,6 @@ var samples = [
         name: "FOI Locations (Leaflet)",
         description: "Display the location of several features of interest on a Leaflet map.",
         url: "leaflet-location-fois",
-        screenshot: "images/screenshots/leaflet-fois.png",
         datasourceType: 'SOS',
     },
     {
@@ -70,6 +70,7 @@ var samples = [
         name: "Moving Location with Time controller (Leaflet)",
         description: "Display a moving marker and time controller.",
         url: "leaflet-location-timerange",
+        screenshot: "images/screenshots/leaflet-location-timerange.png",
         datasourceType: 'Connected Systems',
     },
     {
@@ -218,7 +219,7 @@ samples.forEach(s => {
     $("img", $newElt)
         .on("error", e => e.target.src = "https://opensensorhub.files.wordpress.com/2017/08/opensensorhub-logo2.png")
         .attr("title", s.name)
-        .attr("src", "images/screenshots/" + s.url + ".jpg");
+        .attr("src", s.screenshot || "images/screenshots/" + s.url + ".jpg");
 
     // setup handler to load sample in popup
     $("button", $newElt).on("click", e => {

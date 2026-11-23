@@ -3,6 +3,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
 
@@ -19,6 +20,11 @@ let common = {
             path: false
         }
     },
+    resolveLoader: {
+        modules: [
+            path.resolve(__dirname, 'node_modules'),
+        ]
+    },
     module: {
         rules: [{
             test: /\.vue$/,
@@ -34,6 +40,7 @@ let common = {
         },
         {
             test: /\.js$/,
+            exclude: /node_modules/,
             loader: 'esbuild-loader',
             options: {
                 loader: 'js',  // Remove this if you're not using JSX
@@ -69,6 +76,7 @@ module.exports = [{
     },
     devtool: 'eval-source-map',
     plugins: [
+        new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'index.html')
         }),
@@ -127,12 +135,26 @@ for (let i = 0; i < directories.length; i++) {
     config.output.path = path.resolve(__dirname, 'dist');
     delete config.output.clean;
 
-    // removes clean webpack plugin because it is causing issues while copying files/dir
-    let currentPlugin = [];
+    let currentPlugin = [new VueLoaderPlugin()];
     for (let j = 0; j < config.plugins.length; j++) {
-        if (config.plugins[j].constructor.name !== 'CleanWebpackPlugin') {
-            currentPlugin.push(config.plugins[j]);
+        let plugin = config.plugins[j];
+        let name = plugin.constructor.name;
+        if (name === 'CleanWebpackPlugin' || name === 'VueLoaderPlugin') {
+            continue;
         }
+        if (name === 'DefinePlugin') {
+            currentPlugin.push(new webpack.DefinePlugin(plugin.definitions));
+            continue;
+        }
+        if (name === 'HtmlWebpackPlugin') {
+            currentPlugin.push(new HtmlWebpackPlugin(plugin.userOptions));
+            continue;
+        }
+        if (name === 'CopyWebpackPlugin') {
+            currentPlugin.push(new CopyWebpackPlugin({patterns: plugin.patterns, options: plugin.options}));
+            continue;
+        }
+        currentPlugin.push(plugin);
     }
     currentPlugin.push(new CopyWebpackPlugin({
         patterns: [
