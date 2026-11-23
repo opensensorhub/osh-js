@@ -8,7 +8,7 @@
   // @ is an alias to /src
 import Map from './components/Map.vue';
 import Video from './components/Video.vue';
-import SosGetResult from "osh-js/core/datasource/sos/SosGetResult.datasource";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 import {Mode} from "osh-js/core/datasource/Mode";
 import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
 
@@ -18,34 +18,57 @@ export default {
     Video
   },
   data: function () {
+    const START_TIME = '2023-06-06T14:29:17Z';
+    const END_TIME = '2023-06-06T22:29:13Z';
+    const MODE = Mode.REPLAY;
+    const MIN_TIME = '2023-06-06T14:29:17Z';
+    const MAX_TIME = '2023-06-06T22:29:13Z';
+    const tls = true;
+    const dsReplaySpeed = 1;
+    const commonDatasourceOpts = {
+      endpointUrl:  'api.georobotix.io/ogc/t18/api',
+      protocol: 'mqtt',
+      mqttOpts: {
+        shared: true,
+        prefix: '/api',
+        endpointUrl: 'api.georobotix.io:443/ogc/t18'
+      },
+      tls: tls,
+      startTime: START_TIME,
+      endTime: END_TIME,
+      minTime: MIN_TIME,
+      maxTime: MAX_TIME,
+      mode: MODE,
+      replaySpeed: dsReplaySpeed,
+      prefetchBatchDuration: 10000,
+      prefetchBatchSize: 250
+    };
     return {
       dataSynchronizer: undefined,
-      locationDataSource: new SosGetResult("android-GPS", {
-        endpointUrl: "sensiasoft.net/sensorhub/sos",
-        offeringID: "urn:android:device:060693280a28e015-sos",
-        observedProperty: "http://sensorml.com/ont/swe/property/Location",
-        startTime: '2015-02-16T07:58:15.447Z',
-        endTime: "2015-02-16T08:09:00Z",
-        timeShift: -16000,
-        mode: Mode.REPLAY,
-        tls: true
+      locationDataSource: new ConSysApi("android-GPS", {
+        ...commonDatasourceOpts,
+        resource: '/datastreams/ltr9mqaqrorj6/observations',
+        responseFormat: 'application/swe+json',
       }),
-      videoDataSource: new SosGetResult("android-Video", {
-        endpointUrl: "sensiasoft.net/sensorhub/sos",
-        offeringID: "urn:android:device:060693280a28e015-sos",
-        observedProperty: "http://sensorml.com/ont/swe/property/VideoFrame",
-        startTime: '2015-02-16T07:58:15.447Z',
-        endTime: "2015-02-16T08:09:00Z",
-        mode: Mode.REPLAY,
-        tls: true
+      videoDataSource: new ConSysApi("android-Video", {
+        ...commonDatasourceOpts,
+        resource: '/datastreams/a3if48eqn8dha/observations',
+        responseFormat: 'application/swe+binary',
       }),
     }
   },
   beforeMount() {
+    const START_TIME = '2023-06-06T14:29:17Z';
+    const END_TIME = '2023-06-06T22:29:13Z';
+    const MODE = Mode.REPLAY;
+    const dsReplaySpeed = 1;
+
     this.dataSynchronizer = new DataSynchronizer({
-      replaySpeed: 2,
-      startTime: "2015-02-16T07:58:22Z",
-      endTime: "2015-02-16T08:09:00Z",
+      replaySpeed: dsReplaySpeed,
+      masterTimeRefreshRate: 250,
+      startTime: START_TIME,
+      endTime: END_TIME,
+      mode: MODE,
       dataSources: [this.locationDataSource, this.videoDataSource]
     });
   },

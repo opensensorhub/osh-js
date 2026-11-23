@@ -1,7 +1,7 @@
 <template>
     <dialog-drag
             id="drag-window-1"
-            title="Video MJPEG"
+            title="Video H264"
             class="resizable"
             :options="{ width:450, top:100,left:2 }">
         <div id="video-container"></div>
@@ -10,7 +10,7 @@
 
 <script>
 import DialogDrag from 'vue-dialog-drag';
-import MjpegView from 'osh-js/core/ui/view/video/MjpegView.js';
+import VideoView from 'osh-js/core/ui/view/video/VideoView';
 import VideoDataLayer from "osh-js/core/ui/layer/VideoDataLayer";
 
 export default {
@@ -21,16 +21,17 @@ export default {
   props: ['videoDataSource'],
   mounted() {
     // show it in video view
-    let videoView = new MjpegView({
+    let videoView = new VideoView({
       container: "video-container",
       css: "video-mjpeg",
       name: "Android Video",
       keepRatio: true,
       showTime: true,
+      showStats: true,
       layers: [
         new VideoDataLayer({
           dataSourceId: this.videoDataSource.id,
-          getFrameData: (rec) => rec.videoFrame,
+          getFrameData: (rec) => rec.img,
           getTimestamp: (rec) => rec.timestamp
         })
       ]
