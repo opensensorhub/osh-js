@@ -45,12 +45,7 @@ let pointMarker = new PointMarkerLayer({
             }
         }
     },
-    getIconColor: (rec) => {
-        const r = Math.floor(Math.random() * 255);
-        const g = Math.floor(Math.random() * 255);
-        const b = Math.floor(Math.random() * 255);
-        return  `rgba(${r}, ${g}, ${b}, 0.5)`;
-    },
+    iconColor: '#325cc8',
     icon: './images/cellphone-marker.png',
     iconSize: [32, 32],
     iconAnchor: [16, 16],
