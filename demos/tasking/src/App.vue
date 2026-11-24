@@ -59,7 +59,9 @@ import TimeLine from "./components/TimeLine.vue";
 
 import Systems from "osh-js/core/sweapi/system/Systems";
 import Control from "osh-js/core/sweapi/control/Control";
+import ControlStream from "osh-js/core/consysapi/controlstream/ControlStream";
 import SweApiDatasource from "osh-js/core/datasource/sweapi/SweApi.datasource";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 export default {
   components: {
@@ -78,17 +80,21 @@ export default {
   async beforeMount() {
     const systemId = "jrc2e0kaj1m5a";
     const posDsId = "rbnag2hrc04mm";
-    const cmdStreamId = "rtbajuvqi9b54";
+    const cmdStreamId = "hf62t0dotfd5k";
+    const username = 'admin';
+    const password = 'admin@t18';
 
     const mqttProps = {
       shared: true,
       prefix: '/api',
       endpointUrl: 'api.georobotix.io:443/ogc/t18',
-      username: 'uxs-team',
-      password: 'WR6zlso9h#'
+      // username: 'uxs-team',
+      // password: 'WR6zlso9h#'
+      username: username,
+      password: password
     };
 
-    this.droneLocationDataSource = new SweApiDatasource("supersonic drone GPS", {
+    this.droneLocationDataSource = new ConSysApi("supersonic drone GPS", {
       endpointUrl: 'api.georobotix.io/ogc/t18/api',
       resource: `/datastreams/${posDsId}/observations`,
       protocol: 'mqtt',
@@ -103,9 +109,6 @@ export default {
       mqttOpts: mqttProps,
       tls: true
     });
-
-    const username = 'uxs-team';
-    const password = 'WR6zlso9h#';
 
     this.control = new Control({
           id: cmdStreamId,
@@ -124,9 +127,9 @@ export default {
 
     // https://api.georobotix.io/ogc/t18/api/systems/1ghd3h0dea3xy/controls/1rl2xoslsdldj/commands
 
-    this.controlDataSource = new SweApiDatasource("Control Status", {
+    this.controlDataSource = new ConSysApi("Control Status", {
       endpointUrl: 'api.georobotix.io/ogc/t18/api',
-      resource: `/systems/${systemId}/controls/${cmdStreamId}/status`,
+      resource: `/systems/${systemId}/controlstreams/${cmdStreamId}/status`,
       protocol: 'mqtt',
       mqttOpts: mqttProps,
       tls: true,
@@ -160,4 +163,3 @@ html, body {
 }
 
 </style>
-
