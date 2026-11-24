@@ -1,6 +1,5 @@
 // dynamic part
 import {startDataSet} from './datasynchronizer';
-import DataInjectorWorker from './DataInjector.worker';
 import DataSynchronizer from 'osh-js/core/timesync/DataSynchronizer';
 import {DATA_SYNCHRONIZER_TOPIC} from 'osh-js/core/Constants';
 import DummyDataSource from './datasource/DummyDataSource';
@@ -113,7 +112,7 @@ export function startDynamicWithTimeout(cbFinish) {
 
     function addDataInjection(dummyDataSource, freq, latency = 0,replaySpeed, topic) {
         dummyDataSource.connect();
-        const dataInjector = new DataInjectorWorker();
+        const dataInjector = new Worker(new URL('./DataInjector.worker.js', import.meta.url), { type: 'module' });
         dataInjector.postMessage({
            freq: freq,
            id: dummyDataSource.id,

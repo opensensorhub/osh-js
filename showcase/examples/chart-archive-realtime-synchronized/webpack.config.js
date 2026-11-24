@@ -2,7 +2,6 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 
@@ -10,8 +9,9 @@ const path = require('path');
 const config = {
   entry: path.resolve(__dirname,'chart-archive-realtime-synchronized.js'),
   output: {
-    filename: 'bundle.chart-archive-realtime-synchronized.js',
-    path: path.resolve(__dirname, 'dist'),
+      filename: 'bundle.chart-archive-realtime-synchronized.js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
   },
 
   resolve: {
@@ -23,7 +23,6 @@ const config = {
     }
   },
   node: {
-    fs: 'empty'
   },
   amd: {
     // Enable webpack-friendly use of require in Cesium
@@ -52,45 +51,24 @@ const config = {
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { name: 'Worker.[hash].js' } }
       }
     ],
   },
-  optimization: {
-    splitChunks: {
-      chunks: 'async',
-      minSize: 30000,
-      maxSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 6,
-      maxInitialRequests: 4,
-      automaticNameDelimiter: '~',
-      cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true
-        }
-      }
-    }
-  },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9000,
-    hot: true,
-    index: 'chart-archive-realtime-synchronized.html',
-    https:true
+      static: path.join(__dirname, 'dist'),
+      compress: true,
+      port: 9000,
+      hot: true,
+      server: 'https',
+      historyApiFallback: {
+          index: '/chart-archive-realtime-synchronized.html'
+      },
+      devMiddleware: {
+          index: 'chart-archive-realtime-synchronized.html'
+      },
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'chart-archive-realtime-synchronized.html'),
       filename: './chart-archive-realtime-synchronized.html',

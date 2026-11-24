@@ -4,6 +4,10 @@
 
 <script>
   import RangeSliderViewReplay from "osh-js/ext/ui/view/rangeslider/RangeSliderView.replay.js";
+  import {Mode} from "osh-js/core/datasource/Mode";
+
+  const START_TIME = '2023-06-06T14:29:17Z';
+  const END_TIME = '2023-06-06T22:29:13Z';
 
   export default {
     name: "TimeLine",
@@ -16,8 +20,8 @@
     mounted() {
       this.rangeSlider = new RangeSliderViewReplay({
         container: "timeline-container",
-        startTime: "2015-02-16T07:58:35Z",
-        endTime: "2015-02-16T08:09:00Z",
+        startTime: START_TIME,
+        endTime: END_TIME,
         dataSynchronizer: this.dataSynchronizer
       });
     },

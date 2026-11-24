@@ -28,7 +28,6 @@
     "@mdi/font": "6.5.95",
     "babel-core": "6.26.3",
     "babel-preset-env": "1.7.0",
-    "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "9.1.0",
     "css-loader": "3.5.3",
     "deepmerge": "4.2.2",
@@ -48,12 +47,9 @@
     "wnumb": "1.2.0"
   },
   "overrides": {
-    "@zip.js/zip.js": "2.7.34",
-    "**/vue": "3.4.27"
-
+    "@zip.js/zip.js": "2.7.34"
   },
   "resolutions": {
-    "@zip.js/zip.js": "2.7.34",
-    "**/vue": "3.4.27"
+    "@zip.js/zip.js": "2.7.34"
   }
 }

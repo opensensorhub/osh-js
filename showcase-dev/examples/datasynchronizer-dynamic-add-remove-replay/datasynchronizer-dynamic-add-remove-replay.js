@@ -3,8 +3,8 @@ import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource.js"
 import {Mode} from "osh-js/core/datasource/Mode";
 import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
 
-const START_TIME = '2012-06-29T14:32:34.099333251Z';
-const END_TIME = '2012-06-29T14:36:54.033333251Z';
+const START_TIME =(new Date(Date.now() - 60 * 1000 * 60 * 24).toISOString());
+const END_TIME = (new Date(Date.now()).toISOString());
 const REPLAY_SPEED = 1.0;
 
 const commonDatasourceOpts = {
@@ -20,19 +20,19 @@ const commonDatasourceOpts = {
 
 const ds0 = new ConSysApi('MISB Drone - Video', {
   ...commonDatasourceOpts,
-  resource: '/datastreams/8ni90dbu4uf0g/observations',
+  resource: '/datastreams/h225hesual08g/observations',
   responseFormat: 'application/swe+binary',
 });
 
 const ds1 = new ConSysApi('MISB UAS - Platform Location', {
   ...commonDatasourceOpts,
-  resource: '/datastreams/fled6eics1cl4/observations',
+  resource: '/datastreams/o7pce3e60s0ie/observations',
   responseFormat: 'application/swe+json',
 });
 
 const ds2 = new ConSysApi('MISB UAS - Platform Attitude', {
   ...commonDatasourceOpts,
-  resource: '/datastreams/adheadf9nghts/observations',
+  resource: '/datastreams/mlme3gtdfepvc/observations',
   responseFormat: 'application/swe+json',
 });
 

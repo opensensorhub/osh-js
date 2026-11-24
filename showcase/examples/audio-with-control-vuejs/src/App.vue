@@ -10,7 +10,7 @@
           :dataSynchronizer="dataSynchronizer"
           @event='onControlEvent'
           :skipTimeStep="'10s'"
-          v-if="dataSynchronizer "
+          v-if="dataSynchronizer"
       ></TimeController>
     </div>
   </div>

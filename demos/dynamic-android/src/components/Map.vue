@@ -6,11 +6,12 @@
 
 <script>
 // import OpenLayerView from "core/ui/view/map/OpenLayerView.js";
-import PointMarker from "core/ui/layer/PointMarker.js";
+import PointMarkerLayer from "osh-js/core/ui/layer/PointMarkerLayer"
 // import TileLayer from 'ol/layer/Tile';
 // import XYZ from 'ol/source/XYZ';
 // import OSM from "ol/source/OSM";
-import LeafletView from "core/ui/view/map/LeafletView.js";
+import LeafletView from "osh-js/core/ui/view/map/LeafletView";
+import L from 'leaflet';
 
 export default {
   name: "Map",
@@ -71,14 +72,12 @@ export default {
     };
 
     // create Leaflet view
-    this.view = new LeafletView("map",
-        [],
-        {
-          watch: false,
-          autoZoomOnFirstMarker: true,
-          baseLayers: baseLayers,
-          defaultLayer: layer
-        });
+    this.view = new LeafletView({
+      container: 'map',
+      autoZoomOnFirstMarker: true,
+      baseLayers: baseLayers,
+      defaultLayer: layer
+    });
   },
   methods: {
     add(item) {
@@ -150,7 +149,13 @@ export default {
         viewItem['headingId'] = item['heading'].id;
       }
       // style it with a moving point marker
-      let marker = new PointMarker({
+      const dataSourceIds = [];
+      if ('location' in item) dataSourceIds.push(item['location'].id);
+      if ('heading' in item) dataSourceIds.push(item['heading'].id);
+
+      let marker = new PointMarkerLayer({
+        name: item.name,
+        dataSourceIds: dataSourceIds,
         icon: './images/cameralook3.png',
         iconAnchor: [13, 45],
         labelOffset: [10, 10],
@@ -163,7 +168,7 @@ export default {
         layer: marker
       };
 
-      this.view.addViewItem(viewItem);
+      this.view.addLayer(marker);
       this.viewItems.push(viewItem);
     },
     remove(item) {
@@ -177,7 +182,7 @@ export default {
         }
 
         if(remove) {
-          this.view.removeViewItem(viewItem);
+          this.view.removeAllFromLayer(viewItem.layer);
           this.viewItems.splice(index,1);
           break;
         }

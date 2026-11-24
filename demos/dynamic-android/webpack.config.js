@@ -1,7 +1,6 @@
 // webpack.config.lib
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 const { DefinePlugin } = require('webpack');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -16,6 +15,7 @@ module.exports = env => {
     output: {
       filename: '[name].js',
       path: path.resolve(__dirname, 'dist'),
+        clean: true
     },
     optimization: {
       splitChunks: {
@@ -42,22 +42,25 @@ module.exports = env => {
         path.resolve(__dirname, 'node_modules'),
         path.resolve(__dirname, '../../source')
       ],
+      fallback: {
+        fs: false
+      },
       alias: {
         'vue$': 'vue/dist/vue.esm.js',
+        'osh-js': path.resolve(__dirname, '../../source'),
       },
       extensions: ['*', '.js', '.vue', '.json']
     },
     devServer: {
-      contentBase: path.join(__dirname, 'dist'),
+      static: {
+        directory: path.join(__dirname, 'dist')
+      },
       compress: true,
       port: 9000,
       hot: true,
     },
-    devtool: (env.NODE_ENV === 'production') ? 'false' :
+    devtool: (env.NODE_ENV === 'production') ? false :
       'source-map',
-    node: {
-      fs: 'empty'
-    },
     module: {
       rules: [
         {
@@ -85,17 +88,12 @@ module.exports = env => {
             'vue-style-loader',
             'css-loader'
           ]
-        },
-        {
-          test: /\.worker\.js$/,
-          use: {loader: 'worker-loader'}
         }
       ]
     },
     plugins: [
       // make sure to include the plugin for the magic
       new VueLoaderPlugin(),
-      new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
         template: 'public/index.html',
         filename: './index.html',
@@ -105,10 +103,16 @@ module.exports = env => {
         // Define relative base path in cesium for loading assets
         BASE_URL: JSON.stringify('/')
       }),
-      new CopyWebpackPlugin([
-        {from: path.resolve(__dirname, 'public/images'), to: 'images'},
-        {from: path.resolve(__dirname, 'lib/core-js/source'), to: 'lib/core-js/source'}
-      ]),
+      new CopyWebpackPlugin({
+          patterns: [
+              {from: path.resolve(__dirname, 'public/images'), to: 'images'},
+              {
+                from: path.resolve(__dirname, 'lib/core-js/source'),
+                to: 'lib/core-js/source',
+                noErrorOnMissing: true,
+              }
+          ]
+      }),
       new Dotenv({
         path: (env.NODE_ENV === 'production') ? path.resolve(__dirname, '.env.production') :
           (env.NODE_ENV === 'public') ?   path.resolve(__dirname, '.env.public') :

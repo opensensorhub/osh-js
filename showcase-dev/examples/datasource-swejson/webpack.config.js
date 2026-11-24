@@ -1,7 +1,6 @@
 /* webpack.config.js */
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 var path = require('path');
 
@@ -39,21 +38,22 @@ module.exports = {
                 test: /\.css$/i,
                 use: ['style-loader', 'css-loader'],
             },
-            {
-                test: /\.worker\.js$/,
-                use: { loader: 'worker-loader', options: { name: 'WorkerName.[hash].js' } }
-            }
         ]
     },
     // Enable the Webpack dev server which will build, serve, and reload our
     // project on changes.
     devServer: {
-        contentBase: path.join(__dirname, 'dist'),
+        static: path.join(__dirname, 'dist'),
         compress: true,
         port: 9000,
         hot: true,
-        index: 'datasource-swejson.html',
-        https:true
+        server: 'https',
+        devMiddleware: {
+            index: 'datasource-swejson.html'
+        },
+        historyApiFallback: {
+            index: '/datasource-swejson.html'
+        }
     },
     devtool: 'source-map',
     plugins: [
@@ -68,7 +68,6 @@ module.exports = {
          *
          * See `Options and Defaults` for information
          */
-        new CleanWebpackPlugin(),
         // This plugin will generate an index.html file for us that can be used
         // by the Webpack dev server. We can give it a template file (written in EJS)
         // and it will handle injecting our bundle for us.

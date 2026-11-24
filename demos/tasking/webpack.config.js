@@ -3,7 +3,6 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const CopywebpackPlugin = require('copy-webpack-plugin');
 const { DefinePlugin, ProvidePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 const webpack = require('webpack');
@@ -17,7 +16,9 @@ const config = {
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
-    sourcePrefix: ''
+    sourcePrefix: '',
+    clean: true,
+    publicPath: 'auto',
   },
   resolve: {
     modules: [
@@ -61,7 +62,7 @@ const config = {
           loader: 'esbuild-loader',
           options: {
             loader: 'js',  // Remove this if you're not using JSX
-            target: 'es2015'  // Syntax to compile to (see options below for possible values)
+            target: 'es2020'  // Syntax to compile to (see options below for possible values)
           }
         }
       },
@@ -111,11 +112,7 @@ const config = {
             },
           },
         ],
-      },
-      {
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader' }
-      },
+      }
     ],
   },
   optimization: {
@@ -143,7 +140,6 @@ const config = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: 'index.html',

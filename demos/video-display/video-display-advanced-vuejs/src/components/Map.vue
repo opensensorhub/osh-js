@@ -63,11 +63,12 @@ export default {
             };
           }
         },
-        icon: './images/car-topview.png',
+        icon: './images/cellphone-marker.png',
         iconAnchor: [16, 16],
-        iconSize: [16, 32],
+        iconSize: [32, 32],
         zoomLevel: 17,
-        name: "Android Phone GPS"
+        name: "Android Phone GPS",
+        label: "Android Phone GPS"
       });
       // create Leaflet view
       this.view = new LeafletView({

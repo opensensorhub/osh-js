@@ -1,16 +1,9 @@
 import File from 'osh-js/ext/datasource/file/File.datasource';
 import {EventType} from 'osh-js/core/event/EventType';
-// create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
-import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
-import PolylineLayer from 'osh-js/core/ui/layer/PolylineLayer.js';
-import DeckGlView from 'osh-js/core/ui/view/map/DeckGlView.js';
 import {TileLayer} from '@deck.gl/geo-layers';
 import {BitmapLayer} from '@deck.gl/layers';
-import {Mode} from 'osh-js/core/datasource/Mode';
 import GeoJSON from "osh-js/ext/ui/layer/GeoJSON";
 import DeckGlViewGeoJSON from "osh-js/ext/ui/view/DeckGlGeoJSON";
-
 
 const NB_FILES = 8;
 const files = ['./data/data.json'];

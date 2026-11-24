@@ -139,6 +139,13 @@ export default {
     };
   },
   watch: {
+    minTimestamp() { /*this.updateRange();*/ },
+    maxTimestamp() { /*this.updateRange();*/ },
+    endTimestamp(newEnd) {
+      if (this.slider && isDefined(newEnd)) {
+        this.slider.set([null, newEnd], false);
+      }
+    },
     event(newValue) {
       this.$emit('event', {
         event: newValue,
@@ -305,11 +312,13 @@ export default {
           this.dataSynchronizer.onTimeChanged = (minTimestamp, maxTimestamp,startTimestamp, endTimestamp) => {
             this.minTimestamp = minTimestamp;
             this.maxTimestamp = maxTimestamp;
-            console.log(minTimestamp,maxTimestamp,startTimestamp,endTimestamp)
             this.computeSkipTime();
-            if(!this.update) {
+            if (this.update || this.interval) {
+              return;
+            }
+            this.endTimestamp = isDefined(endTimestamp) ? endTimestamp : maxTimestamp;
+            if (!this.connected) {
               this.startTimestamp = isDefined(startTimestamp) ? startTimestamp : minTimestamp;
-              this.endTimestamp = isDefined(endTimestamp) ? endTimestamp : maxTimestamp;
             }
           }
         } else {
@@ -385,6 +394,14 @@ export default {
         this.update = false;
       }
       this.on(event);
+    },
+    updateRange() {
+      if (!this.slider) {
+        return;
+      }
+      this.slider.updateOptions({
+        range: { min: this.minTimestamp, max: this.maxTimestamp }
+      }, false);
     }
     ,
     updateTimeDebounce() {

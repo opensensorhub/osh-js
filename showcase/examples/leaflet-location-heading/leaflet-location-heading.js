@@ -1,46 +1,52 @@
 //@ sourceURL=leaflet-location.html.js
-
-// create data source for Android phone GPS
-import SosGetResult from 'osh-js/core/datasource/sos/SosGetResult.datasource.js';
 import PointMarkerLayer from 'osh-js/core/ui/layer/PointMarkerLayer.js';
 import LeafletView from 'osh-js/core/ui/view/map/LeafletView.js';
-import {Mode} from "../../../source/core/datasource/Mode";
-import DataSynchronizer from "../../../source/core/timesync/DataSynchronizer";
+import {Mode} from "osh-js/core/datasource/Mode";
+import DataSynchronizer from "osh-js/core/timesync/DataSynchronizer";
+import ConSysApi from "osh-js/core/datasource/consysapi/ConSysApi.datasource";
 
 // create data source for Android phone GPS
-let gpsDataSource = new SosGetResult("android-GPS", {
-  endpointUrl: "sensiasoft.net/sensorhub/sos",
-  offeringID: "urn:android:device:060693280a28e015-sos",
-  observedProperty: "http://sensorml.com/ont/swe/property/Location",
-  startTime: '2015-02-16T07:58:15.447Z',
-  endTime: "2015-02-16T08:09:00Z",
-  mode: Mode.REPLAY,
-  tls: true,
-  timeShift: -16000
+const REPLAY_SPEED = 0.0;
+
+// #region snippet_leaflet_location_datasource
+let gpsDataSource =  new ConSysApi('Android Sensors [Michael Phone', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api',
+    tls: true,
+    startTime: '2023-06-06T14:29:17Z',
+    endTime: '2023-06-06T22:29:12Z',
+    minTime: '2023-06-06T14:29:17Z',
+    maxTime: '2023-06-06T22:29:12Z',
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/ltr9mqaqrorj6/observations',
+    responseFormat: 'application/swe+json',
 });
 
 // create data source for Android phone orientation
-let attitudeDataSource = new SosGetResult("android-Att", {
-  endpointUrl: "sensiasoft.net/sensorhub/sos",
-  offeringID: "urn:android:device:060693280a28e015-sos",
-  observedProperty: "http://sensorml.com/ont/swe/property/OrientationQuaternion",
-  startTime: '2015-02-16T07:58:15.447Z',
-  endTime: "2015-02-16T08:09:00Z",
-  mode: Mode.REPLAY,
-  tls: true,
-  timeShift: -16000
+let attitudeDataSource =  new ConSysApi('android-Heading', {
+    endpointUrl:  'api.georobotix.io/ogc/t18/api/',
+    tls: true,
+    startTime: '2023-06-06T14:29:17Z',
+    endTime: '2023-06-06T22:29:12Z',
+    minTime: '2023-06-06T14:29:17Z',
+    maxTime: '2023-06-06T22:29:12Z',
+    prefetchBatchDuration: 10000,
+    prefetchBatchSize: 250,
+    resource: '/datastreams/kegun78tu174a/observations',
+    responseFormat: 'application/swe+json'
 });
 
 const dataSynchronizer = new DataSynchronizer({
-  replaySpeed: 2,
-  startTime: '2015-02-16T07:58:22.00Z',
-  endTime: "2015-02-16T08:09:00Z",
-  dataSources: [gpsDataSource, attitudeDataSource]
+    replaySpeed: REPLAY_SPEED,
+    startTime: '2023-06-06T14:29:17Z',
+    endTime: '2023-06-06T22:29:12Z',
+    dataSources: [gpsDataSource, attitudeDataSource],
 });
 
+let testAngle = 0;
 // style it with a moving point marker
 let pointMarker = new PointMarkerLayer({
-  name: "Android Phone GPS",
+  name: "Android Sensors [Michael Phone]",
   dataSourceIds: [gpsDataSource.id, attitudeDataSource.id],
   getLocation: {
     dataSourceIds: [gpsDataSource.getId()],
@@ -83,9 +89,9 @@ let pointMarker = new PointMarkerLayer({
       };
     }
   },
-  icon: 'images/car-topview.png',
-  iconSize: [16,32],
-  iconAnchor: [16, 30]
+  icon: 'images/drone.png',
+  iconSize: [128,128],
+  iconAnchor: [64, 64]
 });
 
 // create Leaflet view

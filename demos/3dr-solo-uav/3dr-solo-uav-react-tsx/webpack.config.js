@@ -1,7 +1,6 @@
 // webpack.config.common.js
 const CopywebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // Common configs
 const path = require('path');
 const webpack = require("webpack");
@@ -37,7 +36,7 @@ const cesiumConfig = {
 const config = {
   ...cesiumConfig,
   entry: "./src/index.tsx",
-  output: { path: path.join(__dirname, "build"), filename: "index.bundle.js" },
+  output: { path: path.join(__dirname, "build"), filename: "index.bundle.js", clean: true },
   mode: process.env.NODE_ENV || "development",
   resolve: {
     alias: {
@@ -61,16 +60,11 @@ const config = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif|ico)$/,
-        use: [
-          'file-loader',
-        ],
+        test: /\.(png|svg|jpg|jpeg|gif|ico)$/i,
+        type: 'asset/resource',
       },{
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },{
-        test: /\.worker\.js$/,
-        use: { loader: 'worker-loader', options: { filename: 'Worker.[chunkhash].js' } }
       },
       {
         test: /\.(?:js|mjs|cjs|jsx)$/,
@@ -88,11 +82,6 @@ const config = {
               plugins: ["@babel/plugin-transform-optional-chaining"],
             },
           },
-          // Babel understands the import.meta syntax but doesn't transform it in any way
-          // However Webpack can't parse this and throws an error for an unexpected token
-          // we need to use this extra loader so Webpack can actually bundle the code
-          // https://www.npmjs.com/package/@open-wc/webpack-import-meta-loader
-          require.resolve("@open-wc/webpack-import-meta-loader"),
         ],
       }
     ],
@@ -101,7 +90,7 @@ const config = {
     compress: true,
     port: 9000,
     hot: true,
-    https:true
+    server: 'https',
   },
   stats: {
     children: true,
@@ -112,7 +101,6 @@ const config = {
   },
   plugins: [
   ...cesiumConfig.plugins,
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
       filename: './index.html',

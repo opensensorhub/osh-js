@@ -274,15 +274,11 @@ class View {
      */
     removeAllFromLayer(layer) {
         if(this.layers.includes(layer)) {
-            layer._destroyed = true;
             // 1) remove from STYLER fn
             for(let ds in layer.dataSourcesToFn) {
                 delete this.lastRec[ds];
             }
-            layer.dataSourcesToFn = {};
-            layer.clear();
             layer.reset();
-            this.layers = this.layers.filter(l => l !== layer);
         }
     }
 
